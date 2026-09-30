@@ -1,0 +1,23 @@
+{
+  "accent": {
+    "type": "color",
+    "text": "Accent colour",
+    "value": "#ffffff"
+  },
+  "gain": {
+    "type": "slider",
+    "text": "Mic sensitivity",
+    "value": 1,
+    "min": 0.3,
+    "max": 4,
+    "step": 0.1
+  },
+  "speed": {
+    "type": "slider",
+    "text": "Rotation speed",
+    "value": 1,
+    "min": 0,
+    "max": 4,
+    "step": 0.1
+  }
+}

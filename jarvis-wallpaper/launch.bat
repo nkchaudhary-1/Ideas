@@ -1,3 +1,6 @@
 @echo off
-rem Full-screen HUD window with microphone auto-allowed (Edge ships with Windows).
-start "" msedge --app="file:///%~dp0index.html" --start-fullscreen --use-fake-ui-for-media-stream --user-data-dir="%TEMP%\jarvis-hud"
+rem Usage: launch.bat [hud|brain|eye]   (default: hud)
+rem Opens the chosen theme full-screen in Edge with the microphone auto-allowed.
+set THEME=%1
+if "%THEME%"=="" set THEME=hud
+start "" msedge --app="file:///%~dp0%THEME%/index.html" --start-fullscreen --use-fake-ui-for-media-stream --user-data-dir="%TEMP%\jarvis-%THEME%"
