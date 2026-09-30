@@ -1,43 +1,63 @@
 # Jarvis Wallpaper
 
-Voice-reactive Jarvis HUD for Windows, packaged as an installable app (`Jarvis Wallpaper Setup.exe`).
+Voice-reactive Jarvis HUD for Windows, packaged as an installer. Everything reacts to your **real microphone**. All PC numbers are **real** (CPU per core, RAM, disks, network, GPU, processes, battery, uptime). Nothing is simulated; with no data a field shows `--`.
 
-Everything you see reacts to **real microphone input** (Web Audio FFT + waveform). With no sound the visuals sit still.
-CPU / RAM / network bars show **real** system values from the app; nothing is simulated.
+## 13 themes
+| Theme | Inspired by | PC data shown as |
+|---|---|---|
+| **Sector** | blue "HUD elements" brackets | side object panels, signal in/out = network |
+| **Blueprint** | wireframe on blue grid | spinning wireframe deformed by your voice + leader labels |
+| **Cockpit** | tilted aircraft glass | pitch ladder = per-core load, tapes = CPU / RAM, ID markers = top processes |
+| **Target** | symmetric targeting reticle (katakana) | load bar, side readouts, voice bars and dot matrices |
+| **Nebula** | purple orb lens | concentric gauge rings: CPU / RAM / disk / network |
+| **Reactor** | orange hex gauge | donut gauge = CPU, capsule meters = RAM / disk / net / GPU |
+| **Sensory** | minimal white panels | LEFT / RIGHT XYZ readouts |
+| **Poster** | technical compass poster | tick arcs lit by CPU / RAM / disk / net, data strings on the ring |
+| **Radar** | process radar | each top process is a blip, voice sends ripples |
+| **Console** | dense dashboard | 90 s history graphs, per-core bars, process table |
+| Core HUD, Claude Brain, Eye | the classic three | (unchanged, now with real stats) |
 
-| Theme | Look |
-|---|---|
-| `brain` | Original Claude-brain: terracotta neural net + radar rings |
-| `hud` | Tilted HUD: spectrum ring, level gauge, waveform ring, side panels, brain core. Palettes: Claude / Mono / Reactor |
-| `eye` | Monochrome glass lens with voice ripples |
+## Show / hide data
+Tray → **Data panels**: CPU, Memory, Storage, Network, Processes, GPU, Battery, System info & clock, Voice log. **Ctrl+Alt+H** hides/shows all. Voice: “jarvis hide processes”, “jarvis show data”.
 
-## A. Install (get the .exe)
-1. GitHub → repo `nkchaudhary-1/Ideas` → **Actions** → **Build Windows installer** → latest green run → download the **Jarvis-Wallpaper-Setup** artifact (zip) → unzip.
-   (A run starts automatically on every push to this branch; or click **Run workflow**. Tagging `v1.0.0` also attaches the .exe to a GitHub Release.)
-2. Run `Jarvis Wallpaper Setup 1.0.0.exe`. Windows SmartScreen will warn (unsigned): **More info → Run anyway**.
-3. Finish the installer. Launch **Jarvis Wallpaper** from the desktop shortcut.
+## Shortcuts (work from anywhere)
+`Ctrl+Alt+→ / ←` next / previous theme · `Ctrl+Alt+H` toggle all data · `Ctrl+Alt+V` voice commands on/off · `Esc` quit (Window mode)
 
-## B. Use
-- A tray icon (bottom-right, may be under `^`) controls everything: **Theme**, **HUD palette**, **Mic sensitivity**, **Mode**, **Start with Windows**, **Quit**.
-- **Mode → Window**: fullscreen on each monitor, **Esc** quits. Most reliable.
-- **Mode → Wallpaper (experimental)**: attaches behind desktop icons (WorkerW technique). If you see a black screen, switch back to Window mode.
-- Mic is allowed automatically. Windows Settings → Privacy → Microphone → "Let desktop apps access your microphone" must be **On**.
-- Greeting uses your Windows username.
+## Voice commands (offline)
+Uses the speech recogniser built into Windows (System.Speech), so nothing is sent to the cloud. Say the wake word + phrase:
 
-## C. Build it yourself
+- **Open**: “jarvis open downloads / documents / desktop / pictures”, “open settings / display settings / sound settings / bluetooth settings / wifi settings / update settings”, “open task manager / calculator / notepad / command prompt”, “take screenshot”, “open browser / youtube”
+- **System**: “jarvis lock computer”, “volume up / volume down / mute”, “play pause / next track / previous track”
+- **Wallpaper**: “switch to radar” (any theme name), “next theme”, “previous theme”, “hide data / show data”, “hide / show cpu / memory / network / processes …”, “mic louder / mic quieter”, “quit wallpaper”
+
+### Add your own
+Tray → Voice commands → **Edit my commands** opens `commands.json`:
+```json
+{ "wake": "jarvis", "minConfidence": 0.7,
+  "commands": [
+    { "say": "open projects",  "do": "open", "target": "D:\\Projects" },
+    { "say": "open chrome",    "do": "run",  "target": "chrome" },
+    { "say": "open my site",   "do": "open", "target": "https://example.com" },
+    { "say": "open vs code",   "do": "run",  "target": "code", "args": ["D:\\Projects"] }
+  ] }
 ```
-cd jarvis-wallpaper/app
-npm install
-npm start          # run without installing
-npm run dist       # builds dist/Jarvis Wallpaper Setup 1.0.0.exe (run this on Windows)
+`do`: `open` (folder / file / URL / `ms-settings:` page) · `run` (program + optional args) · `media` · `app`. Save, then tray → **Reload commands**. Only add commands you trust: they run with your permissions. Only phrases in this list are recognised (a fixed grammar), so ordinary speech and music won't trigger anything. Raise `minConfidence` if you get false triggers.
+Needs a Windows speech recogniser for your language (en-US ships with Windows). A toast at the bottom shows what was heard and whether it ran.
+
+## Install
+1. GitHub → repo → **Actions** → **Build Windows installer** → latest green run → artifact **Jarvis-Wallpaper-Setup** → unzip.
+2. Run the `.exe` (SmartScreen: *More info → Run anyway*, it is unsigned).
+3. Open **Jarvis Wallpaper**; control everything from the tray icon.
+
+Mic permission is automatic; Windows Settings → Privacy → Microphone → allow desktop apps.
+
+## Build it yourself
 ```
-Requires Node 20+.
+cd jarvis-wallpaper/app && npm install && npm start      # run
+npm run dist                                             # installer (on Windows)
+```
 
-## D. Without the app
-`launch.bat [hud|brain|eye]` opens a theme in fullscreen Edge (mic auto-allowed, no stats).
-`app/themes/<theme>/index.html` can also be added to Lively Wallpaper; Lively's browser may block the mic.
-
-## Notes / limits
-- Reacts to the **microphone** only. Reacting to system audio (music) would need a loopback capture; tell me if you want it.
-- Live speech-to-text was removed: Electron has no speech-recognition backend. Adding one means a local model (Whisper) or a cloud API key.
-- The .exe must be built on Windows (the GitHub Action does it); it can't be produced from this Linux session.
+## Limits
+- Window mode is reliable. Wallpaper mode (behind icons) is experimental.
+- GPU % and CPU temperature appear only when Windows exposes them (NVIDIA usually yes, others often not). Hidden when unavailable.
+- Reacts to the microphone, not system audio.
