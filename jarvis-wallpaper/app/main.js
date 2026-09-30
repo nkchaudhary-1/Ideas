@@ -10,20 +10,18 @@ const DRY = !!process.env.JARVIS_DRYRUN;            // test mode: log actions in
 const WIN = process.platform === 'win32';
 
 /* ---------------- catalogue ---------------- */
-const THEMES = [['cortex', 'Cortex', 'cortex'], ['blueprint', 'Blueprint', 'blueprint'], ['cockpit', 'Cockpit', 'cockpit'], ['target', 'Target', 'target'], ['orb', 'Orb', 'orb'],
-  ['halo', 'Halo', 'halo'], ['sensory', 'Sensory', 'sensory'], ['poster', 'Poster', 'poster'], ['radar', 'Radar', 'radar'], ['console', 'Console', 'console'],
-  ['hud', 'Core HUD (classic)', 'classic hud'], ['brain', 'Claude Brain (classic)', 'brain'], ['eye', 'Eye (classic)', 'eye']];
-const LEGACY = new Set(['hud', 'brain', 'eye']);
+const THEMES = [['flow', 'Quantum Flow', 'quantum flow'], ['orb', 'Knowledge Orb', 'knowledge orb'], ['layers', 'Layered Intelligence', 'layered intelligence'],
+  ['galaxy', 'Knowledge Galaxy', 'knowledge galaxy'], ['engine', 'Intelligence Engine', 'intelligence engine'], ['brain', 'Neural Brain', 'neural brain']];
 const PANELS = [['cpu', 'CPU', 'cpu'], ['mem', 'Memory', 'memory'], ['disk', 'Storage', 'storage'], ['net', 'Network', 'network'], ['procs', 'Processes', 'processes'],
   ['gpu', 'GPU', 'gpu'], ['batt', 'Battery', 'battery'], ['sys', 'System info & clock', 'system info'], ['voice', 'Voice log', 'voice log']];
 
 /* ---------------- settings (persisted) ---------------- */
 const CFG_FILE = () => path.join(app.getPath('userData'), 'settings.json');
-const ACCENTS = ['Claude terracotta', 'Ice blue', 'Mono', 'Amber', 'Violet', 'Jade'];
-const DEFAULTS = { theme: 'cortex', accent: 0, palette: 0, mode: 'window', gain: 1, userName: os.userInfo().username, autostart: false, hidden: [], voice: true };
+const ACCENTS = ['Cyan', 'Claude terracotta', 'Mono', 'Amber', 'Violet', 'Jade'];
+const DEFAULTS = { theme: 'engine', accent: 0, palette: 0, mode: 'window', gain: 1, userName: os.userInfo().username, autostart: false, hidden: [], voice: true };
 let cfg = { ...DEFAULTS };
 try { cfg = { ...DEFAULTS, ...JSON.parse(fs.readFileSync(CFG_FILE(), 'utf8')) }; } catch (_) {}
-if ({ sector: 1, nebula: 1, reactor: 1 }[cfg.theme]) cfg.theme = { sector: 'cortex', nebula: 'orb', reactor: 'halo' }[cfg.theme];
+if (!THEMES.find(t => t[0] === cfg.theme)) cfg.theme = 'engine';
 const save = () => { try { fs.writeFileSync(CFG_FILE(), JSON.stringify(cfg, null, 2)); } catch (_) {} };
 
 let wins = [], tray = null;
@@ -32,14 +30,10 @@ const runJS = (js) => wins.forEach(w => { if (!w.isDestroyed()) w.webContents.ex
 const call = (fn, arg) => `window.${fn}&&window.${fn}(${JSON.stringify(arg)})`;
 
 /* ---------------- windows ---------------- */
-function loadTheme(win) {
-  if (LEGACY.has(cfg.theme)) win.loadFile(path.join(__dirname, 'themes', cfg.theme, 'index.html'));
-  else win.loadFile(path.join(__dirname, 'themes', 'studio', 'index.html'), { query: { theme: cfg.theme } });
-}
+function loadTheme(win) { win.loadFile(path.join(__dirname, 'themes', 'studio', 'index.html'), { query: { theme: cfg.theme } }); }
+const switchJS = id => `window.Studio&&Studio.switch&&Studio.switch(${JSON.stringify(id)},true)`;
 function pushSettings(win) {
-  const js = [call('jarvisConfig', { hidden: cfg.hidden, gain: cfg.gain, userName: cfg.userName, accent: cfg.accent }),
-    `window.livelyPropertyListener&&(window.livelyPropertyListener('theme',${cfg.palette}),window.livelyPropertyListener('gain',${cfg.gain}),window.livelyPropertyListener('userName',${JSON.stringify(cfg.userName)}))`];
-  js.forEach(s => win.webContents.executeJavaScript(s).catch(() => {}));
+  win.webContents.executeJavaScript(call('jarvisConfig', { hidden: cfg.hidden, gain: cfg.gain, userName: cfg.userName, accent: cfg.accent })).catch(() => {});
 }
 function createWindows() {
   wins.forEach(w => { try { w.destroy(); } catch (_) {} }); wins = [];
@@ -48,6 +42,9 @@ function createWindows() {
     const win = new BrowserWindow({ x: d.bounds.x, y: d.bounds.y, width: d.bounds.width, height: d.bounds.height, frame: false, show: false, skipTaskbar: true, backgroundColor: '#050608',
       fullscreen: !wallpaper, resizable: false, focusable: !wallpaper, webPreferences: { backgroundThrottling: false, autoplayPolicy: 'no-user-gesture-required' } });
     win.setMenuBarVisibility(false); let first = true;
+    win.webContents.on('page-title-updated', (e, title) => { e.preventDefault(); if (!title.startsWith('JV|')) return; const [, k, v] = title.split('|');
+      if (k === 'theme' && THEMES.find(t => t[0] === v) && v !== cfg.theme) { cfg.theme = v; save(); wins.forEach(w => { if (w !== win && !w.isDestroyed()) w.webContents.executeJavaScript(switchJS(v)).catch(() => {}); }); rebuildTray(); }
+      if (k === 'hidden') { cfg.hidden = v ? v.split(',').filter(Boolean) : []; save(); wins.forEach(w => { if (w !== win && !w.isDestroyed()) pushSettings(w); }); rebuildTray(); } });
     win.webContents.on('did-finish-load', () => {
       win.webContents.executeJavaScript(toastSrc()).catch(() => {}); pushSettings(win); pushData();
       win.webContents.executeJavaScript(call('jarvisVoiceState', speechProc ? 'on' : 'off')).catch(() => {});
@@ -119,7 +116,7 @@ function pushData() {
 /* ---------------- actions ---------------- */
 const expand = s => String(s).replace(/%([^%]+)%/g, (_, k) => process.env[k] || process.env[k.toUpperCase()] || '');
 const themeIdx = () => THEMES.findIndex(t => t[0] === cfg.theme);
-function setTheme(id) { if (!THEMES.find(t => t[0] === id)) return; cfg.theme = id; save(); wins.forEach(loadTheme); rebuildTray(); }
+function setTheme(id) { if (!THEMES.find(t => t[0] === id)) return; cfg.theme = id; save(); runJS(switchJS(id)); rebuildTray(); }
 function nextTheme(dir) { setTheme(THEMES[(themeIdx() + dir + THEMES.length) % THEMES.length][0]); }
 function setPanel(key, on) { const s = new Set(cfg.hidden); on ? s.delete(key) : s.add(key); cfg.hidden = [...s]; save(); wins.forEach(pushSettings); rebuildTray(); }
 function setAllPanels(on) { cfg.hidden = on ? [] : PANELS.map(p => p[0]); save(); wins.forEach(pushSettings); rebuildTray(); }
@@ -227,7 +224,6 @@ function rebuildTray() {
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: 'Theme', submenu: THEMES.map(t => ({ label: t[1], type: 'radio', checked: cfg.theme === t[0], click: () => setTheme(t[0]) })).concat([{ type: 'separator' }, { label: 'Next   (Ctrl+Alt+→)', click: () => nextTheme(1) }, { label: 'Previous   (Ctrl+Alt+←)', click: () => nextTheme(-1) }]) },
     { label: 'Accent colour', submenu: ACCENTS.map((n, i) => ({ label: n, type: 'radio', checked: cfg.accent === i, click: () => { cfg.accent = i; save(); wins.forEach(pushSettings); } })) },
-    { label: 'Classic HUD palette', submenu: ['Claude', 'Mono', 'Reactor'].map((n, i) => ({ label: n, type: 'radio', checked: cfg.palette === i, click: () => { cfg.palette = i; save(); wins.forEach(pushSettings); } })) },
     { label: 'Data panels', submenu: PANELS.map(p => ({ label: p[1], type: 'checkbox', checked: !hid.has(p[0]), click: m => setPanel(p[0], m.checked) })).concat([{ type: 'separator' }, { label: 'Show all', click: () => setAllPanels(true) }, { label: 'Hide all   (Ctrl+Alt+H)', click: () => setAllPanels(false) }]) },
     { label: 'Voice commands', submenu: [
       { label: 'Enabled   (Ctrl+Alt+V)', type: 'checkbox', checked: cfg.voice, click: m => { cfg.voice = m.checked; save(); m.checked ? startSpeech() : stopSpeech(); } },

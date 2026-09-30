@@ -8,13 +8,13 @@ const SANS = '"Segoe UI",Inter,system-ui,sans-serif';
 const JP = '"Yu Gothic UI","Yu Gothic","Meiryo","Noto Sans CJK JP",sans-serif';
 const SERIF = 'Georgia,"Iowan Old Style","Times New Roman",serif';
 const PALETTES = [
+  { name: 'Cyan',    a: [98, 214, 255],  b: [228, 240, 250], c: [118, 150, 172], bg0: '#08121c', bg1: '#03050a' },
   { name: 'Claude',  a: [217, 119, 87],  b: [240, 238, 230], c: [168, 160, 147], bg0: '#27211b', bg1: '#0d0b09' },
-  { name: 'Ice',     a: [128, 188, 255], b: [226, 238, 250], c: [150, 166, 186], bg0: '#15202c', bg1: '#070a0f' },
-  { name: 'Mono',    a: [236, 236, 232], b: [244, 244, 240], c: [170, 170, 166], bg0: '#1b1b1d', bg1: '#050506' },
+  { name: 'Mono',    a: [236, 236, 232], b: [244, 244, 240], c: [170, 170, 166], bg0: '#1b1b1d', bg1: '#050506', mono: true },
   { name: 'Amber',   a: [255, 176, 64],  b: [250, 240, 222], c: [178, 164, 140], bg0: '#261f10', bg1: '#0b0905' },
   { name: 'Violet',  a: [178, 142, 255], b: [236, 230, 250], c: [164, 154, 188], bg0: '#1f1830', bg1: '#09060f' },
   { name: 'Jade',    a: [108, 228, 184], b: [230, 246, 240], c: [146, 176, 166], bg0: '#13241f', bg1: '#060d0b' }];
-const Studio = window.Studio = { themes: {}, register(t) { this.themes[t.id] = t; } };
+const Studio = window.Studio = { themes: {}, list: [], register(t) { this.themes[t.id] = t; this.list.push(t.id); } };
 const cv = document.getElementById('c'), ctx = cv.getContext('2d');
 const q = new URLSearchParams(location.search);
 
@@ -35,7 +35,7 @@ function resize() {
   api.s = cv.height / 900; api.w = cv.width / api.s; api.cx = api.w / 2;
 }
 addEventListener('resize', resize); resize();
-addEventListener('mousemove', e => { api.mx = e.clientX / innerWidth - .5; api.my = e.clientY / innerHeight - .5; });
+addEventListener('mousemove', e => { api.mx = e.clientX / innerWidth - .5; api.my = e.clientY / innerHeight - .5; api.mpx = e.clientX * cv.width / innerWidth / api.s; api.mpy = e.clientY * cv.height / innerHeight / api.s; api.mouseIn = true; });
 
 /* ---------------- drawing helpers ---------------- */
 api.line = (x0, y0, x1, y1, lw, al, c) => { ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.lineWidth = lw || 1; ctx.strokeStyle = rgba(al == null ? 1 : al, c); ctx.stroke(); };
@@ -112,63 +112,8 @@ api.greeting = (x, y, align) => { const h = new Date().getHours(), part = h < 5 
   api.text('Good ' + part + (name ? ', ' + name : '') + '.', x, y, 24, .95, api.col.b, align || 'left', { font: SERIF });
   api.label('Core online · ' + fmt.up((api.d.sys || {}).uptime), x, y + 26, .5, align || 'left'); };
 
-/* ---------------- data widgets (all honour the show/hide switches; return height used) ---------------- */
-const W = api.W = {};
 const { fmt } = api;
-function head(t, detail, x, y, w, o) { const r = o.right;
-  api.label(t, r ? x + w : x, y + 5, .85, r ? 'right' : 'left'); if (detail) api.text(detail, r ? x : x + w, y + 5, 9, .55, api.col.c, r ? 'left' : 'right');
-  api.line(x, y + 16, x + w, y + 16, 1, .1, api.col.b); api.line(r ? x + w - 20 : x, y + 16, r ? x + w : x + 20, y + 16, 1, .85, api.col.a); }
-const nv = (v, n) => v == null ? '--' : String(Math.round(v));
-W.cpu = (x, y, w, o = {}) => { if (!api.show('cpu')) return 0; const d = api.d.cpu || {}, r = o.right, A = api.col.a, h = o.h || 112;
-  head('CPU', fmt.short((d.brand || '').replace(/\((R|TM)\)|CPU|Processor|@.*|\d+(st|nd|rd|th) Gen/g, '').trim(), 22), x, y, w, o);
-  api.num(nv(d.load == null ? null : api.v.cpu), '%', r ? x + w : x, y + 46, o.big || 36, .94, r);
-  api.spark(r ? x : x + w * .5, y + 30, w * .5, 30, api.hist.cpu, 100, 1.1, .85, A, .07);
-  if (d.temp != null) api.text(Math.round(d.temp) + '°C', r ? x : x + w, y + 70, 9, .45, api.col.c, r ? 'left' : 'right');
-  const c = d.cores || [], n = c.length; if (n) { const gap = Math.min(6, (w - 2) / n), base = y + h - 6;
-    for (let i = 0; i < n; i++) { const bx = r ? x + w - 1 - i * gap : x + 1 + i * gap, hh = 2 + Math.min(1, c[i] / 100) * 18; api.line(bx, base, bx, base - hh, 1.4, c[i] > 80 ? 1 : .6, c[i] > 80 ? A : api.col.b); api.disc(bx, base + 3, .7, .3, api.col.b); } }
-  return h; };
-W.mem = (x, y, w, o = {}) => { if (!api.show('mem')) return 0; const d = api.d.mem || {}, r = o.right, A = api.col.a;
-  head('MEMORY', d.total ? fmt.gb(d.used) + ' / ' + fmt.gb(d.total) : '', x, y, w, o);
-  api.num(nv(d.pct == null ? null : api.v.mem), '%', r ? x + w : x, y + 46, o.big || 36, .94, r);
-  api.spark(r ? x : x + w * .5, y + 30, w * .5, 30, api.hist.mem, 100, 1.1, .7, api.col.b, .05);
-  api.bar(x, y + 70, w, 2, (api.v.mem || 0) / 100, .9, A); return 86; };
-W.disk = (x, y, w, o = {}) => { if (!api.show('disk')) return 0; const ds = (api.d.disks || []).slice(0, o.max || 4), A = api.col.a;
-  head('STORAGE', ds.length ? ds.length + ' vol' : '', x, y, w, o);
-  ds.forEach((k, i) => { const yy = y + 34 + i * 22; api.text(k.mount.replace(/[\\/]+$/, '').slice(0, 10), x, yy, 10, .8, api.col.b, 'left');
-    api.bar(x + 44, yy - 1, w - 130, 2, k.pct / 100, .9, k.pct > 85 ? [255, 120, 100] : A); api.text(Math.round(k.pct) + '%', x + w, yy, 10, .7, api.col.b, 'right'); api.text(fmt.gb(k.size), x + w - 34, yy, 8, .45, api.col.c, 'right'); });
-  return 30 + ds.length * 22 + 2; };
-W.net = (x, y, w, o = {}) => { if (!api.show('net')) return 0; const r = o.right, A = api.col.a, n = api.d.net || {}, sp = s => s == null ? ['--', ''] : s >= 1e6 ? [(s / 1e6).toFixed(1), 'MB/s'] : s >= 1e3 ? [String(Math.round(s / 1e3)), 'KB/s'] : [String(Math.round(s)), 'B/s'];
-  head('NETWORK', n.iface ? fmt.short(n.iface, 14) : '', x, y, w, o);
-  const d = sp(n.down == null ? null : api.v.netD), u = sp(n.up == null ? null : api.v.netU), ax = r ? x + w : x;
-  api.text('↓', ax + (r ? -4 : 0), y + 40, 14, .9, A, r ? 'right' : 'left'); api.num(d[0], d[1], r ? x + w - 16 : x + 16, y + 42, 24, .94, r);
-  api.text('↑', ax + (r ? -4 : 0), y + 66, 12, .6, A, r ? 'right' : 'left'); api.num(u[0], u[1], r ? x + w - 16 : x + 16, y + 67, 15, .7, r);
-  const sx = r ? x : x + w * .55, sw = w * .45; api.spark(sx, y + 28, sw, 44, api.hist.netD, 0, 1.1, .85, A, .07); api.spark(sx, y + 28, sw, 44, api.hist.netU, Math.max(1, ...api.hist.netD, ...api.hist.netU), 1, .4, api.col.b);
-  return 84; };
-W.procs = (x, y, w, o = {}) => { if (!api.show('procs')) return 0; const ps = (api.d.procs || []).slice(0, o.max || 5), r = o.right, A = api.col.a;
-  head('PROCESSES', ps.length ? 'top ' + ps.length : '', x, y, w, o);
-  ps.forEach((p, i) => { const yy = y + 34 + i * 19; api.text(fmt.short(p.name.replace(/\.exe$/i, ''), 16), r ? x + w : x, yy, 11, .85, api.col.b, r ? 'right' : 'left');
-    const bw = w * .26, bx = r ? x + 38 : x + w - bw - 38; api.bar(bx, yy - 1, bw, 2, Math.min(1, p.cpu / 40), .85, A); api.text(p.cpu.toFixed(1), r ? x : x + w, yy, 10, .7, api.col.c, r ? 'left' : 'right'); });
-  return 30 + ps.length * 19 + 2; };
-W.sys = (x, y, w, o = {}) => { if (!api.show('sys')) return 0; const s = api.d.sys || {}, r = o.right;
-  head('SYSTEM', '', x, y, w, o);
-  const rows = [['host', fmt.short(s.host, 18)], ['user', fmt.short(api.cfg.userName || s.user, 18)], ['os', fmt.short((s.os || '').replace('Microsoft ', ''), 20)], ['uptime', fmt.up(s.uptime)]];
-  if (api.d.cpu && api.d.cpu.cores) rows.push(['cores', api.d.cpu.cores.length + (api.d.cpu.speed ? ' · ' + api.d.cpu.speed + ' GHz' : '')]);
-  rows.forEach((k, i) => { const yy = y + 32 + i * 17; api.label(k[0], r ? x + w : x, yy, .6, r ? 'right' : 'left'); api.text(k[1], r ? x : x + w, yy, 10, .9, api.col.b, r ? 'left' : 'right'); });
-  return 36 + rows.length * 17; };
-W.clock = (x, y, o = {}) => { if (!api.show('sys')) return 0; const big = o.big || 60, al = o.right ? 'right' : o.center ? 'center' : 'left';
-  api.clockBig(x, y + big * .5, big, al); api.label(fmt.date(), x, y + big + 12, .5, al); return big + 26; };
-W.greet = (x, y, o = {}) => { if (!api.show('sys')) return 0; api.greeting(x, y, o.right ? 'right' : 'left'); return 54; };
-W.batt = (x, y, w, o = {}) => { if (!api.show('batt')) return 0; const b = api.d.batt, r = o.right; if (!b || !b.has) return 0;
-  api.label('Power ' + Math.round(b.pct) + '%' + (b.charging ? ' ⚡' : ''), r ? x + w : x, y + 5, .6, r ? 'right' : 'left'); api.bar(x, y + 16, w, 2, b.pct / 100, .9, api.col.a); return 30; };
-W.gpu = (x, y, w, o = {}) => { if (!api.show('gpu')) return 0; const g = api.d.gpu, r = o.right; if (!g || g.util == null) return 0;
-  head('GPU', fmt.short(g.name || '', 22), x, y, w, o); api.num(nv(api.v.gpu), '%', r ? x + w : x, y + 46, o.big || 36, .94, r); api.bar(x, y + 70, w, 2, api.v.gpu / 100, .9, api.col.a);
-  if (g.temp != null) api.text(Math.round(g.temp) + '°C', r ? x : x + w, y + 46, 9, .45, api.col.c, r ? 'left' : 'right'); return 86; };
-W.voice = (x, y, w, o = {}) => { if (!api.show('voice')) return 0; const au = api.au, r = o.right;
-  head('VOICE', au.live ? (au.voice ? 'speaking' : 'listening') : 'mic off', x, y, w, o);
-  api.spectrum(x, y + 50, w, 26, Math.floor(w / 4), .7, api.col.a, -1, 1); api.line(x, y + 51, x + w, y + 51, 1, .12, api.col.b);
-  (api.vlog.slice(-3)).forEach((l, i) => api.text('› ' + fmt.short(l.text, 34), r ? x + w : x, y + 70 + i * 14, 9, l.status === 'ok' ? .9 : .4, l.status === 'ok' ? api.col.a : api.col.c, r ? 'right' : 'left'));
-  return 116; };
-api.stack = (x, y, w, list, gap, o) => { gap = gap == null ? 22 : gap; list.forEach(k => { const hh = W[k](x, y, w, o || {}); if (hh) y += hh + gap; }); return y; };
+const W = api.W = {};
 
 /* ---------------- neural brain core (shared by themes) ---------------- */
 const Brain = api.brain = { nodes: [], edges: [], adj: [], pulses: [], yaw: .6, n: 0,
@@ -204,10 +149,7 @@ const Brain = api.brain = { nodes: [], edges: [], adj: [], pulses: [], yaw: .6, 
 const dust = Array.from({ length: 80 }, () => ({ x: Math.random(), y: Math.random(), z: Math.random(), v: 2e-5 + Math.random() * 6e-5 }));
 api.backdrop = (o) => { o = o || {}; const p = api.pal; api.bg(o.c0 || p.bg0, o.c1 || p.bg1);
   for (const d of dust) { d.y -= d.v * (.4 + d.z) * api.dt * .06 * 16; if (d.y < 0) { d.y = 1; d.x = Math.random(); } ctx.fillStyle = rgba(.06 + d.z * .16, api.col.b); ctx.fillRect(d.x * api.w, d.y * 900, .8 + d.z, .8 + d.z); } };
-let scanPat = null;
-function finish() { const g = ctx.createRadialGradient(api.cx, 450, Math.min(api.w, 900) * .35, api.cx, 450, Math.max(api.w, 900) * .75); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.55)'); ctx.fillStyle = g; ctx.fillRect(0, 0, api.w, 900);
-  if (!scanPat) { const c = document.createElement('canvas'); c.width = 4; c.height = 3; const x = c.getContext('2d'); x.fillStyle = 'rgba(0,0,0,.16)'; x.fillRect(0, 0, 4, 1); scanPat = ctx.createPattern(c, 'repeat'); }
-  ctx.fillStyle = scanPat; ctx.fillRect(0, 0, api.w, 900); }
+function finish() { const g = ctx.createRadialGradient(api.cx, 450, Math.min(api.w, 900) * .45, api.cx, 450, Math.max(api.w, 900) * .8); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.45)'); ctx.fillStyle = g; ctx.fillRect(0, 0, api.w, 900); }
 api.setAccent = i => { i = ((i | 0) % PALETTES.length + PALETTES.length) % PALETTES.length; api.pal = PALETTES[i]; api.cfg.accent = i; api.col = { a: api.pal.a, b: api.pal.b, c: api.pal.c }; };
 
 /* ---------------- audio (real microphone only) ---------------- */
@@ -244,8 +186,9 @@ addEventListener('jarvis-voice', e => { const l = e.detail; if (l && l.text) { a
 
 /* ---------------- main loop ---------------- */
 let theme = null, last = performance.now();
+Studio.switch = (id, silent) => { const t = Studio.themes[id]; if (!t) return; theme = t; api.theme = t; if (!silent) { document.title = 'JV|theme|' + id + '|' + Date.now(); } };
 Studio.start = () => {
-  const id = q.get('theme') || 'cortex'; theme = Studio.themes[id] || Studio.themes.cortex; api.theme = theme; api.setAccent(+(q.get('accent') || 0));
+  const id = q.get('theme') || 'engine'; theme = Studio.themes[id] || Studio.themes.engine; api.theme = theme; api.setAccent(+(q.get('accent') || 0));
   if (theme.init) theme.init(api); startMic(); requestAnimationFrame(frame);
 };
 function frame(now) {

@@ -1,66 +1,50 @@
 # Jarvis Wallpaper
 
-Voice-reactive Jarvis HUD for Windows, packaged as an installer. Everything reacts to your **real microphone**. All PC numbers are **real** (CPU per core, RAM, disks, network, GPU, processes, battery, uptime). Nothing is simulated; with no data a field shows `--`.
+A live knowledge-graph of your PC, in the style of a "second brain" star map. Your machine is the graph:
 
-## Design language
-Taken from the original Claude Brain wallpaper: hairline strokes, one restrained accent, serif numerals, tiny tracked labels, vignette + scanlines, and the neural brain with firing pulses as the centrepiece. **Tray → Accent colour** recolours every theme: Claude terracotta (default), Ice, Mono, Amber, Violet, Jade.
+- **Hubs** (labelled, with counts): CPU · MEMORY · GPU · STORAGE · NETWORK · PROCESSES · VOICE
+- **Stars**: every CPU core, 18 memory cells, each drive, each top process, upload/download, and 20 voice bands. Size and glow = the real value.
+- **Links**: thin lines between hubs and nodes; light pulses travel along them faster when that part of the PC is busy.
+- **Your voice** (real microphone): the voice stars flare, links arc with your waveform, everything pulses.
 
-## 13 themes
-| Theme | Composition | PC data shown as |
-|---|---|---|
-| **Cortex** | neural brain inside fine concentric rings | clock, CPU/RAM/GPU left; network, storage, processes right |
-| **Blueprint** | serif headline + hairline mesh sphere | leader-line callouts to the sphere |
-| **Cockpit** | tilted glass pitch ladder | rungs = per-core load, tapes = CPU / RAM, markers = top processes |
-| **Target** | symmetric reticle with katakana title | load bar, side readouts |
-| **Orb** | glass orb holding the brain | thin orbit gauges: CPU / RAM / disk / network |
-| **Halo** | tilted ring lens | CPU as a tick gauge around a serif numeral |
-| **Sensory** | minimal symmetric panels | LEFT / RIGHT XYZ readouts |
-| **Poster** | technical compass | tick arcs lit by CPU / RAM / disk / net |
-| **Radar** | process radar | each top process is a blip; voice sends ripples |
-| **Console** | dense dashboard | 90 s history graphs, per-core bars, process table |
-| Core HUD, Claude Brain, Eye | the classic three | real stats |
+Nothing is simulated. No data yet shows `--`.
 
-## Show / hide data
-Tray → **Data panels**: CPU, Memory, Storage, Network, Processes, GPU, Battery, System info & clock, Voice log. **Ctrl+Alt+H** hides/shows all. Voice: “jarvis hide processes”, “jarvis show data”.
+## 6 modes (same live data, different worlds)
+`01 Quantum Flow` · `02 Knowledge Orb` · `03 Layered Intelligence` · `04 Knowledge Galaxy` · `05 Intelligence Engine` (tilted orbital rings R 03.0 / 08.0 / 13.5) · `06 Neural Brain` (the original brain at the core)
 
-## Shortcuts (work from anywhere)
-`Ctrl+Alt+→ / ←` next / previous theme · `Ctrl+Alt+H` toggle all data · `Ctrl+Alt+V` voice commands on/off · `Esc` quit (Window mode)
+Switch by clicking the pill bar (window mode), tray → Theme, `Ctrl+Alt+← / →`, or say "jarvis switch to knowledge galaxy". Modes morph into each other.
+
+## Controls
+- **Top nav** (click to hide/show): SYSTEM NODES · PROCESSES · STORAGE · NETWORK · VOICE. Also tray → Data panels, `Ctrl+Alt+H` for all.
+- **Hover** a star for its value (window mode).
+- **Tray → Accent colour**: Cyan (default), Claude terracotta, Mono, Amber, Violet, Jade.
+- **Shortcuts**: `Ctrl+Alt+←/→` theme · `Ctrl+Alt+H` hide/show data · `Ctrl+Alt+V` voice commands · `Esc` quit (window mode).
 
 ## Voice commands (offline)
-Uses the speech recogniser built into Windows (System.Speech), so nothing is sent to the cloud. Say the wake word + phrase:
+Uses the speech recogniser built into Windows, nothing leaves your PC. Say the wake word + phrase:
+- **Open**: "jarvis open downloads / documents / desktop / pictures", "open settings / display / sound / bluetooth / wifi / update settings", "open task manager / calculator / notepad / command prompt", "take screenshot", "open browser / youtube"
+- **System**: "lock computer", "volume up / down", "mute", "play pause", "next / previous track"
+- **Wallpaper**: "switch to <mode name>", "next theme", "hide data / show data", "hide / show cpu / memory / network / processes …", "mic louder / quieter", "quit wallpaper"
 
-- **Open**: “jarvis open downloads / documents / desktop / pictures”, “open settings / display settings / sound settings / bluetooth settings / wifi settings / update settings”, “open task manager / calculator / notepad / command prompt”, “take screenshot”, “open browser / youtube”
-- **System**: “jarvis lock computer”, “volume up / volume down / mute”, “play pause / next track / previous track”
-- **Wallpaper**: “switch to radar” (any theme name), “next theme”, “previous theme”, “hide data / show data”, “hide / show cpu / memory / network / processes …”, “mic louder / mic quieter”, “quit wallpaper”
-
-### Add your own
-Tray → Voice commands → **Edit my commands** opens `commands.json`:
+Add your own: tray → Voice commands → **Edit my commands** (`commands.json`):
 ```json
-{ "wake": "jarvis", "minConfidence": 0.7,
-  "commands": [
-    { "say": "open projects",  "do": "open", "target": "D:\\Projects" },
-    { "say": "open chrome",    "do": "run",  "target": "chrome" },
-    { "say": "open my site",   "do": "open", "target": "https://example.com" },
-    { "say": "open vs code",   "do": "run",  "target": "code", "args": ["D:\\Projects"] }
-  ] }
+{ "say": "open projects", "do": "open", "target": "D:\\Projects" }
+{ "say": "open chrome",   "do": "run",  "target": "chrome" }
 ```
-`do`: `open` (folder / file / URL / `ms-settings:` page) · `run` (program + optional args) · `media` · `app`. Save, then tray → **Reload commands**. Only add commands you trust: they run with your permissions. Only phrases in this list are recognised (a fixed grammar), so ordinary speech and music won't trigger anything. Raise `minConfidence` if you get false triggers.
-Needs a Windows speech recogniser for your language (en-US ships with Windows). A toast at the bottom shows what was heard and whether it ran.
+`do`: `open` (folder / file / URL / `ms-settings:`) · `run` (program + `args`) · `media` · `app`. Save, then **Reload commands**. Only add commands you trust. Only listed phrases are recognised, so normal speech or music won't trigger anything; raise `minConfidence` if needed. Needs the Windows speech recogniser for your language (en-US ships with Windows).
 
 ## Install
-1. GitHub → repo → **Actions** → **Build Windows installer** → latest green run → artifact **Jarvis-Wallpaper-Setup** → unzip.
-2. Run the `.exe` (SmartScreen: *More info → Run anyway*, it is unsigned).
-3. Open **Jarvis Wallpaper**; control everything from the tray icon.
-
-Mic permission is automatic; Windows Settings → Privacy → Microphone → allow desktop apps.
+1. GitHub → **Actions** → **Build Windows installer** → latest green run → artifact **Jarvis-Wallpaper-Setup** → unzip.
+2. Run the `.exe` (SmartScreen: *More info → Run anyway*, it is unsigned). Uninstall any older version first.
+3. Open **Jarvis Wallpaper**; everything is controlled from the tray icon. Allow desktop apps to use the microphone in Windows Settings → Privacy.
 
 ## Build it yourself
 ```
-cd jarvis-wallpaper/app && npm install && npm start      # run
-npm run dist                                             # installer (on Windows)
+cd jarvis-wallpaper/app && npm install && npm start
+npm run dist      # installer, run on Windows
 ```
 
 ## Limits
-- Window mode is reliable. Wallpaper mode (behind icons) is experimental.
-- GPU % and CPU temperature appear only when Windows exposes them (NVIDIA usually yes, others often not). Hidden when unavailable.
+- Window mode is reliable. Wallpaper mode (behind desktop icons) is experimental and is not clickable.
+- GPU % and CPU temperature appear only when Windows exposes them.
 - Reacts to the microphone, not system audio.
