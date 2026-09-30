@@ -1,0 +1,27 @@
+{
+  "name": "jarvis-wallpaper",
+  "productName": "Jarvis Wallpaper",
+  "version": "1.0.0",
+  "description": "Voice-reactive Jarvis-style live wallpaper for Windows",
+  "main": "main.js",
+  "author": "Neelesh",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64 --publish never"
+  },
+  "dependencies": {
+    "systeminformation": "^5.23.0"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "one.neelesh.jarvis-wallpaper",
+    "productName": "Jarvis Wallpaper",
+    "files": ["main.js", "themes/**/*", "assets/**/*", "package.json"],
+    "win": { "target": [{ "target": "nsis", "arch": ["x64"] }], "icon": "assets/icon.png" },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "shortcutName": "Jarvis Wallpaper" }
+  }
+}

@@ -25,9 +25,7 @@
   .bar>div{position:absolute;inset:0 auto 0 0;background:var(--accent);box-shadow:0 0 10px var(--accent);width:0;transition:width .8s ease}
   #log{right:4vw;bottom:5vh;width:min(300px,26vw);text-align:right;line-height:1.9;font-size:11px}
   #log div{animation:fade 6s linear forwards}
-  #tx{left:50%;bottom:11vh;transform:translateX(-50%);width:min(760px,60vw);text-align:center;text-transform:none;
-    font-family:Georgia,serif;font-size:clamp(16px,1.7vw,26px);letter-spacing:.03em;color:var(--cream);opacity:0;transition:opacity .6s}
-  #mic{left:50%;bottom:5vh;transform:translateX(-50%);pointer-events:auto;cursor:pointer;padding:6px 12px;border:1px solid rgba(240,238,230,.18)}
+    #mic{left:50%;bottom:5vh;transform:translateX(-50%);pointer-events:auto;cursor:pointer;padding:6px 12px;border:1px solid rgba(240,238,230,.18)}
   #mic i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#5a544b;margin-right:8px;vertical-align:1px}
   #mic.on i{background:var(--accent);box-shadow:0 0 8px var(--accent)}
   @keyframes blink{50%{opacity:0}}
@@ -49,7 +47,6 @@
   <div class="row"><div class="l"><span>Power</span><b id="batv">--</b></div><div class="bar"><div id="bat"></div></div></div>
 </div>
 <div class="hud" id="log"></div>
-<div class="hud" id="tx"></div>
 <div class="hud" id="mic"><i></i><span id="micT">Mic off · click to enable</span></div>
 
 <script>
@@ -85,7 +82,7 @@ async function startMic(){
     ac.createMediaStreamSource(st).connect(an);
     tb=new Uint8Array(an.fftSize);fb=new Uint8Array(an.frequencyBinCount);
     ac.resume&&ac.resume();
-    micUI(true);logLine('Microphone linked');startSR();
+    micUI(true);logLine('Microphone linked');
   }catch(e){micUI(false,'Mic blocked · click to retry');}
 }
 function micUI(on,msg){const m=document.getElementById('mic');m.classList.toggle('on',on);
@@ -105,11 +102,10 @@ function updateAudio(dt,T,now){
     au.src='mic';
   }else if(now-extT<500){
     let m=0;for(let i=0;i<128;i++){tg[i]=Math.min(1,ext[i]*S.gain);m+=tg[i];}rms=m/128*.35;
-    for(let i=0;i<128;i++)wvT[i]=rms*1.2*Math.sin(i*.6+T*9);
+    wvT.fill(0);
     au.src='system';
   }else{
-    for(let i=0;i<128;i++){tg[i]=Math.max(0,.07+.06*Math.sin(T*1.5+i*.35)*Math.sin(T*.7+i*.1));wvT[i]=.035*Math.sin(T*2.5+i*.45);}
-    rms=.004;au.src='idle';
+    tg.fill(0);wvT.fill(0);rms=0;au.src='idle';
   }
   const lvl=Math.min(1,Math.max(0,rms-.008)*7);
   au.env+=(lvl-au.env)*(1-Math.exp(-dt/(lvl>au.env?40:220)));
@@ -148,7 +144,7 @@ const GL='0123456789ABCDEF<>/\\-';
 const glyph=n=>{let s='';for(let i=0;i<n;i++)s+=GL[(Math.random()*GL.length)|0];return s;};
 let labels=[],hexA='000000',hexB='000000';
 function scramble(){labels=[];for(let i=0;i<8;i++)labels.push(glyph(3)+'\\'+glyph(2)+glyph(2));
-  const r=()=>((Math.random()*0xffffff)|0).toString(16).toUpperCase().padStart(6,'0');hexA=r();hexB=r();}
+  const h=(a,b,c)=>[a,b,c].map(i=>Math.round(Math.min(1,spec[i])*255).toString(16).toUpperCase().padStart(2,'0')).join('');hexA=h(6,30,80);hexB=h(12,50,110);}
 scramble();
 let scrT=0;
 
@@ -306,24 +302,12 @@ window.livelySystemInformation=function(raw){try{const d=typeof raw==='string'?J
   if(typeof d.currentCpu==='number')live.cpu=d.currentCpu;
   if(d.totalRam&&d.currentRamUsed!==undefined)live.ram=d.currentRamUsed/d.totalRam*100;
   if(typeof d.currentNetDown==='number')live.net=d.currentNetDown;}catch(e){}};
-const sim={cpu:30,ram:55,net:20},drift=(v,lo,hi,s)=>Math.max(lo,Math.min(hi,v+(Math.random()-.5)*s));
-setInterval(()=>{sim.cpu=drift(sim.cpu,8,75,14);sim.ram=drift(sim.ram,45,68,3);sim.net=drift(sim.net,2,60,18);
-  setBar('cpu',live.cpu??sim.cpu);setBar('ram',live.ram??sim.ram);const n=live.net??sim.net;setBar('net',Math.min(100,n),n.toFixed(1)+' MB/s');},1500);
+setInterval(()=>{if(live.cpu!=null)setBar('cpu',live.cpu);if(live.ram!=null)setBar('ram',live.ram);
+  if(live.net!=null)setBar('net',Math.min(100,live.net*10),live.net.toFixed(1)+' MB/s');},1000);
 if(navigator.getBattery)navigator.getBattery().then(b=>{const u=()=>setBar('bat',b.level*100,Math.round(b.level*100)+'%'+(b.charging?' ⚡':''));
-  u();b.addEventListener('levelchange',u);b.addEventListener('chargingchange',u);});else setBar('bat',100,'AC');
+  u();b.addEventListener('levelchange',u);b.addEventListener('chargingchange',u);});else{}
 function logLine(m){const el=document.createElement('div');el.textContent='> '+m+' · '+new Date().toLocaleTimeString([],{hour12:false});
   const box=$('log');box.appendChild(el);while(box.children.length>5)box.firstChild.remove();setTimeout(()=>el.remove(),6000);}
-setInterval(()=>{const hx=()=>((Math.random()*0xffffff)|0).toString(16);},1e6);
-
-/* ---- optional live transcript (Chrome/Edge only) ---- */
-let txTimer=0;
-function showTx(t,final){const el=$('tx');el.textContent='“'+t.trim()+'”';el.style.opacity=1;clearTimeout(txTimer);
-  txTimer=setTimeout(()=>el.style.opacity=0,final?2500:4000);if(final){for(let i=0;i<10;i++)seed();logLine('Heard: '+t.trim().slice(0,28));}}
-function startSR(){const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return;
-  try{const r=new SR();r.continuous=true;r.interimResults=true;r.lang=navigator.language||'en-US';let dead=false;
-    r.onresult=e=>{let t='';for(let i=e.resultIndex;i<e.results.length;i++)t+=e.results[i][0].transcript;showTx(t,e.results[e.results.length-1].isFinal);};
-    r.onerror=e=>{if(e.error==='not-allowed'||e.error==='service-not-allowed'||e.error==='network')dead=true;};
-    r.onend=()=>{if(!dead)setTimeout(()=>{try{r.start();}catch(_){}},400);};r.start();}catch(_){}}
 
 /* ---- keys & Lively properties ---- */
 addEventListener('keydown',e=>{if(e.key==='1')setTheme(0);else if(e.key==='2')setTheme(1);else if(e.key==='3')setTheme(2);

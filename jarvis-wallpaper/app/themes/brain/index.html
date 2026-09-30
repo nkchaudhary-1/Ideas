@@ -277,25 +277,20 @@ window.livelySystemInformation=function(raw){
     if(typeof d.currentNetDown==='number') live.net=d.currentNetDown;
   }catch(e){}
 };
-let sim={cpu:30,ram:55,net:20};
-function drift(v,lo,hi,s){ return Math.max(lo,Math.min(hi,v+(Math.random()-.5)*s)); }
 setInterval(()=>{
-  sim.cpu=drift(sim.cpu,8,75,14); sim.ram=drift(sim.ram,45,68,3); sim.net=drift(sim.net,2,60,18);
-  setBar('cpu',live.cpu??sim.cpu); setBar('ram',live.ram??sim.ram);
-  const n=live.net??sim.net; setBar('net',Math.min(100,n),n.toFixed(1)+' MB/s');
-},1500);
+  if(live.cpu!=null) setBar('cpu',live.cpu); if(live.ram!=null) setBar('ram',live.ram);
+  if(live.net!=null) setBar('net',Math.min(100,live.net*10),live.net.toFixed(1)+' MB/s');
+},1000);
 if(navigator.getBattery) navigator.getBattery().then(b=>{
   const u=()=>setBar('bat',b.level*100,Math.round(b.level*100)+'%'+(b.charging?' ⚡':''));
   u(); b.addEventListener('levelchange',u); b.addEventListener('chargingchange',u);
-}); else { setBar('bat',100,'AC'); }
+}); 
 
-const msgs=['Synapse cluster aligned','Context window nominal','Memory index refreshed','Reasoning lattice stable',
-  'Attention heads: 96 active','Latency 14 ms','Sandbox integrity verified','Awaiting instruction'];
 function logLine(m){ const el=document.createElement('div');
   el.textContent='> '+m+' · '+new Date().toLocaleTimeString([], {hour12:false});
   const box=$('log'); box.appendChild(el); while(box.children.length>5) box.firstChild.remove();
   setTimeout(()=>el.remove(),6000); }
-setInterval(()=>logLine(msgs[(Math.random()*msgs.length)|0]),3200); logLine('Neural core online');
+logLine('Neural core online');
 
 /* ---------- Lively Wallpaper properties ---------- */
 window.livelyPropertyListener=function(name,val){
