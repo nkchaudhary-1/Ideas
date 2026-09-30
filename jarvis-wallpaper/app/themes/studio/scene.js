@@ -132,7 +132,7 @@ Sc.chrome = () => {
   api.disc(px + pw - mw + 4, 59, 2.4, au.live ? 1 : .4, au.live ? AC : DM); api.text(mt, px + pw - mw + 12, 59, 8, .95, au.live ? CR : DM, 'left', { sp: 2.5 });
   /* voice box (top right) */
   const last = api.vlog[api.vlog.length - 1], fresh = last && Date.now() - last.t < 7000, bw = 250, bx = w - bw - 24; ctx.beginPath(); ctx.roundRect(bx, 14, bw, 30, 15); ctx.fillStyle = 'rgba(6,14,24,.55)'; ctx.fill(); ctx.strokeStyle = api.rgba(fresh && last.status === 'ok' ? .7 : .2, fresh && last.status === 'ok' ? AC : CR); ctx.stroke();
-  api.text(fresh ? '› ' + F.short(last.text, 28) : '› say “jarvis …”', bx + 16, 29, 9.5, fresh ? .95 : .5, fresh && last.status === 'ok' ? AC : CR, 'left', { sp: 1 });
+  api.text(fresh ? '› ' + F.short(last.text + (last.status !== 'ok' && last.msg ? '  ·  ' + last.msg : ''), 34) : '› say “jarvis …”', bx + 16, 29, 9.5, fresh ? .95 : .5, fresh && last.status === 'ok' ? AC : CR, 'left', { sp: 1 });
   if (!fresh) api.spectrum(bx + bw - 62, 29, 44, 12, 12, .7, AC, 0, 1.2);
   /* clock / greeting (top-left) */
   if (api.show('sys')) { api.clockBig(34, 60, 38, 'left'); api.label(F.date(), 36, 92, .55); api.label((api.cfg.userName || (d.sys || {}).user || '') + (((d.sys || {}).host) ? '  ·  ' + d.sys.host : ''), 36, 108, .4); }

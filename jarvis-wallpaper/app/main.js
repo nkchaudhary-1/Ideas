@@ -55,8 +55,8 @@ function createWindows() {
     loadTheme(win); wins.push(win);
   }
 }
+const psEnc = script => ['-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-EncodedCommand', Buffer.from(script, 'utf16le').toString('base64')];
 const PS_ATTACH = `
-param([long]$h,[int]$x,[int]$y,[int]$w,[int]$ht)
 Add-Type @"
 using System; using System.Runtime.InteropServices;
 public class WP {
@@ -85,8 +85,8 @@ public class WP {
 function attachToDesktop(win, display) {
   const phys = screen.dipToScreenRect(null, display.bounds), all = screen.getAllDisplays().map(d => screen.dipToScreenRect(null, d.bounds));
   const ox = Math.min(...all.map(r => r.x)), oy = Math.min(...all.map(r => r.y)), hwnd = Number(win.getNativeWindowHandle().readBigUInt64LE(0));
-  const script = path.join(os.tmpdir(), 'jarvis-wp.ps1'); fs.writeFileSync(script, PS_ATTACH);
-  execFile('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', script, String(hwnd), String(phys.x - ox), String(phys.y - oy), String(phys.width), String(phys.height)], { windowsHide: true }, () => {});
+  const pre = `$h=${hwnd}; $x=${phys.x - ox}; $y=${phys.y - oy}; $w=${phys.width}; $ht=${phys.height}\n`;
+  execFile('powershell', psEnc(pre + PS_ATTACH), { windowsHide: true }, () => {});
 }
 
 /* ---------------- real PC data ---------------- */
@@ -168,8 +168,7 @@ let cmdCfg = DEFAULT_COMMANDS, phraseMap = new Map(), speechProc = null;
 function loadCommands() {
   try { if (!fs.existsSync(CMD_FILE())) fs.writeFileSync(CMD_FILE(), JSON.stringify(DEFAULT_COMMANDS, null, 2)); cmdCfg = { ...DEFAULT_COMMANDS, ...JSON.parse(fs.readFileSync(CMD_FILE(), 'utf8')) }; }
   catch (e) { cmdCfg = DEFAULT_COMMANDS; }
-  const wake = String(cmdCfg.wake == null ? 'jarvis' : cmdCfg.wake).trim().toLowerCase(), pre = wake ? wake + ' ' : '';
-  phraseMap = new Map(); const add = (say, cmd) => phraseMap.set(pre + String(say).toLowerCase().trim(), cmd);
+  phraseMap = new Map(); const add = (say, cmd) => phraseMap.set(String(say).toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(), cmd);
   (cmdCfg.commands || []).forEach(c => c && c.say && add(c.say, c));
   THEMES.forEach(t => add('switch to ' + t[2], { do: 'app', target: 'theme:' + t[0] })); add('next theme', { do: 'app', target: 'nextTheme' }); add('previous theme', { do: 'app', target: 'prevTheme' });
   add('hide data', { do: 'app', target: 'hide:all' }); add('show data', { do: 'app', target: 'show:all' });
@@ -177,44 +176,82 @@ function loadCommands() {
   add('mic louder', { do: 'app', target: 'gain:up' }); add('mic quieter', { do: 'app', target: 'gain:down' }); add('quit wallpaper', { do: 'app', target: 'quit' });
 }
 const PS_SPEECH = `
-param([string]$file)
-Add-Type -AssemblyName System.Speech
-$rec = New-Object System.Speech.Recognition.SpeechRecognitionEngine
-$phrases = Get-Content -Raw -Encoding UTF8 -Path $file | ConvertFrom-Json
-$choices = New-Object System.Speech.Recognition.Choices
-foreach ($p in $phrases) { $choices.Add([string]$p) }
-$gb = New-Object System.Speech.Recognition.GrammarBuilder
-$gb.Culture = $rec.RecognizerInfo.Culture
-$gb.Append($choices)
-$rec.LoadGrammar((New-Object System.Speech.Recognition.Grammar($gb)))
-$rec.SetInputToDefaultAudioDevice()
-Register-ObjectEvent -InputObject $rec -EventName SpeechRecognized -Action {
-  $o = [pscustomobject]@{ text = $Event.SourceEventArgs.Result.Text; conf = [math]::Round($Event.SourceEventArgs.Result.Confidence, 2) }
-  [Console]::Out.WriteLine(($o | ConvertTo-Json -Compress)); [Console]::Out.Flush()
-} | Out-Null
-$rec.RecognizeAsync([System.Speech.Recognition.RecognizeMode]::Multiple)
-[Console]::Out.WriteLine('{"ready":true}'); [Console]::Out.Flush()
-while ($true) { Start-Sleep -Milliseconds 200 }
-`;
-function handleHeard(text, conf) {
-  const key = String(text).toLowerCase().trim(), cmd = phraseMap.get(key), min = cmdCfg.minConfidence || .7;
-  if (!cmd) return sendVoice({ text, status: 'ignored', msg: 'not a command' });
-  if (conf < min) return sendVoice({ text, status: 'ignored', msg: 'low confidence ' + conf });
-  const r = perform(cmd); sendVoice({ text, status: r === 'unknown' || r === 'unknown action' ? 'error' : 'ok', msg: r === 'ok' ? '' : r });
+$ErrorActionPreference = 'Stop'
+function Emit($o) { [Console]::Out.WriteLine(($o | ConvertTo-Json -Compress)); [Console]::Out.Flush() }
+try {
+  Add-Type -AssemblyName System.Speech
+  $rec = New-Object System.Speech.Recognition.SpeechRecognitionEngine
+  $phrases = @(Get-Content -Raw -Encoding UTF8 -Path $file | ConvertFrom-Json)
+  $choices = New-Object System.Speech.Recognition.Choices
+  foreach ($p in $phrases) { $choices.Add([string]$p) }
+  $gb = New-Object System.Speech.Recognition.GrammarBuilder
+  $gb.Culture = $rec.RecognizerInfo.Culture
+  $gb.Append($choices)
+  $g1 = New-Object System.Speech.Recognition.Grammar($gb); $g1.Name = 'cmd'; $rec.LoadGrammar($g1)
+  $g2 = New-Object System.Speech.Recognition.DictationGrammar; $g2.Name = 'dict'; $rec.LoadGrammar($g2)
+  $rec.SetInputToDefaultAudioDevice()
+  Register-ObjectEvent -InputObject $rec -EventName SpeechRecognized -Action {
+    $r = $Event.SourceEventArgs.Result
+    $o = [pscustomobject]@{ evt = 'heard'; text = $r.Text; conf = [math]::Round($r.Confidence, 2); grammar = $r.Grammar.Name }
+    [Console]::Out.WriteLine(($o | ConvertTo-Json -Compress)); [Console]::Out.Flush()
+  } | Out-Null
+  Register-ObjectEvent -InputObject $rec -EventName SpeechRecognitionRejected -Action {
+    [Console]::Out.WriteLine('{"evt":"rejected"}'); [Console]::Out.Flush()
+  } | Out-Null
+  Register-ObjectEvent -InputObject $rec -EventName SpeechDetected -Action {
+    [Console]::Out.WriteLine('{"evt":"detected"}'); [Console]::Out.Flush()
+  } | Out-Null
+  $rec.RecognizeAsync([System.Speech.Recognition.RecognizeMode]::Multiple)
+  Emit @{ evt = 'ready'; name = $rec.RecognizerInfo.Name; culture = $rec.RecognizerInfo.Culture.Name }
+  while ($true) { Start-Sleep -Milliseconds 200 }
+} catch {
+  Emit @{ evt = 'error'; msg = $_.Exception.Message }
+  exit 1
 }
+`;
+
+/* ---- matching: forgiving (wake-word aliases + fuzzy phrase match) ---- */
+const norm = s => String(s).toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim();
+function lev(a, b) { const m = a.length, n = b.length; if (!m) return n; if (!n) return m; let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) { const cur = [i]; for (let j = 1; j <= n; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); prev = cur; } return prev[n]; }
+const sim = (a, b) => 1 - lev(a, b) / Math.max(a.length, b.length, 1);
+const WAKE_ALIASES = ['jarvis', 'jarvas', 'jarvus', 'jervis', 'gervais', 'service', 'travis', 'jarves', 'charvis', 'harvest', 'jarvice', 'jarvish', 'javis', 'jarbis'];
+function stripWake(t, wake) {
+  if (!wake) return t; const parts = t.split(' '), al = [wake, ...(wake === 'jarvis' ? WAKE_ALIASES : [])];
+  for (let n = 1; n <= 2 && n <= parts.length; n++) { const head = parts.slice(0, n).join(' '); if (al.some(w => lev(head, w) <= Math.max(1, Math.floor(w.length / 4)))) return parts.slice(n).join(' '); }
+  return null; }
+function resolve(text) {
+  const wake = norm(cmdCfg.wake == null ? 'jarvis' : cmdCfg.wake), t = norm(text), rest = stripWake(t, wake);
+  if (rest == null) return { why: 'no wake word "' + wake + '"' };
+  let best = null, bs = 0; for (const [p, cmd] of phraseMap) { const s = rest === p ? 1 : rest.includes(p) ? .95 : sim(rest, p); if (s > bs) { bs = s; best = { p, cmd }; } }
+  if (best && bs >= (cmdCfg.fuzzy || .72)) return { cmd: best.cmd, phrase: best.p, score: bs };
+  return { why: 'no matching command' + (best ? ' (closest: ' + best.p + ')' : '') }; }
+const VLOG = () => path.join(app.getPath('userData'), 'voice.log');
+const vlog = m => { try { fs.appendFileSync(VLOG(), new Date().toISOString() + '  ' + m + '\n'); } catch (_) {} if (DRY) console.log('[voice]', m); };
+function handleHeard(text, conf, grammar) {
+  const r = resolve(text); vlog('heard "' + text + '" conf=' + conf + ' grammar=' + grammar + ' -> ' + (r.cmd ? 'MATCH ' + r.phrase + ' (' + r.score.toFixed(2) + ')' : 'ignored: ' + r.why));
+  if (!r.cmd) return sendVoice({ text, status: 'ignored', msg: r.why });
+  const res = perform(r.cmd); sendVoice({ text: r.phrase, status: res === 'unknown' || res === 'unknown action' ? 'error' : 'ok', msg: res === 'ok' ? '' : res }); }
 const sendVoice = m => runJS(call('jarvisVoice', m));
 function startSpeech() {
   stopSpeech(); loadCommands(); if (!cfg.voice) return;
   if (!WIN) { if (DRY) console.log('[voice] phrases:', phraseMap.size); return; }
   try {
-    const pf = path.join(app.getPath('userData'), 'phrases.json'), sf = path.join(app.getPath('userData'), 'speech.ps1');
-    fs.writeFileSync(pf, JSON.stringify([...phraseMap.keys()]), 'utf8'); fs.writeFileSync(sf, PS_SPEECH, 'utf8');
-    const p = speechProc = spawn('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', sf, pf], { windowsHide: true }); let buf = '', err = '';
-    p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1); if (!line) continue;
-      try { const j = JSON.parse(line); if (j.ready) runJS(call('jarvisVoiceState', 'on')); else handleHeard(j.text, j.conf); } catch (_) {} } });
-    p.stderr.on('data', d => { err += d; });
-    p.on('exit', () => { if (speechProc === p) { speechProc = null; runJS(call('jarvisVoiceState', 'off')); if (err.trim()) { runJS(call('jarvisVoiceState', 'error')); sendVoice({ text: 'Speech engine unavailable', status: 'error', msg: err.split('\n')[0].slice(0, 60) }); } } });
-  } catch (e) { sendVoice({ text: 'Speech engine failed', status: 'error', msg: String(e.message).slice(0, 60) }); }
+    const pf = path.join(app.getPath('userData'), 'phrases.json'); const wake = norm(cmdCfg.wake == null ? 'jarvis' : cmdCfg.wake), pre = wake ? wake + ' ' : '';
+    fs.writeFileSync(pf, JSON.stringify([...phraseMap.keys()].map(k => pre + k)), 'utf8'); vlog('start speech engine, ' + phraseMap.size + ' phrases');
+    const p = speechProc = spawn('powershell', psEnc("$file = '" + pf.replace(/'/g, "''") + "'\n" + PS_SPEECH), { windowsHide: true }); let buf = '', err = '';
+    p.on('error', e => { vlog('spawn error ' + e.message); sendVoice({ text: 'Could not start PowerShell', status: 'error', msg: e.message }); });
+    p.stdout.on('data', d => { buf += d; let i; while ((i = buf.indexOf('\n')) >= 0) { const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1); if (!line) continue; vlog('ps: ' + line);
+      try { const j = JSON.parse(line);
+        if (j.evt === 'ready') { runJS(call('jarvisVoiceState', 'on')); sendVoice({ text: 'Voice ready', status: 'ok', msg: j.name }); }
+        else if (j.evt === 'heard') handleHeard(j.text, j.conf, j.grammar);
+        else if (j.evt === 'detected') runJS(call('jarvisVoiceState', 'hearing'));
+        else if (j.evt === 'rejected') { runJS(call('jarvisVoiceState', 'on')); sendVoice({ text: '(speech not understood)', status: 'ignored', msg: 'try again, speak clearly' }); }
+        else if (j.evt === 'error') { runJS(call('jarvisVoiceState', 'error')); sendVoice({ text: 'Speech engine error', status: 'error', msg: String(j.msg).slice(0, 80) }); }
+      } catch (_) {} } });
+    p.stderr.on('data', d => { err += d; vlog('ps stderr: ' + d); });
+    p.on('exit', code => { vlog('speech engine exited code=' + code); if (speechProc === p) { speechProc = null; runJS(call('jarvisVoiceState', 'off')); if (code) { runJS(call('jarvisVoiceState', 'error')); sendVoice({ text: 'Speech engine stopped', status: 'error', msg: (err.split('\n')[0] || 'exit ' + code).slice(0, 80) }); } } });
+  } catch (e) { vlog('start failed ' + e.message); sendVoice({ text: 'Speech engine failed', status: 'error', msg: String(e.message).slice(0, 60) }); }
 }
 function stopSpeech() { if (speechProc) { const p = speechProc; speechProc = null; try { p.kill(); } catch (_) {} } }
 
@@ -228,6 +265,7 @@ function rebuildTray() {
     { label: 'Voice commands', submenu: [
       { label: 'Enabled   (Ctrl+Alt+V)', type: 'checkbox', checked: cfg.voice, click: m => { cfg.voice = m.checked; save(); m.checked ? startSpeech() : stopSpeech(); } },
       { label: 'What can I say…', click: showHelp }, { label: 'Edit my commands (commands.json)', click: () => { loadCommands(); shell.openPath(CMD_FILE()); } },
+      { label: 'Test: simulate “jarvis open downloads”', click: () => handleHeard('jarvis open downloads', 1, 'test') }, { label: 'Open voice log (diagnostics)', click: () => { try { fs.appendFileSync(VLOG(), ''); } catch (_) {} shell.openPath(VLOG()); } },
       { label: 'Reload commands', click: () => { startSpeech(); sendVoice({ text: 'Commands reloaded', status: 'ok', msg: phraseMap.size + ' phrases' }); } }] },
     { label: 'Mic sensitivity', submenu: [0.6, 1, 1.6, 2.5, 4].map(g => ({ label: g + '×', type: 'radio', checked: cfg.gain === g, click: () => { cfg.gain = g; save(); wins.forEach(pushSettings); } })) },
     { type: 'separator' },
@@ -237,7 +275,7 @@ function rebuildTray() {
     { type: 'separator' }, { label: 'Quit', click: () => app.quit() }]));
 }
 function showHelp() {
-  const wake = cmdCfg.wake || '', list = [...phraseMap.keys()].slice(0, 60).join('\n');
+  const wake = cmdCfg.wake || '', list = [...phraseMap.keys()].slice(0, 60).map(k => wake + ' ' + k).join('\n');
   dialog.showMessageBox({ type: 'info', title: 'Voice commands', message: `Say “${wake}” + a phrase. ${phraseMap.size} phrases loaded.`, detail: list + (phraseMap.size > 60 ? '\n…' : '') + '\n\nEdit commands.json from the tray menu to add your own.' });
 }
 
@@ -252,7 +290,7 @@ app.whenReady().then(() => {
   reg('Control+Alt+Right', () => nextTheme(1)); reg('Control+Alt+Left', () => nextTheme(-1));
   reg('Control+Alt+H', () => setAllPanels(cfg.hidden.length >= PANELS.length)); reg('Control+Alt+V', () => { cfg.voice = !cfg.voice; save(); cfg.voice ? startSpeech() : stopSpeech(); rebuildTray(); });
   screen.on('display-added', createWindows); screen.on('display-removed', createWindows);
-  if (process.env.JARVIS_TEST_SAY) setTimeout(() => { loadCommands(); for (const s of process.env.JARVIS_TEST_SAY.split('|')) handleHeard(s, .9); console.log('[test] theme=' + cfg.theme, 'hidden=' + cfg.hidden.join(',')); }, 2500);
+  if (process.env.JARVIS_TEST_SAY) setTimeout(() => { loadCommands(); for (const s of process.env.JARVIS_TEST_SAY.split('|')) handleHeard(s, .9, 'test'); console.log('[test] theme=' + cfg.theme, 'hidden=' + cfg.hidden.join(',')); }, 2500);
 });
 app.on('will-quit', () => { globalShortcut.unregisterAll(); stopSpeech(); });
 app.on('window-all-closed', e => e.preventDefault());

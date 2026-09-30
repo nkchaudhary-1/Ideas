@@ -182,7 +182,7 @@ window.jarvisData = d => { api.d = d || {}; const H = api.hist, push = (a, v) =>
   if (d.cpu && d.cpu.load != null) push(H.cpu, d.cpu.load); if (d.mem && d.mem.pct != null) push(H.mem, d.mem.pct);
   if (d.net) { push(H.netD, d.net.down || 0); push(H.netU, d.net.up || 0); } };
 window.jarvisConfig = c => { if (c.hidden) api.hidden = new Set(c.hidden); if (c.gain != null) api.cfg.gain = +c.gain; if (c.userName != null) api.cfg.userName = c.userName; if (c.accent != null) api.setAccent(c.accent); };
-addEventListener('jarvis-voice', e => { const l = e.detail; if (l && l.text) { api.vlog.push({ text: l.text, status: l.status, t: Date.now() }); if (api.vlog.length > 6) api.vlog.shift(); } });
+addEventListener('jarvis-voice', e => { const l = e.detail; if (l && l.text) { api.vlog.push({ text: l.text, status: l.status, msg: l.msg || '', t: Date.now() }); if (api.vlog.length > 6) api.vlog.shift(); } });
 
 /* ---------------- main loop ---------------- */
 let theme = null, last = performance.now();

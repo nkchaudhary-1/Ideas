@@ -31,7 +31,15 @@ Add your own: tray → Voice commands → **Edit my commands** (`commands.json`)
 { "say": "open projects", "do": "open", "target": "D:\\Projects" }
 { "say": "open chrome",   "do": "run",  "target": "chrome" }
 ```
-`do`: `open` (folder / file / URL / `ms-settings:`) · `run` (program + `args`) · `media` · `app`. Save, then **Reload commands**. Only add commands you trust. Only listed phrases are recognised, so normal speech or music won't trigger anything; raise `minConfidence` if needed. Needs the Windows speech recogniser for your language (en-US ships with Windows).
+`do`: `open` (folder / file / URL / `ms-settings:`) · `run` (program + `args`) · `media` · `app`. Save, then **Reload commands**. Only add commands you trust. Only listed phrases are recognised, so normal speech or music won't trigger anything; raise `minConfidence` if needed. Matching is forgiving: the wake word tolerates mis-hearings ("service", "travis"…) and phrases are fuzzy-matched, so "jarvis opn sound setings" still works.
+
+### If voice commands do nothing
+1. Bottom-right status: `● voice ready` = engine running, `✕ voice engine error` = see the toast, `○ voice off` = disabled (tray → Voice commands → Enabled).
+2. Speak, then watch the top-right box: it shows what Windows heard. "speech not understood" = too quiet or unclear; raise Windows mic volume, speak closer.
+3. Tray → Voice commands → **Test: simulate "jarvis open downloads"**. If that opens Downloads, actions work and only recognition is the problem.
+4. Tray → Voice commands → **Open voice log**. Send me that file if it still fails.
+5. Windows needs a speech recogniser: Settings → Time & language → Speech (en-US/en-GB etc.). Privacy → Microphone → allow desktop apps.
+
 
 ## Install
 1. GitHub → **Actions** → **Build Windows installer** → latest green run → artifact **Jarvis-Wallpaper-Setup** → unzip.

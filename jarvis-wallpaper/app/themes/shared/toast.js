@@ -20,7 +20,7 @@
     el.style.borderColor = m.status === 'ok' ? 'rgba(120,255,190,.6)' : m.status === 'error' ? 'rgba(255,110,110,.6)' : 'rgba(255,255,255,.18)';
     el.style.opacity = 1; clearTimeout(t); t = setTimeout(() => el.style.opacity = 0, 3200);
   };
-  window.jarvisVoiceState = s => { stEl.textContent = hidden.includes('voice') ? '' : (s === 'on' ? '● voice cmds' : s === 'error' ? '✕ voice engine' : ''); };
+  window.jarvisVoiceState = s => { stEl.textContent = hidden.includes('voice') ? '' : (s === 'on' ? '● voice ready' : s === 'hearing' ? '◉ hearing…' : s === 'error' ? '✕ voice engine error' : '○ voice off'); stEl.style.color = s === 'hearing' ? 'rgba(120,255,190,.8)' : s === 'error' ? 'rgba(255,110,110,.8)' : 'rgba(255,255,255,.35)'; };
   const legacy = {
     cpu: () => [document.getElementById('cpu')?.closest('.row')], mem: () => [document.getElementById('ram')?.closest('.row')],
     net: () => [document.getElementById('net')?.closest('.row')], batt: () => [document.getElementById('bat')?.closest('.row')],
