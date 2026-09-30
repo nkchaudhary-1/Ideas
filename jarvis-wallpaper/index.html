@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Jarvis Brain Wallpaper</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  :root{
+    --bg:#1a1714; --bg2:#0f0d0b; --accent:#d97757; --cream:#f0eee6; --dim:#8a8378;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:var(--bg2);
+    font-family:"SF Mono","JetBrains Mono",Consolas,"Courier New",monospace;color:var(--cream);cursor:none}
+  canvas{position:fixed;inset:0;width:100%;height:100%;display:block}
+  .hud{position:fixed;z-index:2;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);pointer-events:none}
+  .hud b{color:var(--cream);font-weight:500}
+  #clock{left:4vw;top:5vh}
+  #clock .t{font-size:clamp(40px,5vw,84px);letter-spacing:.04em;color:var(--cream);font-weight:300;line-height:1}
+  #clock .t i{font-style:normal;color:var(--accent);animation:blink 1s steps(2) infinite}
+  #clock .d{margin-top:10px}
+  #greet{left:4vw;bottom:5vh;max-width:40vw}
+  #greet .g{font-size:clamp(16px,1.6vw,26px);color:var(--cream);letter-spacing:.06em;text-transform:none;font-family:Georgia,"Times New Roman",serif}
+  #greet .s{margin-top:8px}
+  #stats{right:4vw;top:5vh;width:min(260px,22vw)}
+  .row{margin-bottom:16px}
+  .row .l{display:flex;justify-content:space-between;margin-bottom:6px}
+  .bar{height:3px;background:rgba(240,238,230,.1);position:relative;overflow:hidden}
+  .bar>div{position:absolute;inset:0 auto 0 0;background:var(--accent);box-shadow:0 0 10px var(--accent);width:0;transition:width .8s ease}
+  #log{right:4vw;bottom:5vh;width:min(300px,26vw);text-align:right;line-height:1.9;font-size:11px}
+  #log div{opacity:.9;animation:fade 6s linear forwards}
+  #log div:last-child{color:var(--cream)}
+  @keyframes blink{50%{opacity:0}}
+  @keyframes fade{0%{opacity:0}8%{opacity:.9}80%{opacity:.5}100%{opacity:0}}
+  .scan{position:fixed;inset:0;z-index:3;pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.14) 0 1px,transparent 1px 3px);mix-blend-mode:multiply}
+  .vig{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(ellipse at center,transparent 45%,rgba(0,0,0,.65) 100%)}
+  @media (max-width:900px){#stats,#log{display:none}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div class="vig"></div><div class="scan"></div>
+
+<div class="hud" id="clock"><div class="t" id="t">00<i>:</i>00</div><div class="d" id="d"></div></div>
+<div class="hud" id="greet"><div class="g" id="g"></div><div class="s">Neural core online · <b id="up">00:00:00</b></div></div>
+<div class="hud" id="stats">
+  <div class="row"><div class="l"><span>CPU</span><b id="cpuv">--</b></div><div class="bar"><div id="cpu"></div></div></div>
+  <div class="row"><div class="l"><span>Memory</span><b id="ramv">--</b></div><div class="bar"><div id="ram"></div></div></div>
+  <div class="row"><div class="l"><span>Network</span><b id="netv">--</b></div><div class="bar"><div id="net"></div></div></div>
+  <div class="row"><div class="l"><span>Power</span><b id="batv">--</b></div><div class="bar"><div id="bat"></div></div></div>
+</div>
+<div class="hud" id="log"></div>
+
+<script>
+(() => {
+'use strict';
+/* ---------- settings (overridable from Lively Wallpaper properties) ---------- */
+const S = { accent:'#d97757', name:'Neelesh', speed:1, nodes:620, sfx:true };
+const rgb = h => { const n=parseInt(h.slice(1),16); return [n>>16&255,n>>8&255,n&255]; };
+let A = rgb(S.accent);
+const rgba = (a,c=A) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
+const CREAM=[240,238,230];
+
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+let W,H,DPR,cx,cy,R;
+function resize(){
+  DPR = Math.min(devicePixelRatio||1, 2);
+  W = cv.width = innerWidth*DPR; H = cv.height = innerHeight*DPR;
+  cx = W/2; cy = H/2; R = Math.min(W,H)*0.34;
+}
+addEventListener('resize', resize); resize();
+
+/* ---------- brain geometry ---------- */
+let nodes=[], edges=[], adj=[];
+function rand(a,b){return a+Math.random()*(b-a)}
+function build(){
+  nodes=[]; edges=[]; adj=[];
+  const N=S.nodes;
+  while(nodes.length<N){
+    // random direction on sphere
+    const u=Math.random()*2-1, th=Math.random()*Math.PI*2, s=Math.sqrt(1-u*u);
+    let dx=s*Math.cos(th), dy=u, dz=s*Math.sin(th);
+    const hemi = Math.random()<.5 ? -1 : 1;
+    // hemisphere ellipsoid: x = width, y = height, z = length (front/back)
+    const shell = Math.random()<.72 ? rand(.93,1.0) : rand(.35,.9);
+    // gyri: folds on the surface
+    const fold = 1 + .07*Math.sin(dx*9+dz*7) * Math.cos(dy*8+dz*5) + .04*Math.sin(dz*14+dy*6);
+    let x=dx*.62*shell*fold, y=dy*.78*shell*fold, z=dz*1.0*shell*fold;
+    if(y<0) y*=.72;                     // flatter underside
+    if(y<-.3 && z>.25 && z<.6 && shell>.9) continue; // temporal notch
+    x = hemi*(Math.abs(x)+.05);         // longitudinal fissure
+    z += (y<-.2?.08:0);
+    nodes.push({x:x*1.05,y:-y,z:z,glow:0,px:0,py:0,pz:0,ps:1});
+  }
+  // k-nearest edges
+  const K=3, maxD=.34;
+  const seen=new Set();
+  nodes.forEach((a,i)=>{
+    const ds=[];
+    for(let j=0;j<nodes.length;j++){ if(i===j)continue;
+      const b=nodes[j], d=(a.x-b.x)**2+(a.y-b.y)**2+(a.z-b.z)**2; ds.push([d,j]); }
+    ds.sort((p,q)=>p[0]-q[0]);
+    for(let k=0;k<K;k++){
+      const [d,j]=ds[k]; if(d>maxD*maxD)continue;
+      const key=i<j?i+'_'+j:j+'_'+i; if(seen.has(key))continue; seen.add(key);
+      edges.push({a:i,b:j}); (adj[i]||(adj[i]=[])).push(edges.length-1); (adj[j]||(adj[j]=[])).push(edges.length-1);
+    }
+  });
+}
+build();
+
+/* ---------- pulses ---------- */
+const pulses=[];
+function spawn(edgeIdx, from){ pulses.push({e:edgeIdx,from,t:0,sp:rand(.012,.03)}); }
+function seed(){ if(edges.length) spawn((Math.random()*edges.length)|0, null); }
+
+/* ---------- camera / interaction ---------- */
+let rotY=0, rotX=-.12, mx=0, my=0, tmx=0, tmy=0;
+addEventListener('mousemove',e=>{ tmx=(e.clientX/innerWidth-.5); tmy=(e.clientY/innerHeight-.5); });
+addEventListener('click',()=>{ for(let i=0;i<14;i++) seed(); logLine('Manual stimulus injected'); });
+
+/* ---------- HUD rings ---------- */
+function ring(r,w,alpha,dash,rot,gap){
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate(rot);
+  ctx.lineWidth=w*DPR; ctx.strokeStyle=rgba(alpha);
+  if(dash) ctx.setLineDash(dash.map(v=>v*DPR));
+  ctx.beginPath(); ctx.arc(0,0,r,0,Math.PI*2-(gap||0)); ctx.stroke(); ctx.restore();
+}
+function ticks(r,n,len,rot,alpha){
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate(rot); ctx.strokeStyle=rgba(alpha); ctx.lineWidth=1*DPR;
+  ctx.beginPath();
+  for(let i=0;i<n;i++){ const a=i/n*Math.PI*2, l=(i%5===0)?len*1.8:len;
+    ctx.moveTo(Math.cos(a)*r,Math.sin(a)*r); ctx.lineTo(Math.cos(a)*(r+l*DPR),Math.sin(a)*(r+l*DPR)); }
+  ctx.stroke(); ctx.restore();
+}
+function arcBracket(r,start,len,w,alpha){
+  ctx.save(); ctx.translate(cx,cy); ctx.lineWidth=w*DPR; ctx.strokeStyle=rgba(alpha);
+  ctx.beginPath(); ctx.arc(0,0,r,start,start+len); ctx.stroke(); ctx.restore();
+}
+function drawHUD(t){
+  const base=R*1.42;
+  ctx.setLineDash([]);
+  ring(base,1,.22);
+  ring(base*1.08,1,.16,[2,10],t*.05);
+  ring(base*1.17,2,.30,[R*.5,R*.25],-t*.08);
+  ring(base*.93,1,.12,[1,5],t*.12);
+  ticks(base*1.26,120,6,t*.02,.35);
+  ticks(base*.86,72,4,-t*.03,.2);
+  for(let i=0;i<4;i++) arcBracket(base*1.34,i*Math.PI/2+t*.1+.15,.55,3,.55);
+  // sweeping radar wedge
+  ctx.save(); ctx.translate(cx,cy); ctx.rotate(t*.35);
+  const g=ctx.createConicGradient?ctx.createConicGradient(0,0,0):null;
+  if(g){ g.addColorStop(0,rgba(0)); g.addColorStop(.75,rgba(0)); g.addColorStop(.999,rgba(.12)); g.addColorStop(1,rgba(0)); ctx.fillStyle=g;
+    ctx.beginPath(); ctx.arc(0,0,base*1.0,0,Math.PI*2); ctx.fill(); }
+  ctx.restore();
+  // ground glow
+  const gr=ctx.createRadialGradient(cx,cy,0,cx,cy,R*1.5);
+  gr.addColorStop(0,rgba(.16)); gr.addColorStop(1,rgba(0));
+  ctx.fillStyle=gr; ctx.fillRect(0,0,W,H);
+}
+
+/* ---------- background dust ---------- */
+const dust=Array.from({length:90},()=>({x:Math.random(),y:Math.random(),z:Math.random(),v:rand(.00002,.00008)}));
+function drawDust(){
+  for(const d of dust){ d.y-=d.v*(.4+d.z); if(d.y<0){d.y=1;d.x=Math.random();}
+    ctx.fillStyle=rgba(.12+d.z*.25,CREAM); ctx.fillRect(d.x*W,d.y*H,(1+d.z)*DPR,(1+d.z)*DPR); }
+}
+
+/* ---------- main loop ---------- */
+let last=performance.now(), T=0, lastSpawn=0;
+function frame(now){
+  const dt=Math.min(50,now-last); last=now; T+=dt/1000;
+  // bg
+  const bg=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(W,H)*.7);
+  bg.addColorStop(0,'#26211c'); bg.addColorStop(1,'#0f0d0b');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+  drawDust(); drawHUD(T);
+
+  mx+=(tmx-mx)*.04; my+=(tmy-my)*.04;
+  rotY += dt*.00018*S.speed;
+  const ry=rotY+mx*.5, rx=rotX+my*.25;
+  const cyw=Math.cos(ry), syw=Math.sin(ry), cxw=Math.cos(rx), sxw=Math.sin(rx);
+  const breathe=1+Math.sin(T*1.2)*.012;
+
+  for(const n of nodes){
+    let x=n.x, y=n.y, z=n.z;
+    let x1=x*cyw+z*syw, z1=-x*syw+z*cyw;
+    let y1=y*cxw-z1*sxw, z2=y*sxw+z1*cxw;
+    const f=1/(1.9-z2*.55);
+    n.px=cx+x1*R*1.75*f*breathe; n.py=cy+y1*R*1.75*f*breathe; n.pz=z2; n.ps=f;
+    if(n.glow>0) n.glow=Math.max(0,n.glow-dt*.0022);
+  }
+
+  // edges
+  ctx.lineWidth=1*DPR;
+  for(const e of edges){
+    const a=nodes[e.a], b=nodes[e.b];
+    const d=(a.pz+b.pz)/2, al=.05+(d+1)*.11;
+    ctx.strokeStyle=rgba(al); ctx.beginPath(); ctx.moveTo(a.px,a.py); ctx.lineTo(b.px,b.py); ctx.stroke();
+  }
+  // nodes
+  for(const n of nodes){
+    const dep=(n.pz+1)/2, r=(1.1+dep*1.6+n.glow*3.2)*DPR*n.ps*1.2;
+    const c = n.glow>.05 ? CREAM : A;
+    ctx.fillStyle=rgba(.25+dep*.55+n.glow*.4,c);
+    ctx.beginPath(); ctx.arc(n.px,n.py,r,0,6.283); ctx.fill();
+    if(n.glow>.25){ ctx.fillStyle=rgba(n.glow*.25); ctx.beginPath(); ctx.arc(n.px,n.py,r*4.5,0,6.283); ctx.fill(); }
+  }
+  // pulses
+  ctx.globalCompositeOperation='lighter';
+  for(let i=pulses.length-1;i>=0;i--){
+    const p=pulses[i]; p.t+=p.sp*(dt/16);
+    const e=edges[p.e]; let a=nodes[e.a], b=nodes[e.b], ia=e.a, ib=e.b;
+    if(p.from===e.b){ [a,b]=[b,a]; [ia,ib]=[ib,ia]; }
+    if(p.t>=1){
+      b.glow=1; pulses.splice(i,1);
+      const out=(adj[ib]||[]).filter(k=>k!==p.e);
+      if(out.length && pulses.length<140){
+        const branches = Math.random()<.25?2:1;
+        for(let k=0;k<branches;k++) spawn(out[(Math.random()*out.length)|0], ib);
+      }
+      continue;
+    }
+    const x=a.px+(b.px-a.px)*p.t, y=a.py+(b.py-a.py)*p.t;
+    const tx=a.px+(b.px-a.px)*Math.max(0,p.t-.25), ty=a.py+(b.py-a.py)*Math.max(0,p.t-.25);
+    const g=ctx.createLinearGradient(tx,ty,x,y); g.addColorStop(0,rgba(0)); g.addColorStop(1,rgba(.95,CREAM));
+    ctx.strokeStyle=g; ctx.lineWidth=2*DPR; ctx.beginPath(); ctx.moveTo(tx,ty); ctx.lineTo(x,y); ctx.stroke();
+    ctx.fillStyle=rgba(.5); ctx.beginPath(); ctx.arc(x,y,4*DPR,0,6.283); ctx.fill();
+  }
+  ctx.globalCompositeOperation='source-over';
+  // keep the brain firing
+  if(pulses.length<26 && now-lastSpawn>220){ seed(); lastSpawn=now; }
+
+  requestAnimationFrame(frame);
+}
+for(let i=0;i<20;i++) seed();
+requestAnimationFrame(frame);
+
+/* ---------- text HUD ---------- */
+const $=id=>document.getElementById(id), pad=n=>String(n).padStart(2,'0');
+const start=Date.now();
+function tick(){
+  const d=new Date();
+  $('t').innerHTML=pad(d.getHours())+'<i>:</i>'+pad(d.getMinutes());
+  $('d').innerHTML='<b>'+d.toLocaleDateString(undefined,{weekday:'long'})+'</b> · '+
+    d.toLocaleDateString(undefined,{day:'2-digit',month:'short',year:'numeric'});
+  const h=d.getHours(), part=h<5?'night':h<12?'morning':h<17?'afternoon':'evening';
+  $('g').textContent=`Good ${part}, ${S.name}.`;
+  const u=Math.floor((Date.now()-start)/1000);
+  $('up').textContent=pad(Math.floor(u/3600))+':'+pad(Math.floor(u/60)%60)+':'+pad(u%60);
+}
+setInterval(tick,1000); tick();
+
+/* stats: real where the host exposes it (Lively), battery API, else gentle simulation */
+const live={cpu:null,ram:null,net:null};
+function setBar(id,v,txt){ $(id).style.width=Math.max(0,Math.min(100,v))+'%'; $(id+'v').textContent=txt??Math.round(v)+'%'; }
+window.livelySystemInformation=function(raw){
+  try{ const d=typeof raw==='string'?JSON.parse(raw):raw;
+    if(typeof d.currentCpu==='number') live.cpu=d.currentCpu;
+    if(d.totalRam&&d.currentRamUsed!==undefined) live.ram=d.currentRamUsed/d.totalRam*100;
+    else if(typeof d.currentRam==='number') live.ram=d.currentRam;
+    if(typeof d.currentNetDown==='number') live.net=d.currentNetDown;
+  }catch(e){}
+};
+let sim={cpu:30,ram:55,net:20};
+function drift(v,lo,hi,s){ return Math.max(lo,Math.min(hi,v+(Math.random()-.5)*s)); }
+setInterval(()=>{
+  sim.cpu=drift(sim.cpu,8,75,14); sim.ram=drift(sim.ram,45,68,3); sim.net=drift(sim.net,2,60,18);
+  setBar('cpu',live.cpu??sim.cpu); setBar('ram',live.ram??sim.ram);
+  const n=live.net??sim.net; setBar('net',Math.min(100,n),n.toFixed(1)+' MB/s');
+},1500);
+if(navigator.getBattery) navigator.getBattery().then(b=>{
+  const u=()=>setBar('bat',b.level*100,Math.round(b.level*100)+'%'+(b.charging?' ⚡':''));
+  u(); b.addEventListener('levelchange',u); b.addEventListener('chargingchange',u);
+}); else { setBar('bat',100,'AC'); }
+
+const msgs=['Synapse cluster aligned','Context window nominal','Memory index refreshed','Reasoning lattice stable',
+  'Attention heads: 96 active','Latency 14 ms','Sandbox integrity verified','Awaiting instruction'];
+function logLine(m){ const el=document.createElement('div');
+  el.textContent='> '+m+' · '+new Date().toLocaleTimeString([], {hour12:false});
+  const box=$('log'); box.appendChild(el); while(box.children.length>5) box.firstChild.remove();
+  setTimeout(()=>el.remove(),6000); }
+setInterval(()=>logLine(msgs[(Math.random()*msgs.length)|0]),3200); logLine('Neural core online');
+
+/* ---------- Lively Wallpaper properties ---------- */
+window.livelyPropertyListener=function(name,val){
+  if(name==='accent'){ S.accent=val; A=rgb(val); document.documentElement.style.setProperty('--accent',val); }
+  else if(name==='userName'){ S.name=val; tick(); }
+  else if(name==='speed'){ S.speed=+val; }
+  else if(name==='nodes'){ S.nodes=+val; build(); pulses.length=0; for(let i=0;i<20;i++) seed(); }
+};
+})();
+</script>
+</body>
+</html>
