@@ -10,8 +10,8 @@ const DRY = !!process.env.JARVIS_DRYRUN;            // test mode: log actions in
 const WIN = process.platform === 'win32';
 
 /* ---------------- catalogue ---------------- */
-const THEMES = [['sector', 'Sector', 'sector'], ['blueprint', 'Blueprint', 'blueprint'], ['cockpit', 'Cockpit', 'cockpit'], ['target', 'Target', 'target'], ['nebula', 'Nebula', 'nebula'],
-  ['reactor', 'Reactor', 'reactor'], ['sensory', 'Sensory', 'sensory'], ['poster', 'Poster', 'poster'], ['radar', 'Radar', 'radar'], ['console', 'Console', 'console'],
+const THEMES = [['cortex', 'Cortex', 'cortex'], ['blueprint', 'Blueprint', 'blueprint'], ['cockpit', 'Cockpit', 'cockpit'], ['target', 'Target', 'target'], ['orb', 'Orb', 'orb'],
+  ['halo', 'Halo', 'halo'], ['sensory', 'Sensory', 'sensory'], ['poster', 'Poster', 'poster'], ['radar', 'Radar', 'radar'], ['console', 'Console', 'console'],
   ['hud', 'Core HUD (classic)', 'classic hud'], ['brain', 'Claude Brain (classic)', 'brain'], ['eye', 'Eye (classic)', 'eye']];
 const LEGACY = new Set(['hud', 'brain', 'eye']);
 const PANELS = [['cpu', 'CPU', 'cpu'], ['mem', 'Memory', 'memory'], ['disk', 'Storage', 'storage'], ['net', 'Network', 'network'], ['procs', 'Processes', 'processes'],
@@ -19,9 +19,11 @@ const PANELS = [['cpu', 'CPU', 'cpu'], ['mem', 'Memory', 'memory'], ['disk', 'St
 
 /* ---------------- settings (persisted) ---------------- */
 const CFG_FILE = () => path.join(app.getPath('userData'), 'settings.json');
-const DEFAULTS = { theme: 'sector', palette: 0, mode: 'window', gain: 1, userName: os.userInfo().username, autostart: false, hidden: [], voice: true };
+const ACCENTS = ['Claude terracotta', 'Ice blue', 'Mono', 'Amber', 'Violet', 'Jade'];
+const DEFAULTS = { theme: 'cortex', accent: 0, palette: 0, mode: 'window', gain: 1, userName: os.userInfo().username, autostart: false, hidden: [], voice: true };
 let cfg = { ...DEFAULTS };
 try { cfg = { ...DEFAULTS, ...JSON.parse(fs.readFileSync(CFG_FILE(), 'utf8')) }; } catch (_) {}
+if ({ sector: 1, nebula: 1, reactor: 1 }[cfg.theme]) cfg.theme = { sector: 'cortex', nebula: 'orb', reactor: 'halo' }[cfg.theme];
 const save = () => { try { fs.writeFileSync(CFG_FILE(), JSON.stringify(cfg, null, 2)); } catch (_) {} };
 
 let wins = [], tray = null;
@@ -35,7 +37,7 @@ function loadTheme(win) {
   else win.loadFile(path.join(__dirname, 'themes', 'studio', 'index.html'), { query: { theme: cfg.theme } });
 }
 function pushSettings(win) {
-  const js = [call('jarvisConfig', { hidden: cfg.hidden, gain: cfg.gain, userName: cfg.userName }),
+  const js = [call('jarvisConfig', { hidden: cfg.hidden, gain: cfg.gain, userName: cfg.userName, accent: cfg.accent }),
     `window.livelyPropertyListener&&(window.livelyPropertyListener('theme',${cfg.palette}),window.livelyPropertyListener('gain',${cfg.gain}),window.livelyPropertyListener('userName',${JSON.stringify(cfg.userName)}))`];
   js.forEach(s => win.webContents.executeJavaScript(s).catch(() => {}));
 }
@@ -224,6 +226,7 @@ function rebuildTray() {
   if (!tray) return; const hid = new Set(cfg.hidden);
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: 'Theme', submenu: THEMES.map(t => ({ label: t[1], type: 'radio', checked: cfg.theme === t[0], click: () => setTheme(t[0]) })).concat([{ type: 'separator' }, { label: 'Next   (Ctrl+Alt+→)', click: () => nextTheme(1) }, { label: 'Previous   (Ctrl+Alt+←)', click: () => nextTheme(-1) }]) },
+    { label: 'Accent colour', submenu: ACCENTS.map((n, i) => ({ label: n, type: 'radio', checked: cfg.accent === i, click: () => { cfg.accent = i; save(); wins.forEach(pushSettings); } })) },
     { label: 'Classic HUD palette', submenu: ['Claude', 'Mono', 'Reactor'].map((n, i) => ({ label: n, type: 'radio', checked: cfg.palette === i, click: () => { cfg.palette = i; save(); wins.forEach(pushSettings); } })) },
     { label: 'Data panels', submenu: PANELS.map(p => ({ label: p[1], type: 'checkbox', checked: !hid.has(p[0]), click: m => setPanel(p[0], m.checked) })).concat([{ type: 'separator' }, { label: 'Show all', click: () => setAllPanels(true) }, { label: 'Hide all   (Ctrl+Alt+H)', click: () => setAllPanels(false) }]) },
     { label: 'Voice commands', submenu: [

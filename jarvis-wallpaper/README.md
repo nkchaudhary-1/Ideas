@@ -2,20 +2,23 @@
 
 Voice-reactive Jarvis HUD for Windows, packaged as an installer. Everything reacts to your **real microphone**. All PC numbers are **real** (CPU per core, RAM, disks, network, GPU, processes, battery, uptime). Nothing is simulated; with no data a field shows `--`.
 
+## Design language
+Taken from the original Claude Brain wallpaper: hairline strokes, one restrained accent, serif numerals, tiny tracked labels, vignette + scanlines, and the neural brain with firing pulses as the centrepiece. **Tray → Accent colour** recolours every theme: Claude terracotta (default), Ice, Mono, Amber, Violet, Jade.
+
 ## 13 themes
-| Theme | Inspired by | PC data shown as |
+| Theme | Composition | PC data shown as |
 |---|---|---|
-| **Sector** | blue "HUD elements" brackets | side object panels, signal in/out = network |
-| **Blueprint** | wireframe on blue grid | spinning wireframe deformed by your voice + leader labels |
-| **Cockpit** | tilted aircraft glass | pitch ladder = per-core load, tapes = CPU / RAM, ID markers = top processes |
-| **Target** | symmetric targeting reticle (katakana) | load bar, side readouts, voice bars and dot matrices |
-| **Nebula** | purple orb lens | concentric gauge rings: CPU / RAM / disk / network |
-| **Reactor** | orange hex gauge | donut gauge = CPU, capsule meters = RAM / disk / net / GPU |
-| **Sensory** | minimal white panels | LEFT / RIGHT XYZ readouts |
-| **Poster** | technical compass poster | tick arcs lit by CPU / RAM / disk / net, data strings on the ring |
-| **Radar** | process radar | each top process is a blip, voice sends ripples |
+| **Cortex** | neural brain inside fine concentric rings | clock, CPU/RAM/GPU left; network, storage, processes right |
+| **Blueprint** | serif headline + hairline mesh sphere | leader-line callouts to the sphere |
+| **Cockpit** | tilted glass pitch ladder | rungs = per-core load, tapes = CPU / RAM, markers = top processes |
+| **Target** | symmetric reticle with katakana title | load bar, side readouts |
+| **Orb** | glass orb holding the brain | thin orbit gauges: CPU / RAM / disk / network |
+| **Halo** | tilted ring lens | CPU as a tick gauge around a serif numeral |
+| **Sensory** | minimal symmetric panels | LEFT / RIGHT XYZ readouts |
+| **Poster** | technical compass | tick arcs lit by CPU / RAM / disk / net |
+| **Radar** | process radar | each top process is a blip; voice sends ripples |
 | **Console** | dense dashboard | 90 s history graphs, per-core bars, process table |
-| Core HUD, Claude Brain, Eye | the classic three | (unchanged, now with real stats) |
+| Core HUD, Claude Brain, Eye | the classic three | real stats |
 
 ## Show / hide data
 Tray → **Data panels**: CPU, Memory, Storage, Network, Processes, GPU, Battery, System info & clock, Voice log. **Ctrl+Alt+H** hides/shows all. Voice: “jarvis hide processes”, “jarvis show data”.
