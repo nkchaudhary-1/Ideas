@@ -1,6 +1,54 @@
 {
-  "accent":   { "type": "color",    "text": "Accent colour", "value": "#d97757" },
-  "userName": { "type": "textbox",  "text": "Greeting name", "value": "Neelesh" },
-  "speed":    { "type": "slider",   "text": "Rotation speed", "value": 1, "min": 0, "max": 4, "step": 0.1 },
-  "nodes":    { "type": "slider",   "text": "Neuron count (perf)", "value": 460, "min": 150, "max": 900, "step": 10 }
+  "theme": {
+    "type": "dropdown",
+    "text": "Theme",
+    "value": 0,
+    "items": [
+      "Claude (terracotta)",
+      "Mono (white)",
+      "Reactor (orange + teal)"
+    ]
+  },
+  "userName": {
+    "type": "textbox",
+    "text": "Greeting name",
+    "value": "Neelesh"
+  },
+  "gain": {
+    "type": "slider",
+    "text": "Mic sensitivity",
+    "value": 1,
+    "min": 0.3,
+    "max": 4,
+    "step": 0.1
+  },
+  "speed": {
+    "type": "slider",
+    "text": "Rotation speed",
+    "value": 1,
+    "min": 0,
+    "max": 4,
+    "step": 0.1
+  },
+  "tilt": {
+    "type": "slider",
+    "text": "HUD tilt",
+    "value": 0.42,
+    "min": 0,
+    "max": 0.9,
+    "step": 0.02
+  },
+  "core": {
+    "type": "checkbox",
+    "text": "Show neural brain core",
+    "value": true
+  },
+  "nodes": {
+    "type": "slider",
+    "text": "Neuron count (perf)",
+    "value": 520,
+    "min": 150,
+    "max": 900,
+    "step": 10
+  }
 }
