@@ -1,0 +1,141 @@
+<title>Raat Wedding Invite</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Albert+Sans:wght@400;500;600&family=Tiro+Devanagari+Hindi&display=swap">
+<style>
+/* RAAT. Layout: one invitation column of cards over a night sky with drifting marigold. Committed dark look. */
+:root{
+  --night:#121634; --night-2:#1a1f45; --night-3:#262c5a;
+  --ivory:#f5eedc; --ivory-2:#c9c4b4; --mute:#8d8aa6;
+  --marigold:#f0a836; --marigold-2:#ffc86a; --rani:#d9527a;
+  --line:rgba(240,168,54,.28);
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Albert Sans","Helvetica Neue",Arial,sans-serif;
+  --hindi:"Tiro Devanagari Hindi","Noto Sans Devanagari",serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--night);color:var(--ivory);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.page{position:relative;z-index:1;max-width:620px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+a{color:var(--marigold-2)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--marigold-2);outline-offset:3px}
+.dn{font-family:var(--hindi);color:var(--marigold);font-weight:400}
+
+.preview{align-self:center;display:inline-flex;gap:6px;align-items:center;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ivory-2);background:var(--night-2);border:1px solid var(--night-3);padding:5px 6px 5px 12px;border-radius:999px}
+.preview a{text-decoration:none;color:var(--ivory);padding:4px 10px;border-radius:999px}
+.preview a[aria-current="page"]{background:var(--marigold);color:var(--night);font-weight:600}
+
+.opener{text-align:center;padding-block:28px 24px}
+.opener .hindi{font-family:var(--hindi);font-size:22px;color:var(--marigold);margin:0 0 12px}
+.opener .eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ivory-2);margin:0 auto 22px;max-width:34ch;line-height:1.6}
+.names{font-family:var(--display);font-weight:300;font-size:clamp(44px,12vw,76px);line-height:1;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.names .n{display:block}
+.names .amp{display:block;font-style:italic;font-size:.5em;color:var(--marigold);margin:8px 0}
+.opener .date{font-family:var(--display);font-size:22px;margin:26px 0 6px;font-weight:400}
+.opener .place{color:var(--ivory-2);margin:0}
+.countdown{display:inline-flex;align-items:baseline;gap:8px;margin-top:22px;padding:10px 18px;border:1px solid var(--line);border-radius:999px;color:var(--ivory-2);font-size:14px}
+.countdown b{font-family:var(--display);font-size:24px;color:var(--marigold-2);font-variant-numeric:tabular-nums;font-weight:400}
+.rule{display:flex;align-items:center;gap:14px;color:var(--marigold);margin:26px auto 0;max-width:300px}
+.rule::before,.rule::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line))}
+.rule::after{background:linear-gradient(90deg,var(--line),transparent)}
+.motif{width:10px;height:10px;border:1px solid var(--marigold);transform:rotate(45deg)}
+
+.card{background:var(--night-2);border:1px solid var(--night-3);border-radius:18px;padding:24px 22px}
+.card h2{font-family:var(--display);font-weight:400;font-size:26px;margin:0 0 4px;letter-spacing:-.01em;text-wrap:balance}
+.card .lead{color:var(--ivory-2);margin:0 0 18px;max-width:52ch}
+.invite-text{font-size:17px;max-width:52ch;margin:0 auto;text-align:center}
+.invite-text em{font-family:var(--display);font-style:italic;color:var(--marigold-2)}
+.families{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;text-align:center}
+.families>div{border-top:1px solid var(--line);padding-top:12px;min-width:0}
+.families small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:4px}
+.families span{font-size:15px;color:var(--ivory-2)}
+.families .dn{font-size:14px}
+
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.fn{display:grid;grid-template-columns:64px 1fr;gap:0 16px;padding-block:18px;border-top:1px solid var(--night-3)}
+.fn:first-child{border-top:0;padding-top:4px}
+.fn .what{min-width:0}
+.fn .when{text-align:center;padding-top:2px}
+.fn .when .d{font-family:var(--display);font-size:30px;line-height:1;color:var(--marigold-2);font-variant-numeric:tabular-nums;font-weight:400}
+.fn .when .m{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-top:4px}
+.fn h3{margin:0;font-family:var(--display);font-weight:400;font-size:22px}
+.fn h3 .dn{font-size:17px;margin-left:8px}
+.fn .meta{margin:4px 0 0;color:var(--ivory-2);font-size:15px}
+.fn .meta b{color:var(--ivory);font-weight:500}
+.fn .note{margin:8px 0 0;color:var(--mute);font-size:14px}
+.fn .dress{font-size:14px;color:var(--ivory-2);margin:8px 0 0}
+.fn .dress b{color:var(--marigold);font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:11px;margin-right:6px}
+.fn .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ivory);text-decoration:none;border:1px solid var(--night-3);padding:6px 11px;border-radius:999px}
+.chip:hover{border-color:var(--marigold)}
+.chip svg{width:14px;height:14px}
+
+.venue-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.venue-grid>div{min-width:0}
+.venue-grid h4{margin:0 0 4px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:500}
+.venue-grid p{margin:0;color:var(--ivory-2);font-size:15px}
+.venue-grid p b{color:var(--ivory);font-weight:500}
+
+.form{display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.flabel{font-size:13px;color:var(--ivory-2)}
+.field input,.field select{font:inherit;color:var(--ivory);background:var(--night);border:1px solid var(--night-3);border-radius:10px;padding:11px 12px;width:100%}
+.field input::placeholder{color:var(--mute)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.checks label{display:inline-flex;align-items:center;gap:7px;font-size:14px;padding:8px 12px;border:1px solid var(--night-3);border-radius:999px;cursor:pointer;background:var(--night)}
+.checks input{accent-color:var(--marigold);margin:0}
+.checks label:has(input:checked){border-color:var(--marigold);color:var(--marigold-2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;color:var(--night);background:var(--marigold);border:0;border-radius:12px;padding:14px 18px;cursor:pointer}
+.btn:hover{background:var(--marigold-2)}
+.btn svg{width:18px;height:18px}
+.rsvp-foot{font-size:14px;color:var(--ivory-2);margin:0}
+.rsvp-foot code{font-family:inherit;color:var(--ivory);user-select:all;-webkit-user-select:all}
+.copy{font:inherit;font-size:13px;color:var(--marigold-2);background:none;border:0;padding:0 4px;cursor:pointer;text-decoration:underline}
+.msg{margin:0;padding:12px 14px;border-left:2px solid var(--rani);background:var(--night);border-radius:0 10px 10px 0;color:var(--ivory-2);font-size:14px;white-space:pre-wrap;font-family:inherit}
+
+.closing{text-align:center;padding-block:28px 8px}
+.closing .hindi{font-family:var(--hindi);font-size:20px;color:var(--marigold);margin:0 0 6px}
+.closing p{margin:0;color:var(--ivory-2)}
+.closing .sig{font-family:var(--display);font-style:italic;font-size:22px;color:var(--ivory);margin-top:14px}
+
+@media (max-width:460px){
+  .families,.venue-grid,.row{grid-template-columns:1fr}
+  .card{padding:20px 16px}
+  .fn{grid-template-columns:54px 1fr;gap:0 12px}
+}
+@media (prefers-reduced-motion:reduce){#sky{display:none}}
+</style>
+<!--DECOR-->
+<canvas id="sky" aria-hidden="true"></canvas>
+<!--SCRIPT-->
+<script>
+/* Night sky: stars, drifting marigold petals, a few diya glows. */
+(() => {
+  const c = document.getElementById("sky"); if (!c || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const ctx = c.getContext("2d"); let W, H, dpr;
+  const stars = [], petals = [], diyas = [];
+  const R = (a,b) => a + Math.random()*(b-a);
+  function size(){ dpr = Math.min(devicePixelRatio||1, 2); W = innerWidth; H = innerHeight; c.width = W*dpr; c.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
+  function seed(){
+    stars.length = 0; petals.length = 0; diyas.length = 0;
+    for (let i=0;i<140;i++) stars.push({x:R(0,W), y:R(0,H), r:R(.3,1.3), p:R(0,6.28), s:R(.4,1.4)});
+    for (let i=0;i<22;i++) petals.push({x:R(0,W), y:R(-H,H), w:R(3.5,7), h:R(6,12), a:R(0,6.28), va:R(-.01,.01), vy:R(.18,.45), vx:R(-.15,.15), hue:R(28,42), al:R(.35,.75)});
+    for (let i=0;i<5;i++) diyas.push({x:R(0,W), y:R(H*.55,H*1.1), r:R(50,110), p:R(0,6.28), vy:R(-.05,-.12)});
+  }
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    for (const d of diyas){ d.y += d.vy; if (d.y < -d.r) { d.y = H + d.r; d.x = R(0,W); }
+      const g = ctx.createRadialGradient(d.x,d.y,0,d.x,d.y,d.r); const a = .10 + .04*Math.sin(t/900 + d.p);
+      g.addColorStop(0,`rgba(255,190,90,${a})`); g.addColorStop(1,"rgba(255,190,90,0)"); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,6.28); ctx.fill(); }
+    for (const s of stars){ const a = .35 + .35*Math.sin(t/1000*s.s + s.p); ctx.fillStyle = `rgba(245,238,220,${a})`; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,6.28); ctx.fill(); }
+    for (const p of petals){ p.y += p.vy; p.x += p.vx + Math.sin(t/1500 + p.a)*.2; p.a += p.va;
+      if (p.y > H + 20) { p.y = -20; p.x = R(0,W); }
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle = `hsla(${p.hue},88%,58%,${p.al})`;
+      ctx.beginPath(); ctx.ellipse(0,0,p.w,p.h,0,0,6.28); ctx.fill(); ctx.restore(); }
+    requestAnimationFrame(draw);
+  }
+  size(); seed(); addEventListener("resize", () => { size(); seed(); }); requestAnimationFrame(draw);
+})();
+</script>

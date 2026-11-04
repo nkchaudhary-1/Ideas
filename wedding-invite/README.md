@@ -1,13 +1,22 @@
 # Wedding invite site
 
-A single-file wedding invitation: functions timeline, venue and travel, and an RSVP that sends a prefilled WhatsApp message. No backend, no build step.
+Three invitation templates, each with a groom's-side and a bride's-side version. Static, no backend. RSVP sends a prefilled WhatsApp message.
+
+| Template | Look |
+|---|---|
+| `raat` | Night sky, marigold, drifting petals |
+| `subah` | Morning paper, Jaipur pink and peacock green, jaali lattice |
+| `kesar` | Poster: vermilion band, huge type, running strip |
 
 ## Edit the content
-Open `page.html` and change the `CONFIG` block at the top of the script. Names, dates, venues, dress codes, map links, travel notes and the WhatsApp number all live there. Set `sample: false` once the details are real to hide the banner.
+`config.js` is the only file to edit. Names, parents, functions (each tagged `groom`, `bride` or `both`), venues, travel notes and the two WhatsApp numbers all live there. Set `sample: false` once the details are real; that hides the preview bar.
 
-## Build and host
-`index.html` is generated from `page.html` (it wraps the same content in a full HTML document):
+`side` sets whose invitation a page is. `#groom` or `#bride` on the URL overrides it, so one deployment serves both families: `/raat/#bride`.
 
+## Build
     node build.js
 
-Host `index.html` anywhere static: GitHub Pages, Netlify, Vercel, or a subfolder of neelesh.one.
+Writes `dist/<template>/index.html` for hosting and `artifacts/<template>.html` for claude.ai previews. Commit `dist/` so Vercel needs no build step.
+
+## Host on Vercel
+Import the GitHub repo in Vercel, set **Root Directory** to `wedding-invite`, framework **Other**. `vercel.json` points it at `dist/`. Or from this folder: `npx vercel --prod`.

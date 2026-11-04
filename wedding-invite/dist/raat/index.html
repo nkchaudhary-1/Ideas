@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Wedding invitation: dates, venues, travel and RSVP.">
+<title>Raat Wedding Invite</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&family=Albert+Sans:wght@400;500;600&family=Tiro+Devanagari+Hindi&display=swap">
+<style>
+/* RAAT. Layout: one invitation column of cards over a night sky with drifting marigold. Committed dark look. */
+:root{
+  --night:#121634; --night-2:#1a1f45; --night-3:#262c5a;
+  --ivory:#f5eedc; --ivory-2:#c9c4b4; --mute:#8d8aa6;
+  --marigold:#f0a836; --marigold-2:#ffc86a; --rani:#d9527a;
+  --line:rgba(240,168,54,.28);
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Albert Sans","Helvetica Neue",Arial,sans-serif;
+  --hindi:"Tiro Devanagari Hindi","Noto Sans Devanagari",serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--night);color:var(--ivory);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.page{position:relative;z-index:1;max-width:620px;margin:0 auto;padding-block:28px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:20px}
+a{color:var(--marigold-2)}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--marigold-2);outline-offset:3px}
+.dn{font-family:var(--hindi);color:var(--marigold);font-weight:400}
+
+.preview{align-self:center;display:inline-flex;gap:6px;align-items:center;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ivory-2);background:var(--night-2);border:1px solid var(--night-3);padding:5px 6px 5px 12px;border-radius:999px}
+.preview a{text-decoration:none;color:var(--ivory);padding:4px 10px;border-radius:999px}
+.preview a[aria-current="page"]{background:var(--marigold);color:var(--night);font-weight:600}
+
+.opener{text-align:center;padding-block:28px 24px}
+.opener .hindi{font-family:var(--hindi);font-size:22px;color:var(--marigold);margin:0 0 12px}
+.opener .eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ivory-2);margin:0 auto 22px;max-width:34ch;line-height:1.6}
+.names{font-family:var(--display);font-weight:300;font-size:clamp(44px,12vw,76px);line-height:1;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.names .n{display:block}
+.names .amp{display:block;font-style:italic;font-size:.5em;color:var(--marigold);margin:8px 0}
+.opener .date{font-family:var(--display);font-size:22px;margin:26px 0 6px;font-weight:400}
+.opener .place{color:var(--ivory-2);margin:0}
+.countdown{display:inline-flex;align-items:baseline;gap:8px;margin-top:22px;padding:10px 18px;border:1px solid var(--line);border-radius:999px;color:var(--ivory-2);font-size:14px}
+.countdown b{font-family:var(--display);font-size:24px;color:var(--marigold-2);font-variant-numeric:tabular-nums;font-weight:400}
+.rule{display:flex;align-items:center;gap:14px;color:var(--marigold);margin:26px auto 0;max-width:300px}
+.rule::before,.rule::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--line))}
+.rule::after{background:linear-gradient(90deg,var(--line),transparent)}
+.motif{width:10px;height:10px;border:1px solid var(--marigold);transform:rotate(45deg)}
+
+.card{background:var(--night-2);border:1px solid var(--night-3);border-radius:18px;padding:24px 22px}
+.card h2{font-family:var(--display);font-weight:400;font-size:26px;margin:0 0 4px;letter-spacing:-.01em;text-wrap:balance}
+.card .lead{color:var(--ivory-2);margin:0 0 18px;max-width:52ch}
+.invite-text{font-size:17px;max-width:52ch;margin:0 auto;text-align:center}
+.invite-text em{font-family:var(--display);font-style:italic;color:var(--marigold-2)}
+.families{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;text-align:center}
+.families>div{border-top:1px solid var(--line);padding-top:12px;min-width:0}
+.families small{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-bottom:4px}
+.families span{font-size:15px;color:var(--ivory-2)}
+.families .dn{font-size:14px}
+
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.fn{display:grid;grid-template-columns:64px 1fr;gap:0 16px;padding-block:18px;border-top:1px solid var(--night-3)}
+.fn:first-child{border-top:0;padding-top:4px}
+.fn .what{min-width:0}
+.fn .when{text-align:center;padding-top:2px}
+.fn .when .d{font-family:var(--display);font-size:30px;line-height:1;color:var(--marigold-2);font-variant-numeric:tabular-nums;font-weight:400}
+.fn .when .m{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-top:4px}
+.fn h3{margin:0;font-family:var(--display);font-weight:400;font-size:22px}
+.fn h3 .dn{font-size:17px;margin-left:8px}
+.fn .meta{margin:4px 0 0;color:var(--ivory-2);font-size:15px}
+.fn .meta b{color:var(--ivory);font-weight:500}
+.fn .note{margin:8px 0 0;color:var(--mute);font-size:14px}
+.fn .dress{font-size:14px;color:var(--ivory-2);margin:8px 0 0}
+.fn .dress b{color:var(--marigold);font-weight:500;letter-spacing:.06em;text-transform:uppercase;font-size:11px;margin-right:6px}
+.fn .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ivory);text-decoration:none;border:1px solid var(--night-3);padding:6px 11px;border-radius:999px}
+.chip:hover{border-color:var(--marigold)}
+.chip svg{width:14px;height:14px}
+
+.venue-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.venue-grid>div{min-width:0}
+.venue-grid h4{margin:0 0 4px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:500}
+.venue-grid p{margin:0;color:var(--ivory-2);font-size:15px}
+.venue-grid p b{color:var(--ivory);font-weight:500}
+
+.form{display:flex;flex-direction:column;gap:14px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.flabel{font-size:13px;color:var(--ivory-2)}
+.field input,.field select{font:inherit;color:var(--ivory);background:var(--night);border:1px solid var(--night-3);border-radius:10px;padding:11px 12px;width:100%}
+.field input::placeholder{color:var(--mute)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.checks{display:flex;flex-wrap:wrap;gap:8px}
+.checks label{display:inline-flex;align-items:center;gap:7px;font-size:14px;padding:8px 12px;border:1px solid var(--night-3);border-radius:999px;cursor:pointer;background:var(--night)}
+.checks input{accent-color:var(--marigold);margin:0}
+.checks label:has(input:checked){border-color:var(--marigold);color:var(--marigold-2)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;color:var(--night);background:var(--marigold);border:0;border-radius:12px;padding:14px 18px;cursor:pointer}
+.btn:hover{background:var(--marigold-2)}
+.btn svg{width:18px;height:18px}
+.rsvp-foot{font-size:14px;color:var(--ivory-2);margin:0}
+.rsvp-foot code{font-family:inherit;color:var(--ivory);user-select:all;-webkit-user-select:all}
+.copy{font:inherit;font-size:13px;color:var(--marigold-2);background:none;border:0;padding:0 4px;cursor:pointer;text-decoration:underline}
+.msg{margin:0;padding:12px 14px;border-left:2px solid var(--rani);background:var(--night);border-radius:0 10px 10px 0;color:var(--ivory-2);font-size:14px;white-space:pre-wrap;font-family:inherit}
+
+.closing{text-align:center;padding-block:28px 8px}
+.closing .hindi{font-family:var(--hindi);font-size:20px;color:var(--marigold);margin:0 0 6px}
+.closing p{margin:0;color:var(--ivory-2)}
+.closing .sig{font-family:var(--display);font-style:italic;font-size:22px;color:var(--ivory);margin-top:14px}
+
+@media (max-width:460px){
+  .families,.venue-grid,.row{grid-template-columns:1fr}
+  .card{padding:20px 16px}
+  .fn{grid-template-columns:54px 1fr;gap:0 12px}
+}
+@media (prefers-reduced-motion:reduce){#sky{display:none}}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<main class="page">
+  <nav class="preview" id="previewBar" hidden aria-label="Preview">
+    <span>Preview as</span>
+    <a href="#groom" id="pvGroom">Groom's side</a>
+    <a href="#bride" id="pvBride">Bride's side</a>
+  </nav>
+
+  <header class="opener">
+    <p class="hindi" id="blessing"></p>
+    <p class="eyebrow" id="eyebrow"></p>
+    <h1 class="names"><span class="n" id="nameA"></span><span class="amp">and</span><span class="n" id="nameB"></span></h1>
+    <p class="date" id="mainDate"></p>
+    <p class="place" id="mainPlace"></p>
+    <div class="countdown" id="countdown"></div>
+    <div class="rule" aria-hidden="true"><span class="motif"></span></div>
+  </header>
+
+  <section class="card invite">
+    <p class="invite-text" id="inviteText"></p>
+    <div class="families">
+      <div><small id="famALabel"></small><span id="famA"></span></div>
+      <div><small id="famBLabel"></small><span id="famB"></span></div>
+    </div>
+  </section>
+
+  <section class="card" id="functions">
+    <h2>The functions</h2>
+    <p class="lead" id="fnLead"></p>
+    <ol class="timeline" id="timeline"></ol>
+  </section>
+
+  <section class="card" id="venue">
+    <h2>Getting there and staying</h2>
+    <p class="lead" id="venueLead"></p>
+    <div class="venue-grid" id="venueGrid"></div>
+  </section>
+
+  <section class="card" id="rsvp">
+    <h2>Will you be there?</h2>
+    <p class="lead">Fill this in and send it to us on WhatsApp. It takes a few seconds and helps us plan the food and the rooms.</p>
+    <form class="form" id="rsvpForm" novalidate>
+      <div class="field"><label for="rName">Your name</label><input id="rName" name="name" autocomplete="name" placeholder="As we know you" required></div>
+      <div class="row">
+        <div class="field"><label for="rCount">Guests, including you</label>
+          <select id="rCount" name="count"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6+</option></select></div>
+        <div class="field"><label for="rCity">Coming from</label><input id="rCity" name="city" placeholder="City"></div>
+      </div>
+      <div class="field"><span class="flabel">Which functions?</span><div class="checks" id="rFns"></div></div>
+      <div class="field"><label for="rNote">Anything we should know?</label><input id="rNote" name="note" placeholder="Food, travel dates, a song for the sangeet"></div>
+      <pre class="msg" id="rPreview" hidden></pre>
+      <button class="btn" type="submit" id="rSend">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c1.7.7 2.1.6 2.8.5a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.2-.2-.2-.5-.3z"/></svg>
+        Send RSVP on WhatsApp
+      </button>
+      <p class="rsvp-foot">If WhatsApp doesn't open, message <code id="rPhone"></code> <button type="button" class="copy" id="copyPhone">copy number</button></p>
+    </form>
+  </section>
+
+  <footer class="closing">
+    <p class="hindi" id="closingHindi"></p>
+    <p id="closingLine"></p>
+    <p class="sig" id="closingSig"></p>
+  </footer>
+</main>
+
+<script>
+/* =====================================================================
+   CONFIG: every template reads this. Edit this file only.
+   Dates are YYYY-MM-DD, times are 24h "HH:MM".
+   `side` picks whose invitation this is: "groom" or "bride". Each side gets
+   its own hosts line, name order, functions and WhatsApp number.
+   In the URL, #groom or #bride overrides it (handy for previews).
+   Set sample:false once the details are real; it hides the preview bar.
+   ===================================================================== */
+const CONFIG = {
+  sample: true,
+  side: "groom",
+  groom: { name: "Neelesh", hindi: "नीलेश", parents: "Mr. & Mrs. Chaudhary", whatsapp: "919999999999" },
+  bride: { name: "Partner", hindi: "पार्टनर", parents: "Mr. & Mrs. [Family name]", whatsapp: "918888888888" },
+  city: "Jaipur",
+  blessing: "॥ शुभ विवाह ॥",
+  closingHindi: "आपकी उपस्थिति ही हमारा आशीर्वाद है",
+  closingLine: "Your presence is the only gift we are hoping for.",
+  venueLead: "Everything is within 25 minutes of each other. We'll handle the hotel-to-venue runs; you handle getting to Jaipur.",
+  /* side: "groom", "bride" or "both". A guest of one side only sees that side's functions. */
+  functions: [
+    { side:"groom", name:"Haldi",     hindi:"हल्दी",  date:"2027-02-18", time:"10:00", end:"13:00", venue:"Chaudhary residence", address:"Vaishali Nagar, Jaipur", dress:"Yellow, anything you don't mind turmeric on", note:"Brunch after.", map:"https://maps.google.com/?q=Vaishali+Nagar+Jaipur" },
+    { side:"bride", name:"Haldi",     hindi:"हल्दी",  date:"2027-02-18", time:"10:00", end:"13:00", venue:"[Bride's family home]", address:"Malviya Nagar, Jaipur", dress:"Yellow, anything you don't mind turmeric on", note:"Brunch after.", map:"https://maps.google.com/?q=Malviya+Nagar+Jaipur" },
+    { side:"bride", name:"Mehndi",    hindi:"मेहंदी", date:"2027-02-18", time:"16:00", end:"20:00", venue:"[Bride's family home]", address:"Malviya Nagar, Jaipur", dress:"Pastels, florals", note:"Mehndi artists from 4pm. Dinner follows.", map:"https://maps.google.com/?q=Malviya+Nagar+Jaipur" },
+    { side:"both",  name:"Sangeet",   hindi:"संगीत",  date:"2027-02-19", time:"19:00", end:"23:30", venue:"[Venue name]", address:"Tonk Road, Jaipur", dress:"Festive, sequins encouraged", note:"Performances at 8. Bring your dancing shoes.", map:"https://maps.google.com/?q=Tonk+Road+Jaipur" },
+    { side:"groom", name:"Baraat",    hindi:"बारात",  date:"2027-02-20", time:"17:30", end:"18:30", venue:"Assembles at [Hotel name]", address:"Tonk Road, Jaipur", dress:"Traditional, safa provided", note:"We leave at 6 sharp. Dhol, horse, the works.", map:"https://maps.google.com/?q=Tonk+Road+Jaipur" },
+    { side:"both",  name:"Pheras",    hindi:"फेरे",   date:"2027-02-20", time:"18:30", end:"23:00", venue:"[Venue name]", address:"Tonk Road, Jaipur", dress:"Traditional", note:"Pheras around 9:30, after dinner.", map:"https://maps.google.com/?q=Tonk+Road+Jaipur" },
+    { side:"both",  name:"Reception", hindi:"स्वागत", date:"2027-02-21", time:"19:30", end:"23:00", venue:"[Venue name]", address:"MI Road, Jaipur", dress:"Cocktail, Indian or western", note:"", map:"https://maps.google.com/?q=MI+Road+Jaipur" }
+  ],
+  travel: [
+    { h:"Nearest airport", p:"<b>Jaipur (JAI)</b>, 25 min from the venues." },
+    { h:"By train", p:"<b>Jaipur Junction</b>, 20 min away. Cabs and autos outside." },
+    { h:"Where you'll stay", p:"Rooms are blocked at <b>[Hotel name]</b> for 18 to 21 Feb. Tell us your dates in the RSVP." },
+    { h:"Getting around", p:"A car will run between the hotel and each venue, 30 min before every function." }
+  ]
+};
+
+</script>
+<script>
+/* Shared renderer. Reads CONFIG, fills the markup, wires RSVP. Every template uses this unchanged. */
+(() => {
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const MONTHS_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const parse = (d, t="00:00") => new Date(`${d}T${t}:00`);
+  const fmtTime = t => { const [h,m] = t.split(":").map(Number); const ap = h>=12?"pm":"am"; const hh = h%12||12; return m ? `${hh}:${String(m).padStart(2,"0")} ${ap}` : `${hh} ${ap}`; };
+  const longDate = d => { const x = parse(d); return `${DAYS[x.getDay()]}, ${x.getDate()} ${MONTHS_LONG[x.getMonth()]} ${x.getFullYear()}`; };
+  const stamp = (d,t) => { const x = parse(d,t); const p = n => String(n).padStart(2,"0"); return `${x.getFullYear()}${p(x.getMonth()+1)}${p(x.getDate())}T${p(x.getHours())}${p(x.getMinutes())}00`; };
+  const pin = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>';
+  const cal = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+
+  function sideFromHash(){ const h = location.hash.replace("#",""); return h === "bride" || h === "groom" ? h : null; }
+
+  function render(){
+    const side = sideFromHash() || CONFIG.side || "groom";
+    const host = CONFIG[side], other = CONFIG[side === "groom" ? "bride" : "groom"];
+    const child = side === "groom" ? "son" : "daughter";
+    const fns = CONFIG.functions.filter(f => f.side === "both" || f.side === side);
+    const pheras = fns.find(f => /phera|wedding|shaadi|vivah|nikah/i.test(f.name)) || fns[fns.length-1];
+    const first = fns[0], last = fns[fns.length-1];
+    document.documentElement.dataset.side = side;
+
+    $("previewBar").hidden = !CONFIG.sample;
+    $("pvGroom").setAttribute("aria-current", side === "groom" ? "page" : "false");
+    $("pvBride").setAttribute("aria-current", side === "bride" ? "page" : "false");
+
+    $("blessing").textContent = CONFIG.blessing;
+    $("eyebrow").textContent = `${host.parents} request the pleasure of your company at the wedding of their ${child}`;
+    $("nameA").textContent = host.name; $("nameB").textContent = other.name;
+    $("mainDate").textContent = longDate(pheras.date);
+    $("mainPlace").textContent = `${pheras.venue}, ${CONFIG.city}`;
+    $("inviteText").innerHTML = `We would love for you to be with us as <em>${esc(host.name)}</em> and <em>${esc(other.name)}</em> begin their life together, surrounded by the people who made them who they are.`;
+    $("famALabel").textContent = side === "groom" ? "The groom" : "The bride";
+    $("famA").innerHTML = `${esc(host.name)} <span class="dn" lang="hi">${esc(host.hindi||"")}</span><br>${child} of ${esc(host.parents)}`;
+    $("famBLabel").textContent = side === "groom" ? "The bride" : "The groom";
+    $("famB").innerHTML = `${esc(other.name)} <span class="dn" lang="hi">${esc(other.hindi||"")}</span><br>${side === "groom" ? "daughter" : "son"} of ${esc(other.parents)}`;
+    $("venueLead").textContent = CONFIG.venueLead;
+    $("closingHindi").textContent = CONFIG.closingHindi;
+    $("closingLine").textContent = CONFIG.closingLine;
+    $("closingSig").textContent = `${host.name} and ${other.name}, with the ${host.parents.replace(/^Mr\.? & Mrs\.? /,"")} family`;
+    $("rPhone").textContent = "+" + host.whatsapp;
+    $("fnLead").textContent = `${first.date === last.date ? "One day" : `${parse(first.date).getDate()} to ${parse(last.date).getDate()} ${MONTHS_LONG[parse(last.date).getMonth()]}`}, ${fns.length} functions. Tap one to open the venue in Maps or add it to your calendar.`;
+
+    const days = Math.ceil((parse(pheras.date, pheras.time) - Date.now())/864e5);
+    $("countdown").innerHTML = days > 1 ? `<b>${days}</b><span>days to go</span>` : days === 1 ? `<b>1</b><span>day to go</span>` : days === 0 ? `<b>Today</b>` : `<b>Married</b><span>${Math.abs(days)} days ago</span>`;
+
+    const gcal = f => `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`${f.name}: ${host.name} & ${other.name}`)}&dates=${stamp(f.date,f.time)}/${stamp(f.date,f.end||f.time)}&location=${encodeURIComponent(`${f.venue}, ${f.address}`)}&details=${encodeURIComponent(f.note||"")}`;
+    $("timeline").innerHTML = fns.map(f => { const d = parse(f.date); return `<li class="fn">
+      <div class="when"><div class="d">${d.getDate()}</div><div class="m">${MONTHS[d.getMonth()]}</div></div>
+      <div class="what">
+        <h3>${esc(f.name)}<span class="dn" lang="hi">${esc(f.hindi||"")}</span></h3>
+        <p class="meta"><b>${fmtTime(f.time)}${f.end?` to ${fmtTime(f.end)}`:""}</b> · ${esc(f.venue)}, ${esc(f.address)}</p>
+        ${f.note?`<p class="note">${esc(f.note)}</p>`:""}
+        ${f.dress?`<p class="dress"><b>Wear</b>${esc(f.dress)}</p>`:""}
+        <div class="acts">
+          ${f.map?`<a class="chip" href="${esc(f.map)}" target="_blank" rel="noopener">${pin}Open in Maps</a>`:""}
+          <a class="chip" href="${gcal(f)}" target="_blank" rel="noopener">${cal}Add to calendar</a>
+        </div>
+      </div></li>`; }).join("");
+    $("venueGrid").innerHTML = CONFIG.travel.map(t => `<div><h4>${esc(t.h)}</h4><p>${t.p}</p></div>`).join("");
+
+    const keep = new Set([...document.querySelectorAll('#rFns input:checked')].map(i => i.value));
+    const fresh = !$("rFns").children.length;
+    $("rFns").innerHTML = fns.map((f,i) => `<label><input type="checkbox" name="fn" value="${esc(f.name)}" id="fn${i}" ${fresh || keep.has(f.name) ? "checked" : ""}>${esc(f.name)}</label>`).join("");
+
+    render.current = { side, host, other, fns };
+  }
+
+  const form = $("rsvpForm");
+  const buildMsg = () => {
+    const { host, other } = render.current; const fd = new FormData(form); const fns = fd.getAll("fn");
+    return [
+      `RSVP for ${host.name} & ${other.name}'s wedding`,
+      `Name: ${fd.get("name")||""}`,
+      `Guests: ${fd.get("count")}`,
+      fd.get("city") ? `Coming from: ${fd.get("city")}` : null,
+      `Attending: ${fns.length ? fns.join(", ") : "Sadly can't make it"}`,
+      fd.get("note") ? `Note: ${fd.get("note")}` : null
+    ].filter(Boolean).join("\n");
+  };
+  form.addEventListener("input", () => { const p = $("rPreview"); p.hidden = !$("rName").value.trim(); p.textContent = buildMsg(); });
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!$("rName").value.trim()) { $("rName").focus(); $("rName").placeholder = "We need your name first"; return; }
+    const url = `https://wa.me/${render.current.host.whatsapp}?text=${encodeURIComponent(buildMsg())}`;
+    const w = window.open(url, "_blank", "noopener"); if (!w) location.href = url;
+  });
+  $("copyPhone").addEventListener("click", async () => {
+    const b = $("copyPhone"); const txt = "+" + render.current.host.whatsapp;
+    try { await navigator.clipboard.writeText(txt); b.textContent = "copied"; }
+    catch { const r = document.createRange(); r.selectNodeContents($("rPhone")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "selected, press copy"; }
+    setTimeout(() => b.textContent = "copy number", 1800);
+  });
+
+  render();
+  addEventListener("hashchange", render);
+})();
+
+</script>
+<script>
+/* Night sky: stars, drifting marigold petals, a few diya glows. */
+(() => {
+  const c = document.getElementById("sky"); if (!c || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const ctx = c.getContext("2d"); let W, H, dpr;
+  const stars = [], petals = [], diyas = [];
+  const R = (a,b) => a + Math.random()*(b-a);
+  function size(){ dpr = Math.min(devicePixelRatio||1, 2); W = innerWidth; H = innerHeight; c.width = W*dpr; c.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); }
+  function seed(){
+    stars.length = 0; petals.length = 0; diyas.length = 0;
+    for (let i=0;i<140;i++) stars.push({x:R(0,W), y:R(0,H), r:R(.3,1.3), p:R(0,6.28), s:R(.4,1.4)});
+    for (let i=0;i<22;i++) petals.push({x:R(0,W), y:R(-H,H), w:R(3.5,7), h:R(6,12), a:R(0,6.28), va:R(-.01,.01), vy:R(.18,.45), vx:R(-.15,.15), hue:R(28,42), al:R(.35,.75)});
+    for (let i=0;i<5;i++) diyas.push({x:R(0,W), y:R(H*.55,H*1.1), r:R(50,110), p:R(0,6.28), vy:R(-.05,-.12)});
+  }
+  function draw(t){
+    ctx.clearRect(0,0,W,H);
+    for (const d of diyas){ d.y += d.vy; if (d.y < -d.r) { d.y = H + d.r; d.x = R(0,W); }
+      const g = ctx.createRadialGradient(d.x,d.y,0,d.x,d.y,d.r); const a = .10 + .04*Math.sin(t/900 + d.p);
+      g.addColorStop(0,`rgba(255,190,90,${a})`); g.addColorStop(1,"rgba(255,190,90,0)"); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(d.x,d.y,d.r,0,6.28); ctx.fill(); }
+    for (const s of stars){ const a = .35 + .35*Math.sin(t/1000*s.s + s.p); ctx.fillStyle = `rgba(245,238,220,${a})`; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,6.28); ctx.fill(); }
+    for (const p of petals){ p.y += p.vy; p.x += p.vx + Math.sin(t/1500 + p.a)*.2; p.a += p.va;
+      if (p.y > H + 20) { p.y = -20; p.x = R(0,W); }
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle = `hsla(${p.hue},88%,58%,${p.al})`;
+      ctx.beginPath(); ctx.ellipse(0,0,p.w,p.h,0,0,6.28); ctx.fill(); ctx.restore(); }
+    requestAnimationFrame(draw);
+  }
+  size(); seed(); addEventListener("resize", () => { size(); seed(); }); requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
