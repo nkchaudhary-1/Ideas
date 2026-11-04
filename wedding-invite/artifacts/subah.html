@@ -1,14 +1,16 @@
-<title>Subah Wedding Invite</title>
+<title>Gulabi Subah Invite</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Karla:wght@400;500;600&family=Tiro+Devanagari+Hindi&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Karla:wght@400;500;600&family=Tiro+Devanagari+Hindi&display=swap">
 <style>
-/* SUBAH. Layout: a morning card. Rose-white paper framed by a jaali lattice, sections divided by double hairlines, functions on a left rail. Committed light look. */
+/* GULABI SUBAH. Layout: a Jaipur morning. Block-printed rose paper, the names inside an emerald cusped arch with a gold mandala, paisley corners, gold-ruled sections. */
 :root{
-  --paper:#fbf5f3; --paper-2:#f4e9e6; --paper-3:#e8d6d2;
-  --ink:#2b2026; --ink-2:#5e4f57; --mute:#9a8a92;
-  --gulabi:#c2456a; --gulabi-2:#9e2f54; --mor:#1f5c4e; --mor-2:#2f7a68;
-  --line:rgba(194,69,106,.35);
-  --display:"Bodoni Moda","Didot","Bodoni 72",Georgia,serif;
+  --paper:#fbf3ee; --paper-2:#f6e6dd; --paper-3:#ead2c6;
+  --ink:#2a1a1e; --ink-2:#5c4a50; --mute:#9a858b;
+  --gulabi:#c3456b; --gulabi-2:#9a2d52;
+  --mor:#174e43; --mor-2:#1f5f52; --mor-3:#0f3a32;
+  --gold:#c9a24c; --gold-2:#e9cf84; --gold-line:rgba(201,162,76,.55);
+  --display:"Marcellus","Cormorant Garamond",Georgia,serif;
+  --serif:"Cormorant Garamond",Georgia,serif;
   --body:"Karla","Helvetica Neue",Arial,sans-serif;
   --hindi:"Tiro Devanagari Hindi","Noto Sans Devanagari",serif;
   color-scheme:light;
@@ -16,62 +18,68 @@
 *{box-sizing:border-box}
 html,body{margin:0}
 body{background:var(--paper-2);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-.jaali{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M24 2c6 8 14 14 22 22-8 8-16 14-22 22C18 38 10 32 2 24 10 16 18 10 24 2z' fill='none' stroke='%23c2456a' stroke-opacity='.22' stroke-width='1'/%3E%3Ccircle cx='24' cy='24' r='3' fill='none' stroke='%23c2456a' stroke-opacity='.22'/%3E%3C/svg%3E");
-  mask-image:linear-gradient(180deg,#000 0,rgba(0,0,0,.35) 40%,transparent 90%);-webkit-mask-image:linear-gradient(180deg,#000 0,rgba(0,0,0,.35) 40%,transparent 90%)}
-.page{position:relative;z-index:1;max-width:600px;margin:24px auto 48px;background:var(--paper);border:1px solid var(--paper-3);outline:1px solid var(--line);outline-offset:4px;padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column}
-@media (min-width:640px){.page{padding-inline:40px}}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:var(--boota);background-size:112px 112px}
+.page{position:relative;z-index:1;overflow:hidden;max-width:600px;margin:22px auto 44px;background:var(--paper);border:1px solid var(--gold);box-shadow:inset 0 0 0 4px var(--paper),inset 0 0 0 5px var(--gold-line),0 24px 50px rgba(90,40,50,.18);padding-block:0 36px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column}
+@media (min-width:640px){.page{padding-inline:36px}}
+.corner{position:absolute;width:64px;height:86px;z-index:2;pointer-events:none}
+.corner.tl{top:7px;left:7px}.corner.tr{top:7px;right:7px;transform:scaleX(-1)}.corner.bl{bottom:7px;left:7px;transform:scaleY(-1)}.corner.br{bottom:7px;right:7px;transform:scale(-1)}
+.corner svg{width:100%;height:100%}
 a{color:var(--gulabi-2)}
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--mor);outline-offset:3px}
 .dn{font-family:var(--hindi);color:var(--gulabi);font-weight:400}
 
-.preview{align-self:center;display:inline-flex;gap:4px;align-items:center;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--paper-3);padding:4px 4px 4px 12px;border-radius:999px;background:var(--paper);margin-bottom:12px}
+.preview{align-self:center;display:inline-flex;gap:4px;align-items:center;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--gold-line);padding:3px 4px 3px 12px;border-radius:999px;background:var(--paper);margin:16px 0 10px;position:relative;z-index:3}
 .preview a{text-decoration:none;color:var(--ink);padding:4px 10px;border-radius:999px}
 .preview a[aria-current="page"]{background:var(--mor);color:#fff;font-weight:600}
 
-.opener{text-align:center;padding-block:20px 8px}
-.opener .hindi{font-family:var(--hindi);font-size:20px;color:var(--gulabi);margin:0 0 14px;letter-spacing:.04em}
-.opener .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);margin:0 auto 26px;max-width:36ch;line-height:1.7}
-.names{font-family:var(--display);font-weight:400;font-size:clamp(46px,13vw,84px);line-height:.98;margin:0;letter-spacing:-.005em;text-wrap:balance}
-.names .n{display:block}
-.names .amp{display:block;font-style:italic;font-size:.34em;color:var(--mor);margin:10px 0;letter-spacing:.02em}
-.opener .date{font-family:var(--display);font-size:21px;margin:28px 0 4px;font-weight:400;font-style:italic}
-.opener .place{color:var(--ink-2);margin:0;font-size:15px}
-.countdown{display:inline-flex;align-items:baseline;gap:8px;margin-top:20px;color:var(--ink-2);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
-.countdown b{font-family:var(--display);font-size:26px;color:var(--gulabi-2);font-variant-numeric:tabular-nums;font-weight:400;letter-spacing:0;text-transform:none}
-.rule{display:flex;align-items:center;gap:12px;color:var(--gulabi);margin:28px auto 0;max-width:260px}
-.rule::before,.rule::after{content:"";flex:1;border-top:1px solid var(--line);border-bottom:1px solid var(--line);height:3px}
-.motif{width:8px;height:8px;border-radius:50%;background:var(--gulabi)}
+/* the arch: an SVG behind the opener, sized by script */
+.opener{position:relative;text-align:center;padding:clamp(80px,26vw,150px) 18px 34px;color:var(--paper);margin-top:16px}
+.arch{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.mandala{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,105%);aspect-ratio:1;max-width:none;pointer-events:none;opacity:.5}
+.opener>*{position:relative}
+.opener .mandala,.opener .arch{position:absolute}
+.opener .hindi{font-family:var(--hindi);font-size:20px;color:var(--gold-2);margin:0 0 12px;letter-spacing:.04em}
+.opener .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-2);margin:0 auto 22px;max-width:32ch;line-height:1.7;opacity:.9}
+.names{font-family:var(--display);font-weight:400;font-size:clamp(42px,11.5vw,72px);line-height:1.05;margin:0;letter-spacing:.01em;text-wrap:balance;color:var(--paper)}
+.names .n{display:block;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.names .amp{display:block;font-family:var(--serif);font-style:italic;font-size:.42em;color:var(--gold-2);margin:6px 0}
+.opener .date{font-family:var(--serif);font-size:23px;margin:22px 0 2px;font-weight:500;font-style:italic;color:var(--paper)}
+.opener .place{color:var(--paper-2);margin:0;font-size:15px}
+.countdown{display:inline-flex;align-items:baseline;gap:8px;margin-top:18px;padding:8px 16px;border:1px solid var(--gold);border-radius:999px;color:var(--paper-2);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.countdown b{font-family:var(--display);font-size:24px;color:var(--gold-2);font-variant-numeric:tabular-nums;letter-spacing:0}
+.rule{display:none}
 
-.card{padding-block:26px 8px;border-top:3px double var(--paper-3)}
-.card.invite{border-top:0;padding-top:20px}
-.card h2{font-family:var(--display);font-weight:400;font-size:28px;margin:0 0 4px;letter-spacing:-.01em;text-wrap:balance}
-.card .lead{color:var(--ink-2);margin:0 0 20px;max-width:50ch}
-.invite-text{font-size:17px;max-width:46ch;margin:0 auto;text-align:center;line-height:1.65}
-.invite-text em{font-family:var(--display);font-style:italic;font-size:1.18em;color:var(--gulabi-2)}
+.card{padding-block:28px 10px;position:relative}
+.card+.card::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:160px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.card+.card::after{content:"";position:absolute;top:-4px;left:50%;transform:translateX(-50%) rotate(45deg);width:7px;height:7px;background:var(--gulabi)}
+.card.invite{padding-top:30px}
+.card h2{font-family:var(--display);font-weight:400;font-size:27px;margin:0 0 4px;letter-spacing:.01em;color:var(--mor);text-wrap:balance;text-align:center}
+.card .lead{color:var(--ink-2);margin:0 auto 20px;max-width:46ch;text-align:center}
+.invite-text{font-family:var(--serif);font-size:22px;max-width:40ch;margin:0 auto;text-align:center;line-height:1.45}
+.invite-text em{font-style:italic;color:var(--gulabi-2)}
 .families{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px;text-align:center}
-.families>div{min-width:0}
+.families>div{min-width:0;border-top:1px solid var(--gold-line);padding-top:12px}
 .families small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mor);margin-bottom:6px;font-weight:600}
 .families span{font-size:15px;color:var(--ink-2)}
 .families .dn{font-size:14px}
 
-.timeline{list-style:none;margin:0;padding:0 0 0 18px;border-left:1px solid var(--line);display:flex;flex-direction:column;gap:22px}
+.timeline{list-style:none;margin:0;padding:0 0 0 20px;border-left:1px solid var(--gold);display:flex;flex-direction:column;gap:22px}
 .fn{position:relative;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:start}
-.fn::before{content:"";position:absolute;left:-23px;top:10px;width:9px;height:9px;border-radius:50%;background:var(--paper);border:2px solid var(--gulabi)}
+.fn::before{content:"";position:absolute;left:-25px;top:9px;width:9px;height:9px;transform:rotate(45deg);background:var(--paper);border:1px solid var(--gulabi);box-shadow:inset 0 0 0 2px var(--paper),inset 0 0 0 9px var(--gulabi)}
 .fn .what{min-width:0;grid-column:1/-1}
 .fn .when{display:flex;align-items:baseline;gap:6px;font-family:var(--display);color:var(--gulabi-2)}
 .fn .when .d{font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
-.fn .when .m{font-size:13px;letter-spacing:.12em;text-transform:uppercase;font-family:var(--body);color:var(--mute)}
-.fn h3{margin:0;font-family:var(--display);font-weight:400;font-size:24px}
+.fn .when .m{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-family:var(--body);color:var(--mute)}
+.fn h3{margin:0;font-family:var(--display);font-weight:400;font-size:24px;color:var(--mor-3)}
 .fn h3 .dn{font-size:17px;margin-left:8px}
 .fn .meta{margin:3px 0 0;color:var(--ink-2);font-size:15px}
 .fn .meta b{color:var(--ink);font-weight:600}
-.fn .note{margin:6px 0 0;color:var(--ink-2);font-size:14px;font-style:italic}
+.fn .note{margin:6px 0 0;color:var(--ink-2);font-size:14px;font-style:italic;font-family:var(--serif);font-size:16px}
 .fn .dress{font-size:14px;color:var(--ink-2);margin:6px 0 0}
 .fn .dress b{color:var(--mor);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:11px;margin-right:6px}
 .fn .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--mor);text-decoration:none;border-bottom:1px solid var(--mor);padding:2px 0}
-.chip:hover{color:var(--gulabi-2);border-color:var(--gulabi-2)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--mor);text-decoration:none;border:1px solid var(--gold-line);padding:5px 11px;border-radius:999px;background:#fff}
+.chip:hover{border-color:var(--mor)}
 .chip svg{width:14px;height:14px}
 
 .venue-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 20px}
@@ -87,10 +95,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .field input::placeholder{color:var(--mute)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .checks{display:flex;flex-wrap:wrap;gap:8px}
-.checks label{display:inline-flex;align-items:center;gap:7px;font-size:14px;padding:7px 12px;border:1px solid var(--paper-3);border-radius:4px;cursor:pointer;background:#fff}
+.checks label{display:inline-flex;align-items:center;gap:7px;font-size:14px;padding:7px 12px;border:1px solid var(--paper-3);border-radius:999px;cursor:pointer;background:#fff}
 .checks input{accent-color:var(--mor);margin:0}
 .checks label:has(input:checked){border-color:var(--mor);color:var(--mor)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;color:#fff;background:var(--mor);border:0;border-radius:4px;padding:14px 18px;cursor:pointer}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;color:#fff;background:var(--mor);border:1px solid var(--gold);border-radius:4px;padding:14px 18px;cursor:pointer;box-shadow:inset 0 0 0 2px var(--mor),inset 0 0 0 3px var(--gold-line)}
 .btn:hover{background:var(--mor-2)}
 .btn svg{width:18px;height:18px}
 .rsvp-foot{font-size:14px;color:var(--ink-2);margin:0}
@@ -98,17 +106,20 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .copy{font:inherit;font-size:13px;color:var(--gulabi-2);background:none;border:0;padding:0 4px;cursor:pointer;text-decoration:underline}
 .msg{margin:0;padding:12px 14px;border-left:2px solid var(--gulabi);background:var(--paper-2);color:var(--ink-2);font-size:14px;white-space:pre-wrap;font-family:inherit}
 
-.closing{text-align:center;padding-block:34px 8px;border-top:3px double var(--paper-3);margin-top:26px}
+.closing{text-align:center;padding-block:34px 8px;position:relative;margin-top:20px}
+.closing::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:160px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
 .closing .hindi{font-family:var(--hindi);font-size:19px;color:var(--gulabi);margin:0 0 6px}
 .closing p{margin:0;color:var(--ink-2)}
-.closing .sig{font-family:var(--display);font-style:italic;font-size:22px;color:var(--ink);margin-top:14px}
+.closing .sig{font-family:var(--serif);font-style:italic;font-size:24px;color:var(--mor-3);margin-top:14px}
 
 @media (max-width:460px){
   .families,.venue-grid,.row{grid-template-columns:1fr}
   .page{margin:12px auto 32px}
+  .opener{padding-inline:12px;padding-bottom:28px}
+  .corner{width:50px;height:66px}
 }
 </style>
-<div class="jaali" aria-hidden="true"></div>
+<div class="bg" aria-hidden="true"></div>
 <main class="page">
   <nav class="preview" id="previewBar" hidden aria-label="Preview">
     <span>Preview as</span>
@@ -210,6 +221,149 @@ const CONFIG = {
     { h:"Getting around", p:"A car will run between the hotel and each venue, 30 min before every function." }
   ]
 };
+
+</script>
+<script>
+/* Procedural traditional ornament. Every template draws from this: nothing is a stock image.
+   ORN.mandala(ctx, cx, cy, r, color, opts)     gold mandala, 12- or 16-fold
+   ORN.toran(canvas, color)                      marigold garland strings hanging from the top edge
+   ORN.blockPrint(colors, size)                  data URL tile of a boota (block-print flower) for CSS backgrounds
+   ORN.bandhani(color, size)                     data URL tile of tie-dye dots
+   ORN.paisleySVG(color)                         an SVG string of a paisley with inner curls (corner ornament)
+   ORN.archPath(w, h, cusps)                     SVG path of a cusped (Mughal) arch                                */
+const ORN = (() => {
+  const TAU = Math.PI * 2;
+
+  function petal(ctx, cx, cy, ang, len, wid, pointed = true) {
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(ang);
+    ctx.beginPath(); ctx.moveTo(0, 0);
+    if (pointed) { ctx.bezierCurveTo(wid, len * .35, wid, len * .75, 0, len); ctx.bezierCurveTo(-wid, len * .75, -wid, len * .35, 0, 0); }
+    else { ctx.ellipse(0, len / 2, wid, len / 2, 0, 0, TAU); }
+    ctx.closePath(); ctx.restore();
+  }
+
+  function mandala(ctx, cx, cy, r, color, o = {}) {
+    const n = o.n || 16, lw = o.lineWidth || 1;
+    ctx.save(); ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = lw; ctx.lineJoin = "round";
+    const ring = (rad, w = lw, dash) => { ctx.beginPath(); ctx.setLineDash(dash || []); ctx.lineWidth = w; ctx.arc(cx, cy, rad, 0, TAU); ctx.stroke(); ctx.setLineDash([]); ctx.lineWidth = lw; };
+    const petals = (rad, len, wid, count, off = 0, fill = 0, pointed = true) => {
+      for (let i = 0; i < count; i++) { petal(ctx, cx, cy, off + i * TAU / count, len, wid, pointed);
+        ctx.save(); ctx.translate(cx, cy); ctx.rotate(off + i * TAU / count); ctx.translate(0, rad); ctx.rotate(-(off + i * TAU / count)); ctx.restore();
+      }
+    };
+    const petalsAt = (rad, len, wid, count, off = 0, fill = 0, pointed = true) => {
+      for (let i = 0; i < count; i++) { const a = off + i * TAU / count;
+        ctx.save(); ctx.translate(cx + Math.cos(a) * rad, cy + Math.sin(a) * rad); ctx.rotate(a - Math.PI / 2);
+        petal(ctx, 0, 0, 0, len, wid, pointed); if (fill) { ctx.globalAlpha = fill; ctx.fill(); ctx.globalAlpha = 1; } ctx.stroke(); ctx.restore(); }
+    };
+    const dots = (rad, count, size, off = 0) => { for (let i = 0; i < count; i++) { const a = off + i * TAU / count; ctx.beginPath(); ctx.arc(cx + Math.cos(a) * rad, cy + Math.sin(a) * rad, size, 0, TAU); ctx.fill(); } };
+    // outer scalloped edge
+    ring(r); ring(r * .96, lw * .6);
+    petalsAt(r * .96, -r * .16, r * .055, n, 0, .12);
+    dots(r * .83, n, lw * 1.4, TAU / n / 2);
+    ring(r * .78, lw * .6, [lw * 3, lw * 3]);
+    petalsAt(r * .42, r * .33, r * .07, n, TAU / n / 2, .1);
+    petalsAt(r * .42, r * .24, r * .05, n, 0, .18);
+    ring(r * .44);
+    dots(r * .5, n * 2, lw * .9);
+    petalsAt(r * .12, r * .26, r * .07, n / 2, 0, .22);
+    petalsAt(r * .08, r * .16, r * .05, n / 2, TAU / n, .35);
+    ring(r * .1, lw * .8); ctx.beginPath(); ctx.arc(cx, cy, r * .035, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
+
+  function marigold(ctx, x, y, r, hueA, hueB) {
+    const g = ctx.createRadialGradient(x - r * .2, y - r * .2, r * .1, x, y, r);
+    g.addColorStop(0, hueB); g.addColorStop(1, hueA);
+    ctx.fillStyle = g; ctx.beginPath();
+    const k = 14; for (let i = 0; i <= k * 4; i++) { const a = i / (k * 4) * TAU; const rr = r * (0.82 + 0.18 * Math.abs(Math.sin(a * k / 2))); ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "rgba(120,50,0,.35)"; ctx.beginPath();
+    for (let i = 0; i <= k * 4; i++) { const a = i / (k * 4) * TAU; const rr = r * .5 * (0.8 + 0.2 * Math.abs(Math.sin(a * k / 2 + 1))); ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); }
+    ctx.closePath(); ctx.fill();
+  }
+  function leaf(ctx, x, y, ang, len, color) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(ang); ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(0, 0);
+    ctx.quadraticCurveTo(len * .28, len * .45, 0, len); ctx.quadraticCurveTo(-len * .28, len * .45, 0, 0); ctx.fill();
+    ctx.strokeStyle = "rgba(0,0,0,.25)"; ctx.lineWidth = .6; ctx.beginPath(); ctx.moveTo(0, len * .08); ctx.lineTo(0, len * .92); ctx.stroke(); ctx.restore();
+  }
+
+  /* Garland strings across the top of the canvas, with hanging tassels at both ends. */
+  function toran(c, opts = {}) {
+    const ctx = c.getContext("2d"); const dpr = Math.min(devicePixelRatio || 1, 2);
+    const W = c.clientWidth, H = c.clientHeight; c.width = W * dpr; c.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    const orange = opts.orange || "#e5781c", yellow = opts.yellow || "#f6b63a", green = opts.green || "#3f7a3a", greenDark = opts.greenDark || "#2c5a2a";
+    const fr = Math.max(7, Math.min(11, W / 48)); // flower radius
+    const span = fr * 9.5; const n = Math.max(2, Math.round(W / span)); const seg = W / n; const sag = Math.min(70, seg * .32);
+    const place = (x, y, i) => { if (i % 3 === 2) { leaf(ctx, x, y - fr * .3, Math.PI * .9, fr * 2, i % 2 ? green : greenDark); leaf(ctx, x, y - fr * .3, Math.PI * 1.1, fr * 2, green); } marigold(ctx, x, y, fr * (i % 2 ? .95 : 1.05), orange, yellow); };
+    // strings
+    ctx.strokeStyle = "rgba(60,30,0,.55)"; ctx.lineWidth = 1.2;
+    for (let s = 0; s < n; s++) { const x0 = s * seg, x1 = (s + 1) * seg; ctx.beginPath(); ctx.moveTo(x0, 0); ctx.quadraticCurveTo((x0 + x1) / 2, sag * 2, x1, 0); ctx.stroke(); }
+    // flowers along each curve
+    for (let s = 0; s < n; s++) { const x0 = s * seg, x1 = (s + 1) * seg; const cnt = Math.round(seg / (fr * 1.5));
+      for (let i = 0; i <= cnt; i++) { const t = i / cnt; const x = (1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * (x0 + x1) / 2 + t * t * x1; const y = 2 * (1 - t) * t * sag * 2; place(x, y + fr * .2, i + s); } }
+    // tassels at the ends
+    const tassel = (x) => { ctx.strokeStyle = "rgba(60,30,0,.55)"; ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H - fr * 2.2); ctx.stroke();
+      const cnt = Math.floor((H - fr * 2.4) / (fr * 1.5)); for (let i = 0; i < cnt; i++) place(x, fr * .9 + i * fr * 1.5, i + 1);
+      leaf(ctx, x, H - fr * 2.4, Math.PI * .08, fr * 2.2, green); leaf(ctx, x, H - fr * 2.4, -Math.PI * .08, fr * 2.2, greenDark); };
+    if (opts.tassels !== false && H > fr * 5) { tassel(fr * 1.4); tassel(W - fr * 1.4); }
+  }
+
+  function tile(size, draw) { const c = document.createElement("canvas"); const s = 2; c.width = size * s; c.height = size * s; const ctx = c.getContext("2d"); ctx.scale(s, s); draw(ctx, size); return c.toDataURL("image/png"); }
+
+  /* Boota: a block-print flower with stem and two leaves, in a half-drop grid. */
+  function blockPrint(colors, size = 96) {
+    return tile(size, (ctx, S) => {
+      const boota = (x, y, sc) => { ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc);
+        ctx.strokeStyle = colors.leaf; ctx.lineWidth = 1.4; ctx.lineCap = "round";
+        ctx.beginPath(); ctx.moveTo(0, 10); ctx.quadraticCurveTo(2, 20, 0, 30); ctx.stroke();
+        leaf(ctx, 0, 17, Math.PI * .62, 11, colors.leaf); leaf(ctx, 0, 21, -Math.PI * .62, 11, colors.leaf);
+        ctx.fillStyle = colors.petal; for (let i = 0; i < 8; i++) { petal(ctx, 0, 0, i * TAU / 8, 11, 3.2, false); ctx.fill(); }
+        ctx.fillStyle = colors.center; ctx.beginPath(); ctx.arc(0, 0, 3.2, 0, TAU); ctx.fill();
+        ctx.fillStyle = colors.dot; for (let i = 0; i < 8; i++) { const a = i * TAU / 8 + TAU / 16; ctx.beginPath(); ctx.arc(Math.cos(a) * 14.5, Math.sin(a) * 14.5, 1.1, 0, TAU); ctx.fill(); }
+        ctx.restore(); };
+      boota(S * .25, S * .22, 1); boota(S * .75, S * .72, 1);
+      ctx.fillStyle = colors.dot; [[.75, .22], [.25, .72]].forEach(([x, y]) => { ctx.beginPath(); ctx.arc(S * x, S * y, 1.6, 0, TAU); ctx.fill();
+        for (let i = 0; i < 4; i++) { const a = i * TAU / 4; ctx.beginPath(); ctx.arc(S * x + Math.cos(a) * 6, S * y + Math.sin(a) * 6, 1, 0, TAU); ctx.fill(); } });
+    });
+  }
+
+  function bandhani(color, size = 28) {
+    return tile(size, (ctx, S) => { ctx.strokeStyle = color; ctx.lineWidth = 1.2;
+      [[.25, .25], [.75, .75]].forEach(([x, y]) => { ctx.beginPath(); ctx.arc(S * x, S * y, 3.2, 0, TAU); ctx.stroke(); ctx.beginPath(); ctx.arc(S * x, S * y, .9, 0, TAU); ctx.fillStyle = color; ctx.fill(); });
+    });
+  }
+
+  /* Paisley (ambi) with inner curls; 120x160 viewBox, stem at bottom-left. */
+  function paisleySVG(color, extra = "") {
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 160" fill="none" stroke="${color}" stroke-width="1.6" stroke-linecap="round" ${extra}>
+<path d="M28 150C-6 118 2 60 40 32 62 16 86 8 104 20c10 10-6 28-12 44-8 20 2 46-10 66-10 18-34 32-54 20z" fill="${color}" fill-opacity=".08"/>
+<path d="M36 140C12 112 18 68 48 44c14-10 34-16 46-8 6 6-6 18-10 32-6 18 2 40-8 56-8 14-28 24-40 16z"/>
+<path d="M50 122c-12-20-4-48 18-62 10-6 22-8 28-4 4 4-6 12-8 24-4 16 2 34-6 46-6 10-24 6-32-4z" stroke-dasharray="3 3"/>
+<path d="M62 102c-4-10 0-24 10-30 6-4 12-2 12 2 2 6-8 8-8 16 0 6 4 10 0 14-4 2-10 2-14-2z"/>
+<circle cx="72" cy="86" r="3" fill="${color}"/>
+<path d="M104 20c8-10 20-6 14 6" /><path d="M40 32c-6-10-20-10-18 2"/>
+<circle cx="112" cy="14" r="2.2" fill="${color}"/><circle cx="26" cy="28" r="2.2" fill="${color}"/>
+<path d="M22 150c-6 2-10 6-8 10m14-8c-4 4-4 8-2 12m18-10c0 4 2 8 6 10" />
+</svg>`;
+  }
+
+  /* Cusped (multifoil) arch for an SVG of size w x h: a scalloped semicircle on top, straight sides, closed along the bottom. */
+  function archPath(w, h, cusps = 7) {
+    const r = w / 2, cx = w / 2, bulge = r * 0.2, cy = r + bulge + 2;
+    let d = `M0 ${h} L0 ${cy.toFixed(1)} `;
+    for (let i = 0; i < cusps; i++) {
+      const a0 = Math.PI + Math.PI * i / cusps, a1 = Math.PI + Math.PI * (i + 1) / cusps, am = (a0 + a1) / 2;
+      const x1 = cx + Math.cos(a1) * r, y1 = cy + Math.sin(a1) * r;
+      const mx = cx + Math.cos(am) * (r + bulge), my = cy + Math.sin(am) * (r + bulge);
+      d += `Q${mx.toFixed(1)} ${my.toFixed(1)} ${x1.toFixed(1)} ${y1.toFixed(1)} `;
+    }
+    d += `L${w} ${h} Z`; return d;
+  }
+
+  return { mandala, toran, blockPrint, bandhani, paisleySVG, archPath, marigold, leaf };
+})();
 
 </script>
 <script>
@@ -315,4 +469,24 @@ const CONFIG = {
 })();
 
 </script>
-
+<script>
+(() => {
+  const page = document.querySelector(".page"), opener = document.querySelector(".opener");
+  document.documentElement.style.setProperty("--boota", `url(${ORN.blockPrint({ petal:"rgba(195,69,107,.26)", center:"rgba(201,162,76,.75)", leaf:"rgba(23,78,67,.34)", dot:"rgba(195,69,107,.45)" }, 112)})`);
+  for (const c of ["tl","tr","bl","br"]) { const d = document.createElement("div"); d.className = "corner " + c; d.innerHTML = ORN.paisleySVG("#c9a24c"); d.setAttribute("aria-hidden","true"); page.appendChild(d); }
+  const arch = document.createElementNS("http://www.w3.org/2000/svg","svg"); arch.setAttribute("class","arch"); arch.setAttribute("aria-hidden","true");
+  arch.setAttribute("preserveAspectRatio","none"); opener.insertBefore(arch, opener.firstChild);
+  const m = document.createElement("canvas"); m.className = "mandala"; m.setAttribute("aria-hidden","true"); arch.insertAdjacentElement("afterend", m);
+  const draw = () => {
+    const w = opener.clientWidth, h = opener.clientHeight; arch.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    const d = ORN.archPath(w, h, 7);
+    const inset = 9; const d2 = ORN.archPath(w - inset * 2, h - inset, 7);
+    arch.innerHTML = `<path d="${d}" fill="#174e43"/><path d="${d}" fill="none" stroke="#c9a24c" stroke-width="2"/>` +
+      `<path d="${d2}" fill="none" stroke="#e9cf84" stroke-width="1" stroke-dasharray="2 4" transform="translate(${inset} ${inset})"/>`;
+    const dpr = Math.min(devicePixelRatio || 1, 2); const s = m.clientWidth; m.width = s * dpr; m.height = s * dpr;
+    const ctx = m.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,s,s);
+    ORN.mandala(ctx, s/2, s/2, s*.48, "#e9cf84", { n: 16, lineWidth: 1 });
+  };
+  draw(); addEventListener("resize", draw); addEventListener("hashchange", () => setTimeout(draw)); if (document.fonts) document.fonts.ready.then(draw);
+})();
+</script>

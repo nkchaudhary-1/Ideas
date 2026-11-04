@@ -4,9 +4,11 @@ Three invitation templates, each with a groom's-side and a bride's-side version.
 
 | Template | Look |
 |---|---|
-| `raat` | Night sky, marigold, drifting petals |
-| `subah` | Morning paper, Jaipur pink and peacock green, jaali lattice |
-| `kesar` | Poster: vermilion band, huge type, running strip |
+| `raat` | Shahi Raat: maroon and gold, marigold toran, gold mandala, paisley corners |
+| `subah` | Gulabi Subah: block-printed rose paper, emerald cusped arch, gold mandala |
+| `kesar` | Kesariya: saffron block-print ground, maroon card, Yatra One display, marigold garland |
+
+All ornament is drawn procedurally in `ornaments.js` (mandala, toran, block print, bandhani, paisley, arch), so there are no image assets to manage.
 
 ## Edit the content
 `config.js` is the only file to edit. Names, parents, functions (each tagged `groom`, `bride` or `both`), venues, travel notes and the two WhatsApp numbers all live there. Set `sample: false` once the details are real; that hides the preview bar.
