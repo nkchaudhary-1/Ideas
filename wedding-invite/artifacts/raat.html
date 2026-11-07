@@ -37,7 +37,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .opener>*{position:relative}
 .opener .mandala,.opener .arch{position:absolute}
 .opener .hindi{font-family:var(--hindi);font-size:22px;color:var(--gold);margin:0 0 10px;letter-spacing:.04em}
-.opener .eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ivory-2);margin:0 auto 22px;max-width:34ch;line-height:1.7}
+.opener .eyebrow{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--ivory-2);margin:0 auto 22px;max-width:44ch;line-height:1.7}
 .names{font-family:var(--display);font-weight:500;font-size:clamp(50px,13vw,84px);line-height:1;margin:0;letter-spacing:.01em;text-wrap:balance}
 .names .n{display:block;background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.08em;filter:drop-shadow(0 2px 0 rgba(0,0,0,.35))}
 .names .amp{display:block;font-style:italic;font-size:.4em;color:var(--gold);margin:4px 0;font-weight:400}
@@ -57,11 +57,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .card .lead{color:var(--ivory-2);margin:0 0 18px;max-width:52ch}
 .invite-text{font-family:var(--display);font-size:21px;line-height:1.45;max-width:40ch;margin:0 auto;text-align:center}
 .invite-text em{font-style:italic;color:var(--gold-2)}
-.families{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;text-align:center}
-.families>div{border-top:1px solid var(--gold-line);padding-top:12px;min-width:0}
-.families small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
-.families span{font-size:15px;color:var(--ivory-2)}
-.families .dn{font-size:14px}
 
 .timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .fn{display:grid;grid-template-columns:60px 1fr;gap:0 16px;padding-block:18px;border-top:1px solid rgba(217,178,90,.2)}
@@ -111,8 +106,22 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .closing p{margin:0;color:var(--ivory-2)}
 .closing .sig{font-family:var(--display);font-style:italic;font-size:24px;color:var(--gold-2);margin-top:14px}
 
+/* lineage, sign-off and event copy */
+.names .n{margin:0;font:inherit}
+.names .person{display:block}
+.names .amp{margin:16px 0}
+.lineage{font-family:var(--body);font-size:14px;line-height:1.55;font-weight:400;font-style:normal;letter-spacing:.01em;color:var(--ivory-2);margin:10px auto 0;max-width:44ch;text-shadow:none}
+.opener .hindi small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ivory-2);margin-top:6px}
+.signoff{margin-top:22px;text-align:center;border-top:1px solid var(--gold-line);padding-top:16px}
+.signoff .warm{margin:0;color:var(--ivory-2);font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.signoff .fam{margin:6px 0 0;font-family:var(--display);font-style:italic;font-size:26px;text-wrap:balance;line-height:1.2;color:var(--gold-2)}
+.signoff .city{margin:6px 0 0;color:var(--ivory-2);font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+.fn .headline{margin:6px 0 0;font-family:var(--display);font-style:italic;font-size:20px;color:var(--gold-2);line-height:1.3}
+.fn .evtext{margin:8px 0 0;color:var(--ivory-2);font-size:15px;max-width:52ch}
+.closing:empty{display:none}
+
 @media (max-width:460px){
-  .families,.venue-grid,.row{grid-template-columns:1fr}
+  .venue-grid,.row{grid-template-columns:1fr}
   .card{padding:22px 16px}
   .fn{grid-template-columns:52px 1fr;gap:0 12px}
   .fn .when{width:52px;height:52px}.fn .when .d{font-size:22px}
@@ -132,7 +141,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
   <header class="opener">
     <p class="hindi" id="blessing"></p>
     <p class="eyebrow" id="eyebrow"></p>
-    <h1 class="names"><span class="n" id="nameA"></span><span class="amp">and</span><span class="n" id="nameB"></span></h1>
+    <div class="names">
+      <div class="person"><h1 class="n" id="nameA"></h1><p class="lineage" id="lineA"></p></div>
+      <span class="amp" id="joiner"></span>
+      <div class="person"><h2 class="n" id="nameB"></h2><p class="lineage" id="lineB"></p></div>
+    </div>
     <p class="date" id="mainDate"></p>
     <p class="place" id="mainPlace"></p>
     <div class="countdown" id="countdown"></div>
@@ -141,25 +154,26 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 
   <section class="card invite">
     <p class="invite-text" id="inviteText"></p>
-    <div class="families">
-      <div><small id="famALabel"></small><span id="famA"></span></div>
-      <div><small id="famBLabel"></small><span id="famB"></span></div>
+    <div class="signoff">
+      <p class="warm" id="signWarm"></p>
+      <p class="fam" id="signFam"></p>
+      <p class="city" id="signCity"></p>
     </div>
   </section>
 
   <section class="card" id="functions">
-    <h2>The functions</h2>
+    <h2 id="fnTitle"></h2>
     <p class="lead" id="fnLead"></p>
     <ol class="timeline" id="timeline"></ol>
   </section>
 
-  <section class="card" id="venue">
+  <section class="card" id="venue" hidden>
     <h2>Getting there and staying</h2>
     <p class="lead" id="venueLead"></p>
     <div class="venue-grid" id="venueGrid"></div>
   </section>
 
-  <section class="card" id="rsvp">
+  <section class="card" id="rsvp" hidden>
     <h2>Will you be there?</h2>
     <p class="lead">Fill this in and send it to us on WhatsApp. It takes a few seconds and helps us plan the food and the rooms.</p>
     <form class="form" id="rsvpForm" novalidate>
@@ -170,7 +184,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
         <div class="field"><label for="rCity">Coming from</label><input id="rCity" name="city" placeholder="City"></div>
       </div>
       <div class="field"><span class="flabel">Which functions?</span><div class="checks" id="rFns"></div></div>
-      <div class="field"><label for="rNote">Anything we should know?</label><input id="rNote" name="note" placeholder="Food, travel dates, a song for the sangeet"></div>
+      <div class="field"><label for="rNote">Anything we should know?</label><input id="rNote" name="note" placeholder="Food, travel dates, a song for the celebration"></div>
       <pre class="msg" id="rPreview" hidden></pre>
       <button class="btn" type="submit" id="rSend">
         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c1.7.7 2.1.6 2.8.5a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.2-.2-.2-.5-.3z"/></svg>
@@ -191,37 +205,50 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 /* =====================================================================
    CONFIG: every template reads this. Edit this file only.
    Dates are YYYY-MM-DD, times are 24h "HH:MM".
-   `side` picks whose invitation this is: "groom" or "bride". Each side gets
-   its own hosts line, name order, functions and WhatsApp number.
-   In the URL, #groom or #bride overrides it (handy for previews).
-   Set sample:false once the details are real; it hides the preview bar.
+   `side` picks whose copy of the invitation this is: "groom" or "bride".
+   The host side lists its own name, lineage and family first. In the URL,
+   #groom or #bride overrides it. Set preview:false before sending: it hides the side switch.
+   In event text, {host} and {other} become the first names, host side first.
    ===================================================================== */
 const CONFIG = {
-  sample: true,
+  preview: true,
   side: "groom",
-  groom: { name: "Neelesh", hindi: "नीलेश", parents: "Mr. & Mrs. Chaudhary", whatsapp: "919999999999" },
-  bride: { name: "Partner", hindi: "पार्टनर", parents: "Mr. & Mrs. [Family name]", whatsapp: "918888888888" },
-  city: "Jaipur",
-  blessing: "॥ शुभ विवाह ॥",
-  closingHindi: "आपकी उपस्थिति ही हमारा आशीर्वाद है",
-  closingLine: "Your presence is the only gift we are hoping for.",
-  venueLead: "Everything is within 25 minutes of each other. We'll handle the hotel-to-venue runs; you handle getting to Jaipur.",
-  /* side: "groom", "bride" or "both". A guest of one side only sees that side's functions. */
+  blessing: "॥ श्री गणेशाय नमः ॥",
+  blessingEn: "Shri Ganeshaya Namah",
+  intro: "With the blessings of the Almighty and our beloved elders,<br>We cordially invite you to celebrate the auspicious wedding ceremony of",
+  joiner: "with",
+  groom: {
+    name: "Neelesh Kumar",
+    lineage: ["Grandson of Late Shri Kisan Lal", "Son of Shri Vijay Kumar & Smt. Archana Devi"],
+    family: "Kumar Family",
+    whatsapp: ""            // country code + number, digits only, e.g. "919876543210". Empty hides the RSVP card.
+  },
+  bride: {
+    name: "Pragyaniti",
+    lineage: ["Granddaughter of Late Shri Budh Lal", "Daughter of Shri Anil Kumar & Smt. Pushpa"],
+    family: "Pushpa Family",
+    whatsapp: ""
+  },
+  city: "Prayagraj",
+  inviteText: "As they embark on a beautiful journey of togetherness.<br>Your gracious presence and blessings will make this occasion truly special.",
+  signoff: "With warm regards,",
+  functionsTitle: "The celebration",
   functions: [
-    { side:"groom", name:"Haldi",     hindi:"हल्दी",  date:"2027-02-18", time:"10:00", end:"13:00", venue:"Chaudhary residence", address:"Vaishali Nagar, Jaipur", dress:"Yellow, anything you don't mind turmeric on", note:"Brunch after.", map:"https://maps.google.com/?q=Vaishali+Nagar+Jaipur" },
-    { side:"bride", name:"Haldi",     hindi:"हल्दी",  date:"2027-02-18", time:"10:00", end:"13:00", venue:"[Bride's family home]", address:"Malviya Nagar, Jaipur", dress:"Yellow, anything you don't mind turmeric on", note:"Brunch after.", map:"https://maps.google.com/?q=Malviya+Nagar+Jaipur" },
-    { side:"bride", name:"Mehndi",    hindi:"मेहंदी", date:"2027-02-18", time:"16:00", end:"20:00", venue:"[Bride's family home]", address:"Malviya Nagar, Jaipur", dress:"Pastels, florals", note:"Mehndi artists from 4pm. Dinner follows.", map:"https://maps.google.com/?q=Malviya+Nagar+Jaipur" },
-    { side:"both",  name:"Sangeet",   hindi:"संगीत",  date:"2027-02-19", time:"19:00", end:"23:30", venue:"[Venue name]", address:"Tonk Road, Jaipur", dress:"Festive, sequins encouraged", note:"Performances at 8. Bring your dancing shoes.", map:"https://maps.google.com/?q=Tonk+Road+Jaipur" },
-    { side:"groom", name:"Baraat",    hindi:"बारात",  date:"2027-02-20", time:"17:30", end:"18:30", venue:"Assembles at [Hotel name]", address:"Tonk Road, Jaipur", dress:"Traditional, safa provided", note:"We leave at 6 sharp. Dhol, horse, the works.", map:"https://maps.google.com/?q=Tonk+Road+Jaipur" },
-    { side:"both",  name:"Pheras",    hindi:"फेरे",   date:"2027-02-20", time:"18:30", end:"23:00", venue:"[Venue name]", address:"Tonk Road, Jaipur", dress:"Traditional", note:"Pheras around 9:30, after dinner.", map:"https://maps.google.com/?q=Tonk+Road+Jaipur" },
-    { side:"both",  name:"Reception", hindi:"स्वागत", date:"2027-02-21", time:"19:30", end:"23:00", venue:"[Venue name]", address:"MI Road, Jaipur", dress:"Cocktail, Indian or western", note:"", map:"https://maps.google.com/?q=MI+Road+Jaipur" }
+    {
+      side: "both",
+      name: "Wedding & Baraat Welcome",
+      date: "2026-12-11", time: "21:00", timeText: "9:00 PM onwards",
+      venue: "", address: "",     // add the venue and address when confirmed; add map:"https://maps.google.com/?q=..." for a Maps button
+      headline: "The day we've all been waiting for!",
+      body: "With immense joy, we invite you to celebrate the wedding of {host} & {other}. Join us to welcome the Baraat and bless the couple as they begin their beautiful journey together.",
+      note: "Your presence and blessings will make this occasion unforgettable."
+    }
   ],
-  travel: [
-    { h:"Nearest airport", p:"<b>Jaipur (JAI)</b>, 25 min from the venues." },
-    { h:"By train", p:"<b>Jaipur Junction</b>, 20 min away. Cabs and autos outside." },
-    { h:"Where you'll stay", p:"Rooms are blocked at <b>[Hotel name]</b> for 18 to 21 Feb. Tell us your dates in the RSVP." },
-    { h:"Getting around", p:"A car will run between the hotel and each venue, 30 min before every function." }
-  ]
+  travel: [],                    // optional cards: [{ h:"Nearest airport", p:"<b>...</b> ..." }]. Empty hides the section.
+  venueLead: "",
+  closingHindi: "॥ श्री गणेशाय नमः ॥",
+  closingLine: "",
+  closingSig: ""
 };
 
 </script>
@@ -376,68 +403,96 @@ const ORN = (() => {
   const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const MONTHS_LONG = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const first = s => String(s).trim().split(/\s+/)[0];
   const parse = (d, t="00:00") => new Date(`${d}T${t}:00`);
   const fmtTime = t => { const [h,m] = t.split(":").map(Number); const ap = h>=12?"pm":"am"; const hh = h%12||12; return m ? `${hh}:${String(m).padStart(2,"0")} ${ap}` : `${hh} ${ap}`; };
   const longDate = d => { const x = parse(d); return `${DAYS[x.getDay()]}, ${x.getDate()} ${MONTHS_LONG[x.getMonth()]} ${x.getFullYear()}`; };
-  const stamp = (d,t) => { const x = parse(d,t); const p = n => String(n).padStart(2,"0"); return `${x.getFullYear()}${p(x.getMonth()+1)}${p(x.getDate())}T${p(x.getHours())}${p(x.getMinutes())}00`; };
+  const stampD = d => { const p = n => String(n).padStart(2,"0"); return `${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}T${p(d.getHours())}${p(d.getMinutes())}00`; };
+  /* Calendar span. With no end time the event is saved as 3 hours; the guest can adjust it. */
+  const span = f => { const s = parse(f.date, f.time); let e = f.end ? parse(f.date, f.end) : new Date(s.getTime() + 3*36e5); if (e <= s) e = new Date(e.getTime() + 864e5); return [s, e]; };
   const pin = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>';
   const cal = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
+  const sideFromHash = () => { const h = location.hash.replace("#",""); return h === "bride" || h === "groom" ? h : null; };
+  const setText = (id, txt) => { const el = $(id); el.textContent = txt || ""; el.hidden = !txt; };
 
-  function sideFromHash(){ const h = location.hash.replace("#",""); return h === "bride" || h === "groom" ? h : null; }
+  /* One size for both names, shrunk until the longer one fits its column. */
+  function fitNames(){
+    const ns = [...document.querySelectorAll(".names .n")];
+    ns.forEach(n => { n.style.whiteSpace = "nowrap"; n.style.fontSize = ""; });
+    const size = Math.max(26, Math.min(...ns.map(n => { const fs = parseFloat(getComputedStyle(n).fontSize), cw = n.clientWidth, sw = n.scrollWidth; return sw > cw && cw > 0 ? fs * cw / sw * .97 : fs; })));
+    ns.forEach(n => n.style.fontSize = size + "px");
+  }
 
   function render(){
     const side = sideFromHash() || CONFIG.side || "groom";
     const host = CONFIG[side], other = CONFIG[side === "groom" ? "bride" : "groom"];
-    const child = side === "groom" ? "son" : "daughter";
+    const fill = s => String(s||"").replace(/\{host\}/g, first(host.name)).replace(/\{other\}/g, first(other.name));
     const fns = CONFIG.functions.filter(f => f.side === "both" || f.side === side);
-    const pheras = fns.find(f => /phera|wedding|shaadi|vivah|nikah/i.test(f.name)) || fns[fns.length-1];
-    const first = fns[0], last = fns[fns.length-1];
+    const main = fns.find(f => /phera|wedding|shaadi|vivah|nikah/i.test(f.name)) || fns[fns.length-1];
+    const f0 = fns[0], fN = fns[fns.length-1];
     document.documentElement.dataset.side = side;
+    document.title = `${first(host.name)} & ${first(other.name)} · Wedding invitation`;
 
-    $("previewBar").hidden = !CONFIG.sample;
+    $("previewBar").hidden = !CONFIG.preview;
     $("pvGroom").setAttribute("aria-current", side === "groom" ? "page" : "false");
     $("pvBride").setAttribute("aria-current", side === "bride" ? "page" : "false");
 
-    $("blessing").textContent = CONFIG.blessing;
-    $("eyebrow").textContent = `${host.parents} request the pleasure of your company at the wedding of their ${child}`;
+    $("blessing").innerHTML = esc(CONFIG.blessing) + (CONFIG.blessingEn ? `<small>${esc(CONFIG.blessingEn)}</small>` : "");
+    $("eyebrow").innerHTML = CONFIG.intro;
     $("nameA").textContent = host.name; $("nameB").textContent = other.name;
-    $("mainDate").textContent = longDate(pheras.date);
-    $("mainPlace").textContent = `${pheras.venue}, ${CONFIG.city}`;
-    $("inviteText").innerHTML = `We would love for you to be with us as <em>${esc(host.name)}</em> and <em>${esc(other.name)}</em> begin their life together, surrounded by the people who made them who they are.`;
-    $("famALabel").textContent = side === "groom" ? "The groom" : "The bride";
-    $("famA").innerHTML = `${esc(host.name)} <span class="dn" lang="hi">${esc(host.hindi||"")}</span><br>${child} of ${esc(host.parents)}`;
-    $("famBLabel").textContent = side === "groom" ? "The bride" : "The groom";
-    $("famB").innerHTML = `${esc(other.name)} <span class="dn" lang="hi">${esc(other.hindi||"")}</span><br>${side === "groom" ? "daughter" : "son"} of ${esc(other.parents)}`;
-    $("venueLead").textContent = CONFIG.venueLead;
-    $("closingHindi").textContent = CONFIG.closingHindi;
-    $("closingLine").textContent = CONFIG.closingLine;
-    $("closingSig").textContent = `${host.name} and ${other.name}, with the ${host.parents.replace(/^Mr\.? & Mrs\.? /,"")} family`;
-    $("rPhone").textContent = "+" + host.whatsapp;
-    $("fnLead").textContent = `${first.date === last.date ? "One day" : `${parse(first.date).getDate()} to ${parse(last.date).getDate()} ${MONTHS_LONG[parse(last.date).getMonth()]}`}, ${fns.length} functions. Tap one to open the venue in Maps or add it to your calendar.`;
+    $("joiner").textContent = CONFIG.joiner || "and";
+    $("lineA").innerHTML = (host.lineage||[]).map(esc).join("<br>");
+    $("lineB").innerHTML = (other.lineage||[]).map(esc).join("<br>");
+    $("mainDate").textContent = longDate(main.date);
+    $("mainPlace").textContent = [main.venue, CONFIG.city].filter(Boolean).join(", ");
 
-    const days = Math.ceil((parse(pheras.date, pheras.time) - Date.now())/864e5);
+    $("inviteText").innerHTML = CONFIG.inviteText;
+    setText("signWarm", CONFIG.signoff);
+    setText("signFam", `${host.family} & ${other.family}`);
+    setText("signCity", CONFIG.city);
+
+    $("fnTitle").textContent = CONFIG.functionsTitle || "The functions";
+    $("fnLead").textContent = fns.length === 1
+      ? "Save it to your calendar so the evening isn't missed."
+      : `${f0.date === fN.date ? "One day" : `${parse(f0.date).getDate()} to ${parse(fN.date).getDate()} ${MONTHS_LONG[parse(fN.date).getMonth()]}`}, ${fns.length} functions. Tap one to open the venue in Maps or add it to your calendar.`;
+
+    const days = Math.ceil((parse(main.date, main.time) - Date.now())/864e5);
     $("countdown").innerHTML = days > 1 ? `<b>${days}</b><span>days to go</span>` : days === 1 ? `<b>1</b><span>day to go</span>` : days === 0 ? `<b>Today</b>` : `<b>Married</b><span>${Math.abs(days)} days ago</span>`;
 
-    const gcal = f => `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`${f.name}: ${host.name} & ${other.name}`)}&dates=${stamp(f.date,f.time)}/${stamp(f.date,f.end||f.time)}&location=${encodeURIComponent(`${f.venue}, ${f.address}`)}&details=${encodeURIComponent(f.note||"")}`;
-    $("timeline").innerHTML = fns.map(f => { const d = parse(f.date); return `<li class="fn">
+    const gcal = f => { const [s, e] = span(f); const place = [f.venue, f.address, CONFIG.city].filter(Boolean).join(", ");
+      return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`${f.name}: ${host.name} & ${other.name}`)}&dates=${stampD(s)}/${stampD(e)}&location=${encodeURIComponent(place)}&details=${encodeURIComponent(fill(f.body || f.note))}`; };
+    $("timeline").innerHTML = fns.map(f => { const d = parse(f.date);
+      const time = f.timeText || (fmtTime(f.time) + (f.end ? ` to ${fmtTime(f.end)}` : ""));
+      const place = [f.venue, f.address].filter(Boolean).join(", ") || CONFIG.city;
+      return `<li class="fn">
       <div class="when"><div class="d">${d.getDate()}</div><div class="m">${MONTHS[d.getMonth()]}</div></div>
       <div class="what">
-        <h3>${esc(f.name)}<span class="dn" lang="hi">${esc(f.hindi||"")}</span></h3>
-        <p class="meta"><b>${fmtTime(f.time)}${f.end?` to ${fmtTime(f.end)}`:""}</b> · ${esc(f.venue)}, ${esc(f.address)}</p>
-        ${f.note?`<p class="note">${esc(f.note)}</p>`:""}
-        ${f.dress?`<p class="dress"><b>Wear</b>${esc(f.dress)}</p>`:""}
+        <h3>${esc(f.name)}${f.hindi ? `<span class="dn" lang="hi">${esc(f.hindi)}</span>` : ""}</h3>
+        ${f.headline ? `<p class="headline">${esc(fill(f.headline))}</p>` : ""}
+        ${f.body ? `<p class="evtext">${esc(fill(f.body))}</p>` : ""}
+        <p class="meta"><b>${esc(time)}</b> · ${esc(place)}</p>
+        ${f.note ? `<p class="note">${esc(fill(f.note))}</p>` : ""}
+        ${f.dress ? `<p class="dress"><b>Wear</b>${esc(f.dress)}</p>` : ""}
         <div class="acts">
-          ${f.map?`<a class="chip" href="${esc(f.map)}" target="_blank" rel="noopener">${pin}Open in Maps</a>`:""}
+          ${f.map ? `<a class="chip" href="${esc(f.map)}" target="_blank" rel="noopener">${pin}Open in Maps</a>` : ""}
           <a class="chip" href="${gcal(f)}" target="_blank" rel="noopener">${cal}Add to calendar</a>
         </div>
       </div></li>`; }).join("");
-    $("venueGrid").innerHTML = CONFIG.travel.map(t => `<div><h4>${esc(t.h)}</h4><p>${t.p}</p></div>`).join("");
 
+    const travel = CONFIG.travel || [];
+    $("venue").hidden = !travel.length;
+    $("venueLead").textContent = CONFIG.venueLead || "";
+    $("venueGrid").innerHTML = travel.map(t => `<div><h4>${esc(t.h)}</h4><p>${t.p}</p></div>`).join("");
+
+    $("rsvp").hidden = !host.whatsapp;
+    $("rPhone").textContent = host.whatsapp ? "+" + host.whatsapp : "";
     const keep = new Set([...document.querySelectorAll('#rFns input:checked')].map(i => i.value));
     const fresh = !$("rFns").children.length;
     $("rFns").innerHTML = fns.map((f,i) => `<label><input type="checkbox" name="fn" value="${esc(f.name)}" id="fn${i}" ${fresh || keep.has(f.name) ? "checked" : ""}>${esc(f.name)}</label>`).join("");
 
+    setText("closingHindi", CONFIG.closingHindi); setText("closingLine", CONFIG.closingLine); setText("closingSig", CONFIG.closingSig);
     render.current = { side, host, other, fns };
+    fitNames();
   }
 
   const form = $("rsvpForm");
@@ -468,6 +523,8 @@ const ORN = (() => {
 
   render();
   addEventListener("hashchange", render);
+  addEventListener("resize", fitNames);
+  if (document.fonts) document.fonts.ready.then(fitNames);
 })();
 
 </script>

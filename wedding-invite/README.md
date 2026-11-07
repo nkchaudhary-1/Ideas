@@ -11,7 +11,7 @@ Three invitation templates, each with a groom's-side and a bride's-side version.
 All ornament is drawn procedurally in `ornaments.js` (mandala, toran, block print, bandhani, paisley, arch), so there are no image assets to manage.
 
 ## Edit the content
-`config.js` is the only file to edit. Names, parents, functions (each tagged `groom`, `bride` or `both`), venues, travel notes and the two WhatsApp numbers all live there. Set `sample: false` once the details are real; that hides the preview bar.
+`config.js` is the only file to edit. Blessing, names, lineage, family names, events (each tagged `groom`, `bride` or `both`), venues, travel notes and the two WhatsApp numbers all live there. Set `preview: false` before sending; that hides the groom/bride switch at the top. An empty WhatsApp number hides the RSVP card, an empty `travel` list hides the travel card.
 
 `side` sets whose invitation a page is. `#groom` or `#bride` on the URL overrides it, so one deployment serves both families: `/raat/#bride`.
 

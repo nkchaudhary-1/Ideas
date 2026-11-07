@@ -18,7 +18,7 @@ for (const name of templates) {
   const fullHead = head.replace(/<meta name="claude:viewport-fit-sides"[^>]*>\n?/, "").trim();
   fs.mkdirSync(path.join(root, "dist", name), { recursive: true });
   fs.writeFileSync(path.join(root, "dist", name, "index.html"),
-    `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<meta name="description" content="Wedding invitation: dates, venues, travel and RSVP.">\n${fullHead}\n</head>\n<body>\n${body}</body>\n</html>\n`);
+    `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n<meta name="description" content="Wedding invitation">\n<style>[hidden]{display:none!important}</style>\n${fullHead}\n</head>\n<body>\n${body}</body>\n</html>\n`);
 }
 const links = templates.map(t => `<li><a href="/${t}/#groom">${t} · groom's side</a> <a href="/${t}/#bride">${t} · bride's side</a></li>`).join("\n");
 fs.writeFileSync(path.join(root, "dist", "index.html"),

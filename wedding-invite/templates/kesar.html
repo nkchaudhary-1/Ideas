@@ -37,7 +37,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .opener>*{position:relative}
 .opener .mandala,.opener .arch{position:absolute}
 .opener .hindi{font-family:var(--display);font-size:24px;color:var(--kesar-2);margin:0 0 10px;letter-spacing:.02em}
-.opener .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ivory-2);margin:0 auto 20px;max-width:34ch;line-height:1.7}
+.opener .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ivory-2);margin:0 auto 20px;max-width:44ch;line-height:1.7}
 .names{font-family:var(--display);font-weight:400;font-size:clamp(46px,12.5vw,86px);line-height:1.05;margin:0;letter-spacing:.005em;text-wrap:balance;color:var(--gold-2);text-shadow:0 3px 0 var(--wine)}
 .names .n{display:block}
 .names .amp{display:block;font-family:var(--serif);font-style:italic;font-size:.38em;color:var(--kesar-2);margin:6px 0;text-shadow:none}
@@ -55,11 +55,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .card .lead{color:var(--ivory-2);margin:0 0 20px;max-width:52ch}
 .invite-text{font-family:var(--serif);font-size:22px;max-width:40ch;margin:0 auto;line-height:1.45;text-align:center}
 .invite-text em{font-style:italic;color:var(--kesar-2)}
-.families{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px;text-align:center}
-.families>div{min-width:0;border-top:1px solid var(--gold-line);padding-top:10px}
-.families small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--kesar-2);margin-bottom:4px;font-weight:600}
-.families span{font-size:15px;color:var(--ivory-2)}
-.families .dn{font-size:14px}
 
 .timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .fn{display:grid;grid-template-columns:84px 1fr;gap:0 18px;padding-block:20px;border-top:1px solid rgba(217,178,90,.22)}
@@ -109,8 +104,21 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .closing p{margin:0 auto;color:var(--ivory-2);max-width:48ch}
 .closing .sig{font-family:var(--serif);font-style:italic;font-size:25px;color:var(--gold-2);margin-top:14px}
 
+/* lineage, sign-off and event copy */
+.names .n{margin:0;font:inherit}
+.names .person{display:block}
+.names .amp{margin:14px 0}
+.lineage{font-family:var(--body);font-size:14px;line-height:1.55;font-weight:400;font-style:normal;letter-spacing:.01em;color:var(--ivory-2);margin:10px auto 0;max-width:44ch;text-shadow:none}
+.opener .hindi small{display:block;font-family:var(--body);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ivory-2);margin-top:6px}
+.signoff{margin-top:22px;text-align:center;border-top:1px solid var(--gold-line);padding-top:16px}
+.signoff .warm{margin:0;color:var(--ivory-2);font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+.signoff .fam{margin:6px 0 0;font-family:var(--display);font-size:26px;text-wrap:balance;line-height:1.2;color:var(--kesar-2)}
+.signoff .city{margin:6px 0 0;color:var(--gold);font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.fn .headline{margin:6px 0 0;font-family:var(--serif);font-style:italic;font-size:21px;font-weight:600;color:var(--kesar-2);line-height:1.3}
+.fn .evtext{margin:8px 0 0;color:var(--ivory-2);font-size:15px;max-width:52ch}
+
 @media (max-width:460px){
-  .families,.venue-grid,.row{grid-template-columns:1fr}
+  .venue-grid,.row{grid-template-columns:1fr}
   .fn{grid-template-columns:62px 1fr;gap:0 12px}
   .fn .when .d{font-size:42px}
   .toran{height:64px;margin-bottom:2px}
