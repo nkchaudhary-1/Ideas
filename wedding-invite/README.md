@@ -38,3 +38,10 @@ Writes `dist/<template>/index.html` for hosting and `artifacts/<template>.html` 
 
 ## Host on Vercel
 Import the GitHub repo in Vercel, set **Root Directory** to `wedding-invite`, framework **Other**. `vercel.json` points it at `dist/`. Or from this folder: `npx vercel --prod`.
+
+## Video invite
+`video/` renders any template to a vertical 1080x1920 mp4 (about 57 seconds) by recording the real page while a script scrolls through every chapter, lights the diyas and sets off the celebration effect.
+
+    ./video/make.sh raat groom ./video/out     # or subah, kesar; groom or bride
+
+It needs Node with Playwright, ffmpeg and Python with numpy. The soundtrack is synthesised (a tanpura-style drone, a soft pad and chimes) and is a placeholder: swap in a real track by passing your own audio file to `video/encode.py`. Timings live at the top of `video/record.js`.

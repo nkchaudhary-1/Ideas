@@ -675,6 +675,9 @@ const FX = (() => {
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const TAU = Math.PI * 2, R = (a, b) => a + Math.random() * (b - a), pick = a => a[Math.floor(Math.random() * a.length)];
   let cv, ctx, W = 0, H = 0, dpr = 1, raf = 0, last = 0, additive = true, amb = null;
+  /* a soft glow drawn once per colour and stamped with drawImage; far cheaper than canvas shadowBlur */
+  const sprites = {};
+  const glow = c => sprites[c] || (sprites[c] = (() => { const s = document.createElement("canvas"); s.width = s.height = 64; const g = s.getContext("2d"), r = g.createRadialGradient(32, 32, 0, 32, 32, 32); r.addColorStop(0, `rgba(${c},.95)`); r.addColorStop(.22, `rgba(${c},.45)`); r.addColorStop(1, `rgba(${c},0)`); g.fillStyle = r; g.fillRect(0, 0, 64, 64); return s; })());
   const P = [];                                        // live particles
   const cap = 900;
 
@@ -711,7 +714,8 @@ const FX = (() => {
       if (p.t === "ember") {
         p.y -= p.vy * dt; p.x += Math.sin(now / 1400 * p.sw + p.ph) * .25 * dt; if (p.y < -10) { p.y = H + 10; p.x = R(0, W); }
         const fade = Math.min(1, p.y / (H * .25)), a = (.2 + .5 * (.5 + .5 * Math.sin(now / 1000 * p.tw + p.ph))) * Math.max(0, fade);
-        ctx.shadowBlur = 8; ctx.shadowColor = `rgba(${p.c},.8)`; ctx.fillStyle = `rgba(${p.c},${a.toFixed(3)})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, TAU); ctx.fill(); ctx.shadowBlur = 0;
+        ctx.globalAlpha = Math.min(1, a * 1.1); ctx.drawImage(glow(p.c), p.x - p.r * 6, p.y - p.r * 6, p.r * 12, p.r * 12); ctx.globalAlpha = 1;
+        ctx.fillStyle = `rgba(${p.c},${Math.min(1, a * 1.4).toFixed(3)})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.r * .8, 0, TAU); ctx.fill();
       } else if (p.t === "petal") {
         if (p.wait > 0) { p.wait -= 16.67 * dt; continue; }
         if (p.burst) { p.vx *= .985; p.vy += p.g * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy *= .992; p.life -= p.dec * dt; if (p.life <= 0 || p.y > H + 30) { P.splice(i, 1); continue; } }
@@ -719,7 +723,7 @@ const FX = (() => {
         p.rot += p.vr * dt; p.fl += p.vf * dt;
         ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.scale(Math.max(.25, Math.abs(Math.cos(p.fl))), 1); ctx.globalAlpha = p.al * Math.min(1, (p.life ?? 1) * 2); ctx.fillStyle = p.col; ctx.beginPath(); ctx.ellipse(0, 0, p.r * .62, p.r, 0, 0, TAU); ctx.fill(); ctx.restore();
       } else if (p.t === "rocket") {
-        p.y += p.vy * dt; p.vy *= .985; ctx.globalCompositeOperation = additive ? "lighter" : "source-over"; ctx.strokeStyle = "rgba(255,225,160,.9)"; ctx.lineWidth = 2.2; ctx.shadowBlur = 12; ctx.shadowColor = "rgba(255,210,120,.9)"; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y + 26); ctx.stroke(); ctx.shadowBlur = 0; ctx.globalCompositeOperation = "source-over";
+        p.y += p.vy * dt; p.vy *= .985; ctx.globalCompositeOperation = additive ? "lighter" : "source-over"; ctx.strokeStyle = "rgba(255,225,160,.9)"; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y + 26); ctx.stroke(); ctx.drawImage(glow("255,214,130"), p.x - 14, p.y - 14, 28, 28); ctx.globalCompositeOperation = "source-over";
         if (p.y <= p.ty || p.vy > -1.2) { P.splice(i, 1); firework(p.x, p.y, p.colors); }
       } else if (p.t === "spark") {
         p.tr.push(p.x, p.y); if (p.tr.length > 22) p.tr.splice(0, 2);
@@ -727,7 +731,8 @@ const FX = (() => {
         const tw = .75 + .25 * Math.sin(now / 60 + p.tw), al = Math.min(1, p.life * 1.3) * tw;
         ctx.globalCompositeOperation = additive ? "lighter" : "source-over"; ctx.lineCap = "round"; ctx.lineJoin = "round";
         ctx.strokeStyle = `rgba(${p.c},${(al * .42).toFixed(3)})`; ctx.lineWidth = p.w * .8; ctx.beginPath(); ctx.moveTo(p.tr[0], p.tr[1]); for (let k = 2; k < p.tr.length; k += 2) ctx.lineTo(p.tr[k], p.tr[k + 1]); ctx.lineTo(p.x, p.y); ctx.stroke();
-        ctx.fillStyle = `rgba(${p.c},${al.toFixed(3)})`; ctx.shadowBlur = 10; ctx.shadowColor = `rgba(${p.c},.9)`; ctx.beginPath(); ctx.arc(p.x, p.y, p.w * (.7 + p.life * .6), 0, TAU); ctx.fill(); ctx.shadowBlur = 0; ctx.globalCompositeOperation = "source-over";
+        const gr = p.w * (3.4 + p.life * 2.6); ctx.globalAlpha = Math.min(1, al * .9); ctx.drawImage(glow(p.c), p.x - gr, p.y - gr, gr * 2, gr * 2); ctx.globalAlpha = 1;
+        ctx.fillStyle = `rgba(${p.c},${al.toFixed(3)})`; ctx.beginPath(); ctx.arc(p.x, p.y, p.w * (.6 + p.life * .5), 0, TAU); ctx.fill(); ctx.globalCompositeOperation = "source-over";
       } else if (p.t === "flash") {
         p.life -= .09 * dt; if (p.life <= 0) { P.splice(i, 1); continue; } const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 120 * (1 - p.life * .4)); g.addColorStop(0, `rgba(255,236,190,${(p.life * .35).toFixed(3)})`); g.addColorStop(1, "rgba(255,236,190,0)"); ctx.globalCompositeOperation = additive ? "lighter" : "source-over"; ctx.fillStyle = g; ctx.fillRect(p.x - 130, p.y - 130, 260, 260); ctx.globalCompositeOperation = "source-over";
       }
