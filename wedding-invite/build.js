@@ -4,7 +4,7 @@
 const fs = require("fs"), path = require("path");
 const root = __dirname;
 const read = f => fs.readFileSync(path.join(root, f), "utf8");
-const markup = read("markup.html"), config = read("config.js"), render = read("render.js"), orn = read("ornaments.js"), base = read("base.css");
+const markup = read("markup.html"), config = read("config.js"), render = read("render.js"), ill = read("illustrations.js"), fx = read("fx.js"), exp = read("experience.js"), base = read("base.css");
 const templates = fs.readdirSync(path.join(root, "templates")).filter(f => f.endsWith(".html")).map(f => f.replace(".html",""));
 fs.mkdirSync(path.join(root, "dist"), { recursive: true });
 fs.mkdirSync(path.join(root, "artifacts"), { recursive: true });
@@ -14,7 +14,8 @@ for (const name of templates) {
   const [head0, rest = ""] = src.split("<!--DECOR-->");
   const head = head0.replace("<style>", `<style>\n${base}\n</style>\n<style>`);
   const [decor, script = ""] = rest.split("<!--SCRIPT-->");
-  const body = `${decor.trim()}\n${markup}\n<script>\n${config}\n</script>\n<script>\n${orn}\n</script>\n<script>\n${render}\n</script>\n${script.trim()}\n`;
+  const CDN = `<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>\n<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>\n<script>document.documentElement.classList.add(window.gsap&&window.ScrollTrigger&&!matchMedia("(prefers-reduced-motion: reduce)").matches?"fx-on":"fx-off")</script>`;
+  const body = `${CDN}\n${decor.trim()}\n${markup}\n<script>\n${config}\n</script>\n<script>\n${ill}\n</script>\n<script>\n${fx}\n</script>\n<script>\n${render}\n</script>\n<script>\n${exp}\n</script>\n${script.trim()}\n`;
   fs.writeFileSync(path.join(root, "artifacts", `${name}.html`), `${head.trim()}\n${body}`);
   const fullHead = head.replace(/<meta name="claude:viewport-fit-sides"[^>]*>\n?/, "").trim();
   fs.mkdirSync(path.join(root, "dist", name), { recursive: true });

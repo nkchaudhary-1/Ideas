@@ -1,69 +1,118 @@
-<main class="page">
-  <nav class="preview" id="previewBar" hidden aria-label="Preview">
-    <span>Preview as</span>
-    <a href="#groom" id="pvGroom">Groom's side</a>
-    <a href="#bride" id="pvBride">Bride's side</a>
-  </nav>
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="door l"></div><div class="door r"></div>
+  <div class="loader-core">
+    <div class="loader-emblem" id="loaderEmblem"></div>
+    <p class="loader-bless" id="loaderBless"></p>
+    <p class="loader-count"><span id="loaderNum">0</span><i>%</i></p>
+  </div>
+</div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="cursor" id="cursor" aria-hidden="true"><i class="c-dot"></i><i class="c-ring"><b id="cursorLabel"></b></i></div>
 
-  <header class="opener">
-    <p class="hindi" id="blessing"></p>
-    <p class="eyebrow" id="eyebrow"></p>
-    <div class="names">
-      <div class="person"><h1 class="n" id="nameA"></h1><p class="lineage" id="lineA"></p></div>
-      <span class="amp" id="joiner"></span>
-      <div class="person"><h2 class="n" id="nameB"></h2><p class="lineage" id="lineB"></p></div>
+<header class="hud" id="hud" data-tone="paper">
+  <a class="mono" href="#top" id="mono" aria-label="Back to top" data-cursor="Top"><span id="monoA"></span><i></i><span id="monoB"></span></a>
+  <p class="chap" aria-live="polite"><b id="chapNo"></b><span id="chapName"></span></p>
+  <div class="prog" aria-hidden="true"><i id="progBar"></i></div>
+</header>
+
+<nav class="preview" id="previewBar" hidden aria-label="Preview">
+  <span>Preview as</span>
+  <a href="#groom" id="pvGroom">Groom's side</a>
+  <a href="#bride" id="pvBride">Bride's side</a>
+</nav>
+
+<main id="top">
+  <section class="hero" id="hero" data-chapter="Welcome" data-hud="paper">
+    <div class="scene" id="sceneHero" aria-hidden="true"></div>
+    <div class="hero-copy" id="heroCopy">
+      <p class="hindi" id="blessing"></p>
+      <h1 class="title" id="title"><span class="t" id="titleA"></span><span class="t-amp" id="titleJoin">&amp;</span><span class="t" id="titleB"></span></h1>
+      <p class="date" id="mainDate"></p>
+      <p class="place" id="mainPlace"></p>
     </div>
-    <p class="date" id="mainDate"></p>
-    <p class="place" id="mainPlace"></p>
-    <div class="countdown" id="countdown"></div>
-    <div class="rule" aria-hidden="true"><span class="motif"></span></div>
-  </header>
-
-  <section class="card invite">
-    <p class="invite-text" id="inviteText"></p>
-    <div class="signoff">
-      <p class="warm" id="signWarm"></p>
-      <p class="fam" id="signFam"></p>
-      <p class="city" id="signCity"></p>
-    </div>
+    <div class="scroll-hint" id="scrollHint" aria-hidden="true"><span>Scroll</span><i></i></div>
   </section>
 
-  <section class="card" id="functions">
-    <h2 id="fnTitle"></h2>
-    <p class="lead" id="fnLead"></p>
-    <ol class="timeline" id="timeline"></ol>
-  </section>
-
-  <section class="card" id="venue" hidden>
-    <h2>Getting there and staying</h2>
-    <p class="lead" id="venueLead"></p>
-    <div class="venue-grid" id="venueGrid"></div>
-  </section>
-
-  <section class="card" id="rsvp" hidden>
-    <h2>Will you be there?</h2>
-    <p class="lead">Fill this in and send it to us on WhatsApp. It takes a few seconds and helps us plan the food and the rooms.</p>
-    <form class="form" id="rsvpForm" novalidate>
-      <div class="field"><label for="rName">Your name</label><input id="rName" name="name" autocomplete="name" placeholder="As we know you" required></div>
-      <div class="row">
-        <div class="field"><label for="rCount">Guests, including you</label>
-          <select id="rCount" name="count"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6+</option></select></div>
-        <div class="field"><label for="rCity">Coming from</label><input id="rCity" name="city" placeholder="City"></div>
+  <section class="vows" id="vows" data-chapter="Blessings" data-hud="paper">
+    <div class="scene" id="sceneVows" aria-hidden="true"></div>
+    <div class="beats" id="beats">
+      <div class="beat b-intro"><p class="eyebrow" id="eyebrow"></p></div>
+      <div class="beat b-person"><h2 class="n" id="nameA"></h2><p class="lineage" id="lineA"></p></div>
+      <div class="beat b-joiner"><span class="amp" id="joiner"></span></div>
+      <div class="beat b-person"><h2 class="n" id="nameB"></h2><p class="lineage" id="lineB"></p></div>
+      <div class="beat b-invite">
+        <p class="invite-text" id="inviteText"></p>
+        <div class="signoff">
+          <p class="warm" id="signWarm"></p>
+          <p class="fam" id="signFam"></p>
+          <p class="city" id="signCity"></p>
+        </div>
       </div>
-      <div class="field"><span class="flabel">Which functions?</span><div class="checks" id="rFns"></div></div>
-      <div class="field"><label for="rNote">Anything we should know?</label><input id="rNote" name="note" placeholder="Food, travel dates, a song for the celebration"></div>
-      <pre class="msg" id="rPreview" hidden></pre>
-      <button class="btn" type="submit" id="rSend">
-        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c1.7.7 2.1.6 2.8.5a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.2-.2-.2-.5-.3z"/></svg>
-        Send RSVP on WhatsApp
-      </button>
-      <p class="rsvp-foot">If WhatsApp doesn't open, message <code id="rPhone"></code> <button type="button" class="copy" id="copyPhone">copy number</button></p>
-    </form>
+    </div>
   </section>
 
-  <footer class="closing">
-    <p class="hindi" id="closingHindi"></p>
-    <p id="closingLine"></p>
-    <p class="sig" id="closingSig"></p>
+  <section class="celebrate" id="celebrate" data-chapter="Celebration" data-hud="ink">
+    <div class="scene" id="sceneCel" aria-hidden="true"></div>
+    <div class="cel-top">
+      <div class="bignum" id="bigNum">
+        <span class="num" id="bnNum" data-n="11">11</span>
+        <p class="bn-meta"><b id="bnMonth"></b><span id="bnDay"></span><span id="bnYear"></span></p>
+      </div>
+      <div class="cel-copy">
+        <p class="kicker" id="fnTitle"></p>
+        <ol class="timeline" id="timeline"></ol>
+        <p class="cel-lead" id="fnLead"></p>
+      </div>
+    </div>
+    <div class="diyas-wrap">
+      <div class="diyas" id="diyas"></div>
+      <p class="diya-hint" id="diyaHint">Tap each diya to light it</p>
+    </div>
+    <div class="count" id="countdown" aria-label="Time until the wedding"></div>
+  </section>
+
+  <section class="marquee" id="marquee" aria-hidden="true"><div class="mq-row" id="mq1"></div><div class="mq-row alt" id="mq2"></div></section>
+
+  <section class="panel" id="venue" hidden>
+    <div class="panel-in">
+      <h2>Getting there and staying</h2>
+      <p class="lead" id="venueLead"></p>
+      <div class="venue-grid" id="venueGrid"></div>
+    </div>
+  </section>
+
+  <section class="panel" id="rsvp" data-chapter="RSVP" data-hud="ink" hidden>
+    <div class="panel-in">
+      <h2>Will you be there?</h2>
+      <p class="lead">Fill this in and send it to us on WhatsApp. It takes a few seconds and helps us plan the food and the rooms.</p>
+      <form class="form" id="rsvpForm" novalidate>
+        <div class="field"><label for="rName">Your name</label><input id="rName" name="name" autocomplete="name" placeholder="As we know you" required></div>
+        <div class="row">
+          <div class="field"><label for="rCount">Guests, including you</label>
+            <select id="rCount" name="count"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6+</option></select></div>
+          <div class="field"><label for="rCity">Coming from</label><input id="rCity" name="city" placeholder="City"></div>
+        </div>
+        <div class="field"><span class="flabel">Which functions?</span><div class="checks" id="rFns"></div></div>
+        <div class="field"><label for="rNote">Anything we should know?</label><input id="rNote" name="note" placeholder="Food, travel dates, a song for the celebration"></div>
+        <pre class="msg" id="rPreview" hidden></pre>
+        <button class="btn mag" type="submit" id="rSend" data-cursor="Send">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.2-.6.8-.8 1-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 12 12 0 0 0 4.6 4c1.7.7 2.1.6 2.8.5a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c0-.2-.2-.2-.5-.3z"/></svg>
+          Send RSVP on WhatsApp
+        </button>
+        <p class="rsvp-foot">If WhatsApp doesn't open, message <code id="rPhone"></code> <button type="button" class="copy" id="copyPhone">copy number</button></p>
+      </form>
+    </div>
+  </section>
+
+  <footer class="finale" id="finale" data-chapter="Thank you" data-hud="paper">
+    <div class="scene" id="sceneFin" aria-hidden="true"></div>
+    <div class="fin-copy">
+      <p class="fin-hindi" id="closingHindi"></p>
+      <p class="fin-names" id="finNames"></p>
+      <p class="fin-date" id="finDate"></p>
+      <button class="shower mag" id="shower" type="button" data-cursor="Tap"><span>Shower blessings</span></button>
+      <p class="shower-count" id="showerCount" aria-live="polite"></p>
+      <a class="to-top mag" href="#top" data-cursor="Top">Back to top</a>
+    </div>
   </footer>
 </main>

@@ -17,21 +17,13 @@
   const sideFromHash = () => { const h = location.hash.replace("#",""); return h === "bride" || h === "groom" ? h : null; };
   const setText = (id, txt) => { const el = $(id); el.textContent = txt || ""; el.hidden = !txt; };
 
-  /* One size for both names, shrunk until the longer one fits its column. */
-  function fitNames(){
-    const ns = [...document.querySelectorAll(".names .n")];
-    ns.forEach(n => { n.style.whiteSpace = "nowrap"; n.style.fontSize = ""; });
-    const size = Math.max(26, Math.min(...ns.map(n => { const fs = parseFloat(getComputedStyle(n).fontSize), cw = n.clientWidth, sw = n.scrollWidth; return sw > cw && cw > 0 ? fs * cw / sw * .97 : fs; })));
-    ns.forEach(n => n.style.fontSize = size + "px");
-  }
-
   function render(){
     const side = sideFromHash() || CONFIG.side || "groom";
     const host = CONFIG[side], other = CONFIG[side === "groom" ? "bride" : "groom"];
     const fill = s => String(s||"").replace(/\{host\}/g, first(host.name)).replace(/\{other\}/g, first(other.name));
     const fns = CONFIG.functions.filter(f => f.side === "both" || f.side === side);
     const main = fns.find(f => /phera|wedding|shaadi|vivah|nikah/i.test(f.name)) || fns[fns.length-1];
-    const f0 = fns[0], fN = fns[fns.length-1];
+    const f0 = fns[0], fN = fns[fns.length-1], md = parse(main.date);
     document.documentElement.dataset.side = side;
     document.title = `${first(host.name)} & ${first(other.name)} · Wedding invitation`;
 
@@ -39,62 +31,78 @@
     $("pvGroom").setAttribute("aria-current", side === "groom" ? "page" : "false");
     $("pvBride").setAttribute("aria-current", side === "bride" ? "page" : "false");
 
+    /* gate + hud */
+    if ($("loaderBless")) $("loaderBless").textContent = CONFIG.blessing;   // the gate removes itself once open
+    $("monoA").textContent = first(host.name)[0]; $("monoB").textContent = first(other.name)[0];
+
+    /* hero */
     $("blessing").innerHTML = esc(CONFIG.blessing) + (CONFIG.blessingEn ? `<small>${esc(CONFIG.blessingEn)}</small>` : "");
+    $("titleA").textContent = first(host.name); $("titleB").textContent = first(other.name);
+    $("mainDate").textContent = longDate(main.date);
+    $("mainPlace").textContent = [main.venue, CONFIG.city].filter(Boolean).join(", ");
+
+    /* blessings stage */
     $("eyebrow").innerHTML = CONFIG.intro;
     $("nameA").textContent = host.name; $("nameB").textContent = other.name;
     $("joiner").textContent = CONFIG.joiner || "and";
     $("lineA").innerHTML = (host.lineage||[]).map(esc).join("<br>");
     $("lineB").innerHTML = (other.lineage||[]).map(esc).join("<br>");
-    $("mainDate").textContent = longDate(main.date);
-    $("mainPlace").textContent = [main.venue, CONFIG.city].filter(Boolean).join(", ");
-
     $("inviteText").innerHTML = CONFIG.inviteText;
     setText("signWarm", CONFIG.signoff);
     setText("signFam", `${host.family} & ${other.family}`);
     setText("signCity", CONFIG.city);
 
+    /* celebration */
+    $("bnNum").textContent = md.getDate(); $("bnNum").dataset.n = md.getDate();
+    $("bnMonth").textContent = MONTHS_LONG[md.getMonth()]; $("bnDay").textContent = DAYS[md.getDay()]; $("bnYear").textContent = md.getFullYear();
     $("fnTitle").textContent = CONFIG.functionsTitle || "The functions";
-    $("fnLead").textContent = fns.length === 1
-      ? "Save it to your calendar so the evening isn't missed."
+    $("fnLead").textContent = fns.length === 1 ? "Save it to your calendar so the evening isn't missed."
       : `${f0.date === fN.date ? "One day" : `${parse(f0.date).getDate()} to ${parse(fN.date).getDate()} ${MONTHS_LONG[parse(fN.date).getMonth()]}`}, ${fns.length} functions. Tap one to open the venue in Maps or add it to your calendar.`;
-
-    const days = Math.ceil((parse(main.date, main.time) - Date.now())/864e5);
-    $("countdown").innerHTML = days > 1 ? `<b>${days}</b><span>days to go</span>` : days === 1 ? `<b>1</b><span>day to go</span>` : days === 0 ? `<b>Today</b>` : `<b>Married</b><span>${Math.abs(days)} days ago</span>`;
-
     const gcal = f => { const [s, e] = span(f); const place = [f.venue, f.address, CONFIG.city].filter(Boolean).join(", ");
       return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(`${f.name}: ${host.name} & ${other.name}`)}&dates=${stampD(s)}/${stampD(e)}&location=${encodeURIComponent(place)}&details=${encodeURIComponent(fill(f.body || f.note))}`; };
+    $("timeline").className = "timeline" + (fns.length === 1 ? " single" : "");
     $("timeline").innerHTML = fns.map(f => { const d = parse(f.date);
       const time = f.timeText || (fmtTime(f.time) + (f.end ? ` to ${fmtTime(f.end)}` : ""));
       const place = [f.venue, f.address].filter(Boolean).join(", ") || CONFIG.city;
       return `<li class="fn">
       <div class="when"><div class="d">${d.getDate()}</div><div class="m">${MONTHS[d.getMonth()]}</div></div>
       <div class="what">
-        <h3>${esc(f.name)}${f.hindi ? `<span class="dn" lang="hi">${esc(f.hindi)}</span>` : ""}</h3>
+        <h3 class="fn-name">${esc(f.name)}${f.hindi ? `<span class="dn" lang="hi">${esc(f.hindi)}</span>` : ""}</h3>
         ${f.headline ? `<p class="headline">${esc(fill(f.headline))}</p>` : ""}
         ${f.body ? `<p class="evtext">${esc(fill(f.body))}</p>` : ""}
         <p class="meta"><b>${esc(time)}</b> · ${esc(place)}</p>
         ${f.note ? `<p class="note">${esc(fill(f.note))}</p>` : ""}
         ${f.dress ? `<p class="dress"><b>Wear</b>${esc(f.dress)}</p>` : ""}
         <div class="acts">
-          ${f.map ? `<a class="chip" href="${esc(f.map)}" target="_blank" rel="noopener">${pin}Open in Maps</a>` : ""}
-          <a class="chip" href="${gcal(f)}" target="_blank" rel="noopener">${cal}Add to calendar</a>
+          ${f.map ? `<a class="chip mag" data-cursor="Open" href="${esc(f.map)}" target="_blank" rel="noopener"><span>${pin}Open in Maps</span></a>` : ""}
+          <a class="chip mag" data-cursor="Add" href="${gcal(f)}" target="_blank" rel="noopener"><span>${cal}Add to calendar</span></a>
         </div>
       </div></li>`; }).join("");
 
+    /* marquee */
+    const sep = '<i class="mq-sep"></i>';
+    const items = [`${first(host.name)} &amp; ${first(other.name)}`, esc(fns.length === 1 ? f0.name : "The celebration"), `${String(md.getDate()).padStart(2,"0")}.${String(md.getMonth()+1).padStart(2,"0")}.${md.getFullYear()}`, esc(CONFIG.city), `<span class="dn">${esc(CONFIG.blessing)}</span>`];
+    $("mq1").innerHTML = `<div class="mq-set">${items.map(t => `<span class="mq-item">${t}</span>${sep}`).join("")}</div>`;
+    $("mq2").innerHTML = `<div class="mq-set">${items.slice().reverse().map(t => `<span class="mq-item">${t}</span>${sep}`).join("")}</div>`;
+
+    /* travel, rsvp */
     const travel = CONFIG.travel || [];
     $("venue").hidden = !travel.length;
     $("venueLead").textContent = CONFIG.venueLead || "";
     $("venueGrid").innerHTML = travel.map(t => `<div><h4>${esc(t.h)}</h4><p>${t.p}</p></div>`).join("");
-
     $("rsvp").hidden = !host.whatsapp;
     $("rPhone").textContent = host.whatsapp ? "+" + host.whatsapp : "";
     const keep = new Set([...document.querySelectorAll('#rFns input:checked')].map(i => i.value));
     const fresh = !$("rFns").children.length;
     $("rFns").innerHTML = fns.map((f,i) => `<label><input type="checkbox" name="fn" value="${esc(f.name)}" id="fn${i}" ${fresh || keep.has(f.name) ? "checked" : ""}>${esc(f.name)}</label>`).join("");
 
-    setText("closingHindi", CONFIG.closingHindi); setText("closingLine", CONFIG.closingLine); setText("closingSig", CONFIG.closingSig);
-    render.current = { side, host, other, fns };
-    fitNames();
+    /* finale */
+    $("closingHindi").textContent = CONFIG.closingHindi || CONFIG.blessing;
+    $("finNames").textContent = `${first(host.name)} & ${first(other.name)}`;
+    $("finDate").textContent = `${String(md.getDate()).padStart(2,"0")} · ${String(md.getMonth()+1).padStart(2,"0")} · ${md.getFullYear()}`;
+
+    render.current = { side, host, other, fns, main, target: parse(main.date, main.time) };
+    if (typeof EXP !== "undefined" && EXP.refresh) EXP.refresh();
   }
 
   const form = $("rsvpForm");
@@ -123,8 +131,7 @@
     setTimeout(() => b.textContent = "copy number", 1800);
   });
 
+  window.INV = render;
   render();
   addEventListener("hashchange", render);
-  addEventListener("resize", fitNames);
-  if (document.fonts) document.fonts.ready.then(fitNames);
 })();
