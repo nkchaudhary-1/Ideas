@@ -4,14 +4,15 @@
 const fs = require("fs"), path = require("path");
 const root = __dirname;
 const read = f => fs.readFileSync(path.join(root, f), "utf8");
-const markup = read("markup.html"), config = read("config.js"), render = read("render.js"), orn = read("ornaments.js");
+const markup = read("markup.html"), config = read("config.js"), render = read("render.js"), orn = read("ornaments.js"), base = read("base.css");
 const templates = fs.readdirSync(path.join(root, "templates")).filter(f => f.endsWith(".html")).map(f => f.replace(".html",""));
 fs.mkdirSync(path.join(root, "dist"), { recursive: true });
 fs.mkdirSync(path.join(root, "artifacts"), { recursive: true });
 
 for (const name of templates) {
   const src = read(`templates/${name}.html`);
-  const [head, rest = ""] = src.split("<!--DECOR-->");
+  const [head0, rest = ""] = src.split("<!--DECOR-->");
+  const head = head0.replace("<style>", `<style>\n${base}\n</style>\n<style>`);
   const [decor, script = ""] = rest.split("<!--SCRIPT-->");
   const body = `${decor.trim()}\n${markup}\n<script>\n${config}\n</script>\n<script>\n${orn}\n</script>\n<script>\n${render}\n</script>\n${script.trim()}\n`;
   fs.writeFileSync(path.join(root, "artifacts", `${name}.html`), `${head.trim()}\n${body}`);

@@ -2,13 +2,13 @@
 
 Three invitation templates, each with a groom's-side and a bride's-side version. Static, no backend. RSVP sends a prefilled WhatsApp message.
 
-| Template | Look |
-|---|---|
-| `raat` | Shahi Raat: maroon and gold, marigold toran, gold mandala, paisley corners |
-| `subah` | Gulabi Subah: block-printed rose paper, emerald cusped arch, gold mandala |
-| `kesar` | Kesariya: saffron block-print ground, maroon card, Yatra One display, marigold garland |
+| Template | Look | Motion |
+|---|---|---|
+| `raat` | Aubergine night, gold only | A gold mandala draws itself, names rise in, embers drift up like diya sparks |
+| `subah` | Blush paper, one emerald cusped arch | The arch rises and outlines itself in gold, a few rose petals drift past |
+| `kesar` | Saffron hero, scalloped edge, maroon on ivory | A marigold garland drops in and sways, names reveal line by line, one shower of petals |
 
-All ornament is drawn procedurally in `ornaments.js` (mandala, toran, block print, bandhani, paisley, arch), so there are no image assets to manage.
+Shared layout lives in `base.css` (open flow, one centred column, entrance sequence, scroll reveals). Each template only sets its colour tokens, its hero and its motion. Ornament and motion helpers are in `ornaments.js`, all drawn in code, so there are no image assets. Everything respects `prefers-reduced-motion`.
 
 ## Edit the content
 `config.js` is the only file to edit. Blessing, names, lineage, family names, events (each tagged `groom`, `bride` or `both`), venues, travel notes and the two WhatsApp numbers all live there. Set `preview: false` before sending; that hides the groom/bride switch at the top. An empty WhatsApp number hides the RSVP card, an empty `travel` list hides the travel card.
