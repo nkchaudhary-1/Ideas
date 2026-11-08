@@ -37,24 +37,25 @@ a{color:inherit}
 .s1-cl{left:541d;top:1599d;width:820d;color:#6f3212;font-size:38d;line-height:1.5}
 
 /* ---------- 2. couple portrait ---------- */
-.s2-photo{left:-1088d;top:-125d;width:3256d;height:2170d;-webkit-mask-image:url(assets/arch-mask.svg);mask-image:url(assets/arch-mask.svg);-webkit-mask-position:1140d 247d;mask-position:1140d 247d;-webkit-mask-size:978d 1675d;mask-size:978d 1675d;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;mix-blend-mode:darken;overflow:hidden}
-.s2-g{left:52d;top:122d;width:978d;height:1675d;mix-blend-mode:multiply}
+.s2-photo{left:-1088d;top:-125d;width:3256d;height:2170d;-webkit-mask-image:url(assets/arch-mask.svg);mask-image:url(assets/arch-mask.svg);-webkit-mask-position:calc(1140d + 978d * (1 - var(--k2,1)) / 2) calc(247d + 1675d * (1 - var(--k2,1)) / 2);mask-position:calc(1140d + 978d * (1 - var(--k2,1)) / 2) calc(247d + 1675d * (1 - var(--k2,1)) / 2);-webkit-mask-size:calc(978d * var(--k2,1)) calc(1675d * var(--k2,1));mask-size:calc(978d * var(--k2,1)) calc(1675d * var(--k2,1));-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;mix-blend-mode:darken;overflow:hidden}
+.s2-g{left:52d;top:122d;width:978d;height:1675d;mix-blend-mode:multiply;transform:scale(var(--k2,1));transform-origin:489d 837.5d}
 .s2-tx{left:541d;top:1406d;width:820d;color:#672e0f;font-size:38d;line-height:1.5}
 .s2-nm{left:540d;font-size:144d;line-height:1.4;color:var(--ivory);white-space:nowrap}
 .s2-sub{left:540d;top:856d;font-size:21.6d;line-height:1.4;letter-spacing:3.888d;text-transform:uppercase;color:var(--ivory);white-space:nowrap}
 
 /* ---------- 3. two families ---------- */
-.s3-g{left:52d;top:122d;width:978d;height:1675d;mix-blend-mode:multiply}
+.s3-g{left:52d;top:122d;width:978d;height:1675d;mix-blend-mode:multiply;clip-path:inset(calc(100% * (1 - var(--pe,1))) 0 0 0)}
 .s3-det{left:131d;width:820d;color:var(--ivory);text-align:center;display:flex;flex-direction:column;gap:16d;align-items:center}
 .s3-det .n{font-size:112d;line-height:1.1;width:100%}
 .s3-det .l{font-size:38d;line-height:1.5;width:100%}
-.s3-lot{left:-291.48d;top:-200.13d;width:1965.394d;height:2526.702d;display:flex;align-items:center;justify-content:center}
+.s3-lot{left:-291.48d;top:-200.13d;width:1965.394d;height:2526.702d;display:flex;align-items:center;justify-content:center;translate:0 calc(260d * (1 - var(--pe,1)));opacity:calc(var(--pe,1) * 2.4)}
 .s3-lot .in{transform:rotate(20.93deg);width:1253d;height:2226d;flex:none}
 .s3-lot img{transform-origin:50% 100%;animation:sway 8s ease-in-out infinite}
 
 /* ---------- 4. journey and blessings ---------- */
 .s4{background:var(--peach)}
 .s4-bg{left:0;top:0;width:1081d;height:1920d;overflow:hidden}
+.s4-bg img{scale:calc(1.5 - .5 * var(--pe,1));transform-origin:540d 760d}
 .s4-pn{left:208d;top:707d;width:681d;height:567d;background:var(--peach)}
 .s4-bl{left:298d;top:789d;width:486d;height:833d;mix-blend-mode:multiply}
 .s4-lab{left:540.5d;top:414d;font-size:21.6d;line-height:1.4;letter-spacing:3.888d;text-transform:uppercase;color:var(--brown);white-space:nowrap}
@@ -66,7 +67,7 @@ a{color:inherit}
 .s4-bt{left:540d;top:1686d;width:820d;color:var(--brown);font-size:38d;line-height:1.5}
 
 /* ---------- 5. baraat schedule ---------- */
-.s5-g{left:52d;top:122d;width:978d;height:1675d;mix-blend-mode:multiply}
+.s5-g{left:52d;top:122d;width:978d;height:1675d;mix-blend-mode:multiply;clip-path:inset(0 calc(50% * (1 - var(--pe,1))) 0 calc(50% * (1 - var(--pe,1))))}
 .s5-lab{left:540.5d;top:414d;font-size:21.6d;line-height:1.4;letter-spacing:3.888d;text-transform:uppercase;color:var(--ivory);white-space:nowrap}
 .s5-mask{left:-513d;top:1045d;width:2028d;height:1056d;background:var(--ivory);filter:blur(190d)}
 .s5-date{left:541.5d;top:453d;font-size:80d;line-height:1.4;color:var(--ivory);white-space:nowrap}
@@ -77,6 +78,7 @@ a{color:inherit}
 .s5-glow{left:282d;top:1405d;width:520d;height:520d;border-radius:50%;background:radial-gradient(circle,rgba(255,200,120,.55) 0,rgba(255,176,90,.25) 40%,transparent 70%);animation:breathe 4.2s ease-in-out infinite}
 
 /* ---------- 6. venue and closing ---------- */
+.s6-scene{inset:0;clip-path:circle(calc(2500d * var(--pe,1)) at 575d 1850d)}
 .s6-rv{left:-119.34d;top:-266.54d;width:1319.674d;height:2494.073d;overflow:hidden}
 .s6-rv .flip{transform:scaleX(-1);width:100%;height:100%}
 .s6-rv img{object-position:bottom}
@@ -127,3 +129,27 @@ html:not(.js) .s4-meet{opacity:.9}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
+
+/* ---------- scroll-scrubbed transitions ----------
+   main.js sets --pe (0 to 1, eased) on each screen as it scrolls into view. Without JavaScript, or with reduced motion,
+   --pe is unset and every rule below falls back to the finished state. They mirror the five transitions in the film. */
+#couple{--k2:calc(.3 + .7 * var(--pe,1))}
+.s2-photo img{scale:calc(1.3 - .3 * var(--pe,1))}
+.key{pointer-events:none;overflow:visible;fill:none;stroke:#f0d79a;stroke-width:3.2;stroke-linejoin:round;filter:drop-shadow(0 0 7px rgba(255,200,110,.9))}
+.key use{stroke-dasharray:1 1;stroke-dashoffset:calc(1 - min(1, var(--pe,1) * 1.7));opacity:calc(1 - max(0, (var(--pe,1) - .45) * 1.9))}
+.s5-line{top:122d;width:3d;height:1675d;background:linear-gradient(transparent,#f2dc9f 10%,#f2dc9f 90%,transparent);box-shadow:0 0 14px rgba(255,210,130,.95);opacity:calc(1 - max(0, (var(--pe,1) - .5) * 2));pointer-events:none}
+.s5-line.l{left:calc(52 * var(--u) + 489 * var(--u) * (1 - var(--pe,1)) - 1.5 * var(--u))}
+.s5-line.r{left:calc(52 * var(--u) + 489 * var(--u) * (1 + var(--pe,1)) - 1.5 * var(--u))}
+.s6-ring{left:calc(575d - 2500d * var(--pe,1));top:calc(1850d - 2500d * var(--pe,1));width:calc(5000d * var(--pe,1));height:calc(5000d * var(--pe,1));border-radius:50%;background:radial-gradient(circle closest-side,transparent 80%,rgba(255,224,164,.6) 95%,transparent 100%);mix-blend-mode:screen;opacity:calc(1 - max(0, (var(--pe,1) - .55) * 2.2));pointer-events:none}
+
+/* text effects: labels track in from wide letter-spacing, names carry a slow glint */
+.fx-track,.fx-track3{transition:opacity 1.1s ease var(--d,0s),translate 1.2s var(--ease) var(--d,0s),filter 1.1s ease var(--d,0s),letter-spacing 2.2s var(--ease) var(--d,0s)}
+html.js .screen:not(.on) .fx-track{letter-spacing:calc(3.888d + 20d)}
+html.js .screen:not(.on) .fx-track3{letter-spacing:calc(3d + 20d)}
+.shine{--sb:var(--ivory);--sh:#ffd98a;background:linear-gradient(105deg,var(--sb) 0 40%,var(--sh) 50%,var(--sb) 60% 100%) 130% 0/280% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 9s ease-in-out infinite;animation-delay:var(--sd,3s)}
+.s4-hd.shine{--sb:var(--brown);--sh:#d6a04a}
+@keyframes shine{0%,62%{background-position:130% 0}100%{background-position:-30% 0}}
+
+/* canvas for the seam effects, sparkles, lanterns, birds and tap bursts */
+#fx{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:20;display:none}
+html.js #fx{display:block}

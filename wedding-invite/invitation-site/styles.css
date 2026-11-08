@@ -37,24 +37,25 @@ a{color:inherit}
 .s1-cl{left:calc(541 * var(--u));top:calc(1599 * var(--u));width:calc(820 * var(--u));color:#6f3212;font-size:calc(38 * var(--u));line-height:1.5}
 
 /* ---------- 2. couple portrait ---------- */
-.s2-photo{left:calc(-1088 * var(--u));top:calc(-125 * var(--u));width:calc(3256 * var(--u));height:calc(2170 * var(--u));-webkit-mask-image:url(assets/arch-mask.svg);mask-image:url(assets/arch-mask.svg);-webkit-mask-position:calc(1140 * var(--u)) calc(247 * var(--u));mask-position:calc(1140 * var(--u)) calc(247 * var(--u));-webkit-mask-size:calc(978 * var(--u)) calc(1675 * var(--u));mask-size:calc(978 * var(--u)) calc(1675 * var(--u));-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;mix-blend-mode:darken;overflow:hidden}
-.s2-g{left:calc(52 * var(--u));top:calc(122 * var(--u));width:calc(978 * var(--u));height:calc(1675 * var(--u));mix-blend-mode:multiply}
+.s2-photo{left:calc(-1088 * var(--u));top:calc(-125 * var(--u));width:calc(3256 * var(--u));height:calc(2170 * var(--u));-webkit-mask-image:url(assets/arch-mask.svg);mask-image:url(assets/arch-mask.svg);-webkit-mask-position:calc(calc(1140 * var(--u)) + calc(978 * var(--u)) * (1 - var(--k2,1)) / 2) calc(calc(247 * var(--u)) + calc(1675 * var(--u)) * (1 - var(--k2,1)) / 2);mask-position:calc(calc(1140 * var(--u)) + calc(978 * var(--u)) * (1 - var(--k2,1)) / 2) calc(calc(247 * var(--u)) + calc(1675 * var(--u)) * (1 - var(--k2,1)) / 2);-webkit-mask-size:calc(calc(978 * var(--u)) * var(--k2,1)) calc(calc(1675 * var(--u)) * var(--k2,1));mask-size:calc(calc(978 * var(--u)) * var(--k2,1)) calc(calc(1675 * var(--u)) * var(--k2,1));-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;mix-blend-mode:darken;overflow:hidden}
+.s2-g{left:calc(52 * var(--u));top:calc(122 * var(--u));width:calc(978 * var(--u));height:calc(1675 * var(--u));mix-blend-mode:multiply;transform:scale(var(--k2,1));transform-origin:calc(489 * var(--u)) calc(837.5 * var(--u))}
 .s2-tx{left:calc(541 * var(--u));top:calc(1406 * var(--u));width:calc(820 * var(--u));color:#672e0f;font-size:calc(38 * var(--u));line-height:1.5}
 .s2-nm{left:calc(540 * var(--u));font-size:calc(144 * var(--u));line-height:1.4;color:var(--ivory);white-space:nowrap}
 .s2-sub{left:calc(540 * var(--u));top:calc(856 * var(--u));font-size:calc(21.6 * var(--u));line-height:1.4;letter-spacing:calc(3.888 * var(--u));text-transform:uppercase;color:var(--ivory);white-space:nowrap}
 
 /* ---------- 3. two families ---------- */
-.s3-g{left:calc(52 * var(--u));top:calc(122 * var(--u));width:calc(978 * var(--u));height:calc(1675 * var(--u));mix-blend-mode:multiply}
+.s3-g{left:calc(52 * var(--u));top:calc(122 * var(--u));width:calc(978 * var(--u));height:calc(1675 * var(--u));mix-blend-mode:multiply;clip-path:inset(calc(100% * (1 - var(--pe,1))) 0 0 0)}
 .s3-det{left:calc(131 * var(--u));width:calc(820 * var(--u));color:var(--ivory);text-align:center;display:flex;flex-direction:column;gap:calc(16 * var(--u));align-items:center}
 .s3-det .n{font-size:calc(112 * var(--u));line-height:1.1;width:100%}
 .s3-det .l{font-size:calc(38 * var(--u));line-height:1.5;width:100%}
-.s3-lot{left:calc(-291.48 * var(--u));top:calc(-200.13 * var(--u));width:calc(1965.394 * var(--u));height:calc(2526.702 * var(--u));display:flex;align-items:center;justify-content:center}
+.s3-lot{left:calc(-291.48 * var(--u));top:calc(-200.13 * var(--u));width:calc(1965.394 * var(--u));height:calc(2526.702 * var(--u));display:flex;align-items:center;justify-content:center;translate:0 calc(calc(260 * var(--u)) * (1 - var(--pe,1)));opacity:calc(var(--pe,1) * 2.4)}
 .s3-lot .in{transform:rotate(20.93deg);width:calc(1253 * var(--u));height:calc(2226 * var(--u));flex:none}
 .s3-lot img{transform-origin:50% 100%;animation:sway 8s ease-in-out infinite}
 
 /* ---------- 4. journey and blessings ---------- */
 .s4{background:var(--peach)}
 .s4-bg{left:0;top:0;width:calc(1081 * var(--u));height:calc(1920 * var(--u));overflow:hidden}
+.s4-bg img{scale:calc(1.5 - .5 * var(--pe,1));transform-origin:calc(540 * var(--u)) calc(760 * var(--u))}
 .s4-pn{left:calc(208 * var(--u));top:calc(707 * var(--u));width:calc(681 * var(--u));height:calc(567 * var(--u));background:var(--peach)}
 .s4-bl{left:calc(298 * var(--u));top:calc(789 * var(--u));width:calc(486 * var(--u));height:calc(833 * var(--u));mix-blend-mode:multiply}
 .s4-lab{left:calc(540.5 * var(--u));top:calc(414 * var(--u));font-size:calc(21.6 * var(--u));line-height:1.4;letter-spacing:calc(3.888 * var(--u));text-transform:uppercase;color:var(--brown);white-space:nowrap}
@@ -66,7 +67,7 @@ a{color:inherit}
 .s4-bt{left:calc(540 * var(--u));top:calc(1686 * var(--u));width:calc(820 * var(--u));color:var(--brown);font-size:calc(38 * var(--u));line-height:1.5}
 
 /* ---------- 5. baraat schedule ---------- */
-.s5-g{left:calc(52 * var(--u));top:calc(122 * var(--u));width:calc(978 * var(--u));height:calc(1675 * var(--u));mix-blend-mode:multiply}
+.s5-g{left:calc(52 * var(--u));top:calc(122 * var(--u));width:calc(978 * var(--u));height:calc(1675 * var(--u));mix-blend-mode:multiply;clip-path:inset(0 calc(50% * (1 - var(--pe,1))) 0 calc(50% * (1 - var(--pe,1))))}
 .s5-lab{left:calc(540.5 * var(--u));top:calc(414 * var(--u));font-size:calc(21.6 * var(--u));line-height:1.4;letter-spacing:calc(3.888 * var(--u));text-transform:uppercase;color:var(--ivory);white-space:nowrap}
 .s5-mask{left:calc(-513 * var(--u));top:calc(1045 * var(--u));width:calc(2028 * var(--u));height:calc(1056 * var(--u));background:var(--ivory);filter:blur(calc(190 * var(--u)))}
 .s5-date{left:calc(541.5 * var(--u));top:calc(453 * var(--u));font-size:calc(80 * var(--u));line-height:1.4;color:var(--ivory);white-space:nowrap}
@@ -77,6 +78,7 @@ a{color:inherit}
 .s5-glow{left:calc(282 * var(--u));top:calc(1405 * var(--u));width:calc(520 * var(--u));height:calc(520 * var(--u));border-radius:50%;background:radial-gradient(circle,rgba(255,200,120,.55) 0,rgba(255,176,90,.25) 40%,transparent 70%);animation:breathe 4.2s ease-in-out infinite}
 
 /* ---------- 6. venue and closing ---------- */
+.s6-scene{inset:0;clip-path:circle(calc(calc(2500 * var(--u)) * var(--pe,1)) at calc(575 * var(--u)) calc(1850 * var(--u)))}
 .s6-rv{left:calc(-119.34 * var(--u));top:calc(-266.54 * var(--u));width:calc(1319.674 * var(--u));height:calc(2494.073 * var(--u));overflow:hidden}
 .s6-rv .flip{transform:scaleX(-1);width:100%;height:100%}
 .s6-rv img{object-position:bottom}
@@ -127,3 +129,27 @@ html:not(.js) .s4-meet{opacity:.9}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
+
+/* ---------- scroll-scrubbed transitions ----------
+   main.js sets --pe (0 to 1, eased) on each screen as it scrolls into view. Without JavaScript, or with reduced motion,
+   --pe is unset and every rule below falls back to the finished state. They mirror the five transitions in the film. */
+#couple{--k2:calc(.3 + .7 * var(--pe,1))}
+.s2-photo img{scale:calc(1.3 - .3 * var(--pe,1))}
+.key{pointer-events:none;overflow:visible;fill:none;stroke:#f0d79a;stroke-width:3.2;stroke-linejoin:round;filter:drop-shadow(0 0 7px rgba(255,200,110,.9))}
+.key use{stroke-dasharray:1 1;stroke-dashoffset:calc(1 - min(1, var(--pe,1) * 1.7));opacity:calc(1 - max(0, (var(--pe,1) - .45) * 1.9))}
+.s5-line{top:calc(122 * var(--u));width:calc(3 * var(--u));height:calc(1675 * var(--u));background:linear-gradient(transparent,#f2dc9f 10%,#f2dc9f 90%,transparent);box-shadow:0 0 14px rgba(255,210,130,.95);opacity:calc(1 - max(0, (var(--pe,1) - .5) * 2));pointer-events:none}
+.s5-line.l{left:calc(52 * var(--u) + 489 * var(--u) * (1 - var(--pe,1)) - 1.5 * var(--u))}
+.s5-line.r{left:calc(52 * var(--u) + 489 * var(--u) * (1 + var(--pe,1)) - 1.5 * var(--u))}
+.s6-ring{left:calc(calc(575 * var(--u)) - calc(2500 * var(--u)) * var(--pe,1));top:calc(calc(1850 * var(--u)) - calc(2500 * var(--u)) * var(--pe,1));width:calc(calc(5000 * var(--u)) * var(--pe,1));height:calc(calc(5000 * var(--u)) * var(--pe,1));border-radius:50%;background:radial-gradient(circle closest-side,transparent 80%,rgba(255,224,164,.6) 95%,transparent 100%);mix-blend-mode:screen;opacity:calc(1 - max(0, (var(--pe,1) - .55) * 2.2));pointer-events:none}
+
+/* text effects: labels track in from wide letter-spacing, names carry a slow glint */
+.fx-track,.fx-track3{transition:opacity 1.1s ease var(--d,0s),translate 1.2s var(--ease) var(--d,0s),filter 1.1s ease var(--d,0s),letter-spacing 2.2s var(--ease) var(--d,0s)}
+html.js .screen:not(.on) .fx-track{letter-spacing:calc(calc(3.888 * var(--u)) + calc(20 * var(--u)))}
+html.js .screen:not(.on) .fx-track3{letter-spacing:calc(calc(3 * var(--u)) + calc(20 * var(--u)))}
+.shine{--sb:var(--ivory);--sh:#ffd98a;background:linear-gradient(105deg,var(--sb) 0 40%,var(--sh) 50%,var(--sb) 60% 100%) 130% 0/280% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:shine 9s ease-in-out infinite;animation-delay:var(--sd,3s)}
+.s4-hd.shine{--sb:var(--brown);--sh:#d6a04a}
+@keyframes shine{0%,62%{background-position:130% 0}100%{background-position:-30% 0}}
+
+/* canvas for the seam effects, sparkles, lanterns, birds and tap bursts */
+#fx{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:20;display:none}
+html.js #fx{display:block}
