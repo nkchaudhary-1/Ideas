@@ -1,0 +1,20 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Neelesh and Pranati//Wedding invitation//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:wedding-2026-12-11@neelesh-pranati
+DTSTAMP:20261108T000000Z
+DTSTART:20261211T153000Z
+DTEND:20261211T183000Z
+SUMMARY:Wedding of Neelesh & Pranati
+LOCATION:Near Salori Powerhouse\, Old Cantt Garden Guest House\, Prayagraj\, Uttar Pradesh
+DESCRIPTION:Baraat departure and venue. Your presence and blessings will make this occasion truly special.
+BEGIN:VALARM
+TRIGGER:-P1D
+ACTION:DISPLAY
+DESCRIPTION:Wedding tomorrow at 9:00 PM
+END:VALARM
+END:VEVENT
+END:VCALENDAR

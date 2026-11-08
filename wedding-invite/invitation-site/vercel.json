@@ -1,0 +1,4 @@
+{ "cleanUrls": true, "headers": [
+  { "source": "/assets/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+  { "source": "/wedding.ics", "headers": [{ "key": "Content-Type", "value": "text/calendar; charset=utf-8" }] }
+] }
