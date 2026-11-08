@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Wedding film scene renderer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,100..900,0..100,0..1&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400&display=swap">
+<style>
+/* Layout of the six screens on the Figma page "Final", transcribed from its design context.
+   Every position, size, colour and type setting below comes from that file. Animation is applied on top by film.js. */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1081px;height:1920px;background:#fff8ed;overflow:hidden}
+#stage{position:relative;width:1081px;height:1920px;overflow:hidden;background:#fff8ed}
+.scn{position:absolute;inset:0;display:none;overflow:hidden}
+.scn.on{display:block}
+.abs{position:absolute}
+.cx{transform:translateX(-50%);text-align:center}
+img{display:block;max-width:none}
+p{word-break:break-word}
+.fr{font-family:'Fraunces',serif;font-variation-settings:"SOFT" 0,"WONK" 1;font-weight:400}
+.frsb{font-family:'Fraunces',serif;font-variation-settings:"SOFT" 0,"WONK" 1;font-weight:600}
+.cg{font-family:'Cormorant Garamond',serif;font-weight:400}
+.nsd{font-family:'Noto Sans Devanagari',sans-serif;font-weight:400}
+.int{font-family:'Inter',sans-serif}
+.mul{mix-blend-mode:multiply}
+
+/* ---- screen 1: opening blessing ---- */
+#s1 .mask{left:-384px;top:1179px;width:1770px;height:922px;background:#fff8ed;filter:blur(78px)}
+#s1 .arch{left:540.77px;transform:translateX(-50%);top:-501px;width:767.548px;height:1315px;mix-blend-mode:multiply}
+#s1 .arch>div{transform:scaleY(-1);width:100%;height:100%}
+#s1 .inv{left:540px;top:390px;width:880px;color:#ffebd5;letter-spacing:4.86px;font-size:27px;line-height:1.4;font-weight:600;font-family:'Inter',sans-serif;white-space:pre}
+#s1 .inv .d{font-family:'Noto Sans Devanagari',sans-serif;font-weight:400}
+#s1 .gan{left:233px;top:541px;width:616px;height:692px}
+#s1 .cal{left:234px;top:1261px;width:614px;height:305px}
+#s1 .cl{left:541px;top:1599px;width:820px;color:#6f3212;font-size:38px;line-height:1.5}
+
+/* ---- screen 2: couple portrait ---- */
+#s2 .photo{left:-1088px;top:-125px;width:3256px;height:2170px;-webkit-mask-image:url(assets/f2-mask2.svg);mask-image:url(assets/f2-mask2.svg);-webkit-mask-position:1140px 247px;mask-position:1140px 247px;-webkit-mask-size:978px 1675px;mask-size:978px 1675px;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;mix-blend-mode:darken;overflow:hidden}
+#s2 .photo img{width:100%;height:100%;object-fit:cover}
+#s2 .g{left:52px;top:122px;width:978px;height:1675px;mix-blend-mode:multiply}
+#s2 .tx{left:541px;top:1406px;width:820px;color:#672e0f;font-size:38px;line-height:1.5}
+#s2 .nm{left:540px;font-size:144px;line-height:1.4;color:#fff8ed;white-space:nowrap}
+#s2 .sub{left:540px;top:856px;font-size:21.6px;line-height:1.4;letter-spacing:3.888px;text-transform:uppercase;color:#fff8ed;white-space:nowrap}
+
+/* ---- screen 3: families ---- */
+#s3 .g{left:52px;top:122px;width:978px;height:1675px;mix-blend-mode:multiply}
+#s3 .det{left:131px;width:820px;color:#fff8ed;text-align:center;display:flex;flex-direction:column;gap:16px;align-items:center}
+#s3 .det .n{font-size:112px;line-height:1.1;width:100%}
+#s3 .det .l{font-size:38px;line-height:1.5;width:100%}
+#s3 .lot{left:-291.48px;top:-200.13px;width:1965.394px;height:2526.702px;display:flex;align-items:center;justify-content:center}
+#s3 .lot>div{transform:rotate(20.93deg);width:1253px;height:2226px;flex:none}
+#s3 .lot img{width:100%;height:100%;object-fit:cover}
+
+/* ---- screen 4: journey & blessings ---- */
+#s4{background:#ffdec8}
+#s4 .bg{left:0;top:0;width:1081px;height:1920px}
+#s4 .bg img{width:100%;height:100%;object-fit:cover}
+#s4 .pn{left:208px;top:707px;width:681px;height:567px;background:#ffdec8}
+#s4 .bl{left:298.0px;top:789px;width:486px;height:833px;mix-blend-mode:multiply}
+#s4 .lab{left:540.5px;top:414px;font-size:21.6px;line-height:1.4;letter-spacing:3.888px;text-transform:uppercase;color:#7e4823;white-space:nowrap}
+#s4 .in{left:541px;top:643px;width:820px;color:#7e4823;font-size:38px;line-height:1.5}
+#s4 .hands{left:-67px;top:868px;width:1198px;height:599px}
+#s4 .hands img{width:100%;height:100%;object-fit:cover}
+#s4 .hd{left:541px;top:482px;font-size:88px;line-height:1.4;color:#7e4823;white-space:nowrap}
+#s4 .bt{left:540px;top:1686px;width:820px;color:#7e4823;font-size:38px;line-height:1.5}
+
+/* ---- screen 5: baraat schedule ---- */
+#s5 .g{left:52px;top:122px;width:978px;height:1675px;mix-blend-mode:multiply}
+#s5 .lab{left:540.5px;top:414px;font-size:21.6px;line-height:1.4;letter-spacing:3.888px;text-transform:uppercase;color:#fff8ed;white-space:nowrap}
+#s5 .mask{left:-513px;top:1045px;width:2028px;height:1056px;background:#fff8ed;filter:blur(190px)}
+#s5 .date{left:541px;top:453px;font-size:80px;line-height:1.4;color:#fff8ed;white-space:nowrap}
+#s5 .time{left:559px;top:576px;width:860px;font-size:25px;line-height:1.5;letter-spacing:3px;color:#fff8ed;font-weight:500}
+#s5 .wel{left:541px;top:672px;font-size:56px;line-height:1.1;color:#fff8ed;white-space:nowrap}
+#s5 .wel p{white-space:pre}
+#s5 .chh{left:542px;transform:translateX(-50%);top:919px;width:1034px;height:1034px}
+#s5 .chh img{width:100%;height:100%;object-fit:cover}
+
+/* ---- screen 6: venue & closing ---- */
+#s6 .rv{left:-119.34px;top:-266.54px;width:1319.674px;height:2494.073px}
+#s6 .rv>div{transform:scaleX(-1);width:100%;height:100%}
+#s6 .rv img{width:100%;height:100%;object-fit:cover;object-position:bottom}
+#s6 .lab{left:541px;top:191px;font-size:21.6px;line-height:1.4;letter-spacing:3.888px;text-transform:uppercase;color:#61272a;white-space:nowrap;font-weight:400}
+#s6 .adr{left:541px;top:279px;font-size:64px;line-height:1.1;color:#7e4823;white-space:pre}
+#s6 .cty{left:541px;top:606px;font-size:64px;line-height:1.1;color:#7e4823;white-space:nowrap}
+#s6 .cls{left:540px;top:775px;width:820px;color:#61272a;font-size:38px;line-height:1.5}
+#s6 .frame{left:33px;top:34px;width:1016px;height:1852px;border:2px solid #fff}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- 1 -->
+<div class="scn" id="s1">
+  <div class="abs mask"></div>
+  <div class="abs arch"><div><img src="assets/f1-arch.svg" width="767.548" height="1315"></div></div>
+  <p class="abs cx inv" id="s1inv"><span class="d">॥</span> SHRI GANESHAYA NAMAH <span class="d">॥</span></p>
+  <div class="abs gan" id="s1gan"><img src="assets/f1-ganesha.png" style="width:100%;height:100%;object-fit:cover"></div>
+  <div class="abs cal" id="s1cal"><img src="assets/f1-calligraphy.svg" style="width:100%;height:100%"></div>
+  <div class="abs cx cg cl" id="s1cl"><p>We invite you to celebrate</p><p>a beautiful beginning.</p></div>
+</div>
+
+<!-- 2 -->
+<div class="scn" id="s2">
+  <div class="abs photo" id="s2photo"><img id="s2img" src="assets/f2-photo.png"></div>
+  <div class="abs g"><img src="assets/f2-grad1.svg" width="978" height="1675"></div>
+  <div class="abs g"><img src="assets/f2-grad2.svg" width="978" height="1675"></div>
+  <div class="abs cx cg tx" id="s2tx"><p>We cordially invite you to celebrate</p><p>our auspicious wedding ceremony.</p></div>
+  <p class="abs cx fr nm" id="s2n1" style="top:901px">NEELESH</p>
+  <p class="abs cx fr nm" id="s2n2" style="top:1048px">WITH</p>
+  <p class="abs cx fr nm" id="s2n3" style="top:1189px;left:540.5px">PRANATI</p>
+  <p class="abs cx nsd sub" id="s2sub">TOGETHER WITH THEIR FAMILIES</p>
+</div>
+
+<!-- 3 -->
+<div class="scn" id="s3">
+  <div class="abs g" id="s3g1"><img src="assets/f3-arch.svg" width="978" height="1675"></div>
+  <div class="abs g" id="s3g2"><img src="assets/f3-arch.svg" width="978" height="1675"></div>
+  <div class="abs det cg" id="s3d1" style="top:479px"><p class="n frsb" id="s3n1">NEELESH</p><div class="l cg" id="s3l1"><p>Grandson of Late Shri Kisan Lal</p><p>Son of Shri Vijay Kumar &amp; Smt. Archana Devi</p></div></div>
+  <div class="abs det cg" id="s3d2" style="top:801px"><p class="n frsb" id="s3n2">PRANATI</p><div class="l cg" id="s3l2"><p>Granddaughter of Late Shri Budh Lal</p><p>Daughter of Shri Anil Kumar &amp; Smt. Pushpa</p></div></div>
+  <div class="abs lot" id="s3lot"><div><img src="assets/f3-lotus.png"></div></div>
+</div>
+
+<!-- 4 -->
+<div class="scn" id="s4">
+  <div class="abs bg" id="s4bg"><img src="assets/f4-arch-bg.png"></div>
+  <div class="abs pn" id="s4pn"></div>
+  <div class="abs bl" id="s4bl1"><img src="assets/f4-bloom.svg" width="486" height="833"></div>
+  <div class="abs bl" id="s4bl2"><img src="assets/f4-bloom.svg" width="486" height="833"></div>
+  <p class="abs cx nsd lab" id="s4lab">A LIFETIME OF TOGETHERNESS</p>
+  <div class="abs cx cg in" id="s4in"><p>As they embark on a beautiful</p><p>journey of togetherness.</p></div>
+  <div class="abs hands" id="s4hands"><img src="assets/f4-hands.png"></div>
+  <p class="abs cx fr hd" id="s4hd">A journey together</p>
+  <div class="abs cx cg bt" id="s4bt"><p>Your gracious presence and blessings</p><p>will make this occasion truly special.</p></div>
+</div>
+
+<!-- 5 -->
+<div class="scn" id="s5">
+  <div class="abs g"><img src="assets/f5-arch.svg" width="978" height="1675"></div>
+  <div class="abs g"><img src="assets/f5-arch.svg" width="978" height="1675"></div>
+  <p class="abs cx nsd lab" id="s5lab">BARAAT DEPARTURE AND VENUE</p>
+  <div class="abs mask"></div>
+  <p class="abs cx fr date" id="s5date">11 December 2026</p>
+  <p class="abs cx int time" id="s5time">9:00 PM ONWARDS</p>
+  <div class="abs cx cg wel" id="s5wel"><p>Let the joy arrive</p><p>Join us in a joyful&nbsp;</p><p>welcome to the Baraat.</p></div>
+  <div class="abs chh" id="s5chh"><img src="assets/f5-chhatri.png"></div>
+</div>
+
+<!-- 6 -->
+<div class="scn" id="s6">
+  <div class="abs rv" id="s6rv"><div><img src="assets/f6-riverside.png"></div></div>
+  <p class="abs cx int lab" id="s6lab">BARAAT DEPARTURE AND VENUE</p>
+  <p class="abs cx fr adr" id="s6adr">Near Salori Power
+Guest House , Old Cantt&nbsp;
+Garden Guest House</p>
+  <p class="abs cx fr cty" id="s6cty">Prayagraj, Uttar Pradesh</p>
+  <div class="abs cx cg cls" id="s6cls"><p>Come, share in our joy</p><p>and surround them with your blessings.</p></div>
+  <div class="abs frame" id="s6frame"></div>
+</div>
+
+</div>
+<script>
+const q = new URLSearchParams(location.search);
+window.SCENE = +q.get("scene") || 1;
+document.getElementById("s" + window.SCENE).classList.add("on");
+window.READY = document.fonts.ready.then(() => Promise.all([...document.images].map(i => i.decode ? i.decode().catch(() => {}) : 0))).then(() => true);
+if (q.get("anim")) { const f = document.createElement("script"); f.src = "film.js?v=" + Date.now(); document.body.appendChild(f); }
+</script>
+</body>
+</html>
