@@ -67,6 +67,7 @@
     mainEl.inert = true;
     fetch("assets/song.mp3", { method: "HEAD" }).then(r => { if (!r.ok) throw 0; audio = new Audio("assets/song.mp3"); audio.loop = true; audio.preload = "auto"; audio.addEventListener("playing", () => { playing = true; ui(); }); audio.addEventListener("pause", () => { playing = false; ui(); }); }).catch(loadYT);
     try { begin.focus({ preventScroll: true }); } catch (e) {}
+    gate.addEventListener("keydown", e => { if (e.key === "Tab") { e.preventDefault(); begin.focus({ preventScroll: true }); } });   // keep keyboard focus on the one button
     begin.addEventListener("click", () => {
       if (!gated) return; gated = false; started = true;
       playMusic();                                                 // inside the tap, so the browser allows sound
@@ -172,7 +173,7 @@
     // read every rect first, then write
     for (const s of st) { const r = s.el.getBoundingClientRect(); s.top = r.top; s.bottom = r.bottom; s.left = r.left; s.w = r.width; s.h = r.height; s.u = r.width / 1081; s.vis = r.bottom > 0 && r.top < H; }
     // scrub progress for screens 2 to 6: 0 when the screen starts to enter, 1 when most of it is in view
-    for (const s of st) { if (s.i === 0) continue; const p = clamp((H - s.top) / (s.h * .75 + H * .1)); if (Math.abs(p - s.p) > .0015) { s.p = p; s.el.style.setProperty("--pe", ease3(p).toFixed(4)); s.el.classList.toggle("done", p >= .999); } }
+    for (const s of st) { if (s.i === 0) continue; const p = clamp((H - s.top) / Math.min(s.h * .75 + H * .1, H * .95)); if (Math.abs(p - s.p) > .0015) { s.p = p; s.el.style.setProperty("--pe", ease3(p).toFixed(4)); s.el.classList.toggle("done", p >= .999); } }
     // parallax and pointer drift
     cx = lerp(cx, mx, .06); cy = lerp(cy, my, .06);
     for (const it of parItems) { const s = it.s; if (!s.vis) continue; const pp = clamp((s.top + s.h / 2 - H / 2) / (H / 2 + s.h / 2), -1, 1); it.el.style.translate = `${(cx * it.pm * s.u).toFixed(1)}px ${(pp * it.k * s.w + cy * it.pm * .5 * s.u).toFixed(1)}px`; }
