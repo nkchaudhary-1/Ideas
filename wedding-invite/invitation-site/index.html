@@ -15,12 +15,67 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..600,0,1&family=Cormorant+Garamond:wght@400&family=Inter:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400&display=swap">
-<script>if(!matchMedia("(prefers-reduced-motion: reduce)").matches)document.documentElement.classList.add("js")</script>
+<script>
+(function(){var d=document.documentElement;if(!matchMedia("(prefers-reduced-motion: reduce)").matches)d.classList.add("js");
+if(!/[?&]force=1/.test(location.search)){d.classList.add("gate-on","gated");try{history.scrollRestoration="manual"}catch(e){}scrollTo(0,0);
+setTimeout(function(){if(!window.__gateReady)d.classList.remove("gate-on","gated")},7000)}})()
+</script>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><path id="arch" d="M487.598 0C488.458 0.518755 490.176 1.4948 490.69 2.36987C547.318 97.4197 645.946 165.237 755.489 182.136C766.051 183.766 777.614 185.833 788.513 186.323L788.539 281.311C823.796 282.855 849.155 300.991 865.246 332.222C876.401 353.876 874.531 369.153 874.744 392.591C883.153 392.48 892.926 391.989 901.202 393.385C947.401 401.168 977.554 439.846 977.811 485.187L977.775 992.249L977.819 1136.6C977.828 1150 978.59 1195.22 976.916 1205.47C973.885 1225.26 964.564 1243.54 950.325 1257.61C927.5 1280.35 904.746 1283.8 874.673 1283.84C874.39 1292.85 875.471 1303.65 874.443 1312.41C869.188 1357.17 834.473 1393.06 788.513 1395.01L788.46 1490.05C739.833 1490.61 673.945 1513.3 631.725 1536.76C583 1564.04 540.841 1601.64 508.181 1646.91C503.467 1653.32 492.781 1668.02 490.779 1675C489.636 1674.79 488.493 1674.57 487.341 1674.37C485.09 1670.59 480.66 1663.48 478.605 1660.27C464.498 1638.3 448.019 1618.84 429.771 1600.21C374.868 1544.99 304.188 1508.13 227.464 1494.73C215.769 1492.74 201.281 1490.13 189.581 1489.99C189.55 1462.25 190.877 1421.54 189.198 1394.97L185.022 1394.76C149.614 1393.03 114.378 1362.68 106.957 1328.39C106.226 1325.01 103.691 1320.32 103.585 1316.83C103.253 1305.89 103.426 1294.88 103.416 1283.92C71.4982 1283.79 51.7639 1280.53 26.7779 1257.22C14.8595 1246.09 2.03731 1222.01 0.962521 1206.02C-0.528717 1183.83 0.154426 1155.55 0.16683 1132.83L0.174807 984.659L0.176592 651.757C0.173048 596.266 0.159761 540.667 0.169507 485.26C-0.448962 460.733 9.41022 435.109 27.2812 418.088C50.7928 395.693 72.5517 392.16 103.236 392.634C104.009 381.274 101.941 369 104.029 357.859C110.444 323.637 133.52 294.867 167.276 284.597C172.793 282.919 183.927 282.766 188.195 279.343C190.955 277.131 189.547 196.084 189.531 186.257C198.784 186.093 209.169 184.089 218.403 182.76C258.402 177.003 294.08 165.157 330.3 147.399C386.304 119.502 434.566 78.2399 470.825 27.2625C475.37 20.8181 485.312 6.67703 487.598 0Z" pathLength="1"/></defs></svg>
 <canvas id="fx" aria-hidden="true"></canvas>
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Begin the invitation">
+  <div class="gate-petals" aria-hidden="true"><i style="--x:6%;--s:14px;--t:16s;--d:-2s;--r:0"></i><i style="--x:14%;--s:10px;--t:19s;--d:-9s;--r:1"></i><i style="--x:22%;--s:16px;--t:15s;--d:-5s;--r:2"></i><i style="--x:31%;--s:11px;--t:21s;--d:-12s;--r:0"></i><i style="--x:40%;--s:13px;--t:17s;--d:-1s;--r:1"></i><i style="--x:48%;--s:9px;--t:22s;--d:-14s;--r:2"></i><i style="--x:57%;--s:15px;--t:16s;--d:-7s;--r:0"></i><i style="--x:65%;--s:10px;--t:20s;--d:-3s;--r:1"></i><i style="--x:73%;--s:14px;--t:18s;--d:-10s;--r:2"></i><i style="--x:82%;--s:11px;--t:15s;--d:-6s;--r:0"></i><i style="--x:90%;--s:16px;--t:19s;--d:-13s;--r:1"></i><i style="--x:95%;--s:9px;--t:17s;--d:-4s;--r:2"></i><i style="--x:36%;--s:12px;--t:23s;--d:-8s;--r:2"></i><i style="--x:78%;--s:13px;--t:21s;--d:-0s;--r:0"></i></div>
+  <p class="gate-top">Neelesh &amp; Pranati</p>
+  <button class="bloom" id="begin" type="button">
+    <svg class="bloom-flower" viewBox="-110 -110 220 220" aria-hidden="true" focusable="false">
+      <defs>
+        <path id="pt" d="M0,0C30,-18 34,-64 0,-96C-34,-64 -30,-18 0,0Z" stroke="rgba(255,255,255,.75)" stroke-width=".9"/>
+        <linearGradient id="gp1" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="-96"><stop offset="0" stop-color="#fbe3ea"/><stop offset="1" stop-color="#ee8fae"/></linearGradient>
+        <linearGradient id="gp2" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="-96"><stop offset="0" stop-color="#fff0f3"/><stop offset="1" stop-color="#e4668f"/></linearGradient>
+        <linearGradient id="gp3" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="-96"><stop offset="0" stop-color="#ffeef2"/><stop offset="1" stop-color="#d94b7d"/></linearGradient>
+        <radialGradient id="gc"><stop offset="0" stop-color="#ffeeb4"/><stop offset="1" stop-color="#d7a13a"/></radialGradient>
+      </defs>
+      <g class="ring r1">
+      <use href="#pt" transform="rotate(0) scale(1)" fill="url(#gp1)"/>
+      <use href="#pt" transform="rotate(36) scale(1)" fill="url(#gp1)"/>
+      <use href="#pt" transform="rotate(72) scale(1)" fill="url(#gp1)"/>
+      <use href="#pt" transform="rotate(108) scale(1)" fill="url(#gp1)"/>
+      <use href="#pt" transform="rotate(144) scale(1)" fill="url(#gp1)"/>
+      <use href="#pt" transform="rotate(180) scale(1)" fill="url(#gp1)"/>
+      <use href="#pt" transform="rotate(216) scale(1)" fill="url(#gp1)"/>
+      <use href="#pt" transform="rotate(252) scale(1)" fill="url(#gp1)"/>
+      <use href="#pt" transform="rotate(288) scale(1)" fill="url(#gp1)"/>
+      <use href="#pt" transform="rotate(324) scale(1)" fill="url(#gp1)"/>
+      </g>
+      <g class="ring r2">
+      <use href="#pt" transform="rotate(22.5) scale(0.86)" fill="url(#gp2)"/>
+      <use href="#pt" transform="rotate(67.5) scale(0.86)" fill="url(#gp2)"/>
+      <use href="#pt" transform="rotate(112.5) scale(0.86)" fill="url(#gp2)"/>
+      <use href="#pt" transform="rotate(157.5) scale(0.86)" fill="url(#gp2)"/>
+      <use href="#pt" transform="rotate(202.5) scale(0.86)" fill="url(#gp2)"/>
+      <use href="#pt" transform="rotate(247.5) scale(0.86)" fill="url(#gp2)"/>
+      <use href="#pt" transform="rotate(292.5) scale(0.86)" fill="url(#gp2)"/>
+      <use href="#pt" transform="rotate(337.5) scale(0.86)" fill="url(#gp2)"/>
+      </g>
+      <g class="ring r3">
+      <use href="#pt" transform="rotate(0) scale(0.66)" fill="url(#gp3)"/>
+      <use href="#pt" transform="rotate(60) scale(0.66)" fill="url(#gp3)"/>
+      <use href="#pt" transform="rotate(120) scale(0.66)" fill="url(#gp3)"/>
+      <use href="#pt" transform="rotate(180) scale(0.66)" fill="url(#gp3)"/>
+      <use href="#pt" transform="rotate(240) scale(0.66)" fill="url(#gp3)"/>
+      <use href="#pt" transform="rotate(300) scale(0.66)" fill="url(#gp3)"/>
+      </g>
+      <g class="core"><circle r="12" fill="url(#gc)"/><circle cx="17.0" cy="0.0" r="1.8" fill="#f3c561"/><circle cx="12.0" cy="12.0" r="1.8" fill="#f3c561"/><circle cx="0.0" cy="17.0" r="1.8" fill="#f3c561"/><circle cx="-12.0" cy="12.0" r="1.8" fill="#f3c561"/><circle cx="-17.0" cy="0.0" r="1.8" fill="#f3c561"/><circle cx="-12.0" cy="-12.0" r="1.8" fill="#f3c561"/><circle cx="-0.0" cy="-17.0" r="1.8" fill="#f3c561"/><circle cx="12.0" cy="-12.1" r="1.8" fill="#f3c561"/></g>
+    </svg>
+    <span class="bloom-label"><i class="fl" aria-hidden="true"></i>Begin the journey<i class="fl r" aria-hidden="true"></i></span>
+  </button>
+  <p class="gate-note" id="gate-note">Tap the lotus · best with sound on</p>
+</div>
+<button class="sound" id="sound" type="button" hidden aria-label="Mute music" aria-pressed="false"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span></button>
+<div class="yt" aria-hidden="true"><div id="yt"></div></div>
+
 <main class="page">
 
 <!-- 1 · Opening blessing -->

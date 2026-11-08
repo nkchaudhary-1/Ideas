@@ -14,12 +14,15 @@
   const page = document.querySelector(".page"), screens = [...document.querySelectorAll(".screen")];
   const onAt = screens.map(() => -1);
 
-  /* ---------- reveal: a screen turns on once a good part of it is in view ---------- */
-  if (!motion || !("IntersectionObserver" in window)) screens.forEach((s, i) => { s.classList.add("on"); onAt[i] = 0; });
-  else {
+  /* ---------- reveal: a screen turns on once a good part of it is in view (armed when the gate opens) ---------- */
+  let gated = doc.classList.contains("gate-on") && !force;
+  let burstHook = null;
+  function armReveals() {
+    if (!motion || !("IntersectionObserver" in window)) { screens.forEach((s, i) => { s.classList.add("on"); onAt[i] = 0; }); return; }
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { const i = screens.indexOf(e.target); e.target.classList.add("on"); onAt[i] = performance.now(); io.unobserve(e.target); } }), { threshold: .28 });
     screens.forEach(s => io.observe(s));
   }
+  window.__gateReady = true;
 
   /* ---------- countdown to 9:00 PM IST on 11 December 2026 ---------- */
   const target = new Date("2026-12-11T21:00:00+05:30").getTime(), box = document.getElementById("count");
@@ -29,6 +32,51 @@
     else if (ms > -864e5) box.textContent = "Today is the day"; else box.textContent = "With love and blessings";
   };
   tick(); setInterval(tick, 60000);
+
+  /* ---------- the gate and the song ----------
+     Browsers do not let a page start sound on its own, so the tap on the lotus is what starts the song (YouTube's own player, no download). */
+  const gate = document.getElementById("gate"), begin = document.getElementById("begin"), soundBtn = document.getElementById("sound"), mainEl = document.querySelector("main");
+  const VIDEO = "kwjp52YYlwQ", VOL = 62;
+  let yt = null, ytReady = false, ytDead = false, started = false, playing = false, userPaused = false, resume = false, fadeId = 0, audio = null;   // audio: optional local file, used instead of YouTube when present
+  const ui = () => { soundBtn.hidden = ytDead || !started; soundBtn.classList.toggle("on", playing); soundBtn.setAttribute("aria-pressed", playing ? "true" : "false"); soundBtn.setAttribute("aria-label", playing ? "Mute music" : "Play music"); };
+  const ytFail = e => { console.warn("music unavailable", e && e.data !== undefined ? "YouTube error " + e.data : e || ""); ytDead = true; ui(); };
+  function fadeTo(v, ms, done) { cancelAnimationFrame(fadeId); let from = 0; try { from = audio ? audio.volume * 100 : yt.getVolume(); } catch (e) {} const t0 = performance.now(); const step = n => { const k = clamp((n - t0) / ms); try { if (audio) audio.volume = clamp(lerp(from, v, k) / 100); else yt.setVolume(Math.round(lerp(from, v, k))); } catch (e) {} if (k < 1) fadeId = requestAnimationFrame(step); else if (done) done(); }; fadeId = requestAnimationFrame(step); }
+  function playMusic() {
+    if (audio) { audio.volume = 0; const pr = audio.play(); if (pr && pr.catch) pr.catch(() => { playing = false; ui(); }); fadeTo(VOL, 3200); return; }
+    if (!ytReady || ytDead) return; try { yt.unMute(); yt.setVolume(0); yt.playVideo(); fadeTo(VOL, 3200); } catch (e) {}
+  }
+  function pauseMusic() { if (!audio && !ytReady) return; fadeTo(0, 450, () => { try { if (audio) audio.pause(); else yt.pauseVideo(); } catch (e) {} }); }
+  function loadYT() {
+    if (!gate && !soundBtn) return;
+    window.onYouTubeIframeAPIReady = () => {
+      try {
+        const opts = { width: 200, height: 200, videoId: VIDEO, host: "https://www.youtube-nocookie.com", playerVars: { autoplay: 0, controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3, modestbranding: 1, playsinline: 1, rel: 0, loop: 1, playlist: VIDEO }, events: {
+          onReady: () => { ytReady = true; if (started && !userPaused) playMusic(); ui(); },
+          onStateChange: e => { if (e.data === 0) { try { yt.seekTo(0); yt.playVideo(); } catch (x) {} } playing = e.data === 1 || e.data === 3 && started && !userPaused; ui(); },
+          onError: ytFail } };
+        if (/^https?:$/.test(location.protocol)) opts.playerVars.origin = location.origin;
+        yt = new YT.Player("yt", opts);
+      } catch (e) { ytFail(); }
+    };
+    const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api"; s.async = true; s.onerror = ytFail; document.head.appendChild(s);
+    setTimeout(() => { if (!ytReady) ytFail(); }, 9000);
+  }
+  soundBtn.addEventListener("click", () => { if (playing) { userPaused = true; pauseMusic(); } else { userPaused = false; playMusic(); } });
+  document.addEventListener("visibilitychange", () => { if ((!ytReady && !audio) || !started) return; try { if (document.hidden) { if (playing) { resume = true; audio ? audio.pause() : yt.pauseVideo(); } } else if (resume && !userPaused) { resume = false; audio ? audio.play() : yt.playVideo(); } } catch (e) {} });
+  if (gated) {
+    mainEl.inert = true;
+    fetch("assets/song.mp3", { method: "HEAD" }).then(r => { if (!r.ok) throw 0; audio = new Audio("assets/song.mp3"); audio.loop = true; audio.preload = "auto"; audio.addEventListener("playing", () => { playing = true; ui(); }); audio.addEventListener("pause", () => { playing = false; ui(); }); }).catch(loadYT);
+    try { begin.focus({ preventScroll: true }); } catch (e) {}
+    begin.addEventListener("click", () => {
+      if (!gated) return; gated = false; started = true;
+      playMusic();                                                 // inside the tap, so the browser allows sound
+      const r = begin.getBoundingClientRect(); if (burstHook) burstHook(r.left + r.width / 2, r.top + r.height * .36);
+      begin.classList.add("go"); gate.classList.add("lift"); doc.classList.remove("gated"); mainEl.inert = false; scrollTo(0, 0);
+      armReveals(); ui();
+      setTimeout(() => { if (!playing && ytReady && !userPaused) ui(); }, 1800);   // if the browser still refused, the toggle offers Play
+      setTimeout(() => gate.remove(), 2200);
+    });
+  } else armReveals();
 
   if (!motion) return;
 
@@ -102,12 +150,19 @@
     for (let i = 0; i < 12; i++) { const a = rand(0, TAU), v = rand(60, 220) * u; add({ kind: "m", x: e.clientX, y: e.clientY, vx: Math.cos(a) * v, vy: Math.sin(a) * v, drag: .975, s: rand(5, 11) * u, rgb: "255,226,160", max: rand(.8, 1.5), a: 1 }); }
   });
 
+  burstHook = (x, y) => {
+    const u = Math.max(.9, page.getBoundingClientRect().width / 460);
+    for (let i = 0; i < 34; i++) { const a = rand(-Math.PI * 1.0, 0), v = rand(180, 520) * u; add({ kind: "p", x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, drag: .982, g: 380 * u, s: rand(14, 30) * u, pal: palOf([...PAL.marigold, ...PAL.rose, ...PAL.gold]), max: rand(2.2, 3.8), sw: rand(1, 2), sa: 12, ph: rand(0, TAU), vr: rand(-5, 5), vf: rand(5, 11), a: 1 }); }
+    for (let i = 0; i < 22; i++) { const a = rand(0, TAU), v = rand(80, 300) * u; add({ kind: "m", x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, drag: .975, s: rand(6, 13) * u, rgb: "255,226,160", max: rand(.9, 1.8), a: 1 }); }
+  };
+
   /* ---------- the frame loop ---------- */
   let last = performance.now(), lastY = scrollY, vs = 0, anch = [0, 0, 0, 0, 0, 0];
   function frame(now) {
     requestAnimationFrame(frame);
     if (document.hidden) { last = now; return; }
     const dt = Math.min(.05, (now - last) / 1000); last = now; const t = now / 1000;
+    if (gated) { g.clearRect(0, 0, W, H); stepP(dt); return; }
     const sy = scrollY; vs = lerp(vs, (sy - lastY) / Math.max(dt, .001), .12); lastY = sy; const speed = .4 + Math.min(1, Math.abs(vs) / 900);
     const pr = page.getBoundingClientRect();
     // read every rect first, then write
@@ -142,7 +197,9 @@
       for (const q of P) { if (q.scr !== i) continue; drawP(q, X(q.x), Y(q.y), u); }
       g.restore();
     }
-    // update particles, draw the viewport ones
+    stepP(dt);
+  }
+  function stepP(dt) {
     for (let n = P.length - 1; n >= 0; n--) {
       const q = P[n]; q.t += dt; if (q.t > q.max) { P.splice(n, 1); continue; }
       if (q.g) q.vy += q.g * dt; if (q.drag !== 1) { const d = Math.pow(q.drag, dt * 60); q.vx *= d; q.vy *= d; }

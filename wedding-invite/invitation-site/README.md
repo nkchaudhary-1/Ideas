@@ -18,6 +18,13 @@ Everything animated is optional. With reduced motion, or without JavaScript, eve
 
 Screen 4's source image has sample text baked in behind the peach panel. The panel is deliberately never faded or animated, so the text cannot show.
 
+## Music and the opening gate
+The page opens on a gate with a lotus button, "Begin the journey". Browsers will not start sound by themselves, so the tap is what starts the song, and it also opens the invitation. A small sound toggle (top right of the column) lets guests mute or resume.
+
+- **YouTube (default):** the song is `kwjp52YYlwQ` (Roshni Hi Roshni Hai), played through YouTube's own embedded player. Change `VIDEO` at the top of the gate section in `main.js` to use another one. If the owner has switched off embedding, or the player cannot load, the toggle is simply hidden and the invitation still opens.
+- **Your own file (most reliable):** put an audio file you have the rights to at `assets/song.mp3`. When it exists the site plays it and does not load YouTube at all.
+- Music fades in over 3 seconds, loops, and pauses when the tab is hidden.
+
 ## Build
     node build.js                                  # writes styles.css and index.html
     SITE_URL=https://your-domain.example/ node build.js   # makes the share image URL absolute

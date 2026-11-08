@@ -153,3 +153,53 @@ html.js .screen:not(.on) .fx-track3{letter-spacing:calc(3d + 20d)}
 /* canvas for the seam effects, sparkles, lanterns, birds and tap bursts */
 #fx{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:20;display:none}
 html.js #fx{display:block}
+
+/* ---------- the gate: a lotus to tap, which also lets the music start ---------- */
+.gate{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;gap:clamp(22px,5.5vh,46px);text-align:center;background:radial-gradient(ellipse 85% 60% at 50% 44%,#fffdf8 0%,var(--ivory) 52%,#f5e3c8 100%);touch-action:none;overflow:hidden;padding:max(28px,env(safe-area-inset-top)) 24px max(28px,env(safe-area-inset-bottom));transition:opacity 1.2s ease .2s,transform 1.5s var(--ease),visibility 0s 1.6s}
+html.gate-on .gate{display:flex}
+html.gated{overflow:hidden}
+.gate::before,.gate::after{content:"";position:absolute;pointer-events:none}
+.gate::before{inset:14px;border:1px solid rgba(185,147,82,.75)}
+.gate::after{inset:21px;border:1px solid rgba(185,147,82,.32)}
+.gate.lift{opacity:0;transform:scale(1.22);visibility:hidden;pointer-events:none}
+.gate-top{font-family:'Inter',sans-serif;font-weight:500;font-size:clamp(11px,2.9vw,13px);letter-spacing:.34em;text-transform:uppercase;color:var(--gold);position:relative}
+.gate-note{font-family:'Cormorant Garamond',serif;font-size:clamp(17px,4.4vw,21px);color:var(--brown);opacity:.85;position:relative}
+.bloom{position:relative;appearance:none;background:none;border:0;padding:8px 14px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:clamp(16px,3.6vh,28px);color:var(--maroon);-webkit-tap-highlight-color:transparent;outline:none}
+.bloom-flower{width:clamp(176px,50vw,250px);height:auto;overflow:visible;filter:drop-shadow(0 16px 26px rgba(170,70,95,.28));animation:bloomIdle 4.6s ease-in-out infinite}
+.bloom .ring{transform-origin:0 0;transition:transform 1s var(--ease)}
+.bloom .r1{transform:scale(.8) rotate(-7deg)}
+.bloom .r2{transform:scale(.78) rotate(5deg)}
+.bloom .r3{transform:scale(.8) rotate(-4deg)}
+.bloom:hover .r1,.bloom:focus-visible .r1{transform:scale(1) rotate(0)}
+.bloom:hover .r2,.bloom:focus-visible .r2{transform:scale(1) rotate(0)}
+.bloom:hover .r3,.bloom:focus-visible .r3{transform:scale(1) rotate(0)}
+.bloom.go .r1{transform:scale(1.35) rotate(14deg)}
+.bloom.go .r2{transform:scale(1.3) rotate(-12deg)}
+.bloom.go .r3{transform:scale(1.25) rotate(10deg)}
+.bloom.go .bloom-flower{animation:none;transform:scale(1.18);transition:transform 1.2s var(--ease)}
+.bloom-label{display:flex;align-items:center;gap:clamp(10px,3vw,18px);font-family:'Fraunces',serif;font-variation-settings:"SOFT" 0,"WONK" 1;font-weight:400;font-size:clamp(27px,7.4vw,40px);line-height:1.1;color:var(--maroon);white-space:nowrap}
+.bloom:focus-visible .bloom-label{text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:8px}
+.fl{position:relative;display:block;width:clamp(16px,6vw,44px);height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.fl.r{background:linear-gradient(270deg,transparent,var(--gold))}
+.fl::after{content:"";position:absolute;top:50%;right:-2px;width:6px;height:6px;margin-top:-3px;background:var(--gold);transform:rotate(45deg)}
+.fl.r::after{right:auto;left:-2px}
+@keyframes bloomIdle{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+.gate-petals{position:absolute;inset:0;pointer-events:none}
+.gate-petals i{position:absolute;left:var(--x);bottom:-7vh;width:var(--s);height:calc(var(--s) * 1.5);border-radius:0 100% 0 100%;opacity:0;background:linear-gradient(135deg,#f8c3d2,#e57f9f);animation:petalUp var(--t) linear infinite;animation-delay:var(--d)}
+.gate-petals i:nth-child(3n+1){background:linear-gradient(135deg,#ffd36b,#ee8d22)}
+.gate-petals i:nth-child(3n+2){background:linear-gradient(135deg,#fde3ea,#f09bb7)}
+@keyframes petalUp{0%{transform:translate(0,0) rotate(0);opacity:0}10%{opacity:.85}50%{transform:translate(28px,-58vh) rotate(160deg)}90%{opacity:.7}100%{transform:translate(-18px,-118vh) rotate(340deg);opacity:0}}
+
+/* music toggle, and the hidden YouTube player that carries the song */
+.sound{position:fixed;z-index:30;top:max(14px,env(safe-area-inset-top));left:calc(50% + min(50vw,31svh,380px) - 58px);width:44px;height:44px;border-radius:50%;border:1px solid rgba(185,147,82,.85);background:rgba(255,248,237,.9);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);cursor:pointer;display:grid;place-items:center;padding:0;box-shadow:0 4px 18px rgba(60,30,20,.22);-webkit-tap-highlight-color:transparent}
+.sound[hidden]{display:none}
+.sound:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.eq{position:relative;display:flex;align-items:flex-end;gap:3px;height:16px}
+.eq i{display:block;width:3px;height:6px;border-radius:2px;background:var(--maroon);transform-origin:50% 100%}
+.sound.on .eq i{animation:eq 1s ease-in-out infinite}
+.sound.on .eq i:nth-child(2){animation-delay:-.35s;animation-duration:.8s}
+.sound.on .eq i:nth-child(3){animation-delay:-.7s;animation-duration:1.15s}
+.sound:not(.on) .eq::after{content:"";position:absolute;left:-3px;right:-3px;top:50%;height:1.5px;background:var(--maroon);transform:rotate(-38deg)}
+@keyframes eq{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(2.4)}}
+.yt{position:fixed;right:0;bottom:0;width:200px;height:200px;opacity:0;pointer-events:none;z-index:-1;overflow:hidden}
+@media (prefers-reduced-motion:reduce){.gate-petals{display:none}}
