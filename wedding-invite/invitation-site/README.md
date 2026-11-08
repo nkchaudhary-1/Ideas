@@ -10,7 +10,7 @@ A responsive website built from the six screens on the Figma page "Final" (node 
 - **Seam effects on one light canvas:** falling petals, rising gold dust, a bloom of light with rays, a gold seam with sparks, and a lamp flare with rising marigold petals.
 - **Ambient effects:** twinkling sparkles around Ganesha and the lotus, gold dust and a red petal lifting from the hand, sky lanterns on the baraat screen, birds, aarti smoke and glints on the water, flickering lamp flames.
 - **Text effects:** labels track in from wide spacing, and the names carry a slow glint.
-- **Interaction:** pointer parallax on desktop, and a tap or click anywhere for a small shower of petals.
+- **Interaction:** pointer parallax on desktop, and a quick tap or click for a small shower of petals. Touching the screen to scroll or swipe never sets it off.
 - A details strip after screen 6 (not in Figma): countdown, Add to calendar, Apple/Outlook file and Open in Maps. Delete the `<footer>` in `index.src.html` to remove it.
 - `noindex` so search engines skip the page.
 

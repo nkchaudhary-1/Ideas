@@ -104,7 +104,7 @@
   function bird(x, y, s, flap, a) { g.save(); g.translate(x, y); g.globalAlpha = a; g.strokeStyle = "#5b4a52"; g.lineWidth = Math.max(1.2, s * .13); g.lineCap = "round"; g.lineJoin = "round"; const w = Math.sin(flap) * .62; g.beginPath(); g.moveTo(-s, -s * .12 - s * w); g.quadraticCurveTo(-s * .5, -s * .5 - s * w * .6, 0, 0); g.quadraticCurveTo(s * .5, -s * .5 - s * w * .6, s, -s * .12 - s * w); g.stroke(); g.restore(); }
 
   /* particles. Anchored ones (scr >= 0) live in design pixels and travel with their screen; the rest live in the viewport. */
-  const P = [], MAXP = 300;
+  const P = [], MAXP = 150;
   function add(o) { if (P.length > MAXP) P.shift(); P.push(Object.assign({ t: 0, max: 3, vx: 0, vy: 0, vr: 0, rot: 0, fl: 0, vf: 0, drag: 1, sw: 0, ph: 0, sa: 0, scr: -1, kind: "m", s: 10, rgb: "255,214,140", pal: PAL.marigold[0], a: 1 }, o)); }
   const palOf = a => a[Math.floor(Math.random() * a.length)];
 
@@ -120,34 +120,38 @@
   function seamFx(k, e, dt, pr, speed) {
     const cxp = pr.left + pr.width / 2, seamY = st[k].top, u = Math.max(.6, pr.width / 540);
     if (k === 1) {            // arch to couple: a fall of petals
-      acc[k] += 36 * e * speed * dt; while (acc[k] >= 1) { acc[k]--; add({ kind: "p", x: rand(pr.left, pr.right), y: seamY - rand(0, H * .3), vx: rand(-20, 20), vy: rand(60, 150) * u, s: rand(13, 28) * u, pal: palOf([...PAL.marigold, ...PAL.rose]), max: rand(4, 7), sw: rand(1.2, 2.4), sa: rand(14, 34), ph: rand(0, TAU), vr: rand(-2.5, 2.5), vf: rand(4, 9), a: rand(.6, 1) }); }
+      acc[k] += 14 * e * speed * dt; while (acc[k] >= 1) { acc[k]--; add({ kind: "p", x: rand(pr.left, pr.right), y: seamY - rand(0, H * .3), vx: rand(-20, 20), vy: rand(60, 150) * u, s: rand(13, 28) * u, pal: palOf([...PAL.marigold, ...PAL.rose]), max: rand(4, 7), sw: rand(1.2, 2.4), sa: rand(14, 34), ph: rand(0, TAU), vr: rand(-2.5, 2.5), vf: rand(4, 9), a: rand(.6, 1) }); }
     } else if (k === 2) {     // couple to families: gold dust lifting
-      acc[k] += 60 * e * speed * dt; while (acc[k] >= 1) { acc[k]--; add({ kind: "m", x: rand(pr.left, pr.right), y: seamY + rand(-.25, .25) * H, vx: rand(-12, 12), vy: -rand(36, 110) * u, s: rand(6, 16) * u, rgb: "255,214,140", max: rand(2.4, 4.4), a: .9 }); }
+      acc[k] += 10 * e * speed * dt; while (acc[k] >= 1) { acc[k]--; add({ kind: "m", x: rand(pr.left, pr.right), y: seamY + rand(-.25, .25) * H, vx: rand(-12, 12), vy: -rand(36, 110) * u, s: rand(6, 16) * u, rgb: "255,214,140", max: rand(2.4, 4.4), a: .9 }); }
     } else if (k === 3) {     // families to journey: a bloom of light
       g.save(); g.beginPath(); g.rect(pr.left, 0, pr.width, H); g.clip();
-      glow(cxp, seamY, H * .62 * (.4 + e * .6), "255,226,170", .6 * e); glow(cxp, seamY, H * .22, "255,248,230", .75 * e);
-      g.globalCompositeOperation = "lighter"; g.globalAlpha = .22 * e; for (let i = 0; i < 12; i++) { const a = i * TAU / 12 + seamY * .0015, len = H * .75; const gr = g.createLinearGradient(cxp, seamY, cxp + Math.cos(a) * len, seamY + Math.sin(a) * len); gr.addColorStop(0, "rgba(255,238,196,.95)"); gr.addColorStop(1, "rgba(255,238,196,0)"); g.fillStyle = gr; g.beginPath(); g.moveTo(cxp, seamY); g.arc(cxp, seamY, len, a - .045, a + .045); g.closePath(); g.fill(); }
+      glow(cxp, seamY, H * .55 * (.4 + e * .6), "255,226,170", .34 * e); glow(cxp, seamY, H * .2, "255,248,230", .42 * e);
+      g.globalCompositeOperation = "lighter"; g.globalAlpha = .12 * e; for (let i = 0; i < 12; i++) { const a = i * TAU / 12 + seamY * .0015, len = H * .75; const gr = g.createLinearGradient(cxp, seamY, cxp + Math.cos(a) * len, seamY + Math.sin(a) * len); gr.addColorStop(0, "rgba(255,238,196,.95)"); gr.addColorStop(1, "rgba(255,238,196,0)"); g.fillStyle = gr; g.beginPath(); g.moveTo(cxp, seamY); g.arc(cxp, seamY, len, a - .045, a + .045); g.closePath(); g.fill(); }
       g.globalAlpha = 1; g.globalCompositeOperation = "source-over"; g.restore();
-      acc[k] += 26 * e * dt; while (acc[k] >= 1) { acc[k]--; const a = rand(0, TAU), v = rand(70, 240) * u; add({ kind: "m", x: cxp, y: seamY, vx: Math.cos(a) * v, vy: Math.sin(a) * v, drag: .985, s: rand(5, 13) * u, rgb: "255,236,180", max: rand(1.2, 2.2), a: 1 }); }
+      acc[k] += 14 * e * dt; while (acc[k] >= 1) { acc[k]--; const a = rand(0, TAU), v = rand(70, 240) * u; add({ kind: "m", x: cxp, y: seamY, vx: Math.cos(a) * v, vy: Math.sin(a) * v, drag: .985, s: rand(5, 13) * u, rgb: "255,236,180", max: rand(1.2, 2.2), a: 1 }); }
     } else if (k === 4) {     // journey to baraat: a seam of light and sparks flung sideways
       g.save(); g.beginPath(); g.rect(pr.left, 0, pr.width, H); g.clip();
-      const gr = g.createLinearGradient(0, seamY - H * .4, 0, seamY + H * .4); gr.addColorStop(0, "rgba(255,226,160,0)"); gr.addColorStop(.5, `rgba(255,236,180,${.9 * e})`); gr.addColorStop(1, "rgba(255,226,160,0)");
-      g.globalCompositeOperation = "lighter"; g.fillStyle = gr; g.fillRect(cxp - 1.5 * u, seamY - H * .4, 3 * u, H * .8); g.globalCompositeOperation = "source-over";
-      glow(cxp, seamY, H * .5 * e + 40, "255,222,160", .4 * e); g.restore();
-      acc[k] += 40 * e * speed * dt; while (acc[k] >= 1) { acc[k]--; const sd = Math.random() < .5 ? -1 : 1; add({ kind: "m", x: cxp, y: seamY + rand(-.3, .3) * H, vx: sd * rand(90, 330) * u, vy: rand(-40, 20), drag: .985, s: rand(5, 12) * u, rgb: "255,230,170", max: rand(1.1, 2), a: 1 }); }
+      glow(cxp, seamY, H * .4 * e + 40, "255,222,160", .2 * e); g.restore();
+      acc[k] += 16 * e * speed * dt; while (acc[k] >= 1) { acc[k]--; const sd = Math.random() < .5 ? -1 : 1; add({ kind: "m", x: cxp, y: seamY + rand(-.3, .3) * H, vx: sd * rand(90, 330) * u, vy: rand(-40, 20), drag: .985, s: rand(5, 12) * u, rgb: "255,230,170", max: rand(1.1, 2), a: 1 }); }
     } else if (k === 5) {     // baraat to venue: the lamp flares and marigold petals rise
       g.save(); g.beginPath(); g.rect(pr.left, 0, pr.width, H); g.clip();
-      glow(cxp, seamY + H * .2, H * .6 * (.4 + e * .6), "255,196,120", .62 * e); glow(cxp, seamY + H * .2, H * .24, "255,236,180", .7 * e); g.restore();
+      glow(cxp, seamY + H * .2, H * .5 * (.4 + e * .6), "255,196,120", .26 * e); glow(cxp, seamY + H * .2, H * .2, "255,236,180", .3 * e); g.restore();
       acc[k] += 34 * e * speed * dt; while (acc[k] >= 1) { acc[k]--; add({ kind: "p", x: rand(pr.left, pr.right), y: seamY + rand(0, .35) * H, vx: rand(-25, 25), vy: -rand(90, 230) * u, s: rand(12, 26) * u, pal: palOf(PAL.marigold), max: rand(3, 5.5), sw: rand(1.2, 2.4), sa: rand(14, 30), ph: rand(0, TAU), vr: rand(-3, 3), vf: rand(4, 9), a: rand(.65, 1) }); }
     }
   }
 
-  /* tap anywhere for a small shower of petals and sparks */
-  page.addEventListener("pointerdown", e => {
-    if (e.target.closest("a,button")) return;
+  /* a small shower of petals for a real tap only: short, nearly still, and no scrolling in between.
+     Touching the screen to scroll is not a tap, so swipes never set it off. */
+  let down = null, lastBurst = 0;
+  page.addEventListener("pointerdown", e => { down = e.target.closest("a,button") ? null : { x: e.clientX, y: e.clientY, t: performance.now(), sy: scrollY }; }, { passive: true });
+  page.addEventListener("pointercancel", () => { down = null; }, { passive: true });
+  page.addEventListener("pointerup", e => {
+    const d = down; down = null; if (!d) return; const now = performance.now();
+    if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 10 || now - d.t > 350 || Math.abs(scrollY - d.sy) > 2 || now - lastBurst < 900) return;
+    lastBurst = now; window.__bursts = (window.__bursts || 0) + 1;
     const u = Math.max(.7, page.getBoundingClientRect().width / 540);
-    for (let i = 0; i < 16; i++) { const a = rand(-Math.PI * .95, -Math.PI * .05), v = rand(120, 360) * u; add({ kind: "p", x: e.clientX, y: e.clientY, vx: Math.cos(a) * v, vy: Math.sin(a) * v, drag: .985, g: 420 * u, s: rand(12, 24) * u, pal: palOf([...PAL.marigold, ...PAL.rose, ...PAL.gold]), max: rand(1.8, 3), sw: rand(1, 2), sa: 10, ph: rand(0, TAU), vr: rand(-5, 5), vf: rand(5, 11), a: 1 }); }
-    for (let i = 0; i < 12; i++) { const a = rand(0, TAU), v = rand(60, 220) * u; add({ kind: "m", x: e.clientX, y: e.clientY, vx: Math.cos(a) * v, vy: Math.sin(a) * v, drag: .975, s: rand(5, 11) * u, rgb: "255,226,160", max: rand(.8, 1.5), a: 1 }); }
+    for (let i = 0; i < 10; i++) { const a = rand(-Math.PI * .95, -Math.PI * .05), v = rand(120, 320) * u; add({ kind: "p", x: e.clientX, y: e.clientY, vx: Math.cos(a) * v, vy: Math.sin(a) * v, drag: .985, g: 420 * u, s: rand(12, 22) * u, pal: palOf([...PAL.marigold, ...PAL.rose, ...PAL.gold]), max: rand(1.6, 2.6), sw: rand(1, 2), sa: 10, ph: rand(0, TAU), vr: rand(-5, 5), vf: rand(5, 11), a: 1 }); }
+    for (let i = 0; i < 8; i++) { const a = rand(0, TAU), v = rand(60, 200) * u; add({ kind: "m", x: e.clientX, y: e.clientY, vx: Math.cos(a) * v, vy: Math.sin(a) * v, drag: .975, s: rand(5, 10) * u, rgb: "255,226,160", max: rand(.8, 1.3), a: 1 }); }
   });
 
   burstHook = (x, y) => {
@@ -168,7 +172,7 @@
     // read every rect first, then write
     for (const s of st) { const r = s.el.getBoundingClientRect(); s.top = r.top; s.bottom = r.bottom; s.left = r.left; s.w = r.width; s.h = r.height; s.u = r.width / 1081; s.vis = r.bottom > 0 && r.top < H; }
     // scrub progress for screens 2 to 6: 0 when the screen starts to enter, 1 when most of it is in view
-    for (const s of st) { if (s.i === 0) continue; const p = clamp((H - s.top) / (s.h * .75 + H * .1)); if (Math.abs(p - s.p) > .0015) { s.p = p; s.el.style.setProperty("--pe", ease3(p).toFixed(4)); } }
+    for (const s of st) { if (s.i === 0) continue; const p = clamp((H - s.top) / (s.h * .75 + H * .1)); if (Math.abs(p - s.p) > .0015) { s.p = p; s.el.style.setProperty("--pe", ease3(p).toFixed(4)); s.el.classList.toggle("done", p >= .999); } }
     // parallax and pointer drift
     cx = lerp(cx, mx, .06); cy = lerp(cy, my, .06);
     for (const it of parItems) { const s = it.s; if (!s.vis) continue; const pp = clamp((s.top + s.h / 2 - H / 2) / (H / 2 + s.h / 2), -1, 1); it.el.style.translate = `${(cx * it.pm * s.u).toFixed(1)}px ${(pp * it.k * s.w + cy * it.pm * .5 * s.u).toFixed(1)}px`; }
