@@ -228,7 +228,6 @@
         fx.save(); fx.globalCompositeOperation = "lighter"; fx.globalAlpha = (1 - k) * .7; fx.strokeStyle = "rgb(255,214,100)"; fx.lineWidth = 3 + 6 * (1 - k); fx.beginPath(); fx.arc(540, 1340, 40 + 600 * E.out3(k), 0, TAU); fx.stroke(); fx.restore();
         const r = rng(44); for (let i = 0; i < 80; i++) { const ang = r() * TAU, sp = 140 + r() * 640, d = sp * E.out3(clamp(hb / (1.4 + r()))), sz = 5 + r() * 10;
           glow(540 + Math.cos(ang) * d, 1340 + Math.sin(ang) * d * .85 + 60 * hb * hb, sz, r() > .5 ? "255,196,40" : "255,150,40", (1 - clamp(hb / 2)) * (.45 + .55 * Math.sin(hb * 9 + i))); }
-        star(540, 1340, 90 * (1 - E.out3(clamp(hb / 1.1))) + 16, Math.exp(-hb / .45) * .9, Math.PI / 4, "255,226,150");
       }
     }
     /* the touch: ring of light, spark burst and a lens glint where the fingertips meet */
