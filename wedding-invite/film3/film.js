@@ -1,11 +1,11 @@
 /* Wedding film: every frame is a pure function of global time t (seconds). renderAt(t) lays out and animates the seven screens of the
    Figma page "Bride Side", applies the transition between neighbours and draws light/particles on top.
    Timeline (s): scene k+1 starts at B[k]; the transition between them is centred on B[k] and lasts 2*HW.
-   The soundtrack hits (10.9, 19.9, 33.8 s) are matched to the families reveal, the haldi burst and the closing blessing; the hands touch on a beat at 14.49 s. */
+   The song's section entries (beats 8, 24, 40, 64 = 5.26, 14.86, 24.46, 38.86 s) land on the portrait reveal, the hands touching, the whip pan into the mehndi and the dolly into the closing blessing. */
 (function () {
-  const W = 1081, H = 1920, DUR = 40, HW = .55;
-  const B = [0, 5.2, 10.9, 16.3, 22.3, 28.0, 33.8, 40];
-  const HITS = [10.9, 14.49, 19.9, 33.8], TOUCH = 14.49, HALDI = 19.9, BEAT = 60 / 84, PH = .202;
+  const W = 1081, H = 1920, DUR = 46, HW = .55;
+  const B = [0, 5.26, 10.66, 17.26, 24.46, 31.66, 38.86, 46];   // transition centres, all on the 100 bpm beat grid of the song
+  const TOUCH = 14.86, HALDI = 19.66, BEAT = .6, PH = .46, SPAN = k => B[k] - B[k - 1];
   const $ = id => document.getElementById(id);
   const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x, mix = (a, b, t) => a + (b - a) * t, prog = (t, a, b) => clamp((t - a) / (b - a));
   const E = {
@@ -54,18 +54,18 @@
     c.style.transform = `translateY(${(1 - E.out3(prog(t, 2.3, 3.6))) * 22}px)`;
   };
   S[2] = t => {
-    const k = clamp(t / 6.8), img = $("s2img");
-    img.style.transform = STILL ? "none" : `scale(${mix(1.2, 1, E.out3(prog(t, 0, 5.8))).toFixed(5)}) translate(${mix(-26, 0, E.out3(k))}px,${mix(14, 0, E.out3(k))}px)`;
+    const k = clamp(t / 6.0), img = $("s2img");
+    img.style.transform = STILL ? "none" : `scale(${mix(1.2, 1, E.out3(prog(t, 0, 5.2))).toFixed(5)}) translate(${mix(-26, 0, E.out3(k))}px,${mix(14, 0, E.out3(k))}px)`;
     camera(2, mix(1, 1.035, k), 0, 0, 540, 960);
-    rise($("s2t"), t, 1.45, 1.1, { dist: .4, blur: 4 });
-    rise($("s2a"), t, 1.75, 1.15); rise($("s2b"), t, 2.15, 1.15); rise($("s2c"), t, 2.55, 1.15);
-    rise($("s2d"), t, 3.45, 1.1, { dist: .5, blur: 4 }); rise($("s2e"), t, 3.7, 1.1, { dist: .5, blur: 4 });
-    rise($("s2f"), t, 4.3, 1.2, { dist: 1.2 });
+    rise($("s2t"), t, 1.3, 1.0, { dist: .4, blur: 4 });
+    rise($("s2a"), t, 1.55, 1.1); rise($("s2b"), t, 1.9, 1.1); rise($("s2c"), t, 2.25, 1.1);
+    rise($("s2d"), t, 3.0, 1.0, { dist: .5, blur: 4 }); rise($("s2e"), t, 3.22, 1.0, { dist: .5, blur: 4 });
+    rise($("s2f"), t, 3.7, 1.1, { dist: 1.2 });
     $("s2glow").style.opacity = (.55 + .45 * Math.sin(t * 1.1)).toFixed(3);
   };
   const hl = $("s3hl"), hr = $("s3hr"), hf = $("s3hf");
   S[3] = t => {
-    camera(3, mix(1, 1.04, E.sine(clamp(t / 6.5))), 0, 0, 540, 1100);
+    camera(3, mix(1, 1.04, E.sine(clamp(t / 7.2))), 0, 0, 540, 1100);
     rise($("s3a"), t, 1.2, 1.2); rise($("s3b"), t, 1.8, 1.1, { dist: .5, blur: 4 }); rise($("s3c"), t, 2.05, 1.1, { dist: .5, blur: 4 });
     rise($("s3d"), t, 2.6, 1.2); rise($("s3e"), t, 3.2, 1.1, { dist: .5, blur: 4 }); rise($("s3f"), t, 3.45, 1.1, { dist: .5, blur: 4 });
     // the two hands travel toward each other and touch on a beat (14.49 s)
@@ -81,15 +81,15 @@
     gl.style.transform = `translate(2px,4px) scale(${(1 + (1 - gk) * .6).toFixed(3)})`;
   };
   S[4] = t => {
-    camera(4, mix(1.0, 1.045, clamp(t / 7.1)), 0, 0, 540, 1200);
+    camera(4, mix(1.0, 1.045, clamp(t / 8.3)), 0, 0, 540, 1200);
     rise($("s4a"), t, 1.2, 1.0, { dist: .4, blur: 4 }); rise($("s4b"), t, 1.4, 1.2, { dist: 1.2 }); rise($("s4c"), t, 2.0, 1.0, { dist: .5, blur: 4 });
     for (let i = 0; i < (PL.s4p || 0); i++) rise($("s4p_" + i), t, 2.5 + i * .28, 1.1, { dist: .5, blur: 4 });
     rise($("s4d"), t, 3.3, 1.1, { dist: .5, blur: 4 }); rise($("s4e"), t, 3.55, 1.1, { dist: .5, blur: 4 });
     // the turmeric hands and the thali rise into place; on the musical drop (19.9 s) the haldi "lands" with a warm burst
     const bt = t - (HALDI - start(4)), thump = STILL || bt < 0 ? 0 : .03 * Math.exp(-bt / .28);
     const hk = E.out5(prog(t, .9, 3.1)); setT($("s4hw"), 0, 300 * (1 - hk), mix(1.05, 1, hk) * (1 + thump), -2 * (1 - hk), clamp(prog(t, .9, 1.6)));
-    const bk = E.out5(prog(t, 1.4, 3.5)); setT($("s4bw"), 0, 340 * (1 - bk), mix(.94, 1, bk) * (1 + thump * .8), 0, clamp(prog(t, 1.4, 2.1)));
-    $("s4sun").style.opacity = (E.out3(prog(t, 1.2, 3.6)) * (.55 + .25 * pulse(t + 15.75)) + (bt < 0 ? 0 : .6 * Math.exp(-bt / .7))).toFixed(3);
+    const bk = E.out5(prog(t, 1.2, 3.1)); setT($("s4bw"), 0, 340 * (1 - bk), mix(.94, 1, bk) * (1 + thump * .8), 0, clamp(prog(t, 1.2, 1.9)));
+    $("s4sun").style.opacity = (E.out3(prog(t, 1.2, 3.6)) * (.55 + .25 * pulse(t + start(4))) + (bt < 0 ? 0 : .6 * Math.exp(-bt / .7))).toFixed(3);
     const fl = clamp(bk * 1.4) * (.75 + .25 * Math.sin(t * 9) * Math.sin(t * 5.3) + .1 * Math.sin(t * 17)); $("s4flame").style.opacity = fl.toFixed(3); $("s4flame").style.transform = `translateY(${(340 * (1 - bk)).toFixed(1)}px)`;
   };
   S[5] = t => {
@@ -97,26 +97,26 @@
     rise($("s5a"), t, 1.2, 1.0, { dist: .4, blur: 4 }); rise($("s5b"), t, 1.4, 1.2, { dist: 1.2 }); rise($("s5c"), t, 2.0, 1.0, { dist: .5, blur: 4 });
     rise($("s5d"), t, 2.4, 1.1, { dist: .5, blur: 4 }); rise($("s5e"), t, 2.65, 1.1, { dist: .5, blur: 4 }); rise($("s5f"), t, 3.2, 1.1, { dist: .5, blur: 4 }); rise($("s5g"), t, 3.45, 1.1, { dist: .5, blur: 4 });
         // the henna hands glide in from the right, then slip away to the right before the match cut
-    const ek = E.out4(prog(t, .8, 3.0)), ex = E.smooth(prog(t, 4.7, 5.8));
+    const ek = E.out4(prog(t, .8, 3.0)), ex = E.smooth(prog(t, SPAN(5) - 1.0, SPAN(5) + .1));
     setT($("s5aw"), 520 * (1 - ek) + 640 * ex, 70 * (1 - ek) + 60 * ex, 1, 3 * (1 - ek), clamp(prog(t, .8, 1.5)) * (1 - ex));
-    $("g5").style.opacity = (1 - E.smooth(prog(t, 4.9, 5.6))).toFixed(3);
+    $("g5").style.opacity = (1 - E.smooth(prog(t, SPAN(5) - .8, SPAN(5) - .1))).toFixed(3);
   };
   S[6] = t => {
-    camera(6, 1 + .0045 * (t + 5.7), 0, 0, 540, 1000);
+    camera(6, 1 + .0045 * (t + start(6) - start(5)), 0, 0, 540, 1000);
     rise($("s6a"), t, 1.2, 1.0, { dist: .4, blur: 4 }); rise($("s6b"), t, 1.4, 1.2, { dist: 1.2 }); rise($("s6c"), t, 2.0, 1.0, { dist: .5, blur: 4 });
     for (let i = 0; i < (PL.s6p || 0); i++) rise($("s6p_" + i), t, 2.4 + i * .28, 1.1, { dist: .5, blur: 4 });
     rise($("s6d"), t, 3.4, 1.2, { dist: 1.2 }); rise($("s6e"), t, 3.65, 1.2, { dist: 1.2 });
     const ck = E.out5(prog(t, .7, 3.0)); setT($("s6cw"), 0, 280 * (1 - ck), mix(.96, 1, ck) * (STILL ? 1 : 1 + .008 * Math.sin(t * .8)), 0, clamp(ck * 2.5));
-    $("s6glow").style.opacity = (E.out3(prog(t, 1.2, 3.4)) * (.7 + .3 * pulse(t + 27.45))).toFixed(3);
+    $("s6glow").style.opacity = (E.out3(prog(t, 1.2, 3.4)) * (.7 + .3 * pulse(t + start(6)))).toFixed(3);
   };
   S[7] = t => {
-    camera(7, mix(1.0, 1.05, E.sine(clamp(t / 6.75))), 0, 0, 540, 1100);
+    camera(7, mix(1.0, 1.055, E.sine(clamp(t / 7.7))), 0, 0, 540, 1100);
     rise($("s7a"), t, 1.25, 1.2); rise($("s7b"), t, 1.5, 1.2);
     rise($("s7c"), t, 2.15, 1.1, { dist: .5, blur: 4 }); rise($("s7d"), t, 2.4, 1.1, { dist: .5, blur: 4 });
     for (let i = 0; i < (PL.s7p || 0); i++) rise($("s7p_" + i), t, 4.0 + i * .28, 1.1, { dist: .5, blur: 4 });
     $("s7arch").style.opacity = E.out3(prog(t, .9, 2.4)).toFixed(3);
     const kk = E.out5(prog(t, .8, 3.4)); const ko = clamp(prog(t, .8, 1.6)); setT($("s7ka"), 0, 60 * (1 - kk), mix(1.08, 1, kk), 0, ko); setT($("s7kb"), 0, 60 * (1 - kk), mix(1.08, 1, kk), 0, ko);
-    $("s7glow").style.opacity = (E.out3(prog(t, 1.4, 3.6)) * (.7 + .3 * pulse(t + 33.25))).toFixed(3);
+    $("s7glow").style.opacity = (E.out3(prog(t, 1.4, 3.6)) * (.7 + .3 * pulse(t + start(7)))).toFixed(3);
   };
 
   /* ============ transitions ============ */
@@ -210,10 +210,10 @@
         petal(x, y, p.s * (mode === "wind" ? .9 : 1), p.rot + tt * p.spin * .5, Math.abs(flip) < .18 ? .18 : flip, pal[0], pal[1], a * .9);
       });
     };
-    petalRun(20.1, 22.4, "fall", 14); petalRun(28.6, 34.2, "fall", 26); petalRun(35.2, 40.6, "fall", 18);
+    petalRun(20.2, 24.4, "fall", 14); petalRun(32.2, 38.8, "fall", 26); petalRun(39.4, 46.6, "fall", 18);
     /* S5: a glint rides the tip of the henna cone as the pattern is drawn */
-    if (t > 24.5 && t < 26.5) {
-      const a = clamp(prog(t, 24.5, 25.2)) * clamp(1 - prog(t, 25.9, 26.45)), tt = t - 24.5;
+    if (t > start(5) + 3.0 && t < start(5) + SPAN(5) - .7) {
+      const t0 = start(5) + 3.0, t1 = start(5) + SPAN(5) - .7, a = clamp(prog(t, t0, t0 + .7)) * clamp(1 - prog(t, t1 - .6, t1)), tt = t - t0;
       const tx = 710 + Math.sin(tt * 1.7) * 14, ty = 1357 + Math.cos(tt * 2.1) * 8;
       glow(tx, ty, 70 + 25 * pulse(t), "255,214,140", .7 * a); star(tx, ty, 22 + 10 * pulse(t), a * (.6 + .4 * Math.sin(tt * 5)), tt * .6);
       for (let i = 0; i < 14; i++) { const u = fract(tt * .55 + i / 14), x = tx - u * 360 + Math.sin(i * 3 + tt) * 18, y = ty + u * 160 + Math.cos(i * 2 + tt) * 14;
@@ -245,7 +245,7 @@
       }
     }
     /* the flower in her palm glows softly once the hands have met */
-    if (th > 0 && t < 15.8) { const a = E.out3(clamp(th / 1.2)) * (.35 + .12 * Math.sin(th * 3)) * clamp((15.7 - t) / .5); glow(787, 1410, 140, "255,120,90", a); }
+    if (th > 0 && t < 16.8) { const a = E.out3(clamp(th / 1.2)) * (.35 + .12 * Math.sin(th * 3)) * clamp((16.7 - t) / .5); glow(787, 1410, 140, "255,120,90", a); }
     /* arch edge: a gold line tracing the opening arch */
     if (FXQ.archA > .01 && ARCH) {
       const s = FXQ.archS; fx.save(); fx.globalCompositeOperation = "lighter"; fx.translate(541 - 489 * s, 959.5 - 837.5 * s); fx.scale(s, s); fx.lineJoin = "round";

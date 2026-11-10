@@ -1,7 +1,7 @@
-/* Renders frames 0..1199 (40 s @ 30 fps) of film.html at 2x (2160x3840 JPEGs; compose.sh downsamples to 1080x1920 for sub-pixel-smooth type).
+/* Renders frames 0..1379 (46 s @ 30 fps) of film.html at 2x (2160x3840 JPEGs; compose.sh downsamples to 1080x1920 for sub-pixel-smooth type).
    usage: node render.js <outDir> [workers=4]   (serve this folder first:  python3 -m http.server 8778)  */
 const { chromium } = require("playwright"); const { spawn } = require("child_process"); const fs = require("fs"), path = require("path");
-const FPS = 30, N = 40 * FPS, [,, outArg, wArg = "4", from, to] = process.argv, out = path.resolve(outArg);
+const FPS = 30, N = 46 * FPS, [,, outArg, wArg = "4", from, to] = process.argv, out = path.resolve(outArg);
 if (from === undefined) {
   fs.mkdirSync(out, { recursive: true }); const nw = +wArg, per = Math.ceil(N / nw); let done = 0; const t0 = Date.now();
   for (let w = 0; w < nw; w++) { const a = w * per, b = Math.min(N - 1, a + per - 1); if (a >= N) break;
