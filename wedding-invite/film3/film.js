@@ -198,7 +198,7 @@
       if (dark) glow(x, y, d.s * 4.2, "255,208,140", .42 * tw * dv); else glow(x, y, d.s * 3.6, "230,160,70", .32 * tw * dv, "source-over");
     }
     /* S1: sparkles around Ganesha */
-    if (t < 6) SPARK1.forEach(([x, y, ph], i) => { const a = clamp(prog(t, 1.4 + i * .18, 2.2 + i * .18)) * clamp(1 - prog(t, 4.9, 5.7)) * Math.pow(.5 + .5 * Math.sin(t * 2.2 + ph * 2), 3); star(x + Math.sin(t * .3 + ph) * 8, y - t * 4, 10 + 8 * (i % 3), a, t * .3 + ph, "255,226,170"); });
+    if (t < 6) SPARK1.forEach(([x, y, ph], i) => { const a = clamp(prog(t, 1.4 + i * .18, 2.2 + i * .18)) * clamp(1 - prog(t, 4.9, 5.7)) * Math.pow(.5 + .5 * Math.sin(t * 2.2 + ph * 2), 3); glow(x + Math.sin(t * .3 + ph) * 8, y - t * 4, 16 + 10 * (i % 3), "255,226,170", a * .8); });
     /* S5: marigold and rose petals blow past with the baraat; S7: they fall gently over the couple */
     const petalRun = (t0, t1, mode, amt) => {
       const a = clamp(prog(t, t0, t0 + 1.4)) * clamp(1 - prog(t, t1 - 1.2, t1)); if (a <= .01) return;
@@ -215,7 +215,7 @@
     if (t > start(5) + 3.0 && t < start(5) + SPAN(5) - .7) {
       const t0 = start(5) + 3.0, t1 = start(5) + SPAN(5) - .7, a = clamp(prog(t, t0, t0 + .7)) * clamp(1 - prog(t, t1 - .6, t1)), tt = t - t0;
       const tx = 710 + Math.sin(tt * 1.7) * 14, ty = 1357 + Math.cos(tt * 2.1) * 8;
-      glow(tx, ty, 70 + 25 * pulse(t), "255,214,140", .7 * a); star(tx, ty, 22 + 10 * pulse(t), a * (.6 + .4 * Math.sin(tt * 5)), tt * .6);
+      glow(tx, ty, 70 + 25 * pulse(t), "255,214,140", .7 * a);
       for (let i = 0; i < 14; i++) { const u = fract(tt * .55 + i / 14), x = tx - u * 360 + Math.sin(i * 3 + tt) * 18, y = ty + u * 160 + Math.cos(i * 2 + tt) * 14;
         glow(x, y, 5 + 6 * (1 - u), "255,200,120", a * (1 - u) * .8); }
     }
@@ -225,7 +225,6 @@
       const k = clamp(hb / 1.3);
       glow(540, 1340, 240 + 700 * k, "255,196,50", hb < 0 ? clamp((hb + .6) / .6) * .15 : (1 - k) * .55);
       if (hb >= 0) {
-        fx.save(); fx.globalCompositeOperation = "lighter"; fx.globalAlpha = (1 - k) * .7; fx.strokeStyle = "rgb(255,214,100)"; fx.lineWidth = 3 + 6 * (1 - k); fx.beginPath(); fx.arc(540, 1340, 40 + 600 * E.out3(k), 0, TAU); fx.stroke(); fx.restore();
         const r = rng(44); for (let i = 0; i < 80; i++) { const ang = r() * TAU, sp = 140 + r() * 640, d = sp * E.out3(clamp(hb / (1.4 + r()))), sz = 5 + r() * 10;
           glow(540 + Math.cos(ang) * d, 1340 + Math.sin(ang) * d * .85 + 60 * hb * hb, sz, r() > .5 ? "255,196,40" : "255,150,40", (1 - clamp(hb / 2)) * (.45 + .55 * Math.sin(hb * 9 + i))); }
       }
@@ -236,11 +235,8 @@
       const k = clamp(th / 1.1), prePull = clamp((th + .9) / .9);
       glow(542, 1354, 90 + 260 * k, "255,226,170", (th < 0 ? prePull * .25 : (1 - k) * .75 + .15 * Math.exp(-th / 1.6)));
       if (th >= 0) {
-        fx.save(); fx.globalCompositeOperation = "lighter"; fx.globalAlpha = (1 - k) * .8; fx.strokeStyle = "rgb(255,230,170)"; fx.lineWidth = 3 + 5 * (1 - k); fx.beginPath(); fx.arc(542, 1354, 30 + 520 * E.out3(k), 0, TAU); fx.stroke(); fx.restore();
         const r = rng(91); for (let i = 0; i < 46; i++) { const ang = r() * TAU, sp = 120 + r() * 520, d = sp * E.out3(clamp(th / (1.3 + r())));
           glow(542 + Math.cos(ang) * d, 1354 + Math.sin(ang) * d * .8 + 40 * th * th, 4 + r() * 8, "255,222,150", (1 - clamp(th / 1.8)) * (.5 + .5 * Math.sin(th * 14 + i))); }
-        star(542, 1354, 70 * (1 - E.out3(clamp(th / 1.2))) + 14, Math.exp(-th / .5), Math.PI / 4);
-        star(542, 1354, 120 * (1 - E.out3(clamp(th / 1.0))) + 10, Math.exp(-th / .45) * .8, 0);
       }
     }
     /* the flower in her palm glows softly once the hands have met */
