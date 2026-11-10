@@ -11,7 +11,7 @@ if (from === undefined) {
   p.on("pageerror", e => console.log("PAGEERR", e.message));
   await p.goto("http://127.0.0.1:8778/film.html?dpr=2"); await p.waitForFunction(() => window.RENDER_READY, null, { timeout: 60000 });
   for (let n = +from; n <= +to; n++) {
-    await p.evaluate(([t, n]) => window.renderAt(t, n), [n / FPS, n]);
+    await p.evaluate(([t, n]) => { window.renderAt(t, n); return new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))); }, [n / FPS, n]);   // let the compositor finish painting before capturing (a torn frame was seen once)
     await p.screenshot({ path: path.join(out, `f${String(n).padStart(4, "0")}.jpg`), type: "jpeg", quality: 96, clip: { x: 0, y: 0, width: 1080, height: 1920 } });
     if ((n - +from) % 50 === 0) console.log("frame", n);
   }

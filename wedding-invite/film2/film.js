@@ -15,7 +15,7 @@
   };
   function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
   const STILL = /still/.test(location.search), DPR = +(new URLSearchParams(location.search).get("dpr") || 1), TAU = Math.PI * 2, fract = x => ((x % 1) + 1) % 1;
-  const pulse = t => Math.exp(-fract((t - PH) / BEAT) * BEAT / .16);     // 1 on each beat, decays
+  const pulse = t => { const x = fract((t - PH) / BEAT) * BEAT; return 2 * (1 - Math.exp(-x / .05)) * Math.exp(-x / .18); };   // soft attack, then decay: no hard flicker on each beat
 
   const SC = [null, ...[1, 2, 3, 4, 5, 6, 7].map(i => $("s" + i))], CAM = [null, ...[1, 2, 3, 4, 5, 6, 7].map(i => $("c" + i))];
   const start = k => k === 1 ? 0 : B[k - 1] - HW, end = k => k === 7 ? DUR + .1 : B[k] + HW;
@@ -95,7 +95,7 @@
     rise($("s5a"), t, 1.2, 1.0, { dist: .4, blur: 4 }); rise($("s5b"), t, 1.4, 1.2, { dist: 1.2 }); rise($("s5c"), t, 2.0, 1.0, { dist: .5, blur: 4 });
     rise($("s5d"), t, 2.4, 1.1, { dist: 1.2 }); rise($("s5e"), t, 2.7, 1.1, { dist: 1.2 });
     for (let i = 0; i < (PL.s5p || 0); i++) rise($("s5p_" + i), t, 3.3 + i * .28, 1.1, { dist: .5, blur: 4 });
-    const sun = $("s5sun"); sun.style.opacity = (E.out3(prog(t, .6, 2.6)) * (.7 + .3 * pulse(t + 21.75))).toFixed(3);
+    const sun = $("s5sun"); sun.style.opacity = (E.out3(prog(t, .6, 2.6)) * (.8 + .2 * pulse(t + 21.75))).toFixed(3);
     // the groom rides in from the left with a gentle trot, then rides on to the right as the scene ends
     const enter = E.out4(prog(t, .7, 3.7)), exit = E.smooth(prog(t, 4.7, 5.8));
     const x = -760 * (1 - enter) + 760 * exit, step = Math.abs(Math.sin((t + 21.75 - PH) * Math.PI / BEAT)), bob = STILL ? 0 : -(8 * step) * clamp(enter * 4) * (1 - exit);
@@ -117,7 +117,7 @@
     rise($("s7a"), t, 1.25, 1.0, { dist: .4, blur: 4 }); rise($("s7b"), t, 1.5, 1.2, { dist: 1.2 }); rise($("s7c"), t, 2.0, 1.2, { dist: 1.3 });
     rise($("s7d"), t, 2.6, 1.0, { dist: .5, blur: 4 }); rise($("s7e"), t, 2.95, 1.1, { dist: 1.2 }); rise($("s7f"), t, 3.2, 1.1, { dist: 1.2 });
     const ck = E.out5(prog(t, .9, 3.4)); setT($("s7cw"), 0, 280 * (1 - ck), mix(.96, 1, ck) * (STILL ? 1 : 1 + .008 * Math.sin(t * .8)), 0, clamp(ck * 2.5));
-    $("s7glow").style.opacity = (E.out3(prog(t, 1.2, 3.4)) * (.75 + .25 * pulse(t + 33.25))).toFixed(3);
+    $("s7glow").style.opacity = (E.out3(prog(t, 1.2, 3.4)) * (.85 + .15 * pulse(t + 33.25))).toFixed(3);
   };
 
   /* ============ transitions ============ */
@@ -202,7 +202,7 @@
       if (dark) glow(x, y, d.s * 4.2, "255,208,140", .42 * tw * dv); else glow(x, y, d.s * 3.6, "230,160,70", .32 * tw * dv, "source-over");
     }
     /* S1: sparkles around Ganesha */
-    if (t < 6) SPARK1.forEach(([x, y, ph], i) => { const a = clamp(prog(t, 1.4 + i * .18, 2.2 + i * .18)) * clamp(1 - prog(t, 4.9, 5.7)) * Math.pow(.5 + .5 * Math.sin(t * 2.2 + ph * 2), 3); star(x + Math.sin(t * .3 + ph) * 8, y - t * 4, 10 + 8 * (i % 3), a, t * .3 + ph, "255,226,170"); });
+    if (t < 6) SPARK1.forEach(([x, y, ph], i) => { const a = clamp(prog(t, 1.4 + i * .18, 2.2 + i * .18)) * clamp(1 - prog(t, 4.9, 5.7)) * Math.pow(.5 + .5 * Math.sin(t * 2.2 + ph * 2), 3); glow(x + Math.sin(t * .3 + ph) * 8, y - t * 4, 16 + 10 * (i % 3), "255,226,170", a * .8); });
     /* S5: marigold and rose petals blow past with the baraat; S7: they fall gently over the couple */
     const petalRun = (t0, t1, mode, amt) => {
       const a = clamp(prog(t, t0, t0 + 1.4)) * clamp(1 - prog(t, t1 - 1.2, t1)); if (a <= .01) return;
@@ -225,13 +225,10 @@
     const th = t - HITS[1];
     if (th > -.9 && th < 2.6) {
       const k = clamp(th / 1.1), prePull = clamp((th + .9) / .9);
-      glow(542, 1263, 90 + 260 * k, "255,226,170", (th < 0 ? prePull * .25 : (1 - k) * .75 + .15 * Math.exp(-th / 1.6)));
+      glow(542, 1263, 90 + 260 * k, "255,226,170", (th < 0 ? prePull * .25 : .25 + (((1 - k) * .75 + .15 * Math.exp(-th / 1.6)) - .25) * E.smooth(clamp(th / .12))));
       if (th >= 0) {
-        fx.save(); fx.globalCompositeOperation = "lighter"; fx.globalAlpha = (1 - k) * .8; fx.strokeStyle = "rgb(255,230,170)"; fx.lineWidth = 3 + 5 * (1 - k); fx.beginPath(); fx.arc(542, 1263, 30 + 520 * E.out3(k), 0, TAU); fx.stroke(); fx.restore();
         const r = rng(91); for (let i = 0; i < 46; i++) { const ang = r() * TAU, sp = 120 + r() * 520, d = sp * E.out3(clamp(th / (1.3 + r())));
           glow(542 + Math.cos(ang) * d, 1263 + Math.sin(ang) * d * .8 + 40 * th * th, 4 + r() * 8, "255,222,150", (1 - clamp(th / 1.8)) * (.5 + .5 * Math.sin(th * 14 + i))); }
-        star(542, 1263, 70 * (1 - E.out3(clamp(th / 1.2))) + 14, Math.exp(-th / .5), Math.PI / 4);
-        star(542, 1263, 120 * (1 - E.out3(clamp(th / 1.0))) + 10, Math.exp(-th / .45) * .8, 0);
       }
     }
     /* the flower in her palm glows softly once the hands have met */

@@ -15,7 +15,7 @@
   };
   function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
   const STILL = /still/.test(location.search), DPR = +(new URLSearchParams(location.search).get("dpr") || 1), TAU = Math.PI * 2, fract = x => ((x % 1) + 1) % 1;
-  const pulse = t => Math.exp(-fract((t - PH) / BEAT) * BEAT / .16);     // 1 on each beat, decays
+  const pulse = t => { const x = fract((t - PH) / BEAT) * BEAT; return 2 * (1 - Math.exp(-x / .05)) * Math.exp(-x / .18); };   // soft attack, then decay: no hard flicker on each beat
 
   const SC = [null, ...[1, 2, 3, 4, 5, 6, 7].map(i => $("s" + i))], CAM = [null, ...[1, 2, 3, 4, 5, 6, 7].map(i => $("c" + i))];
   const start = k => k === 1 ? 0 : B[k - 1] - HW, end = k => k === 7 ? DUR + .1 : B[k] + HW;
@@ -86,10 +86,10 @@
     for (let i = 0; i < (PL.s4p || 0); i++) rise($("s4p_" + i), t, 2.5 + i * .28, 1.1, { dist: .5, blur: 4 });
     rise($("s4d"), t, 3.3, 1.1, { dist: .5, blur: 4 }); rise($("s4e"), t, 3.55, 1.1, { dist: .5, blur: 4 });
     // the turmeric hands and the thali rise into place; on the musical drop (19.9 s) the haldi "lands" with a warm burst
-    const bt = t - (HALDI - start(4)), thump = STILL || bt < 0 ? 0 : .03 * Math.exp(-bt / .28);
+    const bt = t - (HALDI - start(4)), thump = STILL || bt < 0 ? 0 : .03 * (1 - Math.exp(-bt / .05)) * Math.exp(-bt / .28);
     const hk = E.out5(prog(t, .9, 3.1)); setT($("s4hw"), 0, 300 * (1 - hk), mix(1.05, 1, hk) * (1 + thump), -2 * (1 - hk), clamp(prog(t, .9, 1.6)));
     const bk = E.out5(prog(t, 1.2, 3.1)); setT($("s4bw"), 0, 340 * (1 - bk), mix(.94, 1, bk) * (1 + thump * .8), 0, clamp(prog(t, 1.2, 1.9)));
-    $("s4sun").style.opacity = (E.out3(prog(t, 1.2, 3.6)) * (.55 + .25 * pulse(t + start(4))) + (bt < 0 ? 0 : .6 * Math.exp(-bt / .7))).toFixed(3);
+    $("s4sun").style.opacity = (E.out3(prog(t, 1.2, 3.6)) * (.6 + .15 * pulse(t + start(4))) + (bt < 0 ? 0 : .6 * (1 - Math.exp(-bt / .06)) * Math.exp(-bt / .7))).toFixed(3);
     const fl = clamp(bk * 1.4) * (.75 + .25 * Math.sin(t * 9) * Math.sin(t * 5.3) + .1 * Math.sin(t * 17)); $("s4flame").style.opacity = fl.toFixed(3); $("s4flame").style.transform = `translateY(${(340 * (1 - bk)).toFixed(1)}px)`;
   };
   S[5] = t => {
@@ -107,7 +107,7 @@
     for (let i = 0; i < (PL.s6p || 0); i++) rise($("s6p_" + i), t, 2.4 + i * .28, 1.1, { dist: .5, blur: 4 });
     rise($("s6d"), t, 3.4, 1.2, { dist: 1.2 }); rise($("s6e"), t, 3.65, 1.2, { dist: 1.2 });
     const ck = E.out5(prog(t, .7, 3.0)); setT($("s6cw"), 0, 280 * (1 - ck), mix(.96, 1, ck) * (STILL ? 1 : 1 + .008 * Math.sin(t * .8)), 0, clamp(ck * 2.5));
-    $("s6glow").style.opacity = (E.out3(prog(t, 1.2, 3.4)) * (.7 + .3 * pulse(t + start(6)))).toFixed(3);
+    $("s6glow").style.opacity = (E.out3(prog(t, 1.2, 3.4)) * (.8 + .2 * pulse(t + start(6)))).toFixed(3);
   };
   S[7] = t => {
     camera(7, mix(1.0, 1.055, E.sine(clamp(t / 7.7))), 0, 0, 540, 1100);
@@ -116,7 +116,7 @@
     for (let i = 0; i < (PL.s7p || 0); i++) rise($("s7p_" + i), t, 4.0 + i * .28, 1.1, { dist: .5, blur: 4 });
     $("s7arch").style.opacity = E.out3(prog(t, .9, 2.4)).toFixed(3);
     const kk = E.out5(prog(t, .8, 3.4)); const ko = clamp(prog(t, .8, 1.6)); setT($("s7ka"), 0, 60 * (1 - kk), mix(1.08, 1, kk), 0, ko); setT($("s7kb"), 0, 60 * (1 - kk), mix(1.08, 1, kk), 0, ko);
-    $("s7glow").style.opacity = (E.out3(prog(t, 1.4, 3.6)) * (.7 + .3 * pulse(t + start(7)))).toFixed(3);
+    $("s7glow").style.opacity = (E.out3(prog(t, 1.4, 3.6)) * (.82 + .18 * pulse(t + start(7)))).toFixed(3);
   };
 
   /* ============ transitions ============ */
@@ -223,7 +223,7 @@
     const hb = t - HALDI;
     if (hb > -.6 && hb < 2.6) {
       const k = clamp(hb / 1.3);
-      glow(540, 1340, 240 + 700 * k, "255,196,50", hb < 0 ? clamp((hb + .6) / .6) * .15 : (1 - k) * .55);
+      glow(540, 1340, 240 + 700 * k, "255,196,50", hb < 0 ? clamp((hb + .6) / .6) * .15 : .15 + (((1 - k) * .55) - .15) * E.smooth(clamp(hb / .12)));
       if (hb >= 0) {
         const r = rng(44); for (let i = 0; i < 80; i++) { const ang = r() * TAU, sp = 140 + r() * 640, d = sp * E.out3(clamp(hb / (1.4 + r()))), sz = 5 + r() * 10;
           glow(540 + Math.cos(ang) * d, 1340 + Math.sin(ang) * d * .85 + 60 * hb * hb, sz, r() > .5 ? "255,196,40" : "255,150,40", (1 - clamp(hb / 2)) * (.45 + .55 * Math.sin(hb * 9 + i))); }
@@ -233,7 +233,7 @@
     const th = t - TOUCH;
     if (th > -.9 && th < 2.6) {
       const k = clamp(th / 1.1), prePull = clamp((th + .9) / .9);
-      glow(542, 1354, 90 + 260 * k, "255,226,170", (th < 0 ? prePull * .25 : (1 - k) * .75 + .15 * Math.exp(-th / 1.6)));
+      glow(542, 1354, 90 + 260 * k, "255,226,170", (th < 0 ? prePull * .25 : .25 + (((1 - k) * .75 + .15 * Math.exp(-th / 1.6)) - .25) * E.smooth(clamp(th / .12))));
       if (th >= 0) {
         const r = rng(91); for (let i = 0; i < 46; i++) { const ang = r() * TAU, sp = 120 + r() * 520, d = sp * E.out3(clamp(th / (1.3 + r())));
           glow(542 + Math.cos(ang) * d, 1354 + Math.sin(ang) * d * .8 + 40 * th * th, 4 + r() * 8, "255,222,150", (1 - clamp(th / 1.8)) * (.5 + .5 * Math.sin(th * 14 + i))); }
