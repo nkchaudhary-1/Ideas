@@ -14,7 +14,7 @@
     expo: x => x >= 1 ? 1 : 1 - Math.pow(2, -10 * x), smooth: x => x * x * (3 - 2 * x)
   };
   function rng(seed) { let a = seed >>> 0; return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
-  const STILL = /still/.test(location.search), TAU = Math.PI * 2, fract = x => ((x % 1) + 1) % 1;
+  const STILL = /still/.test(location.search), DPR = +(new URLSearchParams(location.search).get("dpr") || 1), TAU = Math.PI * 2, fract = x => ((x % 1) + 1) % 1;
   const pulse = t => Math.exp(-fract((t - PH) / BEAT) * BEAT / .16);     // 1 on each beat, decays
 
   const SC = [null, ...[1, 2, 3, 4, 5, 6, 7].map(i => $("s" + i))], CAM = [null, ...[1, 2, 3, 4, 5, 6, 7].map(i => $("c" + i))];
@@ -30,7 +30,12 @@
     const b = (1 - e) * (o.blur == null ? 7 : o.blur); el.style.filter = b > .15 ? `blur(${b.toFixed(2)}px)` : "none";
   }
   function setT(el, tx, ty, s = 1, r = 0, o = 1) { el.style.transform = `translate(${tx.toFixed(2)}px,${ty.toFixed(2)}px) scale(${s.toFixed(5)}) rotate(${r.toFixed(3)}deg)`; el.style.opacity = o.toFixed(3); }
-  function camera(k, s, tx = 0, ty = 0, ox = 540, oy = 960) { if (STILL) { s = 1; tx = ty = 0; } CAM[k].style.transformOrigin = `${ox}px ${oy}px`; CAM[k].style.transform = `translate(${tx.toFixed(2)}px,${ty.toFixed(2)}px) scale(${s.toFixed(5)})`; }
+  function camera(k, s, tx = 0, ty = 0, ox = 540, oy = 960) {
+    if (STILL) { s = 1; tx = ty = 0; }
+    const sr = +s.toFixed(5); CAM[k].style.transformOrigin = `${ox}px ${oy}px`; CAM[k].style.transform = `translate(${tx.toFixed(2)}px,${ty.toFixed(2)}px) scale(${sr})`;
+    // the art pushes in, the type does not: cancelling the zoom on text groups keeps glyphs on a fixed raster (no pixel stair-stepping while it drifts)
+    const g = $("g" + k); if (g) { g.style.transformOrigin = `${ox}px ${oy}px`; g.style.transform = `scale(${1 / sr}) translate(${(-tx).toFixed(2)}px,${(-ty).toFixed(2)}px)`; }
+  }
   const ids = (p, a) => [...a].map(c => $(p + c));
 
   /* ============ scenes: tau = seconds since the scene's own start ============ */
@@ -62,8 +67,8 @@
     const k = clamp(t / 6.5); camera(3, mix(1, 1.03, k), 0, 0, 540, 900);
     rise($("s3a"), t, 1.2, 1.2); rise($("s3b"), t, 1.8, 1.1, { dist: .5, blur: 4 }); rise($("s3c"), t, 2.05, 1.1, { dist: .5, blur: 4 });
     rise($("s3d"), t, 2.7, 1.2); rise($("s3e"), t, 3.3, 1.1, { dist: .5, blur: 4 }); rise($("s3f"), t, 3.55, 1.1, { dist: .5, blur: 4 });
-    const kk = E.out5(prog(t, .9, 3.6)), sway = STILL ? 0 : Math.sin(t * .9) * .5, flo = STILL ? 0 : Math.sin(t * .7 + 1) * 7;
-    setT($("s3knot"), 260 * (1 - kk), 300 * (1 - kk) + flo, mix(1.1, 1, kk), 7 * (1 - kk) + sway, clamp(kk * 3));
+    const kk = E.out4(prog(t, 0, 2.8)), sway = STILL ? 0 : Math.sin(t * .9) * .5, flo = STILL ? 0 : Math.sin(t * .7 + 1) * 7;
+    setT($("s3knot"), 40 * (1 - kk), 70 * (1 - kk) + flo, mix(1.07, 1, kk), 2.5 * (1 - kk) + sway, E.smooth(prog(t, .0, .55)));
   };
   const hl = $("s4hl"), hr = $("s4hr"), hf = $("s4hf");
   S[4] = t => {
@@ -92,10 +97,10 @@
     for (let i = 0; i < (PL.s5p || 0); i++) rise($("s5p_" + i), t, 3.3 + i * .28, 1.1, { dist: .5, blur: 4 });
     const sun = $("s5sun"); sun.style.opacity = (E.out3(prog(t, .6, 2.6)) * (.7 + .3 * pulse(t + 21.75))).toFixed(3);
     // the groom rides in from the left with a gentle trot, then rides on to the right as the scene ends
-    const enter = E.out4(prog(t, .7, 3.7)), exit = E.in3(prog(t, 5.35, 6.8));
-    const x = -760 * (1 - enter) + 520 * exit, step = Math.abs(Math.sin((t + 21.75 - PH) * Math.PI / BEAT)), bob = STILL ? 0 : -(8 * step) * clamp(enter * 4) * (1 - exit);
+    const enter = E.out4(prog(t, .7, 3.7)), exit = E.smooth(prog(t, 4.7, 5.8));
+    const x = -760 * (1 - enter) + 760 * exit, step = Math.abs(Math.sin((t + 21.75 - PH) * Math.PI / BEAT)), bob = STILL ? 0 : -(8 * step) * clamp(enter * 4) * (1 - exit);
     setT($("s5hw"), x, bob, 1, STILL ? 0 : -.35 * Math.sin((t + 21.75) * Math.PI / BEAT) * clamp(enter * 4), clamp(prog(t, .7, 1.5)) * (1 - exit));
-    const gx = 1 - E.in2(prog(t, 5.5, 6.7)); $("g5").style.opacity = gx.toFixed(3);
+    const gx = 1 - E.smooth(prog(t, 4.9, 5.6)); $("g5").style.opacity = gx.toFixed(3);
   };
   S[6] = t => {
     camera(6, 1 + .0045 * (t + 27.45 - 21.75), 0, 0, 540, 1000);
@@ -133,15 +138,15 @@
       const a = SC[k - 1], b = SC[k];
       if (k === 2) {                                         // the portrait grows out of the blessing, arch first
         const sc = mix(.05, 1, E.out3(p)); maskArch(b, sc);
-        CAM[2].style.transformOrigin = "541px 959.5px"; CAM[2].style.transform = `scale(${sc.toFixed(4)})`; b.style.opacity = clamp(p * 6).toFixed(3);
+        CAM[2].style.transformOrigin = "541px 959.5px"; CAM[2].style.transform = `scale(${sc.toFixed(4)})`; b.style.opacity = clamp(p * 12).toFixed(3);
         const q = prog(p, 0, .6); a.style.opacity = (1 - E.smooth(q)).toFixed(3); a.style.transform = `scale(${mix(1, 1.12, E.sine(q)).toFixed(4)})`;
         FXQ.archS = sc; FXQ.archA = Math.sin(Math.PI * clamp(p * .92 + .04)) * .95; document.getElementById("stage").style.background = "#fff8ed";
       } else if (k === 3) {                                  // the same arch opens again and carries the next scene
         const e = E.sine(p), s = .8 * Math.pow(3.6 / .8, e); maskArch(b, s); b.style.opacity = E.smooth(prog(p, 0, .3)).toFixed(3);
-        a.style.transform = `scale(${mix(1, 1.07, e).toFixed(4)})`; FXQ.archS = s; FXQ.archA = Math.sin(Math.PI * clamp(p * 1.05)) * .95;
+        a.style.transform = `scale(${mix(1, 1.07, e).toFixed(4)})`; $("g2").style.opacity = (1 - E.smooth(prog(p, 0, .35))).toFixed(3); FXQ.archS = s; FXQ.archA = Math.sin(Math.PI * clamp(p * 1.05)) * .95;
         FXQ.flash = Math.exp(-Math.pow((p - .5) / .09, 2)) * .25;
       } else if (k === 4) {                                  // golden light blooms and carries the eye through the knot into the temple
-        const e = E.smooth(prog(p, .28, .72)); b.style.opacity = e.toFixed(3);
+        const e = E.smooth(prog(p, .28, .72)); b.style.opacity = e.toFixed(3); $("g3").style.opacity = (1 - E.smooth(prog(p, 0, .4))).toFixed(3);
         a.style.transformOrigin = "540px 1150px"; a.style.transform = `scale(${mix(1, 1.16, E.in2(p)).toFixed(4)})`;
         b.style.transformOrigin = "540px 1060px"; b.style.transform = `scale(${mix(1.14, 1, E.out3(p)).toFixed(4)})`;
         FXQ.bloom = Math.sin(Math.PI * p);
@@ -151,9 +156,11 @@
         a.style.filter = b.style.filter = "url(#hb)"; document.getElementById("hbg").setAttribute("stdDeviation", `${(70 * Math.pow(v, 1.4)).toFixed(1)} 0`);
         FXQ.streak = v;
       } else if (k === 6) {                                  // match cut: the white arch stays, only what lives inside it changes
-        b.style.opacity = E.smooth(prog(p, .12, .88)).toFixed(3);
+        b.style.opacity = E.smooth(prog(p, .2, .8)).toFixed(3);
       } else if (k === 7) {                                  // we walk through the arch into the reception
         a.style.zIndex = 20; b.style.zIndex = 10;
+        const clr = 1 - E.smooth(prog(p, 0, .32)); $("g6").style.opacity = clr.toFixed(3); $("s6aw").style.opacity = clr.toFixed(3); $("s6sun").style.opacity = clr.toFixed(3);
+        [1, 2, 3].forEach(i => { const g = $("s6f" + i); g.style.opacity = (parseFloat(g.style.opacity) * clr).toFixed(3); });
         const e = E.in3(p); a.style.transformOrigin = "541px 1000px"; a.style.transform = `scale(${(1 + 2.6 * e).toFixed(4)})`;
         a.style.opacity = (1 - E.smooth(prog(p, .38, .9))).toFixed(3);
         b.style.transformOrigin = "541px 1000px"; b.style.transform = `scale(${mix(.9, 1, E.out3(p)).toFixed(4)})`;
@@ -186,7 +193,7 @@
 
   function sceneAt(t) { let k = 1; for (let i = 2; i <= 7; i++) if (t >= B[i - 1]) k = i; return k; }
   function drawFx(t) {
-    fx.setTransform(1, 0, 0, 1, 0, 0); fx.clearRect(0, 0, W, H); fx.globalAlpha = 1;
+    fx.setTransform(DPR, 0, 0, DPR, 0, 0); fx.clearRect(0, 0, W, H); fx.globalAlpha = 1;
     const cur = sceneAt(t), dark = [0, 0, 1, 1, 0, 1, 1, 1][cur];
     /* drifting gold dust: soft motes rising slowly */
     const dv = clamp(prog(t, .8, 2.4)) * (cur === 1 ? .5 : 1);
@@ -228,7 +235,7 @@
       }
     }
     /* the flower in her palm glows softly once the hands have met */
-    if (th > 0 && th < 5) { const a = E.out3(clamp(th / 1.2)) * (.35 + .12 * Math.sin(th * 3)) * clamp(1 - (th - 3.5) / 1.5); glow(787, 1319, 140, "255,120,90", a); }
+    if (th > 0 && t < 21.8) { const a = E.out3(clamp(th / 1.2)) * (.35 + .12 * Math.sin(th * 3)) * clamp((21.7 - t) / .5); glow(787, 1319, 140, "255,120,90", a); }
     /* arch edge: a gold line tracing the opening arch */
     if (FXQ.archA > .01 && ARCH) {
       const s = FXQ.archS; fx.save(); fx.globalCompositeOperation = "lighter"; fx.translate(541 - 489 * s, 959.5 - 837.5 * s); fx.scale(s, s); fx.lineJoin = "round";
@@ -271,6 +278,7 @@
 
   /* ---- boot ---- */
   async function boot() {
+    $("fx").width = W * DPR; $("fx").height = H * DPR;
     const loads = ["400 20px Fraunces", "600 112px Fraunces", "400 20px 'Cormorant Garamond'", "500 20px 'Cormorant Garamond'", "600 20px 'Cormorant Garamond'", "500 20px Inter", "600 20px Inter", "400 20px 'Noto Sans Devanagari'"];
     await Promise.all(loads.map(f => document.fonts.load(f, "AaBb॥NEELESH")));
     await document.fonts.ready;
