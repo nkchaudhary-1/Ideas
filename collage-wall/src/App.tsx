@@ -5,8 +5,20 @@ import { Wall, type WallHandle } from "./components/Wall";
 import { Viewer } from "./components/Viewer";
 
 const idFromHash = () => {
-  const m = /^#\/(artwork-\d+)$/.exec(window.location.hash);
+  const m = /^#(artwork-\d+)$/.exec(window.location.hash);
   return m ? m[1] : null;
+};
+
+/** Reflect the open artwork in the URL hash. Sandboxed frames may refuse; the viewer still works without it. */
+const setHash = (id: string | null, mode: "push" | "replace"): boolean => {
+  try {
+    if (id && mode === "push") window.location.hash = id;
+    else if (id) window.location.replace(`#${id}`);
+    else window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    return !id || window.location.hash === `#${id}`;
+  } catch {
+    return false;
+  }
 };
 
 export function App() {
@@ -25,8 +37,7 @@ export function App() {
       lastFocus.current = document.activeElement as HTMLElement | null;
       setOrigin(rect);
       setOpenIndex(index);
-      pushed.current = true;
-      window.history.pushState(null, "", `#/${world.items[index].art.id}`);
+      pushed.current = setHash(world.items[index].art.id, "push");
     },
     [world],
   );
@@ -35,9 +46,13 @@ export function App() {
     setOpenIndex(null);
     if (pushed.current) {
       pushed.current = false;
-      window.history.back();
+      try {
+        window.history.back();
+      } catch {
+        setHash(null, "replace");
+      }
     } else if (window.location.hash) {
-      window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      setHash(null, "replace");
     }
   }, []);
 
@@ -46,7 +61,7 @@ export function App() {
       setOpenIndex((i) => {
         if (i === null) return i;
         const n = Math.min(world.items.length - 1, Math.max(0, i + d));
-        if (n !== i) window.history.replaceState(null, "", `#/${world.items[n].art.id}`);
+        if (n !== i) setHash(world.items[n].art.id, "replace");
         return n;
       });
     },
@@ -65,8 +80,8 @@ export function App() {
       const i = world.items.findIndex((it) => it.art.id === id);
       if (i >= 0) setOpenIndex(i);
     };
-    window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
+    window.addEventListener("hashchange", onPop);
+    return () => window.removeEventListener("hashchange", onPop);
   }, [world]);
 
   // keep the wall behind the viewer centred on whatever is open

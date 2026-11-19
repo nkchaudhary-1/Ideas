@@ -19,7 +19,7 @@ Deploys as a static site (see `vercel.json`: immutable caching for images and as
 | **Navigate** | Drag (with inertia), trackpad/mouse scroll, `Shift`+scroll sideways, arrow keys, touch drag. |
 | **Zoom** | Pinch, `Ctrl/⌘`+scroll, `+` / `−`, on-screen buttons, live percentage, **Fit** (whole wall, `F`), **Reset** (`0`). |
 | **Hover** | Slight scale + outline, label brightens and reveals its collection. |
-| **Focused view** | Click a post: it grows out of its tile. `←` `→` step through the wall in order (carousel slides are adjacent), `Esc` closes, swipe on touch. Every post has a deep link (`#/artwork-123`). |
+| **Focused view** | Click a post: it grows out of its tile. `←` `→` step through the wall in order (carousel slides are adjacent), `Esc` closes, swipe on touch. Every post has a deep link (`#artwork-123`). |
 | **Index** | A small panel that flies the camera to any collection. |
 
 The artwork is shown exactly as designed: whole Figma frames, never cropped or re-created. Each 2160×1350

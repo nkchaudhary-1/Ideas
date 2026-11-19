@@ -73,5 +73,6 @@ export function pickTier(art: Artwork, k: number, dpr: number): Tier {
 }
 
 export function tierSrc(art: Artwork, tier: Tier): string {
-  return tier === "xs" ? art.placeholder : tier === "md" ? art.thumbnail : art.image;
+  // `image` is empty in the single-file build, which only ships the md and xs tiers
+  return tier === "xs" ? art.placeholder : tier === "md" || !art.image ? art.thumbnail : art.image;
 }

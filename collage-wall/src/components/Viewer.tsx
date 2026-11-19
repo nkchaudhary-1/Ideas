@@ -68,7 +68,7 @@ export function Viewer({ items, index, originRect, onClose, onStep }: Props) {
   useEffect(() => {
     [index - 1, index + 1].forEach((i) => {
       const n = items[i]?.art;
-      if (n?.available) new Image().src = n.image;
+      if (n?.available) new Image().src = n.image || n.thumbnail;
     });
   }, [index, items]);
 
@@ -127,7 +127,7 @@ export function Viewer({ items, index, originRect, onClose, onStep }: Props) {
             <img
               key={`f-${art.id}`}
               className={`viewer__img viewer__img--full${fullReady ? " is-in" : ""}`}
-              src={art.image}
+              src={art.image || art.thumbnail}
               alt={label}
               draggable={false}
               onLoad={() => setFullReady(true)}
