@@ -27,6 +27,10 @@
   "slideCount": 1,
   "color": "#b9996e",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-01",
   "order": 1
  },
@@ -58,6 +62,10 @@
   "slideCount": 1,
   "color": "#544628",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-01",
   "order": 2
  },
@@ -89,6 +97,10 @@
   "slideCount": 1,
   "color": "#706e6d",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-01",
   "order": 3
  },
@@ -120,6 +132,10 @@
   "slideCount": 1,
   "color": "#306965",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-01",
   "order": 4
  },
@@ -151,6 +167,10 @@
   "slideCount": 1,
   "color": "#746d5f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-01",
   "order": 5
  },
@@ -181,6 +201,10 @@
   "slideCount": 1,
   "color": "#522e2f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-01",
   "order": 6
  },
@@ -212,6 +236,10 @@
   "slideCount": 1,
   "color": "#9b7942",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-01",
   "order": 7
  },
@@ -243,6 +271,10 @@
   "slideCount": 1,
   "color": "#8c6e4a",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-01",
   "order": 8
  },
@@ -273,6 +305,10 @@
   "slideCount": 1,
   "color": "#5b463a",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-01",
   "order": 9
  },
@@ -304,6 +340,10 @@
   "slideCount": 1,
   "color": "#744c46",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-01",
   "order": 10
  },
@@ -335,6 +375,10 @@
   "slideCount": 1,
   "color": "#7a5949",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-02",
   "order": 11
  },
@@ -366,6 +410,10 @@
   "slideCount": 1,
   "color": "#746356",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-02",
   "order": 12
  },
@@ -397,6 +445,10 @@
   "slideCount": 1,
   "color": "#616e52",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-02",
   "order": 13
  },
@@ -428,6 +480,10 @@
   "slideCount": 1,
   "color": "#7b604f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-02",
   "order": 14
  },
@@ -459,6 +515,10 @@
   "slideCount": 1,
   "color": "#645d58",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-02",
   "order": 15
  },
@@ -490,6 +550,10 @@
   "slideCount": 1,
   "color": "#656150",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-02",
   "order": 16
  },
@@ -521,6 +585,10 @@
   "slideCount": 1,
   "color": "#66716e",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-02",
   "order": 17
  },
@@ -551,6 +619,10 @@
   "slideCount": 1,
   "color": "#4a4740",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-02",
   "order": 18
  },
@@ -581,6 +653,10 @@
   "slideCount": 1,
   "color": "#a1875e",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-02",
   "order": 19
  },
@@ -611,6 +687,10 @@
   "slideCount": 1,
   "color": "#878471",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-02",
   "order": 20
  },
@@ -641,6 +721,10 @@
   "slideCount": 1,
   "color": "#68788d",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-03",
   "order": 21
  },
@@ -671,6 +755,10 @@
   "slideCount": 1,
   "color": "#9f9683",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-03",
   "order": 22
  },
@@ -702,6 +790,10 @@
   "slideCount": 1,
   "color": "#594030",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-03",
   "order": 23
  },
@@ -733,6 +825,10 @@
   "slideCount": 1,
   "color": "#8a7460",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-03",
   "order": 24
  },
@@ -764,6 +860,10 @@
   "slideCount": 1,
   "color": "#503d3d",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-03",
   "order": 25
  },
@@ -795,6 +895,10 @@
   "slideCount": 1,
   "color": "#6d4a43",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-03",
   "order": 26
  },
@@ -825,6 +929,10 @@
   "slideCount": 1,
   "color": "#5c4842",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-03",
   "order": 27
  },
@@ -856,6 +964,10 @@
   "slideCount": 1,
   "color": "#5b333a",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-03",
   "order": 28
  },
@@ -887,6 +999,10 @@
   "slideCount": 1,
   "color": "#83584e",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-03",
   "order": 29
  },
@@ -918,6 +1034,10 @@
   "slideCount": 1,
   "color": "#4a4942",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-03",
   "order": 30
  },
@@ -949,6 +1069,10 @@
   "slideCount": 1,
   "color": "#59462f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-04",
   "order": 31
  },
@@ -980,6 +1104,10 @@
   "slideCount": 1,
   "color": "#3f3b33",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-04",
   "order": 32
  },
@@ -1011,6 +1139,10 @@
   "slideCount": 1,
   "color": "#493f37",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-04",
   "order": 33
  },
@@ -1042,6 +1174,10 @@
   "slideCount": 1,
   "color": "#a99583",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-04",
   "order": 34
  },
@@ -1073,6 +1209,10 @@
   "slideCount": 1,
   "color": "#b67c41",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-04",
   "order": 35
  },
@@ -1104,6 +1244,10 @@
   "slideCount": 1,
   "color": "#74635b",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-04",
   "order": 36
  },
@@ -1135,6 +1279,10 @@
   "slideCount": 1,
   "color": "#3f3a36",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-04",
   "order": 37
  },
@@ -1166,6 +1314,10 @@
   "slideCount": 1,
   "color": "#7c857e",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-04",
   "order": 38
  },
@@ -1196,6 +1348,10 @@
   "slideCount": 1,
   "color": "#50524c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-04",
   "order": 39
  },
@@ -1227,6 +1383,10 @@
   "slideCount": 1,
   "color": "#1d2429",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-04",
   "order": 40
  },
@@ -1257,6 +1417,10 @@
   "slideCount": 1,
   "color": "#514f4c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-05",
   "order": 41
  },
@@ -1288,6 +1452,10 @@
   "slideCount": 1,
   "color": "#6a6353",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-05",
   "order": 42
  },
@@ -1319,6 +1487,10 @@
   "slideCount": 1,
   "color": "#96b8c9",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-05",
   "order": 43
  },
@@ -1350,6 +1522,10 @@
   "slideCount": 1,
   "color": "#695f49",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-05",
   "order": 44
  },
@@ -1381,6 +1557,10 @@
   "slideCount": 1,
   "color": "#6b6960",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-05",
   "order": 45
  },
@@ -1411,6 +1591,10 @@
   "slideCount": 1,
   "color": "#513d39",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-05",
   "order": 46
  },
@@ -1442,6 +1626,10 @@
   "slideCount": 1,
   "color": "#60674b",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-05",
   "order": 47
  },
@@ -1473,6 +1661,10 @@
   "slideCount": 1,
   "color": "#7a5d48",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-05",
   "order": 48
  },
@@ -1504,6 +1696,10 @@
   "slideCount": 1,
   "color": "#a69172",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-05",
   "order": 49
  },
@@ -1534,6 +1730,10 @@
   "slideCount": 1,
   "color": "#6e8ca6",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-05",
   "order": 50
  },
@@ -1565,6 +1765,10 @@
   "slideCount": 1,
   "color": "#65849e",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-06",
   "order": 51
  },
@@ -1595,6 +1799,10 @@
   "slideCount": 1,
   "color": "#b29c7c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-06",
   "order": 52
  },
@@ -1626,6 +1834,10 @@
   "slideCount": 1,
   "color": "#a98e7a",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-06",
   "order": 53
  },
@@ -1658,6 +1870,10 @@
   "slideCount": 4,
   "color": "#906739",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-06",
   "order": 54
  },
@@ -1689,6 +1905,10 @@
   "slideCount": 4,
   "color": "#82735c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-06",
   "order": 55
  },
@@ -1721,6 +1941,10 @@
   "slideCount": 4,
   "color": "#7e838d",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-06",
   "order": 56
  },
@@ -1753,6 +1977,10 @@
   "slideCount": 4,
   "color": "#4d3822",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-06",
   "order": 57
  },
@@ -1783,6 +2011,10 @@
   "slideCount": 1,
   "color": "#53789e",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-06",
   "order": 58
  },
@@ -1814,6 +2046,10 @@
   "slideCount": 1,
   "color": "#8a9087",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-06",
   "order": 59
  },
@@ -1844,6 +2080,10 @@
   "slideCount": 1,
   "color": "#886438",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-06",
   "order": 60
  },
@@ -1876,6 +2116,10 @@
   "slideCount": 2,
   "color": "#7f6a44",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-07",
   "order": 61
  },
@@ -1908,6 +2152,10 @@
   "slideCount": 2,
   "color": "#b57845",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-07",
   "order": 62
  },
@@ -1917,28 +2165,36 @@
   "name": "if you love",
   "label": "if you love",
   "showLabel": true,
-  "image": "/artworks/artwork-063.webp",
-  "thumbnail": "/thumbnails/md/artwork-063.webp",
-  "placeholder": "/thumbnails/xs/artwork-063.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-063-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-063-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-063-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#76818d",
+  "color": "#7c7e85",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-063",
+   "right": "artwork-068"
+  },
+  "joinedInto": null,
   "rowId": "row-07",
   "order": 63
  },
@@ -1948,27 +2204,35 @@
   "name": "Sun World Cable Car & Architecture",
   "label": "Sun World Cable Car & Architecture",
   "showLabel": true,
-  "image": "/artworks/artwork-064.webp",
-  "thumbnail": "/thumbnails/md/artwork-064.webp",
-  "placeholder": "/thumbnails/xs/artwork-064.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-064-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-064-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-064-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo"
+   "wide",
+   "spread",
+   "panorama"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#8f9fc3",
+  "color": "#88879a",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-064",
+   "right": "artwork-067"
+  },
+  "joinedInto": null,
   "rowId": "row-07",
   "order": 64
  },
@@ -1978,27 +2242,35 @@
   "name": "Gothic Cathedral Gargoyle",
   "label": "Gothic Cathedral Gargoyle",
   "showLabel": true,
-  "image": "/artworks/artwork-065.webp",
-  "thumbnail": "/thumbnails/md/artwork-065.webp",
-  "placeholder": "/thumbnails/xs/artwork-065.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-065-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-065-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-065-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo"
+   "wide",
+   "spread",
+   "panorama"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#637490",
+  "color": "#6e8ab5",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-065",
+   "right": "artwork-069"
+  },
+  "joinedInto": null,
   "rowId": "row-07",
   "order": 65
  },
@@ -2008,27 +2280,35 @@
   "name": "Cathedral Spire & Rose Window",
   "label": "Cathedral Spire & Rose Window",
   "showLabel": true,
-  "image": "/artworks/artwork-066.webp",
-  "thumbnail": "/thumbnails/md/artwork-066.webp",
-  "placeholder": "/thumbnails/xs/artwork-066.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-066-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-066-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-066-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo"
+   "wide",
+   "spread",
+   "panorama"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#878e98",
+  "color": "#7b8fac",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-066",
+   "right": "artwork-070"
+  },
+  "joinedInto": null,
   "rowId": "row-07",
   "order": 66
  },
@@ -2059,8 +2339,12 @@
   "slideCount": 1,
   "color": "#807175",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-064",
   "rowId": "row-07",
-  "order": 67
+  "order": 0
  },
  {
   "id": "artwork-068",
@@ -2090,8 +2374,12 @@
   "slideCount": 1,
   "color": "#67676f",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-063",
   "rowId": "row-07",
-  "order": 68
+  "order": 0
  },
  {
   "id": "artwork-069",
@@ -2120,8 +2408,12 @@
   "slideCount": 1,
   "color": "#8893a5",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-065",
   "rowId": "row-07",
-  "order": 69
+  "order": 0
  },
  {
   "id": "artwork-070",
@@ -2150,8 +2442,12 @@
   "slideCount": 1,
   "color": "#6288c0",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-066",
   "rowId": "row-07",
-  "order": 70
+  "order": 0
  },
  {
   "id": "artwork-071",
@@ -2181,8 +2477,12 @@
   "slideCount": 1,
   "color": "#89979c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-08",
-  "order": 71
+  "order": 67
  },
  {
   "id": "artwork-072",
@@ -2211,8 +2511,12 @@
   "slideCount": 1,
   "color": "#8e8a88",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-08",
-  "order": 72
+  "order": 68
  },
  {
   "id": "artwork-073",
@@ -2241,8 +2545,12 @@
   "slideCount": 1,
   "color": "#5f6e6a",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-08",
-  "order": 73
+  "order": 69
  },
  {
   "id": "artwork-074",
@@ -2271,8 +2579,12 @@
   "slideCount": 1,
   "color": "#967a4e",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-08",
-  "order": 74
+  "order": 70
  },
  {
   "id": "artwork-075",
@@ -2301,8 +2613,12 @@
   "slideCount": 1,
   "color": "#2e2922",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-08",
-  "order": 75
+  "order": 71
  },
  {
   "id": "artwork-076",
@@ -2332,8 +2648,12 @@
   "slideCount": 1,
   "color": "#746c71",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-08",
-  "order": 76
+  "order": 72
  },
  {
   "id": "artwork-077",
@@ -2362,8 +2682,12 @@
   "slideCount": 1,
   "color": "#786f4d",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-08",
-  "order": 77
+  "order": 73
  },
  {
   "id": "artwork-078",
@@ -2393,8 +2717,12 @@
   "slideCount": 1,
   "color": "#958a7f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-08",
-  "order": 78
+  "order": 74
  },
  {
   "id": "artwork-079",
@@ -2424,8 +2752,12 @@
   "slideCount": 1,
   "color": "#765956",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-08",
-  "order": 79
+  "order": 75
  },
  {
   "id": "artwork-080",
@@ -2455,8 +2787,12 @@
   "slideCount": 1,
   "color": "#584b34",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-08",
-  "order": 80
+  "order": 76
  },
  {
   "id": "artwork-081",
@@ -2486,8 +2822,12 @@
   "slideCount": 1,
   "color": "#c9c2b3",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-09",
-  "order": 81
+  "order": 77
  },
  {
   "id": "artwork-082",
@@ -2517,8 +2857,12 @@
   "slideCount": 1,
   "color": "#80776f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-09",
-  "order": 82
+  "order": 78
  },
  {
   "id": "artwork-083",
@@ -2547,8 +2891,12 @@
   "slideCount": 1,
   "color": "#674f4c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-09",
-  "order": 83
+  "order": 79
  },
  {
   "id": "artwork-084",
@@ -2578,8 +2926,12 @@
   "slideCount": 1,
   "color": "#9e9782",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-09",
-  "order": 84
+  "order": 80
  },
  {
   "id": "artwork-085",
@@ -2609,8 +2961,12 @@
   "slideCount": 1,
   "color": "#4c382c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-09",
-  "order": 85
+  "order": 81
  },
  {
   "id": "artwork-086",
@@ -2640,8 +2996,12 @@
   "slideCount": 1,
   "color": "#63605c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-09",
-  "order": 86
+  "order": 82
  },
  {
   "id": "artwork-087",
@@ -2671,8 +3031,12 @@
   "slideCount": 1,
   "color": "#726759",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-09",
-  "order": 87
+  "order": 83
  },
  {
   "id": "artwork-088",
@@ -2702,8 +3066,12 @@
   "slideCount": 1,
   "color": "#776657",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-09",
-  "order": 88
+  "order": 84
  },
  {
   "id": "artwork-089",
@@ -2733,8 +3101,12 @@
   "slideCount": 1,
   "color": "#87978f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-09",
-  "order": 89
+  "order": 85
  },
  {
   "id": "artwork-090",
@@ -2764,8 +3136,12 @@
   "slideCount": 1,
   "color": "#5e6247",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-09",
-  "order": 90
+  "order": 86
  },
  {
   "id": "artwork-091",
@@ -2794,8 +3170,12 @@
   "slideCount": 1,
   "color": "#75695c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-10",
-  "order": 91
+  "order": 87
  },
  {
   "id": "artwork-092",
@@ -2824,8 +3204,12 @@
   "slideCount": 1,
   "color": "#3e3b35",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-10",
-  "order": 92
+  "order": 88
  },
  {
   "id": "artwork-093",
@@ -2855,8 +3239,12 @@
   "slideCount": 1,
   "color": "#876766",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-10",
-  "order": 93
+  "order": 89
  },
  {
   "id": "artwork-094",
@@ -2886,8 +3274,12 @@
   "slideCount": 1,
   "color": "#8e4a22",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-10",
-  "order": 94
+  "order": 90
  },
  {
   "id": "artwork-095",
@@ -2917,8 +3309,12 @@
   "slideCount": 1,
   "color": "#918980",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-10",
-  "order": 95
+  "order": 91
  },
  {
   "id": "artwork-096",
@@ -2926,30 +3322,38 @@
   "name": "INTROVERT",
   "label": "INTROVERT",
   "showLabel": true,
-  "image": "/artworks/artwork-096.webp",
-  "thumbnail": "/thumbnails/md/artwork-096.webp",
-  "placeholder": "/thumbnails/xs/artwork-096.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-096-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-096-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-096-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#937e7d",
+  "color": "#93775f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-096",
+   "right": "artwork-108"
+  },
+  "joinedInto": null,
   "rowId": "row-10",
-  "order": 96
+  "order": 92
  },
  {
   "id": "artwork-097",
@@ -2957,29 +3361,37 @@
   "name": "Portrait - Mom in Yellow Saree",
   "label": "Portrait - Mom in Yellow Saree",
   "showLabel": true,
-  "image": "/artworks/artwork-097.webp",
-  "thumbnail": "/thumbnails/md/artwork-097.webp",
-  "placeholder": "/thumbnails/xs/artwork-097.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-097-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-097-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-097-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo"
+   "wide",
+   "spread",
+   "panorama"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#7b553f",
+  "color": "#77583e",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-097",
+   "right": "artwork-109"
+  },
+  "joinedInto": null,
   "rowId": "row-10",
-  "order": 97
+  "order": 93
  },
  {
   "id": "artwork-098",
@@ -2987,30 +3399,38 @@
   "name": "TEAM NYKAA",
   "label": "TEAM NYKAA",
   "showLabel": true,
-  "image": "/artworks/artwork-098.webp",
-  "thumbnail": "/thumbnails/md/artwork-098.webp",
-  "placeholder": "/thumbnails/xs/artwork-098.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-098-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-098-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-098-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#8b6856",
+  "color": "#8e6954",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-098",
+   "right": "artwork-110"
+  },
+  "joinedInto": null,
   "rowId": "row-10",
-  "order": 98
+  "order": 94
  },
  {
   "id": "artwork-099",
@@ -3018,30 +3438,38 @@
   "name": "SRK",
   "label": "SRK",
   "showLabel": true,
-  "image": "/artworks/artwork-099.webp",
-  "thumbnail": "/thumbnails/md/artwork-099.webp",
-  "placeholder": "/thumbnails/xs/artwork-099.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-099-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-099-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-099-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#4f645f",
+  "color": "#82908f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-099",
+   "right": "artwork-111"
+  },
+  "joinedInto": null,
   "rowId": "row-10",
-  "order": 99
+  "order": 95
  },
  {
   "id": "artwork-100",
@@ -3049,30 +3477,38 @@
   "name": "Night AT",
   "label": "Night AT",
   "showLabel": true,
-  "image": "/artworks/artwork-100.webp",
-  "thumbnail": "/thumbnails/md/artwork-100.webp",
-  "placeholder": "/thumbnails/xs/artwork-100.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-100-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-100-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-100-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#3c3b33",
+  "color": "#54493f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-100",
+   "right": "artwork-112"
+  },
+  "joinedInto": null,
   "rowId": "row-10",
-  "order": 100
+  "order": 96
  },
  {
   "id": "artwork-101",
@@ -3080,20 +3516,21 @@
   "name": "Full moon",
   "label": "Full moon",
   "showLabel": true,
-  "image": "/artworks/artwork-101.webp",
-  "thumbnail": "/thumbnails/md/artwork-101.webp",
-  "placeholder": "/thumbnails/xs/artwork-101.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-101-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-101-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-101-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "carousel",
    "typography"
   ],
@@ -3101,10 +3538,17 @@
   "carouselId": "carousel-003",
   "slideIndex": 1,
   "slideCount": 3,
-  "color": "#41311e",
+  "color": "#37382b",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-101",
+   "right": "artwork-114"
+  },
+  "joinedInto": null,
   "rowId": "row-11",
-  "order": 101
+  "order": 97
  },
  {
   "id": "artwork-102",
@@ -3112,20 +3556,21 @@
   "name": "Full moon",
   "label": "Full moon",
   "showLabel": false,
-  "image": "/artworks/artwork-102.webp",
-  "thumbnail": "/thumbnails/md/artwork-102.webp",
-  "placeholder": "/thumbnails/xs/artwork-102.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-102-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-102-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-102-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "carousel",
    "typography"
   ],
@@ -3133,10 +3578,17 @@
   "carouselId": "carousel-003",
   "slideIndex": 2,
   "slideCount": 3,
-  "color": "#9f7b56",
+  "color": "#9b7140",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-102",
+   "right": "artwork-113"
+  },
+  "joinedInto": null,
   "rowId": "row-11",
-  "order": 102
+  "order": 98
  },
  {
   "id": "artwork-103",
@@ -3144,20 +3596,21 @@
   "name": "Full moon",
   "label": "Full moon",
   "showLabel": false,
-  "image": "/artworks/artwork-103.webp",
-  "thumbnail": "/thumbnails/md/artwork-103.webp",
-  "placeholder": "/thumbnails/xs/artwork-103.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-103-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-103-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-103-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "carousel",
    "typography"
   ],
@@ -3165,10 +3618,17 @@
   "carouselId": "carousel-003",
   "slideIndex": 3,
   "slideCount": 3,
-  "color": "#54545a",
+  "color": "#605957",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-103",
+   "right": "artwork-117"
+  },
+  "joinedInto": null,
   "rowId": "row-11",
-  "order": 103
+  "order": 99
  },
  {
   "id": "artwork-104",
@@ -3176,30 +3636,38 @@
   "name": "September",
   "label": "September",
   "showLabel": true,
-  "image": "/artworks/artwork-104.webp",
-  "thumbnail": "/thumbnails/md/artwork-104.webp",
-  "placeholder": "/thumbnails/xs/artwork-104.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-104-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-104-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-104-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#9f8c75",
+  "color": "#9c8d78",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-104",
+   "right": "artwork-119"
+  },
+  "joinedInto": null,
   "rowId": "row-11",
-  "order": 104
+  "order": 100
  },
  {
   "id": "artwork-105",
@@ -3207,30 +3675,38 @@
   "name": "moments",
   "label": "moments",
   "showLabel": true,
-  "image": "/artworks/artwork-105.webp",
-  "thumbnail": "/thumbnails/md/artwork-105.webp",
-  "placeholder": "/thumbnails/xs/artwork-105.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-105-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-105-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-105-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#696650",
+  "color": "#705f4b",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-105",
+   "right": "artwork-118"
+  },
+  "joinedInto": null,
   "rowId": "row-11",
-  "order": 105
+  "order": 101
  },
  {
   "id": "artwork-106",
@@ -3238,30 +3714,38 @@
   "name": "GARBA",
   "label": "GARBA",
   "showLabel": true,
-  "image": "/artworks/artwork-106.webp",
-  "thumbnail": "/thumbnails/md/artwork-106.webp",
-  "placeholder": "/thumbnails/xs/artwork-106.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-106-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-106-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-106-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#7b5347",
+  "color": "#654947",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-106",
+   "right": "artwork-120"
+  },
+  "joinedInto": null,
   "rowId": "row-11",
-  "order": 106
+  "order": 102
  },
  {
   "id": "artwork-107",
@@ -3269,29 +3753,37 @@
   "name": "Friends Selfie - Cafe Mirror",
   "label": "Friends Selfie - Cafe Mirror",
   "showLabel": true,
-  "image": "/artworks/artwork-107.webp",
-  "thumbnail": "/thumbnails/md/artwork-107.webp",
-  "placeholder": "/thumbnails/xs/artwork-107.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-107-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-107-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-107-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo"
+   "wide",
+   "spread",
+   "panorama"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#898365",
+  "color": "#857a5f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-107",
+   "right": "artwork-121"
+  },
+  "joinedInto": null,
   "rowId": "row-11",
-  "order": 107
+  "order": 103
  },
  {
   "id": "artwork-108",
@@ -3321,8 +3813,12 @@
   "slideCount": 1,
   "color": "#8b7754",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-096",
   "rowId": "row-11",
-  "order": 108
+  "order": 0
  },
  {
   "id": "artwork-109",
@@ -3352,8 +3848,12 @@
   "slideCount": 1,
   "color": "#85715c",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-097",
   "rowId": "row-11",
-  "order": 109
+  "order": 0
  },
  {
   "id": "artwork-110",
@@ -3383,8 +3883,12 @@
   "slideCount": 1,
   "color": "#896452",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-098",
   "rowId": "row-11",
-  "order": 110
+  "order": 0
  },
  {
   "id": "artwork-111",
@@ -3406,24 +3910,27 @@
   "tags": [
    "portrait",
    "photo-type",
-   "carousel",
    "typography"
   ],
   "collection": "collection-01",
-  "carouselId": "carousel-004",
+  "carouselId": null,
   "slideIndex": 1,
-  "slideCount": 2,
+  "slideCount": 1,
   "color": "#adb8bc",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-099",
   "rowId": "row-12",
-  "order": 111
+  "order": 0
  },
  {
   "id": "artwork-112",
   "figmaId": "721:4804",
   "name": "आज एक जिंदगी और जी लो, क्या पता कल हो ना हो",
   "label": "आज एक जिंदगी और जी लो, क्या पता कल हो ना हो",
-  "showLabel": false,
+  "showLabel": true,
   "image": "/artworks/artwork-112.webp",
   "thumbnail": "/thumbnails/md/artwork-112.webp",
   "placeholder": "/thumbnails/xs/artwork-112.webp",
@@ -3438,17 +3945,20 @@
   "tags": [
    "portrait",
    "collage",
-   "carousel",
    "typography"
   ],
   "collection": "collection-01",
-  "carouselId": "carousel-004",
-  "slideIndex": 2,
-  "slideCount": 2,
+  "carouselId": null,
+  "slideIndex": 1,
+  "slideCount": 1,
   "color": "#614f40",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-100",
   "rowId": "row-12",
-  "order": 112
+  "order": 0
  },
  {
   "id": "artwork-113",
@@ -3477,8 +3987,12 @@
   "slideCount": 1,
   "color": "#8e6536",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-102",
   "rowId": "row-12",
-  "order": 113
+  "order": 0
  },
  {
   "id": "artwork-114",
@@ -3507,8 +4021,12 @@
   "slideCount": 1,
   "color": "#353c33",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-101",
   "rowId": "row-12",
-  "order": 114
+  "order": 0
  },
  {
   "id": "artwork-115",
@@ -3516,29 +4034,37 @@
   "name": "Vietnam City Street - Cycling",
   "label": "Vietnam City Street - Cycling",
   "showLabel": true,
-  "image": "/artworks/artwork-115.webp",
-  "thumbnail": "/thumbnails/md/artwork-115.webp",
-  "placeholder": "/thumbnails/xs/artwork-115.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-115-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-115-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-115-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 01",
   "tags": [
-   "portrait",
-   "photo"
+   "wide",
+   "spread",
+   "panorama"
   ],
   "collection": "collection-01",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#225c88",
+  "color": "#34719f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-115",
+   "right": "artwork-116"
+  },
+  "joinedInto": null,
   "rowId": "row-12",
-  "order": 115
+  "order": 104
  },
  {
   "id": "artwork-116",
@@ -3567,8 +4093,12 @@
   "slideCount": 1,
   "color": "#447fab",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-115",
   "rowId": "row-12",
-  "order": 116
+  "order": 0
  },
  {
   "id": "artwork-117",
@@ -3597,8 +4127,12 @@
   "slideCount": 1,
   "color": "#6d6664",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-103",
   "rowId": "row-12",
-  "order": 117
+  "order": 0
  },
  {
   "id": "artwork-118",
@@ -3627,8 +4161,12 @@
   "slideCount": 1,
   "color": "#786e5c",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-105",
   "rowId": "row-12",
-  "order": 118
+  "order": 0
  },
  {
   "id": "artwork-119",
@@ -3658,8 +4196,12 @@
   "slideCount": 1,
   "color": "#9d917b",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-104",
   "rowId": "row-12",
-  "order": 119
+  "order": 0
  },
  {
   "id": "artwork-120",
@@ -3688,8 +4230,12 @@
   "slideCount": 1,
   "color": "#4c3943",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-106",
   "rowId": "row-12",
-  "order": 120
+  "order": 0
  },
  {
   "id": "artwork-121",
@@ -3718,8 +4264,12 @@
   "slideCount": 1,
   "color": "#776b5f",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-107",
   "rowId": "row-13",
-  "order": 121
+  "order": 0
  },
  {
   "id": "artwork-122",
@@ -3748,8 +4298,12 @@
   "slideCount": 1,
   "color": "#5a4239",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-14",
-  "order": 122
+  "order": 105
  },
  {
   "id": "artwork-123",
@@ -3778,8 +4332,12 @@
   "slideCount": 1,
   "color": "#6a6260",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-14",
-  "order": 123
+  "order": 106
  },
  {
   "id": "artwork-124",
@@ -3808,8 +4366,12 @@
   "slideCount": 1,
   "color": "#655e5c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-14",
-  "order": 124
+  "order": 107
  },
  {
   "id": "artwork-125",
@@ -3838,8 +4400,12 @@
   "slideCount": 1,
   "color": "#493a27",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-14",
-  "order": 125
+  "order": 108
  },
  {
   "id": "artwork-126",
@@ -3864,13 +4430,17 @@
    "carousel"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-005",
+  "carouselId": "carousel-004",
   "slideIndex": 1,
   "slideCount": 2,
   "color": "#9c8672",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-14",
-  "order": 126
+  "order": 109
  },
  {
   "id": "artwork-127",
@@ -3895,13 +4465,17 @@
    "carousel"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-005",
+  "carouselId": "carousel-004",
   "slideIndex": 2,
   "slideCount": 2,
   "color": "#58433d",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-14",
-  "order": 127
+  "order": 110
  },
  {
   "id": "artwork-128",
@@ -3922,24 +4496,27 @@
   "category": "Collection 02",
   "tags": [
    "portrait",
-   "collage",
-   "carousel"
+   "collage"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-006",
+  "carouselId": null,
   "slideIndex": 1,
-  "slideCount": 2,
+  "slideCount": 1,
   "color": "#7a5e5a",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-14",
-  "order": 128
+  "order": 111
  },
  {
   "id": "artwork-129",
   "figmaId": "721:470",
   "name": "Anupama15",
   "label": "Anupama15",
-  "showLabel": false,
+  "showLabel": true,
   "image": "/artworks/artwork-129.webp",
   "thumbnail": "/thumbnails/md/artwork-129.webp",
   "placeholder": "/thumbnails/xs/artwork-129.webp",
@@ -3953,17 +4530,20 @@
   "category": "Collection 02",
   "tags": [
    "portrait",
-   "collage",
-   "carousel"
+   "collage"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-006",
-  "slideIndex": 2,
-  "slideCount": 2,
+  "carouselId": null,
+  "slideIndex": 1,
+  "slideCount": 1,
   "color": "#7a5e5a",
   "available": true,
+  "hidden": true,
+  "duplicateOf": "721:442",
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-14",
-  "order": 129
+  "order": 0
  },
  {
   "id": "artwork-130",
@@ -3988,13 +4568,17 @@
    "carousel"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-007",
+  "carouselId": "carousel-005",
   "slideIndex": 1,
   "slideCount": 2,
   "color": "#534f4a",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-14",
-  "order": 130
+  "order": 112
  },
  {
   "id": "artwork-131",
@@ -4019,13 +4603,17 @@
    "carousel"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-007",
+  "carouselId": "carousel-005",
   "slideIndex": 2,
   "slideCount": 2,
   "color": "#ca7686",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-14",
-  "order": 131
+  "order": 113
  },
  {
   "id": "artwork-132",
@@ -4054,8 +4642,12 @@
   "slideCount": 1,
   "color": "#886772",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-15",
-  "order": 132
+  "order": 114
  },
  {
   "id": "artwork-133",
@@ -4077,24 +4669,27 @@
   "tags": [
    "portrait",
    "photo-type",
-   "carousel",
    "typography"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-008",
+  "carouselId": null,
   "slideIndex": 1,
-  "slideCount": 2,
+  "slideCount": 1,
   "color": "#868184",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-15",
-  "order": 133
+  "order": 115
  },
  {
   "id": "artwork-134",
   "figmaId": "721:1685",
   "name": "Authentic",
   "label": "Authentic",
-  "showLabel": false,
+  "showLabel": true,
   "image": "/artworks/artwork-134.webp",
   "thumbnail": "/thumbnails/md/artwork-134.webp",
   "placeholder": "/thumbnails/xs/artwork-134.webp",
@@ -4109,17 +4704,20 @@
   "tags": [
    "portrait",
    "photo-type",
-   "carousel",
    "typography"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-008",
-  "slideIndex": 2,
-  "slideCount": 2,
+  "carouselId": null,
+  "slideIndex": 1,
+  "slideCount": 1,
   "color": "#868184",
   "available": true,
+  "hidden": true,
+  "duplicateOf": "721:1674",
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-15",
-  "order": 134
+  "order": 0
  },
  {
   "id": "artwork-135",
@@ -4144,20 +4742,24 @@
    "carousel"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-009",
+  "carouselId": "carousel-006",
   "slideIndex": 1,
-  "slideCount": 6,
+  "slideCount": 3,
   "color": "#4a3e40",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-15",
-  "order": 135
+  "order": 116
  },
  {
   "id": "artwork-136",
   "figmaId": "721:1705",
   "name": "Anupama19",
   "label": "Anupama19",
-  "showLabel": false,
+  "showLabel": true,
   "image": "/artworks/artwork-136.webp",
   "thumbnail": "/thumbnails/md/artwork-136.webp",
   "placeholder": "/thumbnails/xs/artwork-136.webp",
@@ -4171,17 +4773,20 @@
   "category": "Collection 02",
   "tags": [
    "portrait",
-   "photo",
-   "carousel"
+   "photo"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-009",
-  "slideIndex": 2,
-  "slideCount": 6,
+  "carouselId": null,
+  "slideIndex": 1,
+  "slideCount": 1,
   "color": "#4a3e40",
   "available": true,
+  "hidden": true,
+  "duplicateOf": "721:1696",
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-15",
-  "order": 136
+  "order": 0
  },
  {
   "id": "artwork-137",
@@ -4206,20 +4811,24 @@
    "carousel"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-009",
-  "slideIndex": 3,
-  "slideCount": 6,
+  "carouselId": "carousel-006",
+  "slideIndex": 2,
+  "slideCount": 3,
   "color": "#766d6c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-15",
-  "order": 137
+  "order": 117
  },
  {
   "id": "artwork-138",
   "figmaId": "721:1723",
   "name": "Anupama19",
   "label": "Anupama19",
-  "showLabel": false,
+  "showLabel": true,
   "image": "/artworks/artwork-138.webp",
   "thumbnail": "/thumbnails/md/artwork-138.webp",
   "placeholder": "/thumbnails/xs/artwork-138.webp",
@@ -4233,17 +4842,20 @@
   "category": "Collection 02",
   "tags": [
    "portrait",
-   "photo",
-   "carousel"
+   "photo"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-009",
-  "slideIndex": 4,
-  "slideCount": 6,
+  "carouselId": null,
+  "slideIndex": 1,
+  "slideCount": 1,
   "color": "#766d6c",
   "available": true,
+  "hidden": true,
+  "duplicateOf": "721:1714",
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-15",
-  "order": 138
+  "order": 0
  },
  {
   "id": "artwork-139",
@@ -4268,20 +4880,24 @@
    "carousel"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-009",
-  "slideIndex": 5,
-  "slideCount": 6,
+  "carouselId": "carousel-006",
+  "slideIndex": 3,
+  "slideCount": 3,
   "color": "#696464",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-15",
-  "order": 139
+  "order": 118
  },
  {
   "id": "artwork-140",
   "figmaId": "721:1741",
   "name": "Anupama19",
   "label": "Anupama19",
-  "showLabel": false,
+  "showLabel": true,
   "image": "/artworks/artwork-140.webp",
   "thumbnail": "/thumbnails/md/artwork-140.webp",
   "placeholder": "/thumbnails/xs/artwork-140.webp",
@@ -4295,17 +4911,20 @@
   "category": "Collection 02",
   "tags": [
    "portrait",
-   "photo",
-   "carousel"
+   "photo"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-009",
-  "slideIndex": 6,
-  "slideCount": 6,
+  "carouselId": null,
+  "slideIndex": 1,
+  "slideCount": 1,
   "color": "#696464",
   "available": true,
+  "hidden": true,
+  "duplicateOf": "721:1732",
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-15",
-  "order": 140
+  "order": 0
  },
  {
   "id": "artwork-141",
@@ -4331,13 +4950,17 @@
    "typography"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-010",
+  "carouselId": "carousel-007",
   "slideIndex": 1,
   "slideCount": 2,
   "color": "#665f5c",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-15",
-  "order": 141
+  "order": 119
  },
  {
   "id": "artwork-142",
@@ -4363,13 +4986,17 @@
    "typography"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-010",
+  "carouselId": "carousel-007",
   "slideIndex": 2,
   "slideCount": 2,
   "color": "#998278",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-16",
-  "order": 142
+  "order": 120
  },
  {
   "id": "artwork-143",
@@ -4395,20 +5022,24 @@
    "typography"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-011",
+  "carouselId": "carousel-008",
   "slideIndex": 1,
-  "slideCount": 3,
+  "slideCount": 2,
   "color": "#60483d",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-16",
-  "order": 143
+  "order": 121
  },
  {
   "id": "artwork-144",
   "figmaId": "721:1767",
   "name": "Queued for freebies",
   "label": "Queued for freebies",
-  "showLabel": false,
+  "showLabel": true,
   "image": "/artworks/artwork-144.webp",
   "thumbnail": "/thumbnails/md/artwork-144.webp",
   "placeholder": "/thumbnails/xs/artwork-144.webp",
@@ -4423,17 +5054,20 @@
   "tags": [
    "portrait",
    "photo-type",
-   "carousel",
    "typography"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-011",
-  "slideIndex": 2,
-  "slideCount": 3,
+  "carouselId": null,
+  "slideIndex": 1,
+  "slideCount": 1,
   "color": "#60483d",
   "available": true,
+  "hidden": true,
+  "duplicateOf": "721:1750",
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-16",
-  "order": 144
+  "order": 0
  },
  {
   "id": "artwork-145",
@@ -4441,31 +5075,39 @@
   "name": "Queued for freebies",
   "label": "Queued for freebies",
   "showLabel": false,
-  "image": "/artworks/artwork-145.webp",
-  "thumbnail": "/thumbnails/md/artwork-145.webp",
-  "placeholder": "/thumbnails/xs/artwork-145.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-145-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-145-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-145-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 02",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "carousel",
    "typography"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-011",
-  "slideIndex": 3,
-  "slideCount": 3,
-  "color": "#806154",
+  "carouselId": "carousel-008",
+  "slideIndex": 2,
+  "slideCount": 2,
+  "color": "#4f3b34",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-145",
+   "right": "artwork-150"
+  },
+  "joinedInto": null,
   "rowId": "row-16",
-  "order": 145
+  "order": 122
  },
  {
   "id": "artwork-146",
@@ -4473,30 +5115,38 @@
   "name": "Anupama29",
   "label": "Anupama29",
   "showLabel": true,
-  "image": "/artworks/artwork-146.webp",
-  "thumbnail": "/thumbnails/md/artwork-146.webp",
-  "placeholder": "/thumbnails/xs/artwork-146.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-146-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-146-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-146-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 02",
   "tags": [
-   "portrait",
-   "photo",
+   "wide",
+   "spread",
+   "panorama",
    "carousel"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-012",
+  "carouselId": "carousel-009",
   "slideIndex": 1,
   "slideCount": 2,
-  "color": "#ae9f8d",
+  "color": "#7f685d",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-146",
+   "right": "artwork-151"
+  },
+  "joinedInto": null,
   "rowId": "row-16",
-  "order": 146
+  "order": 123
  },
  {
   "id": "artwork-147",
@@ -4504,30 +5154,38 @@
   "name": "Anupama29",
   "label": "Anupama29",
   "showLabel": false,
-  "image": "/artworks/artwork-147.webp",
-  "thumbnail": "/thumbnails/md/artwork-147.webp",
-  "placeholder": "/thumbnails/xs/artwork-147.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-147-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-147-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-147-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 02",
   "tags": [
-   "portrait",
-   "photo",
+   "wide",
+   "spread",
+   "panorama",
    "carousel"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-012",
+  "carouselId": "carousel-009",
   "slideIndex": 2,
   "slideCount": 2,
-  "color": "#826a5c",
+  "color": "#6f5e54",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-147",
+   "right": "artwork-152"
+  },
+  "joinedInto": null,
   "rowId": "row-16",
-  "order": 147
+  "order": 124
  },
  {
   "id": "artwork-148",
@@ -4548,24 +5206,27 @@
   "category": "Collection 02",
   "tags": [
    "portrait",
-   "photo",
-   "carousel"
+   "photo"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-013",
+  "carouselId": null,
   "slideIndex": 1,
-  "slideCount": 3,
+  "slideCount": 1,
   "color": "#453b33",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-16",
-  "order": 148
+  "order": 125
  },
  {
   "id": "artwork-149",
   "figmaId": "721:1898",
   "name": "Anupama30",
   "label": "Anupama30",
-  "showLabel": false,
+  "showLabel": true,
   "image": "/artworks/artwork-149.webp",
   "thumbnail": "/thumbnails/md/artwork-149.webp",
   "placeholder": "/thumbnails/xs/artwork-149.webp",
@@ -4579,24 +5240,27 @@
   "category": "Collection 02",
   "tags": [
    "portrait",
-   "photo",
-   "carousel"
+   "photo"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-013",
-  "slideIndex": 2,
-  "slideCount": 3,
+  "carouselId": null,
+  "slideIndex": 1,
+  "slideCount": 1,
   "color": "#453b33",
   "available": true,
+  "hidden": true,
+  "duplicateOf": "721:1895",
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-16",
-  "order": 149
+  "order": 0
  },
  {
   "id": "artwork-150",
   "figmaId": "721:5216",
   "name": "Anupama30",
   "label": "Anupama30",
-  "showLabel": false,
+  "showLabel": true,
   "image": "/artworks/artwork-150.webp",
   "thumbnail": "/thumbnails/md/artwork-150.webp",
   "placeholder": "/thumbnails/xs/artwork-150.webp",
@@ -4610,17 +5274,20 @@
   "category": "Collection 02",
   "tags": [
    "portrait",
-   "photo",
-   "carousel"
+   "photo"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-013",
-  "slideIndex": 3,
-  "slideCount": 3,
+  "carouselId": null,
+  "slideIndex": 1,
+  "slideCount": 1,
   "color": "#231e1c",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-145",
   "rowId": "row-16",
-  "order": 150
+  "order": 0
  },
  {
   "id": "artwork-151",
@@ -4641,17 +5308,20 @@
   "category": "Collection 02",
   "tags": [
    "portrait",
-   "photo",
-   "carousel"
+   "photo"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-014",
+  "carouselId": null,
   "slideIndex": 1,
-  "slideCount": 2,
+  "slideCount": 1,
   "color": "#624c41",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-146",
   "rowId": "row-16",
-  "order": 151
+  "order": 0
  },
  {
   "id": "artwork-152",
@@ -4672,17 +5342,20 @@
   "category": "Collection 02",
   "tags": [
    "portrait",
-   "photo",
-   "carousel"
+   "photo"
   ],
   "collection": "collection-02",
-  "carouselId": "carousel-014",
-  "slideIndex": 2,
-  "slideCount": 2,
+  "carouselId": null,
+  "slideIndex": 1,
+  "slideCount": 1,
   "color": "#756963",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-147",
   "rowId": "row-17",
-  "order": 152
+  "order": 0
  },
  {
   "id": "artwork-153",
@@ -4710,10 +5383,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#977369",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-18",
-  "order": 153
+  "order": 126
  },
  {
   "id": "artwork-154",
@@ -4721,29 +5398,37 @@
   "name": "Anu2",
   "label": "Anu2",
   "showLabel": true,
-  "image": "/artworks/artwork-154.webp",
-  "thumbnail": "/thumbnails/md/artwork-154.webp",
-  "placeholder": "/thumbnails/xs/artwork-154.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-154-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-154-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-154-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 03",
   "tags": [
-   "portrait",
-   "photo"
+   "wide",
+   "spread",
+   "panorama"
   ],
   "collection": "collection-03",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#97655c",
+  "color": "#926058",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-154",
+   "right": "artwork-155"
+  },
+  "joinedInto": null,
   "rowId": "row-18",
-  "order": 154
+  "order": 127
  },
  {
   "id": "artwork-155",
@@ -4772,8 +5457,12 @@
   "slideCount": 1,
   "color": "#a15a5e",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-154",
   "rowId": "row-18",
-  "order": 155
+  "order": 0
  },
  {
   "id": "artwork-156",
@@ -4801,10 +5490,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#7a5e38",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-18",
-  "order": 156
+  "order": 128
  },
  {
   "id": "artwork-157",
@@ -4812,29 +5505,37 @@
   "name": "Anu5",
   "label": "Anu5",
   "showLabel": true,
-  "image": "/artworks/artwork-157.webp",
-  "thumbnail": "/thumbnails/md/artwork-157.webp",
-  "placeholder": "/thumbnails/xs/artwork-157.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-157-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-157-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-157-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 03",
   "tags": [
-   "portrait",
-   "photo"
+   "wide",
+   "spread",
+   "panorama"
   ],
   "collection": "collection-03",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#996359",
+  "color": "#935857",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-157",
+   "right": "artwork-158"
+  },
+  "joinedInto": null,
   "rowId": "row-18",
-  "order": 157
+  "order": 129
  },
  {
   "id": "artwork-158",
@@ -4863,8 +5564,12 @@
   "slideCount": 1,
   "color": "#a05f62",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-157",
   "rowId": "row-18",
-  "order": 158
+  "order": 0
  },
  {
   "id": "artwork-159",
@@ -4893,8 +5598,12 @@
   "slideCount": 1,
   "color": "#a2645f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-18",
-  "order": 159
+  "order": 130
  },
  {
   "id": "artwork-160",
@@ -4923,8 +5632,12 @@
   "slideCount": 1,
   "color": "#a47e78",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-18",
-  "order": 160
+  "order": 131
  },
  {
   "id": "artwork-161",
@@ -4954,8 +5667,12 @@
   "slideCount": 1,
   "color": "#573d39",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-18",
-  "order": 161
+  "order": 132
  },
  {
   "id": "artwork-162",
@@ -4963,30 +5680,38 @@
   "name": "Sangeet",
   "label": "Sangeet",
   "showLabel": true,
-  "image": "/artworks/artwork-162.webp",
-  "thumbnail": "/thumbnails/md/artwork-162.webp",
-  "placeholder": "/thumbnails/xs/artwork-162.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-162-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-162-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-162-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 03",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-03",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#57443b",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-162",
+   "right": "artwork-163"
+  },
+  "joinedInto": null,
   "rowId": "row-18",
-  "order": 162
+  "order": 133
  },
  {
   "id": "artwork-163",
@@ -5013,10 +5738,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#56433f",
+  "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-162",
   "rowId": "row-19",
-  "order": 163
+  "order": 0
  },
  {
   "id": "artwork-164",
@@ -5043,10 +5772,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#543d23",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-19",
-  "order": 164
+  "order": 134
  },
  {
   "id": "artwork-165",
@@ -5075,8 +5808,12 @@
   "slideCount": 1,
   "color": "#623b31",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-19",
-  "order": 165
+  "order": 135
  },
  {
   "id": "artwork-166",
@@ -5084,29 +5821,37 @@
   "name": "Anu14",
   "label": "Anu14",
   "showLabel": true,
-  "image": "/artworks/artwork-166.webp",
-  "thumbnail": "/thumbnails/md/artwork-166.webp",
-  "placeholder": "/thumbnails/xs/artwork-166.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-166-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-166-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-166-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 03",
   "tags": [
-   "portrait",
-   "photo"
+   "wide",
+   "spread",
+   "panorama"
   ],
   "collection": "collection-03",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#402e2a",
+  "color": "#4e3834",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-166",
+   "right": "artwork-167"
+  },
+  "joinedInto": null,
   "rowId": "row-19",
-  "order": 166
+  "order": 136
  },
  {
   "id": "artwork-167",
@@ -5135,8 +5880,12 @@
   "slideCount": 1,
   "color": "#624d4a",
   "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-166",
   "rowId": "row-19",
-  "order": 167
+  "order": 0
  },
  {
   "id": "artwork-168",
@@ -5165,8 +5914,12 @@
   "slideCount": 1,
   "color": "#79583f",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-19",
-  "order": 168
+  "order": 137
  },
  {
   "id": "artwork-169",
@@ -5193,10 +5946,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#42302b",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-19",
-  "order": 169
+  "order": 138
  },
  {
   "id": "artwork-170",
@@ -5226,8 +5983,12 @@
   "slideCount": 1,
   "color": "#7a7570",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-20",
-  "order": 170
+  "order": 139
  },
  {
   "id": "artwork-171",
@@ -5254,10 +6015,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#837b64",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-20",
-  "order": 171
+  "order": 140
  },
  {
   "id": "artwork-172",
@@ -5286,8 +6051,12 @@
   "slideCount": 1,
   "color": "#878884",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-20",
-  "order": 172
+  "order": 141
  },
  {
   "id": "artwork-173",
@@ -5316,8 +6085,12 @@
   "slideCount": 1,
   "color": "#838376",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-20",
-  "order": 173
+  "order": 142
  },
  {
   "id": "artwork-174",
@@ -5343,13 +6116,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-015",
+  "carouselId": "carousel-010",
   "slideIndex": 1,
   "slideCount": 3,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#5497c2",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-20",
-  "order": 174
+  "order": 143
  },
  {
   "id": "artwork-175",
@@ -5375,13 +6152,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-015",
+  "carouselId": "carousel-010",
   "slideIndex": 2,
   "slideCount": 3,
   "color": "#797b78",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-20",
-  "order": 175
+  "order": 144
  },
  {
   "id": "artwork-176",
@@ -5407,13 +6188,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-015",
+  "carouselId": "carousel-010",
   "slideIndex": 3,
   "slideCount": 3,
   "color": "#3b769a",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-20",
-  "order": 176
+  "order": 145
  },
  {
   "id": "artwork-177",
@@ -5421,30 +6206,38 @@
   "name": "Samundar ke",
   "label": "Samundar ke",
   "showLabel": true,
-  "image": "/artworks/artwork-177.webp",
-  "thumbnail": "/thumbnails/md/artwork-177.webp",
-  "placeholder": "/thumbnails/xs/artwork-177.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-177-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-177-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-177-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 04",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-04",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#6598b9",
+  "color": "#6295b5",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-177",
+   "right": "artwork-178"
+  },
+  "joinedInto": null,
   "rowId": "row-20",
-  "order": 177
+  "order": 146
  },
  {
   "id": "artwork-178",
@@ -5472,10 +6265,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#639cbf",
+  "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-177",
   "rowId": "row-20",
-  "order": 178
+  "order": 0
  },
  {
   "id": "artwork-179",
@@ -5500,13 +6297,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 1,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#878177",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-20",
-  "order": 179
+  "order": 147
  },
  {
   "id": "artwork-180",
@@ -5531,13 +6332,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 2,
   "slideCount": 20,
   "color": "#575128",
   "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-21",
-  "order": 180
+  "order": 148
  },
  {
   "id": "artwork-181",
@@ -5562,13 +6367,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 3,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#9c9b84",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-21",
-  "order": 181
+  "order": 149
  },
  {
   "id": "artwork-182",
@@ -5593,13 +6402,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 4,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#615042",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-21",
-  "order": 182
+  "order": 150
  },
  {
   "id": "artwork-183",
@@ -5625,13 +6438,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 5,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#4f626c",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-21",
-  "order": 183
+  "order": 151
  },
  {
   "id": "artwork-184",
@@ -5656,13 +6473,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 6,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#595f6d",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-21",
-  "order": 184
+  "order": 152
  },
  {
   "id": "artwork-185",
@@ -5687,13 +6508,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 7,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#548187",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-21",
-  "order": 185
+  "order": 153
  },
  {
   "id": "artwork-186",
@@ -5718,13 +6543,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 8,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#808b86",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-21",
-  "order": 186
+  "order": 154
  },
  {
   "id": "artwork-187",
@@ -5749,13 +6578,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 9,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#417794",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-21",
-  "order": 187
+  "order": 155
  },
  {
   "id": "artwork-188",
@@ -5780,13 +6613,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 10,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#3e5261",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-21",
-  "order": 188
+  "order": 156
  },
  {
   "id": "artwork-189",
@@ -5811,13 +6648,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 11,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#304a40",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-21",
-  "order": 189
+  "order": 157
  },
  {
   "id": "artwork-190",
@@ -5843,13 +6684,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 12,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#876c4e",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-22",
-  "order": 190
+  "order": 158
  },
  {
   "id": "artwork-191",
@@ -5875,13 +6720,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 13,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#5d5531",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-22",
-  "order": 191
+  "order": 159
  },
  {
   "id": "artwork-192",
@@ -5907,13 +6756,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 14,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#3f3c27",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-22",
-  "order": 192
+  "order": 160
  },
  {
   "id": "artwork-193",
@@ -5939,13 +6792,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 15,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#675448",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-22",
-  "order": 193
+  "order": 161
  },
  {
   "id": "artwork-194",
@@ -5971,13 +6828,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 16,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#604c2d",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-22",
-  "order": 194
+  "order": 162
  },
  {
   "id": "artwork-195",
@@ -6003,13 +6864,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 17,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#524d3a",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-22",
-  "order": 195
+  "order": 163
  },
  {
   "id": "artwork-196",
@@ -6035,13 +6900,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 18,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#785c3a",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-22",
-  "order": 196
+  "order": 164
  },
  {
   "id": "artwork-197",
@@ -6067,13 +6936,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 19,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#655547",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-22",
-  "order": 197
+  "order": 165
  },
  {
   "id": "artwork-198",
@@ -6099,13 +6972,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-016",
+  "carouselId": "carousel-011",
   "slideIndex": 20,
   "slideCount": 20,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#443e34",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-22",
-  "order": 198
+  "order": 166
  },
  {
   "id": "artwork-199",
@@ -6130,13 +7007,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 1,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#9a9999",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-22",
-  "order": 199
+  "order": 167
  },
  {
   "id": "artwork-200",
@@ -6161,13 +7042,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 2,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#4f4448",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-23",
-  "order": 200
+  "order": 168
  },
  {
   "id": "artwork-201",
@@ -6192,13 +7077,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 3,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#7b6758",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-23",
-  "order": 201
+  "order": 169
  },
  {
   "id": "artwork-202",
@@ -6223,13 +7112,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 4,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#827e7c",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-23",
-  "order": 202
+  "order": 170
  },
  {
   "id": "artwork-203",
@@ -6254,13 +7147,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 5,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#7f8194",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-23",
-  "order": 203
+  "order": 171
  },
  {
   "id": "artwork-204",
@@ -6285,13 +7182,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 6,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#70563e",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-23",
-  "order": 204
+  "order": 172
  },
  {
   "id": "artwork-205",
@@ -6316,13 +7217,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 7,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#76605d",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-23",
-  "order": 205
+  "order": 173
  },
  {
   "id": "artwork-206",
@@ -6347,13 +7252,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 8,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#443a3b",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-23",
-  "order": 206
+  "order": 174
  },
  {
   "id": "artwork-207",
@@ -6378,13 +7287,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 9,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#7c6550",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-23",
-  "order": 207
+  "order": 175
  },
  {
   "id": "artwork-208",
@@ -6410,13 +7323,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 10,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#6a7480",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-23",
-  "order": 208
+  "order": 176
  },
  {
   "id": "artwork-209",
@@ -6441,13 +7358,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 11,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#6382a5",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-23",
-  "order": 209
+  "order": 177
  },
  {
   "id": "artwork-210",
@@ -6473,13 +7394,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 12,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#898d97",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-24",
-  "order": 210
+  "order": 178
  },
  {
   "id": "artwork-211",
@@ -6505,13 +7430,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 13,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#404247",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-24",
-  "order": 211
+  "order": 179
  },
  {
   "id": "artwork-212",
@@ -6536,13 +7465,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 14,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#939398",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-24",
-  "order": 212
+  "order": 180
  },
  {
   "id": "artwork-213",
@@ -6567,13 +7500,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 15,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#86878b",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-24",
-  "order": 213
+  "order": 181
  },
  {
   "id": "artwork-214",
@@ -6598,13 +7535,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 16,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#7b8aa2",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-24",
-  "order": 214
+  "order": 182
  },
  {
   "id": "artwork-215",
@@ -6629,13 +7570,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 17,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#8f7e6a",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-24",
-  "order": 215
+  "order": 183
  },
  {
   "id": "artwork-216",
@@ -6660,13 +7605,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 18,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#727b82",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-24",
-  "order": 216
+  "order": 184
  },
  {
   "id": "artwork-217",
@@ -6691,13 +7640,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 19,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#866d55",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-24",
-  "order": 217
+  "order": 185
  },
  {
   "id": "artwork-218",
@@ -6722,13 +7675,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 20,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#62595c",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-24",
-  "order": 218
+  "order": 186
  },
  {
   "id": "artwork-219",
@@ -6754,13 +7711,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 21,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#9c7f63",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-24",
-  "order": 219
+  "order": 187
  },
  {
   "id": "artwork-220",
@@ -6785,13 +7746,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 22,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#455260",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-25",
-  "order": 220
+  "order": 188
  },
  {
   "id": "artwork-221",
@@ -6816,13 +7781,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 23,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#716d65",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-25",
-  "order": 221
+  "order": 189
  },
  {
   "id": "artwork-222",
@@ -6848,13 +7817,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 24,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#5b6778",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-25",
-  "order": 222
+  "order": 190
  },
  {
   "id": "artwork-223",
@@ -6879,13 +7852,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 25,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#506d99",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-25",
-  "order": 223
+  "order": 191
  },
  {
   "id": "artwork-224",
@@ -6911,13 +7888,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 26,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#4d6c54",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-25",
-  "order": 224
+  "order": 192
  },
  {
   "id": "artwork-225",
@@ -6942,13 +7923,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-017",
+  "carouselId": "carousel-012",
   "slideIndex": 27,
   "slideCount": 27,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#acacae",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-25",
-  "order": 225
+  "order": 193
  },
  {
   "id": "artwork-226",
@@ -6973,13 +7958,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-018",
+  "carouselId": "carousel-013",
   "slideIndex": 1,
   "slideCount": 2,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#938f8d",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-25",
-  "order": 226
+  "order": 194
  },
  {
   "id": "artwork-227",
@@ -7005,13 +7994,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-018",
+  "carouselId": "carousel-013",
   "slideIndex": 2,
   "slideCount": 2,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#7f7570",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-25",
-  "order": 227
+  "order": 195
  },
  {
   "id": "artwork-228",
@@ -7038,10 +8031,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#938984",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-25",
-  "order": 228
+  "order": 196
  },
  {
   "id": "artwork-229",
@@ -7068,10 +8065,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#918880",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-25",
-  "order": 229
+  "order": 197
  },
  {
   "id": "artwork-230",
@@ -7098,10 +8099,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#765f35",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-26",
-  "order": 230
+  "order": 198
  },
  {
   "id": "artwork-231",
@@ -7129,10 +8134,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#956f32",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-26",
-  "order": 231
+  "order": 199
  },
  {
   "id": "artwork-232",
@@ -7160,10 +8169,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#6c6761",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-26",
-  "order": 232
+  "order": 200
  },
  {
   "id": "artwork-233",
@@ -7191,10 +8204,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#41585e",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-26",
-  "order": 233
+  "order": 201
  },
  {
   "id": "artwork-234",
@@ -7222,10 +8239,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#343432",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-26",
-  "order": 234
+  "order": 202
  },
  {
   "id": "artwork-235",
@@ -7253,10 +8274,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#627176",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-26",
-  "order": 235
+  "order": 203
  },
  {
   "id": "artwork-236",
@@ -7284,10 +8309,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#966038",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-26",
-  "order": 236
+  "order": 204
  },
  {
   "id": "artwork-237",
@@ -7315,10 +8344,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#7b664a",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-26",
-  "order": 237
+  "order": 205
  },
  {
   "id": "artwork-238",
@@ -7346,10 +8379,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#797a6c",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-26",
-  "order": 238
+  "order": 206
  },
  {
   "id": "artwork-239",
@@ -7375,13 +8412,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-019",
+  "carouselId": "carousel-014",
   "slideIndex": 1,
   "slideCount": 11,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#869970",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-26",
-  "order": 239
+  "order": 207
  },
  {
   "id": "artwork-240",
@@ -7407,13 +8448,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-019",
+  "carouselId": "carousel-014",
   "slideIndex": 2,
   "slideCount": 11,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#5a6526",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-27",
-  "order": 240
+  "order": 208
  },
  {
   "id": "artwork-241",
@@ -7438,13 +8483,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-019",
+  "carouselId": "carousel-014",
   "slideIndex": 3,
   "slideCount": 11,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#58654a",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-27",
-  "order": 241
+  "order": 209
  },
  {
   "id": "artwork-242",
@@ -7469,13 +8518,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-019",
+  "carouselId": "carousel-014",
   "slideIndex": 4,
   "slideCount": 11,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#9e8a61",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-27",
-  "order": 242
+  "order": 210
  },
  {
   "id": "artwork-243",
@@ -7500,13 +8553,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-019",
+  "carouselId": "carousel-014",
   "slideIndex": 5,
   "slideCount": 11,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#8c746a",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-27",
-  "order": 243
+  "order": 211
  },
  {
   "id": "artwork-244",
@@ -7531,13 +8588,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-019",
+  "carouselId": "carousel-014",
   "slideIndex": 6,
   "slideCount": 11,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#b9b196",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-27",
-  "order": 244
+  "order": 212
  },
  {
   "id": "artwork-245",
@@ -7562,13 +8623,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-019",
+  "carouselId": "carousel-014",
   "slideIndex": 7,
   "slideCount": 11,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#2e8346",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-27",
-  "order": 245
+  "order": 213
  },
  {
   "id": "artwork-246",
@@ -7594,13 +8659,17 @@
    "typography"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-019",
+  "carouselId": "carousel-014",
   "slideIndex": 8,
   "slideCount": 11,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#656f32",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-27",
-  "order": 246
+  "order": 214
  },
  {
   "id": "artwork-247",
@@ -7625,13 +8694,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-019",
+  "carouselId": "carousel-014",
   "slideIndex": 9,
   "slideCount": 11,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#737463",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-27",
-  "order": 247
+  "order": 215
  },
  {
   "id": "artwork-248",
@@ -7656,13 +8729,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-019",
+  "carouselId": "carousel-014",
   "slideIndex": 10,
   "slideCount": 11,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#775d1d",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-27",
-  "order": 248
+  "order": 216
  },
  {
   "id": "artwork-249",
@@ -7687,13 +8764,17 @@
    "carousel"
   ],
   "collection": "collection-04",
-  "carouselId": "carousel-019",
+  "carouselId": "carousel-014",
   "slideIndex": 11,
   "slideCount": 11,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#867641",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-27",
-  "order": 249
+  "order": 217
  },
  {
   "id": "artwork-250",
@@ -7721,10 +8802,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#746048",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-28",
-  "order": 250
+  "order": 218
  },
  {
   "id": "artwork-251",
@@ -7752,10 +8837,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#8c6537",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-28",
-  "order": 251
+  "order": 219
  },
  {
   "id": "artwork-252",
@@ -7783,10 +8872,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#776a41",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-28",
-  "order": 252
+  "order": 220
  },
  {
   "id": "artwork-253",
@@ -7814,10 +8907,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#7b6131",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-28",
-  "order": 253
+  "order": 221
  },
  {
   "id": "artwork-254",
@@ -7845,10 +8942,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#af8742",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-28",
-  "order": 254
+  "order": 222
  },
  {
   "id": "artwork-255",
@@ -7876,10 +8977,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#937735",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-28",
-  "order": 255
+  "order": 223
  },
  {
   "id": "artwork-256",
@@ -7907,10 +9012,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#875a2e",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-28",
-  "order": 256
+  "order": 224
  },
  {
   "id": "artwork-257",
@@ -7938,10 +9047,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#7a6c4d",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-28",
-  "order": 257
+  "order": 225
  },
  {
   "id": "artwork-258",
@@ -7969,10 +9082,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#7c6c7b",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-28",
-  "order": 258
+  "order": 226
  },
  {
   "id": "artwork-259",
@@ -8000,10 +9117,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#84643a",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-28",
-  "order": 259
+  "order": 227
  },
  {
   "id": "artwork-260",
@@ -8031,10 +9152,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#776353",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-29",
-  "order": 260
+  "order": 228
  },
  {
   "id": "artwork-261",
@@ -8062,10 +9187,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#6c4b0f",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-30",
-  "order": 261
+  "order": 229
  },
  {
   "id": "artwork-262",
@@ -8092,10 +9221,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#ab854c",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-30",
-  "order": 262
+  "order": 230
  },
  {
   "id": "artwork-263",
@@ -8122,10 +9255,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#a0733b",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-30",
-  "order": 263
+  "order": 231
  },
  {
   "id": "artwork-264",
@@ -8152,10 +9289,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#985d29",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-30",
-  "order": 264
+  "order": 232
  },
  {
   "id": "artwork-265",
@@ -8182,10 +9323,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#9c601d",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-30",
-  "order": 265
+  "order": 233
  },
  {
   "id": "artwork-266",
@@ -8212,10 +9357,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#69502f",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-30",
-  "order": 266
+  "order": 234
  },
  {
   "id": "artwork-267",
@@ -8242,10 +9391,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#b5832b",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-30",
-  "order": 267
+  "order": 235
  },
  {
   "id": "artwork-268",
@@ -8272,10 +9425,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#8a601c",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-30",
-  "order": 268
+  "order": 236
  },
  {
   "id": "artwork-269",
@@ -8303,10 +9460,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#3f5255",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-30",
-  "order": 269
+  "order": 237
  },
  {
   "id": "artwork-270",
@@ -8331,13 +9492,17 @@
    "carousel"
   ],
   "collection": "collection-06",
-  "carouselId": "carousel-020",
+  "carouselId": "carousel-015",
   "slideIndex": 1,
   "slideCount": 4,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#6b5e3e",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-30",
-  "order": 270
+  "order": 238
  },
  {
   "id": "artwork-271",
@@ -8362,13 +9527,17 @@
    "carousel"
   ],
   "collection": "collection-06",
-  "carouselId": "carousel-020",
+  "carouselId": "carousel-015",
   "slideIndex": 2,
   "slideCount": 4,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#65807f",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-31",
-  "order": 271
+  "order": 239
  },
  {
   "id": "artwork-272",
@@ -8394,13 +9563,17 @@
    "typography"
   ],
   "collection": "collection-06",
-  "carouselId": "carousel-020",
+  "carouselId": "carousel-015",
   "slideIndex": 3,
   "slideCount": 4,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#5c675f",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-31",
-  "order": 272
+  "order": 240
  },
  {
   "id": "artwork-273",
@@ -8426,13 +9599,17 @@
    "typography"
   ],
   "collection": "collection-06",
-  "carouselId": "carousel-020",
+  "carouselId": "carousel-015",
   "slideIndex": 4,
   "slideCount": 4,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#6e6b65",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-31",
-  "order": 273
+  "order": 241
  },
  {
   "id": "artwork-274",
@@ -8440,30 +9617,38 @@
   "name": "Adventure",
   "label": "Adventure",
   "showLabel": true,
-  "image": "/artworks/artwork-274.webp",
-  "thumbnail": "/thumbnails/md/artwork-274.webp",
-  "placeholder": "/thumbnails/xs/artwork-274.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-274-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-274-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-274-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 07",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-07",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#597a6e",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-274",
+   "right": "artwork-275"
+  },
+  "joinedInto": null,
   "rowId": "row-32",
-  "order": 274
+  "order": 242
  },
  {
   "id": "artwork-275",
@@ -8490,10 +9675,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#5b784e",
+  "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-274",
   "rowId": "row-32",
-  "order": 275
+  "order": 0
  },
  {
   "id": "artwork-276",
@@ -8521,10 +9710,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#3d362c",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-33",
-  "order": 276
+  "order": 243
  },
  {
   "id": "artwork-277",
@@ -8552,10 +9745,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#2e7eb1",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-33",
-  "order": 277
+  "order": 244
  },
  {
   "id": "artwork-278",
@@ -8583,10 +9780,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#573d28",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-33",
-  "order": 278
+  "order": 245
  },
  {
   "id": "artwork-279",
@@ -8614,10 +9815,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#7e5435",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-33",
-  "order": 279
+  "order": 246
  },
  {
   "id": "artwork-280",
@@ -8645,10 +9850,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#a25231",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-33",
-  "order": 280
+  "order": 247
  },
  {
   "id": "artwork-281",
@@ -8676,10 +9885,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#645f63",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-33",
-  "order": 281
+  "order": 248
  },
  {
   "id": "artwork-282",
@@ -8706,10 +9919,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#9a241e",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-33",
-  "order": 282
+  "order": 249
  },
  {
   "id": "artwork-283",
@@ -8737,10 +9954,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#765854",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-34",
-  "order": 283
+  "order": 250
  },
  {
   "id": "artwork-284",
@@ -8768,10 +9989,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#475661",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-34",
-  "order": 284
+  "order": 251
  },
  {
   "id": "artwork-285",
@@ -8779,30 +10004,38 @@
   "name": "Queued for freebies",
   "label": "Queued for freebies",
   "showLabel": true,
-  "image": "/artworks/artwork-285.webp",
-  "thumbnail": "/thumbnails/md/artwork-285.webp",
-  "placeholder": "/thumbnails/xs/artwork-285.webp",
-  "originalWidth": 1080,
+  "image": "/artworks/artwork-285-pano.webp",
+  "thumbnail": "/thumbnails/md/artwork-285-pano.webp",
+  "placeholder": "/thumbnails/xs/artwork-285-pano.webp",
+  "originalWidth": 2160,
   "originalHeight": 1350,
-  "aspectRatio": 0.8,
-  "displayWidth": 288,
+  "aspectRatio": 1.6,
+  "displayWidth": 576,
   "displayHeight": 360,
-  "type": "portrait",
-  "composition": "photo-type",
+  "type": "wide",
+  "composition": "spread",
   "category": "Collection 09",
   "tags": [
-   "portrait",
-   "photo-type",
+   "wide",
+   "spread",
+   "panorama",
    "typography"
   ],
   "collection": "collection-09",
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#695c63",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": {
+   "left": "artwork-285",
+   "right": "artwork-286"
+  },
+  "joinedInto": null,
   "rowId": "row-34",
-  "order": 285
+  "order": 252
  },
  {
   "id": "artwork-286",
@@ -8823,24 +10056,27 @@
   "category": "Collection 09",
   "tags": [
    "portrait",
-   "photo",
-   "carousel"
+   "photo"
   ],
   "collection": "collection-09",
-  "carouselId": "carousel-021",
+  "carouselId": null,
   "slideIndex": 1,
-  "slideCount": 2,
-  "color": "#2a2a2a",
-  "available": false,
+  "slideCount": 1,
+  "color": "#5b2926",
+  "available": true,
+  "hidden": true,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": "artwork-285",
   "rowId": "row-34",
-  "order": 286
+  "order": 0
  },
  {
   "id": "artwork-287",
   "figmaId": "721:1907",
   "name": "Trip4",
   "label": "Trip4",
-  "showLabel": false,
+  "showLabel": true,
   "image": "/artworks/artwork-287.webp",
   "thumbnail": "/thumbnails/md/artwork-287.webp",
   "placeholder": "/thumbnails/xs/artwork-287.webp",
@@ -8854,17 +10090,20 @@
   "category": "Collection 09",
   "tags": [
    "portrait",
-   "photo",
-   "carousel"
+   "photo"
   ],
   "collection": "collection-09",
-  "carouselId": "carousel-021",
-  "slideIndex": 2,
-  "slideCount": 2,
-  "color": "#2a2a2a",
-  "available": false,
+  "carouselId": null,
+  "slideIndex": 1,
+  "slideCount": 1,
+  "color": "#6f5848",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-34",
-  "order": 287
+  "order": 253
  },
  {
   "id": "artwork-288",
@@ -8892,10 +10131,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#40607b",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-34",
-  "order": 288
+  "order": 254
  },
  {
   "id": "artwork-289",
@@ -8922,10 +10165,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#555b6e",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-34",
-  "order": 289
+  "order": 255
  },
  {
   "id": "artwork-290",
@@ -8953,10 +10200,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#61808e",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-34",
-  "order": 290
+  "order": 256
  },
  {
   "id": "artwork-291",
@@ -8984,10 +10235,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#61656b",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-34",
-  "order": 291
+  "order": 257
  },
  {
   "id": "artwork-292",
@@ -9012,13 +10267,17 @@
    "carousel"
   ],
   "collection": "collection-09",
-  "carouselId": "carousel-022",
+  "carouselId": "carousel-016",
   "slideIndex": 1,
   "slideCount": 2,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#8a7e75",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-34",
-  "order": 292
+  "order": 258
  },
  {
   "id": "artwork-293",
@@ -9043,13 +10302,17 @@
    "carousel"
   ],
   "collection": "collection-09",
-  "carouselId": "carousel-022",
+  "carouselId": "carousel-016",
   "slideIndex": 2,
   "slideCount": 2,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#866649",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-35",
-  "order": 293
+  "order": 259
  },
  {
   "id": "artwork-294",
@@ -9077,10 +10340,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#4f4e47",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-35",
-  "order": 294
+  "order": 260
  },
  {
   "id": "artwork-295",
@@ -9108,10 +10375,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#3a5d6f",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-35",
-  "order": 295
+  "order": 261
  },
  {
   "id": "artwork-296",
@@ -9138,10 +10409,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#79675b",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-35",
-  "order": 296
+  "order": 262
  },
  {
   "id": "artwork-297",
@@ -9169,10 +10444,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#626960",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-35",
-  "order": 297
+  "order": 263
  },
  {
   "id": "artwork-298",
@@ -9200,10 +10479,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#3b3f3e",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-35",
-  "order": 298
+  "order": 264
  },
  {
   "id": "artwork-299",
@@ -9231,10 +10514,14 @@
   "carouselId": null,
   "slideIndex": 1,
   "slideCount": 1,
-  "color": "#2a2a2a",
-  "available": false,
+  "color": "#275380",
+  "available": true,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-35",
-  "order": 299
+  "order": 265
  },
  {
   "id": "artwork-300",
@@ -9264,8 +10551,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-35",
-  "order": 300
+  "order": 266
  },
  {
   "id": "artwork-301",
@@ -9294,8 +10585,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-35",
-  "order": 301
+  "order": 267
  },
  {
   "id": "artwork-302",
@@ -9325,8 +10620,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-35",
-  "order": 302
+  "order": 268
  },
  {
   "id": "artwork-303",
@@ -9356,8 +10655,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-36",
-  "order": 303
+  "order": 269
  },
  {
   "id": "artwork-304",
@@ -9387,8 +10690,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-36",
-  "order": 304
+  "order": 270
  },
  {
   "id": "artwork-305",
@@ -9418,8 +10725,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-36",
-  "order": 305
+  "order": 271
  },
  {
   "id": "artwork-306",
@@ -9449,8 +10760,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-36",
-  "order": 306
+  "order": 272
  },
  {
   "id": "artwork-307",
@@ -9480,8 +10795,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-36",
-  "order": 307
+  "order": 273
  },
  {
   "id": "artwork-308",
@@ -9511,8 +10830,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-36",
-  "order": 308
+  "order": 274
  },
  {
   "id": "artwork-309",
@@ -9542,8 +10865,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-36",
-  "order": 309
+  "order": 275
  },
  {
   "id": "artwork-310",
@@ -9572,8 +10899,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-36",
-  "order": 310
+  "order": 276
  },
  {
   "id": "artwork-311",
@@ -9602,8 +10933,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-36",
-  "order": 311
+  "order": 277
  },
  {
   "id": "artwork-312",
@@ -9633,8 +10968,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-37",
-  "order": 312
+  "order": 278
  },
  {
   "id": "artwork-313",
@@ -9664,8 +11003,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-37",
-  "order": 313
+  "order": 279
  },
  {
   "id": "artwork-314",
@@ -9694,8 +11037,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-37",
-  "order": 314
+  "order": 280
  },
  {
   "id": "artwork-315",
@@ -9724,8 +11071,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-37",
-  "order": 315
+  "order": 281
  },
  {
   "id": "artwork-316",
@@ -9755,8 +11106,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-37",
-  "order": 316
+  "order": 282
  },
  {
   "id": "artwork-317",
@@ -9786,8 +11141,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-37",
-  "order": 317
+  "order": 283
  },
  {
   "id": "artwork-318",
@@ -9817,8 +11176,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-37",
-  "order": 318
+  "order": 284
  },
  {
   "id": "artwork-319",
@@ -9847,8 +11210,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-37",
-  "order": 319
+  "order": 285
  },
  {
   "id": "artwork-320",
@@ -9878,8 +11245,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-37",
-  "order": 320
+  "order": 286
  },
  {
   "id": "artwork-321",
@@ -9908,8 +11279,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-37",
-  "order": 321
+  "order": 287
  },
  {
   "id": "artwork-322",
@@ -9939,8 +11314,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-38",
-  "order": 322
+  "order": 288
  },
  {
   "id": "artwork-323",
@@ -9970,8 +11349,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-38",
-  "order": 323
+  "order": 289
  },
  {
   "id": "artwork-324",
@@ -10001,8 +11384,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-38",
-  "order": 324
+  "order": 290
  },
  {
   "id": "artwork-325",
@@ -10032,8 +11419,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-39",
-  "order": 325
+  "order": 291
  },
  {
   "id": "artwork-326",
@@ -10063,8 +11454,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-39",
-  "order": 326
+  "order": 292
  },
  {
   "id": "artwork-327",
@@ -10094,8 +11489,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-39",
-  "order": 327
+  "order": 293
  },
  {
   "id": "artwork-328",
@@ -10125,8 +11524,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-39",
-  "order": 328
+  "order": 294
  },
  {
   "id": "artwork-329",
@@ -10155,8 +11558,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-39",
-  "order": 329
+  "order": 295
  },
  {
   "id": "artwork-330",
@@ -10185,8 +11592,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-39",
-  "order": 330
+  "order": 296
  },
  {
   "id": "artwork-331",
@@ -10216,8 +11627,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-39",
-  "order": 331
+  "order": 297
  },
  {
   "id": "artwork-332",
@@ -10247,8 +11662,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-39",
-  "order": 332
+  "order": 298
  },
  {
   "id": "artwork-333",
@@ -10278,8 +11697,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-39",
-  "order": 333
+  "order": 299
  },
  {
   "id": "artwork-334",
@@ -10309,8 +11732,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-39",
-  "order": 334
+  "order": 300
  },
  {
   "id": "artwork-335",
@@ -10340,8 +11767,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-40",
-  "order": 335
+  "order": 301
  },
  {
   "id": "artwork-336",
@@ -10371,8 +11802,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-40",
-  "order": 336
+  "order": 302
  },
  {
   "id": "artwork-337",
@@ -10402,8 +11837,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-41",
-  "order": 337
+  "order": 303
  },
  {
   "id": "artwork-338",
@@ -10433,8 +11872,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-41",
-  "order": 338
+  "order": 304
  },
  {
   "id": "artwork-339",
@@ -10464,8 +11907,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-41",
-  "order": 339
+  "order": 305
  },
  {
   "id": "artwork-340",
@@ -10495,8 +11942,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-41",
-  "order": 340
+  "order": 306
  },
  {
   "id": "artwork-341",
@@ -10525,8 +11976,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-41",
-  "order": 341
+  "order": 307
  },
  {
   "id": "artwork-342",
@@ -10556,8 +12011,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-41",
-  "order": 342
+  "order": 308
  },
  {
   "id": "artwork-343",
@@ -10586,8 +12045,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-41",
-  "order": 343
+  "order": 309
  },
  {
   "id": "artwork-344",
@@ -10617,8 +12080,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-41",
-  "order": 344
+  "order": 310
  },
  {
   "id": "artwork-345",
@@ -10648,8 +12115,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-41",
-  "order": 345
+  "order": 311
  },
  {
   "id": "artwork-346",
@@ -10679,8 +12150,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-41",
-  "order": 346
+  "order": 312
  },
  {
   "id": "artwork-347",
@@ -10709,8 +12184,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-42",
-  "order": 347
+  "order": 313
  },
  {
   "id": "artwork-348",
@@ -10740,8 +12219,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-42",
-  "order": 348
+  "order": 314
  },
  {
   "id": "artwork-349",
@@ -10771,8 +12254,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-43",
-  "order": 349
+  "order": 315
  },
  {
   "id": "artwork-350",
@@ -10802,8 +12289,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-43",
-  "order": 350
+  "order": 316
  },
  {
   "id": "artwork-351",
@@ -10833,8 +12324,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-43",
-  "order": 351
+  "order": 317
  },
  {
   "id": "artwork-352",
@@ -10864,8 +12359,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-43",
-  "order": 352
+  "order": 318
  },
  {
   "id": "artwork-353",
@@ -10895,8 +12394,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-43",
-  "order": 353
+  "order": 319
  },
  {
   "id": "artwork-354",
@@ -10926,8 +12429,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-43",
-  "order": 354
+  "order": 320
  },
  {
   "id": "artwork-355",
@@ -10957,8 +12464,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-43",
-  "order": 355
+  "order": 321
  },
  {
   "id": "artwork-356",
@@ -10988,8 +12499,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-43",
-  "order": 356
+  "order": 322
  },
  {
   "id": "artwork-357",
@@ -11019,8 +12534,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-43",
-  "order": 357
+  "order": 323
  },
  {
   "id": "artwork-358",
@@ -11050,8 +12569,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-43",
-  "order": 358
+  "order": 324
  },
  {
   "id": "artwork-359",
@@ -11081,8 +12604,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-44",
-  "order": 359
+  "order": 325
  },
  {
   "id": "artwork-360",
@@ -11112,8 +12639,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-44",
-  "order": 360
+  "order": 326
  },
  {
   "id": "artwork-361",
@@ -11143,8 +12674,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-44",
-  "order": 361
+  "order": 327
  },
  {
   "id": "artwork-362",
@@ -11174,8 +12709,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-44",
-  "order": 362
+  "order": 328
  },
  {
   "id": "artwork-363",
@@ -11205,8 +12744,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-44",
-  "order": 363
+  "order": 329
  },
  {
   "id": "artwork-364",
@@ -11236,8 +12779,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-44",
-  "order": 364
+  "order": 330
  },
  {
   "id": "artwork-365",
@@ -11267,8 +12814,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-44",
-  "order": 365
+  "order": 331
  },
  {
   "id": "artwork-366",
@@ -11298,8 +12849,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-44",
-  "order": 366
+  "order": 332
  },
  {
   "id": "artwork-367",
@@ -11329,8 +12884,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-44",
-  "order": 367
+  "order": 333
  },
  {
   "id": "artwork-368",
@@ -11360,8 +12919,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-44",
-  "order": 368
+  "order": 334
  },
  {
   "id": "artwork-369",
@@ -11391,8 +12954,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-45",
-  "order": 369
+  "order": 335
  },
  {
   "id": "artwork-370",
@@ -11418,13 +12985,17 @@
    "typography"
   ],
   "collection": "collection-13",
-  "carouselId": "carousel-023",
+  "carouselId": "carousel-017",
   "slideIndex": 1,
   "slideCount": 5,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-45",
-  "order": 370
+  "order": 336
  },
  {
   "id": "artwork-371",
@@ -11450,13 +13021,17 @@
    "typography"
   ],
   "collection": "collection-13",
-  "carouselId": "carousel-023",
+  "carouselId": "carousel-017",
   "slideIndex": 2,
   "slideCount": 5,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-45",
-  "order": 371
+  "order": 337
  },
  {
   "id": "artwork-372",
@@ -11482,13 +13057,17 @@
    "typography"
   ],
   "collection": "collection-13",
-  "carouselId": "carousel-023",
+  "carouselId": "carousel-017",
   "slideIndex": 3,
   "slideCount": 5,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-45",
-  "order": 372
+  "order": 338
  },
  {
   "id": "artwork-373",
@@ -11514,13 +13093,17 @@
    "typography"
   ],
   "collection": "collection-13",
-  "carouselId": "carousel-023",
+  "carouselId": "carousel-017",
   "slideIndex": 4,
   "slideCount": 5,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-45",
-  "order": 373
+  "order": 339
  },
  {
   "id": "artwork-374",
@@ -11546,13 +13129,17 @@
    "typography"
   ],
   "collection": "collection-13",
-  "carouselId": "carousel-023",
+  "carouselId": "carousel-017",
   "slideIndex": 5,
   "slideCount": 5,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-45",
-  "order": 374
+  "order": 340
  },
  {
   "id": "artwork-375",
@@ -11582,8 +13169,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-46",
-  "order": 375
+  "order": 341
  },
  {
   "id": "artwork-376",
@@ -11613,8 +13204,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-46",
-  "order": 376
+  "order": 342
  },
  {
   "id": "artwork-377",
@@ -11644,8 +13239,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-46",
-  "order": 377
+  "order": 343
  },
  {
   "id": "artwork-378",
@@ -11675,8 +13274,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-46",
-  "order": 378
+  "order": 344
  },
  {
   "id": "artwork-379",
@@ -11705,8 +13308,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-46",
-  "order": 379
+  "order": 345
  },
  {
   "id": "artwork-380",
@@ -11735,8 +13342,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-46",
-  "order": 380
+  "order": 346
  },
  {
   "id": "artwork-381",
@@ -11766,8 +13377,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-46",
-  "order": 381
+  "order": 347
  },
  {
   "id": "artwork-382",
@@ -11797,8 +13412,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-47",
-  "order": 382
+  "order": 348
  },
  {
   "id": "artwork-383",
@@ -11828,8 +13447,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-47",
-  "order": 383
+  "order": 349
  },
  {
   "id": "artwork-384",
@@ -11859,8 +13482,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-47",
-  "order": 384
+  "order": 350
  },
  {
   "id": "artwork-385",
@@ -11890,8 +13517,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-47",
-  "order": 385
+  "order": 351
  },
  {
   "id": "artwork-386",
@@ -11921,8 +13552,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-47",
-  "order": 386
+  "order": 352
  },
  {
   "id": "artwork-387",
@@ -11952,8 +13587,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-47",
-  "order": 387
+  "order": 353
  },
  {
   "id": "artwork-388",
@@ -11982,8 +13621,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-47",
-  "order": 388
+  "order": 354
  },
  {
   "id": "artwork-389",
@@ -12013,8 +13656,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-47",
-  "order": 389
+  "order": 355
  },
  {
   "id": "artwork-390",
@@ -12043,8 +13690,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-47",
-  "order": 390
+  "order": 356
  },
  {
   "id": "artwork-391",
@@ -12074,8 +13725,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-47",
-  "order": 391
+  "order": 357
  },
  {
   "id": "artwork-392",
@@ -12105,8 +13760,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-48",
-  "order": 392
+  "order": 358
  },
  {
   "id": "artwork-393",
@@ -12136,8 +13795,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-48",
-  "order": 393
+  "order": 359
  },
  {
   "id": "artwork-394",
@@ -12167,8 +13830,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-48",
-  "order": 394
+  "order": 360
  },
  {
   "id": "artwork-395",
@@ -12198,8 +13865,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-48",
-  "order": 395
+  "order": 361
  },
  {
   "id": "artwork-396",
@@ -12229,8 +13900,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-48",
-  "order": 396
+  "order": 362
  },
  {
   "id": "artwork-397",
@@ -12259,8 +13934,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-48",
-  "order": 397
+  "order": 363
  },
  {
   "id": "artwork-398",
@@ -12290,8 +13969,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-48",
-  "order": 398
+  "order": 364
  },
  {
   "id": "artwork-399",
@@ -12320,8 +14003,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-48",
-  "order": 399
+  "order": 365
  },
  {
   "id": "artwork-400",
@@ -12350,8 +14037,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-48",
-  "order": 400
+  "order": 366
  },
  {
   "id": "artwork-401",
@@ -12381,8 +14072,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-48",
-  "order": 401
+  "order": 367
  },
  {
   "id": "artwork-402",
@@ -12411,8 +14106,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-49",
-  "order": 402
+  "order": 368
  },
  {
   "id": "artwork-403",
@@ -12441,8 +14140,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-49",
-  "order": 403
+  "order": 369
  },
  {
   "id": "artwork-404",
@@ -12472,8 +14175,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-49",
-  "order": 404
+  "order": 370
  },
  {
   "id": "artwork-405",
@@ -12503,8 +14210,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-49",
-  "order": 405
+  "order": 371
  },
  {
   "id": "artwork-406",
@@ -12534,8 +14245,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-49",
-  "order": 406
+  "order": 372
  },
  {
   "id": "artwork-407",
@@ -12564,8 +14279,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-49",
-  "order": 407
+  "order": 373
  },
  {
   "id": "artwork-408",
@@ -12595,8 +14314,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-49",
-  "order": 408
+  "order": 374
  },
  {
   "id": "artwork-409",
@@ -12625,8 +14348,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-49",
-  "order": 409
+  "order": 375
  },
  {
   "id": "artwork-410",
@@ -12655,8 +14382,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-49",
-  "order": 410
+  "order": 376
  },
  {
   "id": "artwork-411",
@@ -12685,8 +14416,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-49",
-  "order": 411
+  "order": 377
  },
  {
   "id": "artwork-412",
@@ -12716,8 +14451,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-50",
-  "order": 412
+  "order": 378
  },
  {
   "id": "artwork-413",
@@ -12746,8 +14485,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-50",
-  "order": 413
+  "order": 379
  },
  {
   "id": "artwork-414",
@@ -12776,8 +14519,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-50",
-  "order": 414
+  "order": 380
  },
  {
   "id": "artwork-415",
@@ -12807,8 +14554,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-50",
-  "order": 415
+  "order": 381
  },
  {
   "id": "artwork-416",
@@ -12838,8 +14589,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-50",
-  "order": 416
+  "order": 382
  },
  {
   "id": "artwork-417",
@@ -12868,8 +14623,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-50",
-  "order": 417
+  "order": 383
  },
  {
   "id": "artwork-418",
@@ -12899,8 +14658,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-50",
-  "order": 418
+  "order": 384
  },
  {
   "id": "artwork-419",
@@ -12930,8 +14693,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-50",
-  "order": 419
+  "order": 385
  },
  {
   "id": "artwork-420",
@@ -12961,8 +14728,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-50",
-  "order": 420
+  "order": 386
  },
  {
   "id": "artwork-421",
@@ -12991,8 +14762,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-50",
-  "order": 421
+  "order": 387
  },
  {
   "id": "artwork-422",
@@ -13021,8 +14796,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-51",
-  "order": 422
+  "order": 388
  },
  {
   "id": "artwork-423",
@@ -13052,8 +14831,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-51",
-  "order": 423
+  "order": 389
  },
  {
   "id": "artwork-424",
@@ -13083,8 +14866,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-51",
-  "order": 424
+  "order": 390
  },
  {
   "id": "artwork-425",
@@ -13113,8 +14900,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-51",
-  "order": 425
+  "order": 391
  },
  {
   "id": "artwork-426",
@@ -13143,8 +14934,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-51",
-  "order": 426
+  "order": 392
  },
  {
   "id": "artwork-427",
@@ -13174,8 +14969,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-51",
-  "order": 427
+  "order": 393
  },
  {
   "id": "artwork-428",
@@ -13205,8 +15004,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-52",
-  "order": 428
+  "order": 394
  },
  {
   "id": "artwork-429",
@@ -13235,8 +15038,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-52",
-  "order": 429
+  "order": 395
  },
  {
   "id": "artwork-430",
@@ -13266,8 +15073,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-52",
-  "order": 430
+  "order": 396
  },
  {
   "id": "artwork-431",
@@ -13297,8 +15108,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-52",
-  "order": 431
+  "order": 397
  },
  {
   "id": "artwork-432",
@@ -13328,8 +15143,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-52",
-  "order": 432
+  "order": 398
  },
  {
   "id": "artwork-433",
@@ -13359,8 +15178,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-52",
-  "order": 433
+  "order": 399
  },
  {
   "id": "artwork-434",
@@ -13390,8 +15213,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-52",
-  "order": 434
+  "order": 400
  },
  {
   "id": "artwork-435",
@@ -13421,8 +15248,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-52",
-  "order": 435
+  "order": 401
  },
  {
   "id": "artwork-436",
@@ -13452,8 +15283,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-52",
-  "order": 436
+  "order": 402
  },
  {
   "id": "artwork-437",
@@ -13482,8 +15317,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-53",
-  "order": 437
+  "order": 403
  },
  {
   "id": "artwork-438",
@@ -13513,8 +15352,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-53",
-  "order": 438
+  "order": 404
  },
  {
   "id": "artwork-439",
@@ -13544,8 +15387,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-53",
-  "order": 439
+  "order": 405
  },
  {
   "id": "artwork-440",
@@ -13574,8 +15421,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-53",
-  "order": 440
+  "order": 406
  },
  {
   "id": "artwork-441",
@@ -13604,8 +15455,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-53",
-  "order": 441
+  "order": 407
  },
  {
   "id": "artwork-442",
@@ -13634,8 +15489,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-53",
-  "order": 442
+  "order": 408
  },
  {
   "id": "artwork-443",
@@ -13665,8 +15524,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-53",
-  "order": 443
+  "order": 409
  },
  {
   "id": "artwork-444",
@@ -13696,8 +15559,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-53",
-  "order": 444
+  "order": 410
  },
  {
   "id": "artwork-445",
@@ -13726,8 +15593,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-53",
-  "order": 445
+  "order": 411
  },
  {
   "id": "artwork-446",
@@ -13756,8 +15627,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-53",
-  "order": 446
+  "order": 412
  },
  {
   "id": "artwork-447",
@@ -13783,13 +15658,17 @@
    "typography"
   ],
   "collection": "collection-18",
-  "carouselId": "carousel-024",
+  "carouselId": "carousel-018",
   "slideIndex": 1,
   "slideCount": 6,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-54",
-  "order": 447
+  "order": 413
  },
  {
   "id": "artwork-448",
@@ -13815,13 +15694,17 @@
    "typography"
   ],
   "collection": "collection-18",
-  "carouselId": "carousel-024",
+  "carouselId": "carousel-018",
   "slideIndex": 2,
   "slideCount": 6,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-54",
-  "order": 448
+  "order": 414
  },
  {
   "id": "artwork-449",
@@ -13847,13 +15730,17 @@
    "typography"
   ],
   "collection": "collection-18",
-  "carouselId": "carousel-024",
+  "carouselId": "carousel-018",
   "slideIndex": 3,
   "slideCount": 6,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-54",
-  "order": 449
+  "order": 415
  },
  {
   "id": "artwork-450",
@@ -13879,13 +15766,17 @@
    "typography"
   ],
   "collection": "collection-18",
-  "carouselId": "carousel-024",
+  "carouselId": "carousel-018",
   "slideIndex": 4,
   "slideCount": 6,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-54",
-  "order": 450
+  "order": 416
  },
  {
   "id": "artwork-451",
@@ -13911,13 +15802,17 @@
    "typography"
   ],
   "collection": "collection-18",
-  "carouselId": "carousel-024",
+  "carouselId": "carousel-018",
   "slideIndex": 5,
   "slideCount": 6,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-54",
-  "order": 451
+  "order": 417
  },
  {
   "id": "artwork-452",
@@ -13943,13 +15838,17 @@
    "typography"
   ],
   "collection": "collection-18",
-  "carouselId": "carousel-024",
+  "carouselId": "carousel-018",
   "slideIndex": 6,
   "slideCount": 6,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-54",
-  "order": 452
+  "order": 418
  },
  {
   "id": "artwork-453",
@@ -13979,8 +15878,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-54",
-  "order": 453
+  "order": 419
  },
  {
   "id": "artwork-454",
@@ -14010,8 +15913,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-54",
-  "order": 454
+  "order": 420
  },
  {
   "id": "artwork-455",
@@ -14037,13 +15944,17 @@
    "typography"
   ],
   "collection": "collection-19",
-  "carouselId": "carousel-025",
+  "carouselId": "carousel-019",
   "slideIndex": 1,
   "slideCount": 2,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-55",
-  "order": 455
+  "order": 421
  },
  {
   "id": "artwork-456",
@@ -14068,13 +15979,17 @@
    "carousel"
   ],
   "collection": "collection-19",
-  "carouselId": "carousel-025",
+  "carouselId": "carousel-019",
   "slideIndex": 2,
   "slideCount": 2,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-55",
-  "order": 456
+  "order": 422
  },
  {
   "id": "artwork-457",
@@ -14104,8 +16019,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-55",
-  "order": 457
+  "order": 423
  },
  {
   "id": "artwork-458",
@@ -14134,8 +16053,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-55",
-  "order": 458
+  "order": 424
  },
  {
   "id": "artwork-459",
@@ -14165,8 +16088,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-55",
-  "order": 459
+  "order": 425
  },
  {
   "id": "artwork-460",
@@ -14195,8 +16122,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-55",
-  "order": 460
+  "order": 426
  },
  {
   "id": "artwork-461",
@@ -14222,13 +16153,17 @@
    "typography"
   ],
   "collection": "collection-20",
-  "carouselId": "carousel-026",
+  "carouselId": "carousel-020",
   "slideIndex": 1,
   "slideCount": 2,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-56",
-  "order": 461
+  "order": 427
  },
  {
   "id": "artwork-462",
@@ -14254,13 +16189,17 @@
    "typography"
   ],
   "collection": "collection-20",
-  "carouselId": "carousel-026",
+  "carouselId": "carousel-020",
   "slideIndex": 2,
   "slideCount": 2,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-56",
-  "order": 462
+  "order": 428
  },
  {
   "id": "artwork-463",
@@ -14289,8 +16228,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-57",
-  "order": 463
+  "order": 429
  },
  {
   "id": "artwork-464",
@@ -14319,8 +16262,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-57",
-  "order": 464
+  "order": 430
  },
  {
   "id": "artwork-465",
@@ -14346,13 +16293,17 @@
    "typography"
   ],
   "collection": "collection-21",
-  "carouselId": "carousel-027",
+  "carouselId": "carousel-021",
   "slideIndex": 1,
   "slideCount": 2,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-57",
-  "order": 465
+  "order": 431
  },
  {
   "id": "artwork-466",
@@ -14378,13 +16329,17 @@
    "typography"
   ],
   "collection": "collection-21",
-  "carouselId": "carousel-027",
+  "carouselId": "carousel-021",
   "slideIndex": 2,
   "slideCount": 2,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-57",
-  "order": 466
+  "order": 432
  },
  {
   "id": "artwork-467",
@@ -14414,8 +16369,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-57",
-  "order": 467
+  "order": 433
  },
  {
   "id": "artwork-468",
@@ -14445,8 +16404,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-57",
-  "order": 468
+  "order": 434
  },
  {
   "id": "artwork-469",
@@ -14476,8 +16439,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-57",
-  "order": 469
+  "order": 435
  },
  {
   "id": "artwork-470",
@@ -14506,8 +16473,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-57",
-  "order": 470
+  "order": 436
  },
  {
   "id": "artwork-471",
@@ -14537,8 +16508,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-57",
-  "order": 471
+  "order": 437
  },
  {
   "id": "artwork-472",
@@ -14568,8 +16543,12 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-57",
-  "order": 472
+  "order": 438
  },
  {
   "id": "artwork-473",
@@ -14599,7 +16578,11 @@
   "slideCount": 1,
   "color": "#2a2a2a",
   "available": false,
+  "hidden": false,
+  "duplicateOf": null,
+  "panorama": null,
+  "joinedInto": null,
   "rowId": "row-58",
-  "order": 473
+  "order": 439
  }
 ]

@@ -48,10 +48,24 @@ src/data/layout.json         row height, gaps
   `data/source/excluded.json` and left out.
 * **Reading order** = canvas line (y), then x. **Each canvas line is a row.**
 * **Collection** = a run of lines; a vertical gap larger than the normal line pitch starts a new one (21 found).
-* **Carousel** = consecutive artworks with the same frame name (27 found).
+* **Carousel** = consecutive artworks with the same frame name. This is a heuristic (Figma names a frame after
+  its text, so a shared location tag also produces the same name); it only controls spacing and label repeats.
+* **Duplicates** = a frame that renders pixel-for-pixel like the previous frame of the same name (7 found so far,
+  all `Anupama…` slides). They stay in `artworks.json` (`hidden`, `duplicateOf`) but are not drawn.
+  Keep one with `"keepDuplicates": ["<figma id>"]` in `overrides.json`.
+* **Panoramas** = two slides carrying one photo across the seam (27 found so far). `detect_panoramas.py` matches
+  the right edge of one frame to the left edge of another, wherever they sit on the canvas. Each pair is joined into
+  one 2160×1350 artwork at the left half's position; the right half is hidden (`joinedInto`). Turn off with
+  `"joinPanoramas": false`; correct with `"panoramas": {"add": [[left, right]], "exclude": [[left, right]]}`.
 * **Label** = the frame name, tidied. It is drawn once per carousel and again at the start of each row.
   Generic names (`Frame 12`) become empty.
 * A row whose first carousel is `Location : X` (3+ slides) gets `Location: X` as a row heading.
+
+### Reviewing labels
+
+`data/source/label-review.csv` lists every public label with flags (`code` such as `Anu12`, `fragment`,
+`sentence-fragment` such as `and...`). Frame names are often the first words of a caption, so they make odd labels;
+fix them in `overrides.json` → `labels`.
 
 ### Editing
 
@@ -94,7 +108,12 @@ Only artworks near the viewport mount an `<img>`; everything else is an empty sl
 FIGMA_TOKEN=figd_xxx python3 scripts/export_missing.py
 ```
 
-It renders at 1×, converts to the three tiers, records size + colour in `assets.json`, and rebuilds the manifest.
+It renders at 1×, converts to the three tiers, records size + colour + a pixel hash in `assets.json`, then runs
+duplicate detection, panorama detection + joining and rebuilds the manifest. To redo only the derived steps:
+
+```
+python3 scripts/build_manifest.py && python3 scripts/detect_panoramas.py && python3 scripts/build_panoramas.py && python3 scripts/build_manifest.py
+```
 Unexported frames render as quiet outlines, so the composition is intact while images are still arriving.
 
 ## Layout of the code

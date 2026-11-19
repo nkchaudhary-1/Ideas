@@ -93,6 +93,33 @@ def main():
         lines[y].sort(key=lambda f: f["x"])
     ordered = [f for y in ys for f in lines[y]]
 
+    # exact duplicates: a frame that renders pixel-for-pixel like the previous kept frame of the same name
+    # (Figma "duplicate" left in place). They stay in artworks.json but are hidden from the wall.
+    keep_dups = set(overrides.get("keepDuplicates", []))
+    dup_of, kept_prev = {}, None
+    for f in ordered:
+        h = assets.get(f["id"], {}).get("hash")
+        if kept_prev and h and f["name"] == kept_prev["name"] and h == assets.get(kept_prev["id"], {}).get("hash") \
+                and f["id"] not in keep_dups:
+            dup_of[f["id"]] = kept_prev["id"]
+        else:
+            kept_prev = f
+    aid_of = {f["id"]: f"artwork-{i:03d}" for i, f in enumerate(ordered, start=1)}
+
+    # panoramas: two slides that carry one photo across the seam become one wide artwork (placed where the
+    # left half sits); the right half stays in the data but is hidden from the wall
+    pano_right, joined_into = {}, {}
+    if overrides.get("joinPanoramas", True):
+        for p in load("panoramas.json", []):
+            l, r = p["left"], p["right"]
+            if l in aid_of and r in aid_of and l not in dup_of and r not in dup_of \
+                    and f"pano:{l}" in assets and l not in joined_into and r not in pano_right \
+                    and l not in pano_right.values() and r not in joined_into:
+                pano_right[l] = r
+                joined_into[r] = l
+    visible = [f for f in ordered if f["id"] not in dup_of and f["id"] not in joined_into]
+    vis_order = {f["id"]: n for n, f in enumerate(visible, start=1)}
+
     # collections from vertical gaps
     coll_of_line, c = {}, 0
     for i, y in enumerate(ys):
@@ -105,8 +132,8 @@ def main():
     coll_id = lambda i: f"collection-{i + 1:02d}"
 
     # carousels: consecutive same name in reading order
-    runs, cur = [], [ordered[0]]
-    for f in ordered[1:]:
+    runs, cur = [], [visible[0]]
+    for f in visible[1:]:
         if f["name"] == cur[-1]["name"]:
             cur.append(f)
         else:
@@ -145,13 +172,14 @@ def main():
     prev_row = None
     first_in_row = set()
     for y in ys:
-        first_in_row.add(lines[y][0]["id"])
+        first_in_row.add(next(f for f in lines[y] if f["id"] not in dup_of)["id"])
 
     for idx, f in enumerate(ordered, start=1):
         aid = f"artwork-{idx:03d}"
         y = f["y"]
-        wide = f["w"] == 2160
-        a = assets.get(f["id"], {})
+        is_pano = f["id"] in pano_right
+        wide = f["w"] == 2160 or is_pano
+        a = assets.get(f"pano:{f['id']}" if is_pano else f["id"], {})
         ow, oh = a.get("w", f["w"]), a.get("h", f["h"])
         label = label_over.get(f["id"], clean_label(f["name"]))
         is_run_start = f["id"] not in slide_of or slide_of[f["id"]] == 1
@@ -166,6 +194,8 @@ def main():
         else:
             composition = "photo"
         tags = [("wide" if wide else "portrait"), composition]
+        if is_pano:
+            tags.append("panorama")
         if f["id"] in carousel_of:
             tags.append("carousel")
         if extra_texts:
@@ -179,9 +209,9 @@ def main():
             "name": f["name"],
             "label": label,
             "showLabel": show,
-            "image": f"/artworks/{aid}.webp",
-            "thumbnail": f"/thumbnails/md/{aid}.webp",
-            "placeholder": f"/thumbnails/xs/{aid}.webp",
+            "image": f"/artworks/{aid}{'-pano' if is_pano else ''}.webp",
+            "thumbnail": f"/thumbnails/md/{aid}{'-pano' if is_pano else ''}.webp",
+            "placeholder": f"/thumbnails/xs/{aid}{'-pano' if is_pano else ''}.webp",
             "originalWidth": ow,
             "originalHeight": oh,
             "aspectRatio": round(ow / oh, 4),
@@ -197,16 +227,23 @@ def main():
             "slideCount": count_of.get(f["id"], 1),
             "color": a.get("color", "#2a2a2a"),
             "available": f["id"] in assets,
+            "hidden": f["id"] in dup_of or f["id"] in joined_into,
+            "duplicateOf": dup_of.get(f["id"]),
+            "panorama": {"left": aid, "right": aid_of[pano_right[f["id"]]]} if is_pano else None,
+            "joinedInto": aid_of[joined_into[f["id"]]] if f["id"] in joined_into else None,
             "rowId": row_id_of_line[y],
-            "order": idx,
+            "order": vis_order.get(f["id"], 0),
         })
 
     by_row = collections.defaultdict(list)
     for a in artworks:
-        by_row[a["rowId"]].append(a)
+        if not a["hidden"]:
+            by_row[a["rowId"]].append(a)
     for i, y in enumerate(ys):
         rid = row_id_of_line[y]
         items = by_row[rid]
+        if not items:   # every frame on this canvas line was a hidden duplicate / joined half
+            continue
         first = items[0]
         title = row_titles.get(first["figmaId"], "")
         if not title and first["carouselId"] and first["slideIndex"] == 1 and first["slideCount"] >= 3 \
@@ -216,14 +253,14 @@ def main():
         rows.append({
             "id": rid,
             "title": title,
-            "order": i + 1,
+            "order": len(rows) + 1,
             "collectionId": coll_id(coll_of_line[y]),
             "artworks": [a["id"] for a in items],
         })
 
     colls = []
     for i in range(n_coll):
-        rids = [row_id_of_line[y] for y in ys if coll_of_line[y] == i]
+        rids = [row_id_of_line[y] for y in ys if coll_of_line[y] == i and by_row[row_id_of_line[y]]]
         colls.append({
             "id": coll_id(i),
             "title": coll_names[i],
@@ -237,8 +274,26 @@ def main():
         (OUT / f"{name}.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
     (SRC / "excluded.json").write_text(json.dumps(excluded, ensure_ascii=False, indent=1), encoding="utf-8")
 
+    # label review sheet: every public label with a flag where the frame name is probably not a good public label
+    def flags(a):
+        l, out = a["label"], []
+        if not l:
+            out.append("empty")
+        if re.fullmatch(r"[A-Za-z]{1,6}\d+", l):
+            out.append("code")
+        if l.endswith("...") or len(l) <= 3:
+            out.append("fragment")
+        if re.match(r"^(and|or|the|of|to|a|in|on|at|for|with|but|so|if|my|our|your)\b", l) and len(l.split()) <= 3:
+            out.append("sentence-fragment")
+        return out
+    lines_out = ["artwork,figmaId,row,label,flags"]
+    for a in artworks:
+        if not a["hidden"]:
+            lines_out.append(",".join(['"%s"' % x.replace('"', '""') for x in (a["id"], a["figmaId"], a["rowId"], a["label"], " ".join(flags(a)))]))
+    (SRC / "label-review.csv").write_text("\n".join(lines_out), encoding="utf-8")
+
     missing = [a["figmaId"] for a in artworks if a["figmaId"] not in assets]
-    print(f"artworks {len(artworks)} | rows {len(rows)} | collections {len(colls)} | carousels {ci}")
+    print(f"artworks {len(artworks)} ({len(dup_of)} duplicates hidden, {len(pano_right)} panoramas joined) | rows {len(rows)} | collections {len(colls)} | carousels {ci}")
     print(f"excluded {len(excluded)} | exported assets missing for {len(missing)}")
 
 

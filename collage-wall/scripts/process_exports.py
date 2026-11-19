@@ -9,8 +9,10 @@ Tiers (height-based so portrait 4:5 and wide 1.6:1 frames scale alike)
   public/thumbnails/md/<id>.webp     675 px tall   (wall at normal zoom)
   public/thumbnails/xs/<id>.webp     225 px tall   (wall zoomed far out, and blur-up placeholder)
 
-Also records real pixel size + an average photo colour per frame in data/source/assets.json.
+Also records real pixel size, an average photo colour and a pixel hash (to spot duplicate frames) per frame
+in data/source/assets.json.
 """
+import hashlib
 import io
 import json
 import sys
@@ -73,7 +75,8 @@ def handle(line):
     xs_b = tier(im, 225, 60)
     (ROOT / "public/thumbnails/xs" / f"{aid}.webp").write_bytes(xs_b)
     xs = Image.open(io.BytesIO(xs_b))
-    return fid, {"w": im.width, "h": im.height, "color": avg_color(xs), "bytes": len(full)}
+    digest = hashlib.md5(Image.open(io.BytesIO(md)).convert("RGB").tobytes()).hexdigest()
+    return fid, {"w": im.width, "h": im.height, "color": avg_color(xs), "bytes": len(full), "hash": digest}
 
 
 def main():

@@ -118,11 +118,7 @@
    "artwork-063",
    "artwork-064",
    "artwork-065",
-   "artwork-066",
-   "artwork-067",
-   "artwork-068",
-   "artwork-069",
-   "artwork-070"
+   "artwork-066"
   ]
  },
  {
@@ -191,10 +187,7 @@
    "artwork-104",
    "artwork-105",
    "artwork-106",
-   "artwork-107",
-   "artwork-108",
-   "artwork-109",
-   "artwork-110"
+   "artwork-107"
   ]
  },
  {
@@ -203,31 +196,13 @@
   "order": 12,
   "collectionId": "collection-01",
   "artworks": [
-   "artwork-111",
-   "artwork-112",
-   "artwork-113",
-   "artwork-114",
-   "artwork-115",
-   "artwork-116",
-   "artwork-117",
-   "artwork-118",
-   "artwork-119",
-   "artwork-120"
-  ]
- },
- {
-  "id": "row-13",
-  "title": "",
-  "order": 13,
-  "collectionId": "collection-01",
-  "artworks": [
-   "artwork-121"
+   "artwork-115"
   ]
  },
  {
   "id": "row-14",
   "title": "",
-  "order": 14,
+  "order": 13,
   "collectionId": "collection-02",
   "artworks": [
    "artwork-122",
@@ -237,7 +212,6 @@
    "artwork-126",
    "artwork-127",
    "artwork-128",
-   "artwork-129",
    "artwork-130",
    "artwork-131"
   ]
@@ -245,60 +219,41 @@
  {
   "id": "row-15",
   "title": "",
-  "order": 15,
+  "order": 14,
   "collectionId": "collection-02",
   "artworks": [
    "artwork-132",
    "artwork-133",
-   "artwork-134",
    "artwork-135",
-   "artwork-136",
    "artwork-137",
-   "artwork-138",
    "artwork-139",
-   "artwork-140",
    "artwork-141"
   ]
  },
  {
   "id": "row-16",
   "title": "",
-  "order": 16,
+  "order": 15,
   "collectionId": "collection-02",
   "artworks": [
    "artwork-142",
    "artwork-143",
-   "artwork-144",
    "artwork-145",
    "artwork-146",
    "artwork-147",
-   "artwork-148",
-   "artwork-149",
-   "artwork-150",
-   "artwork-151"
-  ]
- },
- {
-  "id": "row-17",
-  "title": "",
-  "order": 17,
-  "collectionId": "collection-02",
-  "artworks": [
-   "artwork-152"
+   "artwork-148"
   ]
  },
  {
   "id": "row-18",
   "title": "",
-  "order": 18,
+  "order": 16,
   "collectionId": "collection-03",
   "artworks": [
    "artwork-153",
    "artwork-154",
-   "artwork-155",
    "artwork-156",
    "artwork-157",
-   "artwork-158",
    "artwork-159",
    "artwork-160",
    "artwork-161",
@@ -308,14 +263,12 @@
  {
   "id": "row-19",
   "title": "",
-  "order": 19,
+  "order": 17,
   "collectionId": "collection-03",
   "artworks": [
-   "artwork-163",
    "artwork-164",
    "artwork-165",
    "artwork-166",
-   "artwork-167",
    "artwork-168",
    "artwork-169"
   ]
@@ -323,7 +276,7 @@
  {
   "id": "row-20",
   "title": "",
-  "order": 20,
+  "order": 18,
   "collectionId": "collection-04",
   "artworks": [
    "artwork-170",
@@ -334,14 +287,13 @@
    "artwork-175",
    "artwork-176",
    "artwork-177",
-   "artwork-178",
    "artwork-179"
   ]
  },
  {
   "id": "row-21",
   "title": "",
-  "order": 21,
+  "order": 19,
   "collectionId": "collection-04",
   "artworks": [
    "artwork-180",
@@ -359,7 +311,7 @@
  {
   "id": "row-22",
   "title": "",
-  "order": 22,
+  "order": 20,
   "collectionId": "collection-04",
   "artworks": [
    "artwork-190",
@@ -377,7 +329,7 @@
  {
   "id": "row-23",
   "title": "",
-  "order": 23,
+  "order": 21,
   "collectionId": "collection-04",
   "artworks": [
    "artwork-200",
@@ -395,7 +347,7 @@
  {
   "id": "row-24",
   "title": "",
-  "order": 24,
+  "order": 22,
   "collectionId": "collection-04",
   "artworks": [
    "artwork-210",
@@ -413,7 +365,7 @@
  {
   "id": "row-25",
   "title": "",
-  "order": 25,
+  "order": 23,
   "collectionId": "collection-04",
   "artworks": [
    "artwork-220",
@@ -431,7 +383,7 @@
  {
   "id": "row-26",
   "title": "",
-  "order": 26,
+  "order": 24,
   "collectionId": "collection-04",
   "artworks": [
    "artwork-230",
@@ -449,7 +401,7 @@
  {
   "id": "row-27",
   "title": "",
-  "order": 27,
+  "order": 25,
   "collectionId": "collection-04",
   "artworks": [
    "artwork-240",
@@ -467,7 +419,7 @@
  {
   "id": "row-28",
   "title": "",
-  "order": 28,
+  "order": 26,
   "collectionId": "collection-05",
   "artworks": [
    "artwork-250",
@@ -485,7 +437,7 @@
  {
   "id": "row-29",
   "title": "",
-  "order": 29,
+  "order": 27,
   "collectionId": "collection-05",
   "artworks": [
    "artwork-260"
@@ -494,7 +446,7 @@
  {
   "id": "row-30",
   "title": "",
-  "order": 30,
+  "order": 28,
   "collectionId": "collection-06",
   "artworks": [
    "artwork-261",
@@ -512,7 +464,7 @@
  {
   "id": "row-31",
   "title": "",
-  "order": 31,
+  "order": 29,
   "collectionId": "collection-06",
   "artworks": [
    "artwork-271",
@@ -523,17 +475,16 @@
  {
   "id": "row-32",
   "title": "",
-  "order": 32,
+  "order": 30,
   "collectionId": "collection-07",
   "artworks": [
-   "artwork-274",
-   "artwork-275"
+   "artwork-274"
   ]
  },
  {
   "id": "row-33",
   "title": "",
-  "order": 33,
+  "order": 31,
   "collectionId": "collection-08",
   "artworks": [
    "artwork-276",
@@ -548,13 +499,12 @@
  {
   "id": "row-34",
   "title": "",
-  "order": 34,
+  "order": 32,
   "collectionId": "collection-09",
   "artworks": [
    "artwork-283",
    "artwork-284",
    "artwork-285",
-   "artwork-286",
    "artwork-287",
    "artwork-288",
    "artwork-289",
@@ -566,7 +516,7 @@
  {
   "id": "row-35",
   "title": "",
-  "order": 35,
+  "order": 33,
   "collectionId": "collection-09",
   "artworks": [
    "artwork-293",
@@ -584,7 +534,7 @@
  {
   "id": "row-36",
   "title": "",
-  "order": 36,
+  "order": 34,
   "collectionId": "collection-09",
   "artworks": [
    "artwork-303",
@@ -601,7 +551,7 @@
  {
   "id": "row-37",
   "title": "",
-  "order": 37,
+  "order": 35,
   "collectionId": "collection-10",
   "artworks": [
    "artwork-312",
@@ -619,7 +569,7 @@
  {
   "id": "row-38",
   "title": "",
-  "order": 38,
+  "order": 36,
   "collectionId": "collection-10",
   "artworks": [
    "artwork-322",
@@ -630,7 +580,7 @@
  {
   "id": "row-39",
   "title": "",
-  "order": 39,
+  "order": 37,
   "collectionId": "collection-11",
   "artworks": [
    "artwork-325",
@@ -648,7 +598,7 @@
  {
   "id": "row-40",
   "title": "",
-  "order": 40,
+  "order": 38,
   "collectionId": "collection-11",
   "artworks": [
    "artwork-335",
@@ -658,7 +608,7 @@
  {
   "id": "row-41",
   "title": "",
-  "order": 41,
+  "order": 39,
   "collectionId": "collection-12",
   "artworks": [
    "artwork-337",
@@ -676,7 +626,7 @@
  {
   "id": "row-42",
   "title": "",
-  "order": 42,
+  "order": 40,
   "collectionId": "collection-12",
   "artworks": [
    "artwork-347",
@@ -686,7 +636,7 @@
  {
   "id": "row-43",
   "title": "",
-  "order": 43,
+  "order": 41,
   "collectionId": "collection-13",
   "artworks": [
    "artwork-349",
@@ -704,7 +654,7 @@
  {
   "id": "row-44",
   "title": "",
-  "order": 44,
+  "order": 42,
   "collectionId": "collection-13",
   "artworks": [
    "artwork-359",
@@ -722,7 +672,7 @@
  {
   "id": "row-45",
   "title": "",
-  "order": 45,
+  "order": 43,
   "collectionId": "collection-13",
   "artworks": [
    "artwork-369",
@@ -736,7 +686,7 @@
  {
   "id": "row-46",
   "title": "",
-  "order": 46,
+  "order": 44,
   "collectionId": "collection-14",
   "artworks": [
    "artwork-375",
@@ -751,7 +701,7 @@
  {
   "id": "row-47",
   "title": "",
-  "order": 47,
+  "order": 45,
   "collectionId": "collection-15",
   "artworks": [
    "artwork-382",
@@ -769,7 +719,7 @@
  {
   "id": "row-48",
   "title": "",
-  "order": 48,
+  "order": 46,
   "collectionId": "collection-15",
   "artworks": [
    "artwork-392",
@@ -787,7 +737,7 @@
  {
   "id": "row-49",
   "title": "",
-  "order": 49,
+  "order": 47,
   "collectionId": "collection-15",
   "artworks": [
    "artwork-402",
@@ -805,7 +755,7 @@
  {
   "id": "row-50",
   "title": "",
-  "order": 50,
+  "order": 48,
   "collectionId": "collection-15",
   "artworks": [
    "artwork-412",
@@ -823,7 +773,7 @@
  {
   "id": "row-51",
   "title": "",
-  "order": 51,
+  "order": 49,
   "collectionId": "collection-15",
   "artworks": [
    "artwork-422",
@@ -837,7 +787,7 @@
  {
   "id": "row-52",
   "title": "",
-  "order": 52,
+  "order": 50,
   "collectionId": "collection-16",
   "artworks": [
    "artwork-428",
@@ -854,7 +804,7 @@
  {
   "id": "row-53",
   "title": "",
-  "order": 53,
+  "order": 51,
   "collectionId": "collection-17",
   "artworks": [
    "artwork-437",
@@ -872,7 +822,7 @@
  {
   "id": "row-54",
   "title": "Location: Gurgaon",
-  "order": 54,
+  "order": 52,
   "collectionId": "collection-18",
   "artworks": [
    "artwork-447",
@@ -888,7 +838,7 @@
  {
   "id": "row-55",
   "title": "",
-  "order": 55,
+  "order": 53,
   "collectionId": "collection-19",
   "artworks": [
    "artwork-455",
@@ -902,7 +852,7 @@
  {
   "id": "row-56",
   "title": "",
-  "order": 56,
+  "order": 54,
   "collectionId": "collection-20",
   "artworks": [
    "artwork-461",
@@ -912,7 +862,7 @@
  {
   "id": "row-57",
   "title": "",
-  "order": 57,
+  "order": 55,
   "collectionId": "collection-21",
   "artworks": [
    "artwork-463",
@@ -930,7 +880,7 @@
  {
   "id": "row-58",
   "title": "",
-  "order": 58,
+  "order": 56,
   "collectionId": "collection-21",
   "artworks": [
    "artwork-473"

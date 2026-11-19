@@ -31,6 +31,13 @@ export interface Artwork {
   color: string;
   /** False until the frame has been exported from Figma. */
   available: boolean;
+  /** An exact duplicate of the previous frame – kept in the data, hidden from the wall. */
+  hidden: boolean;
+  duplicateOf: string | null;
+  /** Set on a joined panorama: the two slides it was built from (this artwork's image is the joined 2:1.25 result). */
+  panorama: { left: string; right: string } | null;
+  /** Set on the right-hand slide of a panorama: it is shown as part of the joined artwork instead. */
+  joinedInto: string | null;
   rowId: string;
   order: number;
 }

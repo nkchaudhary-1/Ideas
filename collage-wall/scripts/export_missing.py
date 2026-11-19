@@ -64,7 +64,10 @@ def main():
         subprocess.run(sub + [str(part)], check=True)
         part.unlink()
     os.unlink(f.name)
-    subprocess.run(["python3", str(ROOT / "scripts/build_manifest.py")], check=True)
+    # rebuild derived data: manifest -> duplicates/panoramas -> joined images -> manifest again
+    py = "python3"
+    for step in ("build_manifest", "detect_panoramas", "build_panoramas", "build_manifest"):
+        subprocess.run([py, str(ROOT / f"scripts/{step}.py")], check=True)
 
 
 if __name__ == "__main__":
