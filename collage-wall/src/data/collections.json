@@ -1,0 +1,228 @@
+[
+ {
+  "id": "collection-01",
+  "title": "Collection 01",
+  "order": 1,
+  "rowIds": [
+   "row-01",
+   "row-02",
+   "row-03",
+   "row-04",
+   "row-05",
+   "row-06",
+   "row-07",
+   "row-08",
+   "row-09",
+   "row-10",
+   "row-11",
+   "row-12",
+   "row-13"
+  ],
+  "count": 121
+ },
+ {
+  "id": "collection-02",
+  "title": "Collection 02",
+  "order": 2,
+  "rowIds": [
+   "row-14",
+   "row-15",
+   "row-16",
+   "row-17"
+  ],
+  "count": 31
+ },
+ {
+  "id": "collection-03",
+  "title": "Collection 03",
+  "order": 3,
+  "rowIds": [
+   "row-18",
+   "row-19"
+  ],
+  "count": 17
+ },
+ {
+  "id": "collection-04",
+  "title": "Collection 04",
+  "order": 4,
+  "rowIds": [
+   "row-20",
+   "row-21",
+   "row-22",
+   "row-23",
+   "row-24",
+   "row-25",
+   "row-26",
+   "row-27"
+  ],
+  "count": 80
+ },
+ {
+  "id": "collection-05",
+  "title": "Collection 05",
+  "order": 5,
+  "rowIds": [
+   "row-28",
+   "row-29"
+  ],
+  "count": 11
+ },
+ {
+  "id": "collection-06",
+  "title": "Collection 06",
+  "order": 6,
+  "rowIds": [
+   "row-30",
+   "row-31"
+  ],
+  "count": 13
+ },
+ {
+  "id": "collection-07",
+  "title": "Collection 07",
+  "order": 7,
+  "rowIds": [
+   "row-32"
+  ],
+  "count": 2
+ },
+ {
+  "id": "collection-08",
+  "title": "Collection 08",
+  "order": 8,
+  "rowIds": [
+   "row-33"
+  ],
+  "count": 7
+ },
+ {
+  "id": "collection-09",
+  "title": "Collection 09",
+  "order": 9,
+  "rowIds": [
+   "row-34",
+   "row-35",
+   "row-36"
+  ],
+  "count": 29
+ },
+ {
+  "id": "collection-10",
+  "title": "Collection 10",
+  "order": 10,
+  "rowIds": [
+   "row-37",
+   "row-38"
+  ],
+  "count": 13
+ },
+ {
+  "id": "collection-11",
+  "title": "Collection 11",
+  "order": 11,
+  "rowIds": [
+   "row-39",
+   "row-40"
+  ],
+  "count": 12
+ },
+ {
+  "id": "collection-12",
+  "title": "Collection 12",
+  "order": 12,
+  "rowIds": [
+   "row-41",
+   "row-42"
+  ],
+  "count": 12
+ },
+ {
+  "id": "collection-13",
+  "title": "Collection 13",
+  "order": 13,
+  "rowIds": [
+   "row-43",
+   "row-44",
+   "row-45"
+  ],
+  "count": 26
+ },
+ {
+  "id": "collection-14",
+  "title": "Collection 14",
+  "order": 14,
+  "rowIds": [
+   "row-46"
+  ],
+  "count": 7
+ },
+ {
+  "id": "collection-15",
+  "title": "Collection 15",
+  "order": 15,
+  "rowIds": [
+   "row-47",
+   "row-48",
+   "row-49",
+   "row-50",
+   "row-51"
+  ],
+  "count": 46
+ },
+ {
+  "id": "collection-16",
+  "title": "Collection 16",
+  "order": 16,
+  "rowIds": [
+   "row-52"
+  ],
+  "count": 9
+ },
+ {
+  "id": "collection-17",
+  "title": "Collection 17",
+  "order": 17,
+  "rowIds": [
+   "row-53"
+  ],
+  "count": 10
+ },
+ {
+  "id": "collection-18",
+  "title": "Gurgaon",
+  "order": 18,
+  "rowIds": [
+   "row-54"
+  ],
+  "count": 8
+ },
+ {
+  "id": "collection-19",
+  "title": "Collection 19",
+  "order": 19,
+  "rowIds": [
+   "row-55"
+  ],
+  "count": 6
+ },
+ {
+  "id": "collection-20",
+  "title": "Collection 20",
+  "order": 20,
+  "rowIds": [
+   "row-56"
+  ],
+  "count": 2
+ },
+ {
+  "id": "collection-21",
+  "title": "Collection 21",
+  "order": 21,
+  "rowIds": [
+   "row-57",
+   "row-58"
+  ],
+  "count": 11
+ }
+]
