@@ -74,8 +74,8 @@ export function NumberField({ value, onChange, step = 1, min, max, unit, label, 
     if (!isNaN(n)) onChange(clamp(n, min ?? -Infinity, max ?? Infinity));
   };
   return (
-    <label className="flex items-center gap-1 rounded-md bg-panel2 px-1.5 text-xs ring-1 ring-line focus-within:ring-accent/70" style={{ width }}>
-      {label && <span className="text-faint">{label}</span>}
+    <label className="flex shrink-0 items-center gap-1 rounded-md bg-panel2 px-1.5 text-xs ring-1 ring-line focus-within:ring-accent/70" style={{ width }}>
+      {label && <span className="shrink-0 text-faint">{label}</span>}
       <input
         value={text}
         inputMode="decimal"
@@ -94,7 +94,7 @@ export function NumberField({ value, onChange, step = 1, min, max, unit, label, 
         }}
         className="h-6 w-full min-w-0 bg-transparent text-ink outline-none"
       />
-      {unit && <span className="text-faint">{unit}</span>}
+      {unit && <span className="shrink-0 text-faint">{unit}</span>}
     </label>
   );
 }
@@ -118,7 +118,7 @@ export function Slider({ label, value, min, max, step = 1, onChange, onReset, ne
         onDoubleClick={onReset}
         aria-label={label}
       />
-      <NumberField value={value} onChange={onChange} min={min} max={max} step={step} width={50} unit={unit} />
+      <NumberField value={value} onChange={onChange} min={min} max={max} step={step} width={unit ? 64 : 50} unit={unit} />
       {onReset && (
         <button type="button" onClick={onReset} title="Reset" aria-label={`Reset ${label}`} className={`grid h-5 w-5 place-items-center rounded text-mute hover:text-ink ${changed ? "" : "invisible"}`}>
           <RotateCcw size={11} />

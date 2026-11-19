@@ -14,7 +14,7 @@ export interface SlideRenderer {
   width: number;
   height: number;
   /** wait for fonts, photos and video elements to be decodable */
-  ready(): Promise<void>;
+  ready(timeoutMs?: number): Promise<void>;
   /** seek every video element to time t (seconds into the slide); t < 0 means the poster frame */
   seekAll(t: number): Promise<void>;
   hasVideo(): boolean;
@@ -66,8 +66,8 @@ export async function createRenderer(slide: Slide, opts: { scale: number; transp
     scale: opts.scale,
     width: slide.width,
     height: slide.height,
-    async ready() {
-      await tracker.whenReady();
+    async ready(timeoutMs = 30000) {
+      await tracker.whenReady(timeoutMs);
       // let React commit font-driven re-measures (auto-height text) before we rasterise
       await raf();
       await raf();

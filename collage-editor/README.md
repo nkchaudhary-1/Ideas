@@ -1,0 +1,161 @@
+# Collage Studio
+
+A browser-based editor for Instagram posts, collages, editorial typography and **mixed photo + video carousels**.
+Figma-style canvas, lightweight photo editing, Canva-style collage maker, real video export. Everything runs
+in the browser; nothing is uploaded anywhere.
+
+Built from an audit of the "Photo Edits" Figma file (see *Design language* below): rounded photo cards with
+32/48/64 px radii and 30–48 px gutters, soft-serif titles over full-bleed photos, small handle/location tags,
+spaced uppercase labels and a music-player glass panel. Those patterns ship as grid presets, text presets and
+elements, so the editor starts where your own posts do.
+
+## Run it
+
+```bash
+cd collage-editor
+npm install
+npm run dev        # http://localhost:3000
+npm run build && npm start
+npm run typecheck
+```
+
+Node 18.18+ (Next.js 14). Use a current **Chrome, Edge or Safari 16.4+** for video export (WebCodecs).
+Photo editing and image export work in any modern browser.
+
+## What it does
+
+| Area | Details |
+| --- | --- |
+| Canvas | Zoom (wheel, ⌘/Ctrl-wheel, +/−), pan (space-drag, hand tool, middle mouse), fit, zoom to selection, rulers with drag-out guides, layout grids (columns, modular, baseline), safe areas, snapping to canvas / objects / guides / grid lines |
+| Formats | 1:1, 4:5, 3:4, 2:3, 5:4, 4:3, 3:2, 16:9, 1.91:1, 9:16 Story/Reel, custom size, 2- and 3-slide panoramas. Changing the ratio keeps content (stretch / fit / keep). A carousel has one ratio for every slide |
+| Media library | JPG, PNG, WebP, MP4, MOV, WebM; drag & drop, paste, multi-file. Search, sort, filter photos/videos, reuse, replace, delete. Library is stored per device and shared across projects |
+| Photo editing (non-destructive) | Exposure, brightness, contrast, highlights, shadows, saturation, temperature, tint, hue, grayscale, sepia, fade, sharpness, blur, vignette, grain, opacity. 16 filter presets with intensity. Per-slider and global reset. The original file is never modified |
+| Crop & position | Free or ratio crop, zoom, pan, rotate 90°, flip, fit / fill / reset, replace media, side-handle crop that keeps pixel scale |
+| Grid collages | ~30 layouts (basic, asymmetric, dense, editorial, "from your posts"), drag gaps to resize cells, drag a cell onto another to swap, split / remove cells, gutter, margin, radius, cell colour and border, per-cell crop and filters. Convert to free frames at any time |
+| Freeform collages | Frames you can drag, resize, rotate, overlap, mask (rect, circle, rounded, portrait, landscape), border, shadow, reorder |
+| Typography | Edit directly on the canvas. 45 OFL fonts in 8 categories (sans, serif, display, handwritten, script, mono, condensed, experimental), size, weight, italic, case, alignment, line height, letter spacing, padding, fill / gradient, outline, shadow, highlight, 16 editable text presets |
+| Elements | Shapes, lines, arrows, stars, polygons, badges, tags, stickers, a music-player card, all editable |
+| Backgrounds | Solid, gradient, patterns (dots, grid, lines, checker, noise, paper), photo |
+| Layers | Select, rename, reorder (drag), hide, lock, duplicate, group / ungroup, delete, nested groups, multi-select; align and distribute; numeric X / Y / W / H / rotation |
+| Carousel | Slide strip with thumbnails, add / duplicate / delete / reorder (drag) / rename; copy-paste elements across slides; new slide from template; real preview |
+| Video | Videos are first-class: place them full-bleed, in frames or in grid cells; trim start / end, cover frame, volume, mute, loop, crop / pan, filters and adjustments, text and shapes on top. Trim data is metadata; the original file is untouched |
+| Preview | Real playback of the whole carousel (videos play with sound), keyboard navigation, autoplay, fullscreen, and a cover / profile-grid preview |
+| Templates | 18 editable templates: photo cards, collages, carousels (including a 7-slide mixed-media one), editorial, typography, magazine, travel, poster, story, panorama. Save your own slide or carousel as a template |
+| Colour | Picker with hex / RGB / HSL, eyedropper (where supported), recent colours, palettes (including colours from your Figma file), dominant colours extracted from the selected photo |
+| History | Real undo / redo of document states (150 steps), slider drags coalesce into one step |
+| Export | See below |
+| Projects | Autosave to IndexedDB after every change, project manager (open / duplicate / delete) with thumbnails, restores media library on reload |
+
+### Keyboard shortcuts
+
+Press `?` in the editor for the full list. Highlights: `⌘/Ctrl Z` / `⇧⌘Z` undo/redo, `⌘D` duplicate, `⌘G` group,
+`Delete`, arrows (⇧ = 10 px), `⌘] / ⌘[` order, `T` add text, `Enter` edit text / crop, `Space` pan, `⇧1` fit,
+`⇧2` zoom to selection, `⇧R` rulers, `Alt` while dragging disables snapping.
+
+## Export
+
+The Export dialog lets you pick slides (all / current / any subset) and shows exactly which files will be made.
+
+* **Images:** PNG, JPEG or WebP at ½×, 1×, 1.5× or 2×, quality slider (JPEG / WebP), transparent background (PNG / WebP).
+  Panorama canvases can be sliced into 1080 px slides. Editor chrome (selection, guides, rulers, grids) is never rendered.
+* **Video slides:** exported as **real video files**, not stills. Each frame is rendered through the same scene the editor
+  shows (trims, filters, text and shapes included), encoded with WebCodecs and muxed to **MP4 (H.264)** or **WebM (VP9)**,
+  at 24 / 30 / 60 fps. Audio from unmuted clips is mixed (trim, volume, loop respected). Slide length is the longest
+  trimmed clip, or the duration you set on the slide. You can also export video slides as stills (cover frame).
+* **Delivery:** one ZIP, or separate files. Files are numbered in slide order (`name-01.png`, `name-02.mp4`, …) so they upload to
+  Instagram in the right order.
+* One failing slide never sinks the rest; the report lists what was made and what failed and why.
+
+### Video export, honestly
+
+* Needs WebCodecs (`VideoEncoder`): Chrome / Edge 94+, Safari 16.4+, Firefox 130+. The dialog probes what your browser can
+  really encode and says so.
+* **AAC audio:** some Chromium builds (including headless ones) expose no AAC encoder. The exporter then writes Opus audio
+  inside the MP4 and tells you. It plays in Chrome, Firefox and VLC, but Instagram may want AAC. Convert without
+  re-encoding the picture:
+  ```bash
+  ffmpeg -i in.mp4 -c:v copy -c:a aac out.mp4
+  ```
+* **Importing video:** the browser must be able to decode it. H.264/AAC MP4 and VP9/Opus WebM work everywhere; HEVC `.mov`
+  works in Safari. If a clip is refused the app says why and how to convert:
+  ```bash
+  ffmpeg -i in.mov -c:v libx264 -pix_fmt yuv420p -c:a aac out.mp4
+  ```
+* HEIC/HEIF photos are not decodable by browsers. Export from Photos as JPG first.
+* Rendering is frame-accurate and runs on your device: a 4 s 1080×1350 clip takes a few seconds. Very long clips at high
+  resolution are limited by browser memory (the muxer buffers the file in memory).
+
+## Architecture
+
+```
+src/
+  app/                    Next.js shell (client-only editor, ssr disabled)
+  lib/
+    types.ts              document model
+    store.ts              zustand + immer store: project, history, selection, UI, autosave
+    media.ts              library, import (probing, codec checks), decoded-image cache, <video> players
+    filters.ts            adjustment pipeline + 16 presets
+    media-math.ts         crop model (cover + zoom + focal point), drawing
+    grid-engine.ts        split-tree layout, dividers, presets
+    snap.ts / transform.ts / view-math.ts / geometry.ts
+    fonts.ts / colors.ts / presets.ts / templates.ts / workflows.ts / timeline.ts
+    db.ts                 IndexedDB (projects, assets, blobs, kv)
+    export/               render.tsx (offscreen scene), image.ts, video.ts, zip.ts, run.ts, thumb.ts
+  components/
+    canvas/               Konva scene (ElementNode, MediaShape, overlays, selection, rulers, workspace)
+    panels/               left rail: templates, layouts, uploads, text, elements, backgrounds, frames, layers, colours
+    props/                right panel: canvas, text, shape, media, grid
+    editor/               top bar, slide strip, shortcuts, shell
+    dialogs/              import, new project, projects, export, preview, shortcuts
+```
+
+* **Document model.** `Project → Slide[] → Element[]` where an element is an image/video frame, text, shape, grid or group.
+  Photos and videos share one `MediaFill` (asset id, zoom, focal point, flips, rotation, adjustments, filter, optional
+  video settings), so frames, grid cells and backgrounds all use the same editing UI. The project is plain JSON.
+* **One renderer.** A single declarative Konva scene draws the editor, the slide thumbnails, the preview and the exporter
+  (`RenderContext` mode = edit / preview / export). What you see is what you export, and editor chrome lives in a
+  separate layer that the exporter never mounts.
+* **Non-destructive media.** Originals stay in IndexedDB as Blobs; adjustments are parameters. A processed bitmap is
+  cached per (asset, adjustments, resolution). Videos are processed per frame on a downscaled copy and skipped when neutral.
+* **History.** Snapshots of the immutable project (structural sharing makes them cheap), coalesced by key so a slider drag is one step.
+* **Storage portability.** `lib/db.ts` is a four-function interface (get / put / delete / list over named stores). A
+  Supabase implementation can replace it without touching the editor.
+  If you add cloud saving, keep media blobs private (signed URLs / row-level security per user).
+* **Performance.** Preview-tier images (≤2048 px) while editing, originals only at export; memoised nodes; per-key LRU cache;
+  fonts load lazily with unicode ranges.
+
+## Deploying to Vercel
+
+The repo contains other material, so point Vercel at this folder:
+
+1. Push the repo to GitHub (already done if you are reading this there).
+2. Vercel → *Add New… → Project* → import the repository.
+3. **Root Directory:** `collage-editor`. Framework preset: Next.js (auto-detected). Build / output settings: defaults.
+4. Deploy. No environment variables are needed.
+
+Or from the CLI: `cd collage-editor && npx vercel --prod`.
+
+`vercel.json` adds long-lived caching for the self-hosted font files.
+
+## AI features
+
+None are included, on purpose: nothing in the editor pretends to be AI. If you want to add one (background removal,
+captions, palette suggestions), do it behind a server route (`app/api/...`) that reads the provider key from an
+environment variable such as `AI_API_KEY` set in Vercel. Never ship the key to the browser.
+
+## Not included (yet)
+
+Direct posting to Instagram, cloud accounts and sync, HEIC import, AI features, collaborative editing, per-word text styling,
+animated text / transitions, in-browser audio tracks beyond the clips' own sound.
+
+## Design language (from the Figma audit)
+
+* Dark editor (`#181818` canvas surround, `#222` panels, `#262626` secondary, hairline borders, off-white text) with one
+  accent that is configurable (default lime `#d4f56a`, taken from the file's `#e5ff65` / `#ce6161` palette).
+* Photo cards with large radii, equal gutters and a consistent outer margin; titles in a light soft serif over photos;
+  tiny `@handle` / location tags; wide-tracked uppercase labels.
+
+## Fonts
+
+45 open-licence (OFL) families from Google Fonts via Fontsource, stored in `public/fonts` (≈5 MB, loaded on demand).
+`npm run fonts` re-downloads them.

@@ -4,6 +4,8 @@ import { useStore, getSlide } from "@/lib/store";
 import { isTypingTarget } from "@/lib/util";
 import { zoomAround, viewForRect } from "@/lib/view-math";
 import { boundsOf, flatten, unionRects } from "@/lib/geometry";
+import { makeText } from "@/lib/factory";
+import { autoInk } from "@/lib/presets";
 
 export const SHORTCUTS: { keys: string; action: string }[] = [
   { keys: "⌘/Ctrl Z", action: "Undo" },
@@ -86,6 +88,17 @@ export default function useShortcuts() {
       }
       if (k === "0" && !e.shiftKey) { handled(); st.setView(zoomAround(ui.view, 1 / ui.view.scale, size.w / 2, size.h / 2)); return; }
       if (k === "r" && e.shiftKey) { handled(); st.setUI({ rulers: !ui.rulers }); return; }
+      if (k === "t" && !e.shiftKey) {
+        handled();
+        const sl = getSlide(st.project);
+        const t = makeText({ text: "Heading", fontSize: Math.round(sl.width / 10), fontWeight: 700, fill: { type: "solid", color: autoInk(sl.background) } }, 0, 0);
+        t.width = Math.round(sl.width * 0.7);
+        t.x = Math.round((sl.width - t.width) / 2);
+        t.y = Math.round(sl.height / 2 - t.fontSize / 2);
+        st.addElement(t);
+        st.setUI({ editingTextId: t.id });
+        return;
+      }
       if (k === "v") { st.setUI({ tool: "select" }); return; }
       if (k === "h") { st.setUI({ tool: "hand" }); return; }
       if (e.key === "?") { st.setUI({ shortcutsOpen: true }); return; }

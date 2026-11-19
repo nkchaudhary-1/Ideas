@@ -238,7 +238,8 @@ export const useStore = create<Store>()((set, get) => {
     refreshAssets() { set({ assets: allAssets() }); },
     async refreshProjects() {
       const list = await dbAll<Project>("projects");
-      set({ projects: list.map(meta).sort((a, b) => b.updatedAt - a.updatedAt) });
+      const thumbs = await Promise.all(list.map((p) => dbGet<string>("kv", `thumb:${p.id}`).catch(() => undefined)));
+      set({ projects: list.map((p, i) => ({ ...meta(p), thumb: thumbs[i] })).sort((a, b) => b.updatedAt - a.updatedAt) });
     },
     newProject({ kind, format, name }) {
       const p = makeProject(kind, format, name ?? (kind === "carousel" ? "Untitled carousel" : "Untitled design"));
@@ -254,6 +255,7 @@ export const useStore = create<Store>()((set, get) => {
     },
     async deleteProject(id) {
       await dbDelete("projects", id);
+      await dbDelete("kv", `thumb:${id}`).catch(() => {});
       await get().refreshProjects();
       if (get().project.id === id) {
         const next = get().projects[0];
@@ -268,6 +270,8 @@ export const useStore = create<Store>()((set, get) => {
       copy.slides = copy.slides.map((s) => cloneSlide(s, s.name));
       copy.activeSlideId = copy.slides[0].id;
       await dbPut("projects", copy.id, copy);
+      const th = await dbGet<string>("kv", `thumb:${id}`).catch(() => undefined);
+      if (th) await dbPut("kv", `thumb:${copy.id}`, th).catch(() => {});
       await get().refreshProjects();
       get().toast("Project duplicated", "ok");
     },
@@ -691,6 +695,8 @@ export const useStore = create<Store>()((set, get) => {
   }
 });
 
+if (typeof window !== "undefined") (window as unknown as { __store?: typeof useStore }).__store = useStore; // test/debug handle
+
 // ───────────────────────── autosave ─────────────────────────
 
 const doSave = debounce(async () => {
@@ -701,11 +707,22 @@ const doSave = debounce(async () => {
     await dbPut("projects", s.project.id, s.project);
     useStore.setState((st) => ({ saveStatus: st.project === s.project ? "saved" : "unsaved" }));
     void useStore.getState().refreshProjects();
+    thumbJob();
     if (useStore.getState().saveStatus === "unsaved") doSave();
   } catch {
     useStore.setState({ saveStatus: "error" });
   }
 }, 700);
+
+/** a small cover image per project for the Projects dialog; rendered with the real scene, a little after the save settles */
+const thumbJob = debounce(async () => {
+  const p = useStore.getState().project;
+  try {
+    const { makeThumb } = await import("./export/thumb");
+    const t = await makeThumb(p.slides[0]);
+    if (t) { await dbPut("kv", `thumb:${p.id}`, t); void useStore.getState().refreshProjects(); }
+  } catch { /* thumbnails are a nicety, never an error */ }
+}, 2500);
 
 let lastProject: Project | null = null;
 useStore.subscribe((s) => {

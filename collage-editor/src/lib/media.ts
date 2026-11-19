@@ -112,16 +112,36 @@ async function importImage(file: File): Promise<Asset> {
   return asset;
 }
 
-function unsupportedVideoNote(file: File): string {
-  const ext = file.name.split(".").pop()?.toLowerCase();
-  const hevc = ext === "mov" || ext === "mp4" || ext === "m4v";
-  return (
-    (hevc
-      ? "This browser can't decode the video track (often HEVC/H.265 from an iPhone). "
-      : "This video format isn't supported by your browser. ") +
-    "Convert it to H.264 MP4 and import again, e.g. ffmpeg -i input.mov -c:v libx264 -c:a aac output.mp4" +
-    (hevc ? " (Safari can play HEVC; Chrome/Edge usually cannot)." : ".")
-  );
+const CONVERT = "ffmpeg -i input.mov -c:v libx264 -pix_fmt yuv420p -c:a aac output.mp4";
+
+/** look inside the container for the codec tag so the message can say what is actually wrong */
+async function sniffVideoCodec(file: File): Promise<"hevc" | "prores" | "h264" | "av1" | "none"> {
+  const MB = 2 * 1024 * 1024;
+  // moov (which names the codec) is often at the END of the file: read all of small files, head + tail of big ones
+  const parts = file.size <= MB * 8 ? [file] : [file.slice(0, MB), file.slice(file.size - MB * 2)];
+  const text = (await Promise.all(parts.map((b) => b.arrayBuffer()))).map((b) => new TextDecoder("latin1").decode(b)).join("\0");
+  if (/hvc1|hev1|hvcC/.test(text)) return "hevc";
+  if (/apch|apcn|apcs|apco|ap4h|ap4x/.test(text)) return "prores";
+  if (/av01/.test(text)) return "av1";
+  if (/avc1|avcC/.test(text)) return "h264";
+  return "none";
+}
+
+async function unsupportedVideoNote(file: File): Promise<string> {
+  let codec: Awaited<ReturnType<typeof sniffVideoCodec>> = "none";
+  try { codec = await sniffVideoCodec(file); } catch { /* fall through to the generic note */ }
+  switch (codec) {
+    case "hevc":
+      return `This is an HEVC/H.265 video (typical for iPhone recordings). Safari can play it, but Chrome and Edge usually can't. Convert to H.264 and import again: ${CONVERT}`;
+    case "prores":
+      return `ProRes isn't playable in browsers. Convert it to H.264 MP4 and import again: ${CONVERT}`;
+    case "av1":
+      return `This browser can't decode this AV1 video. Convert it to H.264 MP4 and import again: ${CONVERT}`;
+    case "h264":
+      return `The file looks damaged or incomplete, or uses an H.264 profile this browser can't decode. Try re-exporting it from the source app, or re-encode it: ${CONVERT}`;
+    default:
+      return `Couldn't read this video. The file looks damaged or incomplete, or it isn't a supported format (MP4, MOV, WebM). If it plays elsewhere, convert it: ${CONVERT}`;
+  }
 }
 
 async function importVideo(file: File): Promise<Asset> {
@@ -196,7 +216,7 @@ export async function importFiles(files: File[]): Promise<ImportResult> {
     } catch (e) {
       out.rejected.push({
         name: file.name,
-        reason: kind === "video" ? unsupportedVideoNote(file) : "This image couldn't be decoded. It may be corrupt or use an unsupported encoding.",
+        reason: kind === "video" ? await unsupportedVideoNote(file) : "This image couldn't be decoded. It may be corrupt or use an unsupported encoding.",
       });
     }
   }
