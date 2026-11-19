@@ -5,7 +5,7 @@ import { isTypingTarget } from "@/lib/util";
 import { zoomAround, viewForRect } from "@/lib/view-math";
 import { boundsOf, flatten, unionRects } from "@/lib/geometry";
 import { makeText } from "@/lib/factory";
-import { autoInk } from "@/lib/presets";
+import { inkFor } from "@/lib/presets";
 
 export const SHORTCUTS: { keys: string; action: string }[] = [
   { keys: "⌘/Ctrl Z", action: "Undo" },
@@ -91,7 +91,7 @@ export default function useShortcuts() {
       if (k === "t" && !e.shiftKey) {
         handled();
         const sl = getSlide(st.project);
-        const t = makeText({ text: "Heading", fontSize: Math.round(sl.width / 10), fontWeight: 700, fill: { type: "solid", color: autoInk(sl.background) } }, 0, 0);
+        const t = makeText({ text: "Heading", fontSize: Math.round(sl.width / 10), fontWeight: 700, fill: { type: "solid", color: inkFor(sl) } }, 0, 0);
         t.width = Math.round(sl.width * 0.7);
         t.x = Math.round((sl.width - t.width) / 2);
         t.y = Math.round(sl.height / 2 - t.fontSize / 2);

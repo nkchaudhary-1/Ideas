@@ -1,7 +1,7 @@
 "use client";
 import { useStore, getSlide } from "@/lib/store";
 import { makeText } from "@/lib/factory";
-import { TEXT_PRESETS, autoInk } from "@/lib/presets";
+import { TEXT_PRESETS, inkFor } from "@/lib/presets";
 import { fontStack, loadFont } from "@/lib/fonts";
 import { Section } from "@/components/ui/controls";
 
@@ -9,7 +9,7 @@ export default function TextPanel() {
   const st = useStore.getState;
   const add = (size: number, weight: number, text: string, name: string, family = "Inter", extra = {}) => {
     const sl = getSlide(st().project);
-    const ink = autoInk(sl.background);
+    const ink = inkFor(sl);
     const el = makeText({ text, fontSize: Math.round(size * (sl.width / 1080)), fontWeight: weight, fontFamily: family, fill: { type: "solid", color: ink }, name, width: sl.width * 0.7, ...extra }, sl.width * 0.15, sl.height * 0.4);
     void loadFont(family, weight, false);
     st().addElement(el);
@@ -18,7 +18,7 @@ export default function TextPanel() {
   const addPreset = (id: string) => {
     const p = TEXT_PRESETS.find((x) => x.id === id)!;
     const sl = getSlide(st().project);
-    const els = p.build(sl.width, sl.height, autoInk(sl.background));
+    const els = p.build(sl.width, sl.height, inkFor(sl));
     void loadFont(p.family, p.weight, !!p.italic);
     st().commit((pr) => { pr.slides.find((s) => s.id === pr.activeSlideId)!.elements.push(...(els as never[])); });
     st().select(els.map((e) => e.id));

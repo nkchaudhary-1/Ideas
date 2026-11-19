@@ -63,7 +63,7 @@ export function makeMedia(type: "image" | "video", w: number, h: number, fill: M
     shape: "rect",
     radius: 0,
     fill,
-    bg: "#2b2b2b",
+    bg: fill ? "transparent" : "#2b2b2b", // PNG/WebP with alpha must stay transparent; grey is only the empty-frame fill
     stroke: null,
     ...over,
   };

@@ -9,6 +9,7 @@ import { uid, clamp, debounce } from "./util";
 import { dbAll, dbDelete, dbGet, dbPut } from "./db";
 import { DEFAULT_FORMAT } from "./formats";
 import { newFill } from "./media-math";
+import { slideFills } from "./timeline";
 import { allAssets, getAsset, loadAssets, importFiles, removeAsset } from "./media";
 import { findCell, mapCells, updateCell, cellsOf, cloneTree, swapFills, removeCell, splitCell, dragDivider, setWeights, type GridPreset, treeFromPreset } from "./grid-engine";
 
@@ -120,7 +121,7 @@ export interface Store {
   applyGridPreset(preset: GridPreset): void;
   gridOp(gridId: Id, op: (g: Draft<GridEl>) => void, opts?: { key?: string }): void;
   replaceAsset(assetId: Id): void;
-  deleteAsset(assetId: Id): Promise<void>;
+  deleteAsset(assetId: Id): Promise<boolean>;
   importMedia(files: File[]): Promise<Asset[]>;
 }
 
@@ -147,6 +148,20 @@ export function scaleElement(e: Draft<Element>, sx: number, sy: number, tsx = Ma
   if (e.type === "group") e.children.forEach((c) => scaleElement(c, sx, sy, tsx));
 }
 
+/** where a library file is referenced: the open project (live state) and every saved project */
+async function assetUsage(assetId: Id): Promise<{ project: string; count: number }[]> {
+  const countIn = (p: Project) => p.slides.reduce((n, sl) => n + slideFills(sl).filter((f) => f.assetId === assetId).length, 0);
+  const open = useStore.getState().project;
+  const out: { project: string; count: number }[] = [];
+  const c = countIn(open);
+  if (c) out.push({ project: open.name, count: c });
+  for (const p of await dbAll<Project>("projects")) {
+    if (p.id === open.id) continue;
+    const n = countIn(p);
+    if (n) out.push({ project: p.name, count: n });
+  }
+  return out;
+}
 let clipboard: Element[] = [];
 let toastId = 0;
 
@@ -615,6 +630,7 @@ export const useStore = create<Store>()((set, get) => {
         const nf = newFill(asset.id, asset.kind);
         if (prev) { nf.adjustments = prev.adjustments; nf.filter = prev.filter; }
         e.fill = nf as Draft<MediaFill>;
+        if (!prev && e.bg === "#2b2b2b") e.bg = "transparent"; // the grey is the empty-frame placeholder, not part of the photo
         e.type = asset.kind;
         if (e.name === "Frame" || e.name === "Image" || e.name === "Video") e.name = asset.kind === "video" ? "Video" : "Image";
       });
@@ -677,8 +693,16 @@ export const useStore = create<Store>()((set, get) => {
     },
     replaceAsset(assetId) { get().toast("Pick a photo or video from the library to replace it", "info"); void assetId; },
     async deleteAsset(assetId) {
+      // never leave a frame pointing at a file that no longer exists (it would also stall exports waiting for it)
+      const uses = await assetUsage(assetId);
+      if (uses.length) {
+        const a = allAssets().find((x) => x.id === assetId);
+        get().toast(`“${a?.name ?? "This file"}” is still used in ${uses.map((u) => `${u.project}${u.count > 1 ? ` (${u.count}×)` : ""}`).join(", ")}. Remove or replace it there first.`, "error");
+        return false;
+      }
       await removeAsset(assetId);
       set({ assets: allAssets() });
+      return true;
     },
     async importMedia(files) {
       const res = await importFiles(files);

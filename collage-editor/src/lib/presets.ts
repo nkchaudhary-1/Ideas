@@ -10,6 +10,13 @@ export const autoInk = (bg: { type: string; color?: string } | undefined) => {
   return lum > 0.6 ? "#111111" : "#ffffff";
 };
 
+/** default ink for something new on `slide`: white over a full-bleed photo/video/collage, otherwise whatever reads on the background */
+export const inkFor = (slide: { width: number; height: number; background: { type: string; color?: string }; elements: { type: string; visible: boolean; width: number; height: number }[] }) => {
+  const area = slide.width * slide.height;
+  const bleed = slide.elements.some((e) => e.visible && (e.type === "image" || e.type === "video" || e.type === "grid") && e.width * e.height >= area * 0.6);
+  return bleed || slide.background.type === "image" ? "#ffffff" : autoInk(slide.background);
+};
+
 export interface TextPreset { id: string; name: string; sample: string; family: string; weight: number; italic?: boolean; build: (w: number, h: number, ink: string) => TextEl[] }
 
 const solid = (color: string): Paint => ({ type: "solid", color });

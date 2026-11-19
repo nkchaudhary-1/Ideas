@@ -1,6 +1,6 @@
 "use client";
 import { useStore, getSlide } from "@/lib/store";
-import { ELEMENT_PRESETS, autoInk, type ElementPreset } from "@/lib/presets";
+import { ELEMENT_PRESETS, inkFor, type ElementPreset } from "@/lib/presets";
 import type { Element, ShapeEl } from "@/lib/types";
 import { Section } from "@/components/ui/controls";
 
@@ -31,7 +31,7 @@ export default function ElementsPanel() {
   const sl = useStore((s) => getSlide(s.project));
   const groups = ["Basic", "Decor", "Labels", "Icons", "UI"] as const;
   const add = (p: ElementPreset) => {
-    const ink = autoInk(sl.background);
+    const ink = inkFor(sl);
     const el = p.build(sl.width, sl.height, ink);
     const cx = (sl.width - el.width) / 2, cy = (sl.height - el.height) / 2;
     if (p.group === "Basic" || p.group === "Icons" || (p.group === "Decor" && p.id !== "divider" && p.id !== "divider2" && p.id !== "photo-border")) { el.x = cx; el.y = cy; }
