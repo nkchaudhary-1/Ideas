@@ -1,0 +1,34 @@
+{
+  "name": "collage-editor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A browser-based Instagram collage, photo and video carousel editor.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "fonts": "node scripts/fetch-fonts.mjs"
+  },
+  "dependencies": {
+    "immer": "10.1.1",
+    "konva": "9.3.16",
+    "lucide-react": "0.451.0",
+    "mp4-muxer": "5.1.3",
+    "next": "14.2.35",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-konva": "18.2.10",
+    "webm-muxer": "5.0.3",
+    "zustand": "4.5.5"
+  },
+  "devDependencies": {
+    "@types/node": "20.16.11",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.47",
+    "tailwindcss": "3.4.14",
+    "typescript": "5.6.3"
+  }
+}
