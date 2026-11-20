@@ -87,10 +87,13 @@ export default function SlideStrip() {
             </div>
           );
         })}
+        <div className="flex shrink-0 flex-col items-center gap-1">
         <button ref={addRef} type="button" aria-label="Add slide" title="Add slide" data-testid="add-slide" onClick={toggleMenu}
           onDragOver={(e) => { if (e.dataTransfer.types.includes("application/x-asset")) e.preventDefault(); }}
           onDrop={(e) => { e.preventDefault(); const a = getAsset(e.dataTransfer.getData("application/x-asset")); if (a) createCarouselFromAssets([a]); }}
           className={`grid shrink-0 place-items-center border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink ${phone ? "h-14 w-14 rounded" : compact ? "h-[52px] w-[52px] rounded-in-20" : "h-[88px] w-[64px] rounded"}`}><Plus size={18} /></button>
+        <span className="text-2xs" aria-hidden>&nbsp;</span>
+        </div>
       </div>
       <div className="flex shrink-0 flex-col items-end justify-center gap-0.5 pl-4 pr-7 text-2xs text-mute">
         <span className="text-xs font-bold text-ink">{slides.length === 1 && panoramaCount(slides[0].width) > 1 ? `${panoramaCount(slides[0].width)} slides` : `${slides.length} slide${slides.length > 1 ? "s" : ""}`}</span>

@@ -23,6 +23,8 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
 (async () => {
   const browser = await chromium.launch();
   const ctx = await browser.newContext(PHONE ? { ...devices['iPhone 13'], viewport: { width: W, height: H }, acceptDownloads: true } : { viewport: { width: W, height: H }, acceptDownloads: true });
+  // the guide opens itself the first time a kind of project is made; the audit opens it on purpose instead (see pop-guide)
+  await ctx.addInitScript(() => { try { localStorage.setItem('collage.guide.seen', JSON.stringify(['single', 'collage', 'carousel', 'panorama', 'story', 'edit'])); } catch { /* ignore */ } });
   const page = await ctx.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push('pageerror ' + e.message));
@@ -95,7 +97,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   const addVia = async (rail, pick) => { await openTool(rail); await wait(page, 400); await pick(); await wait(page, 500); await sheet({ k: 'props', size: 'full' }); await wait(page, 300); await expandAll(page); };
   await page.evaluate(() => { const s = window.__store.getState(); s.setActiveSlide(s.project.slides[1].id); s.clearSelection(); });
   await run('props-text', async () => { await addVia('text', async () => { await page.getByText('Add a heading').first().click(); }); await page.keyboard.press('Escape'); await wait(page, 300); await expandAll(page); });
-  await run('props-shape', async () => { await addVia('elements', async () => { await page.locator('[data-testid=left-panel] button').nth(1).click(); }); });
+  await run('props-shape', async () => { await addVia('elements', async () => { await page.click('[data-testid=el-rounded]'); }); });
   await run('props-grid', async () => {
     await page.evaluate(() => { const s = window.__store.getState(); s.setActiveSlide(s.project.slides[3].id); s.deleteElements(s.project.slides[3].elements.map((e) => e.id)); });
     await addVia('layouts', async () => { await page.click('[data-testid=grid-four]'); });
@@ -121,6 +123,10 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await closeAny();
   await run('pop-color', async () => { await page.click('[data-testid=bg-color]'); await wait(page, 400); });
   await closeAny();
+  await run('pop-guide', async () => { await sheet(null); await page.click('[data-testid=guide-chip]'); await wait(page, 450); });
+  await closeAny();
+  await run('empty-canvas', async () => { await sheet(null); await page.evaluate(() => { const s = window.__store.getState(); s.addSlide({ afterId: s.project.activeSlideId }); }); await wait(page, 700); });
+  await page.evaluate(() => { const s = window.__store.getState(); s.deleteSlide(s.project.activeSlideId); });
   await run('pop-picker', async () => {
     await sheet(null); await wait(page, 500);
     await page.evaluate(() => { const s = window.__store.getState(); s.setActiveSlide(s.project.slides[3].id); });

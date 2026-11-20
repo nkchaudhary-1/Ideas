@@ -8,7 +8,7 @@ export const MIN_SCALE = 0.03;
 export const MAX_SCALE = 8;
 
 /** Fit the artboard in the stage, leaving room for the floating pills (top, bottom) and the panorama handles (sides). */
-export function fitView(size: Size, doc: Size, pad: number | { x: number; top: number; bottom: number } = { x: 96, top: 112, bottom: 112 }): View {
+export function fitView(size: Size, doc: Size, pad: number | { x: number; top: number; bottom: number } = { x: 96, top: 132, bottom: 112 }): View {
   const p = typeof pad === "number" ? { x: pad, top: pad, bottom: pad } : pad;
   const availW = Math.max(120, size.w - p.x * 2), availH = Math.max(120, size.h - p.top - p.bottom);
   const s = clamp(Math.min(availW / doc.w, availH / doc.h), MIN_SCALE, 4);

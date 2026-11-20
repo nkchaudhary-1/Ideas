@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ChevronRight, RotateCcw } from "lucide-react";
+import { ChevronDown, ChevronRight, RotateCcw } from "lucide-react";
 import { clamp, keys } from "@/lib/util";
 
 export function IconButton({ icon, label, onClick, active, disabled, className = "", size = 36, shortcut, testId }: {
@@ -55,6 +55,16 @@ export function TextButton({ children, className = "", ...rest }: React.ButtonHT
     <button type="button" className={`inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-2xs font-semibold text-mute transition coarse:h-10 touch:active:scale-[0.97] hover:bg-ink/[0.07] hover:text-ink disabled:opacity-40 ${className}`} {...rest}>
       {children}
     </button>
+  );
+}
+
+/** one scrollable row of filter tabs; the wheel scrolls it sideways and the right edge fades so it is clear there is more */
+export function ChipRow<T extends string>({ items, value, onChange, testId }: { items: { id: T; label: string }[]; value: T; onChange: (v: T) => void; testId?: string }) {
+  return (
+    <div className="no-scrollbar flex shrink-0 gap-2 overflow-x-auto px-8 pb-4 [mask-image:linear-gradient(to_right,#000_calc(100%-40px),transparent)]" role="tablist" data-testid={testId}
+      onWheel={(e) => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) e.currentTarget.scrollLeft += e.deltaY; }}>
+      {items.map((c) => <Chip sm key={c.id} active={value === c.id} role="tab" aria-selected={value === c.id} onClick={() => onChange(c.id)}>{c.label}</Chip>)}
+    </div>
   );
 }
 
@@ -277,9 +287,13 @@ export function Toggle({ value, onChange, label }: { value: boolean; onChange: (
 
 export function Select<T extends string>({ value, options, onChange, width, className = "" }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; width?: number; className?: string }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value as T)} style={{ width }} className={`h-9 min-w-0 rounded-full bg-field px-4 text-xs font-medium text-ink outline-none coarse:h-11 focus:ring-2 focus:ring-accent/40 ${className}`}>
-      {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-    </select>
+    // our own chevron, 12px in from the edge and the same in every browser, instead of the system arrow jammed against the rim
+    <span className="relative inline-flex min-w-0 shrink-0" style={{ width }}>
+      <select value={value} onChange={(e) => onChange(e.target.value as T)} className={`h-9 w-full min-w-0 appearance-none rounded-full bg-field pl-4 pr-9 text-xs font-medium text-ink outline-none coarse:h-11 focus:ring-2 focus:ring-accent/40 ${className}`}>
+        {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
+      </select>
+      <ChevronDown size={14} aria-hidden className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-mute" />
+    </span>
   );
 }
 

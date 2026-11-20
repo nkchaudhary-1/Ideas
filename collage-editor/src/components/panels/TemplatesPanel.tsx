@@ -6,7 +6,7 @@ import { TEMPLATES, type Template, type TemplateCategory } from "@/lib/templates
 import { layoutGrid } from "@/lib/grid-engine";
 import type { Slide } from "@/lib/types";
 import { applyTemplate } from "@/lib/workflows";
-import { Button, Chip } from "@/components/ui/controls";
+import { Button, ChipRow } from "@/components/ui/controls";
 import { cloneSlide } from "@/lib/factory";
 
 const CATS: (TemplateCategory | "All" | "Saved")[] = ["All", "Story", "Instagram portrait", "Instagram square", "Carousel", "Photo collage", "Quote", "Fashion", "Food", "Sale", "Event", "Travel", "Typography", "Editorial", "Magazine", "Minimal", "Storytelling", "Poster", "Saved"];
@@ -65,11 +65,7 @@ export default function TemplatesPanel() {
 
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="templates-panel">
-      {/* one scrollable row: 19 tabs would otherwise take a quarter of the panel; the wheel scrolls it sideways */}
-      <div className="no-scrollbar flex shrink-0 gap-2 overflow-x-auto px-8 pb-4 [mask-image:linear-gradient(to_right,#000_calc(100%-40px),transparent)]"
-        onWheel={(e) => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) e.currentTarget.scrollLeft += e.deltaY; }} data-testid="template-tabs">
-        {CATS.map((c) => <Chip sm key={c} active={cat === c} onClick={() => setCat(c)}>{c}</Chip>)}
-      </div>
+      <ChipRow testId="template-tabs" items={CATS.map((c) => ({ id: c, label: c }))} value={cat} onChange={setCat} />
       <div className="min-h-0 flex-1 overflow-y-auto px-8 pb-6 pt-2">
         <div className="grid grid-cols-2 gap-x-4 gap-y-6">
           {list.map((t) => {

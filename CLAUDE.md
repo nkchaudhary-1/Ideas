@@ -78,3 +78,17 @@ Everything above holds on a phone. These are the additions for screens under 900
 - **Installable.** `manifest.webmanifest`, `apple-touch-icon` and the theme colour (kept in step with the theme) are set.
 - **Check.** `node tests/audit/run.js --phone` at the defaults (390×844), `--w=360 --h=740`, `--w=320 --h=740` and
   `--theme=dark`; `node tests/e2e/phone-dialogs.js`; `node tests/e2e/phone-canvas.js`. All must report no findings.
+
+## 6. Say where you are
+
+A new user must never have to guess what they are making or what to do next.
+
+- **Name the mode** wherever the project is shown: the mode chip under the top bar, project lists and the size chip all use the same words
+  (single post, collage, carousel, panorama, story, photo & video edit). A panorama is described by its slides ("4:5 · 7 slides"), never by the ratio of the whole strip.
+- **Show the next step.** Every mode has a short list of steps that tick themselves off from what is in the project, each with a button that opens the right tool.
+  Add steps to `useGuide` in `ModeGuide.tsx` when a mode gains a stage; never add a mode without them.
+- **An empty canvas offers three ways in** (add photos, a layout, a template) in words that name the mode.
+- **Every tool is labelled.** An icon alone is never the only name of a tool: the rail and the phone dock show a short name under each icon, and groups carry a title.
+- **Controls that matter are visible without selecting anything.** Editing a photo is never behind a closed panel: Edit mode opens its card, and a photo
+  has its own wheel. If a panel can be shut, a chip brings it back.
+

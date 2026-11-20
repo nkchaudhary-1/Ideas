@@ -14,13 +14,21 @@ elements, so the editor starts where your own posts do.
 
 Minimal, floating, light or dark. The canvas fills the middle; everything else is a rounded card around it.
 
-* **Left:** an icon-only rail (Media, Layouts, Templates · Text, Elements, Frames, Backgrounds, Colours · Layers). Click one and its panel opens beside it; click again to close.
-* **Top of the canvas:** project name and menu (new / open / shortcuts), the **size chip** (ratio and panorama controls), undo / redo, theme switch, Preview, Export.
+* **Left:** a labelled rail, in three titled groups: **Add** (Media, Layouts, Templates), **Design** (Text, Elements, Frames, Backdrop, Colours) and **Manage** (Layers). Click one and its panel opens beside it; click again to close. Elements is one searchable grid with tabs (Shapes, Graphics, Labels, Icons, Interface).
+* **Top of the canvas:** the Collage Studio mark, which opens the menu (new project, all projects, shortcuts and your five most recent projects), the project name (click to rename) with its save status, the **size chip** ("Size 4:5 · 1080×1350"; a panorama reads "4:5 · 7 slides"; ratio and panorama controls), undo / redo, theme switch, Preview, Export. Under it, the **mode chip**: which kind of project this is and which step you are on (see below).
 * **Bottom of the canvas:** select and hand tools, zoom, fit, and a **View** menu with layout grid, safe areas and snapping.
 * **Right:** one properties card that only shows what the current selection needs, in collapsible groups.
 * **Below:** the slide strip (compact for single designs, with seam marks on panoramas).
 * **Palette:** black, white and one orange. Greys are neutral; orange marks only the active tool, slider fills, toggles and canvas selection, with a soft gradient on the primary button and the page ground. Light and dark themes; the choice is remembered and the first visit follows your system setting.
 * **Controls:** sliders are capsules: a black fill ending in a thin white-bar knob (the fill runs outward from the neutral point; double-click to reset); colour adjustments (temperature, tint, hue, saturation) use a gradient pill with a ring knob; rotation uses a tick-mark ruler (drag, arrow keys, double-click to reset); segmented controls and aspect-ratio glyphs sit in the same pill style.
+
+## Always know where you are
+
+New projects can be a single post, collage, carousel, panorama, story or a photo and video edit. The editor says which, all the time:
+
+* **Mode chip** under the top bar: `Carousel · Step 1 of 4 · Add photos`. Tap it for the guide: what this kind of project is, and four steps that tick themselves off as you work (add photos, add slides, style, export), each with a button that opens the right tool. The first time you make each kind it opens by itself; "Hide steps" folds it into a help button.
+* **Empty slides explain themselves.** A blank slide shows "Start your carousel" with three ways in: Add photos, Layouts, Templates. Later empty slides say "Slide 2 is empty".
+* **Photo wheel.** Select a photo and a radial wheel appears: zoom, move and crop, turn, flip, replace, filters, light and reset, with the tool's name in the middle. In Edit mode the adjustments card opens by itself on any window size.
 
 ## On a phone
 

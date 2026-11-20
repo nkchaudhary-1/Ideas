@@ -93,10 +93,13 @@ export default function EditStrip({ slim = false }: { slim?: boolean }) {
           );
         })}
         <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="edit-add-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; void add(f); }} />
-        <button type="button" aria-label="Add photos or videos" title="Add photos or videos" data-testid="add-slide" onClick={() => input.current?.click()}
+        <div className="flex shrink-0 flex-col items-center gap-1">
+          <button type="button" aria-label="Add photos or videos" title="Add photos or videos" data-testid="add-slide" onClick={() => input.current?.click()}
           onDragOver={(e) => { if (e.dataTransfer.types.includes("Files") || e.dataTransfer.types.includes("application/x-asset")) e.preventDefault(); }}
           onDrop={(e) => { e.preventDefault(); const a = getAsset(e.dataTransfer.getData("application/x-asset")); if (a) addAssetsToEdit([a]); else void add([...e.dataTransfer.files]); }}
           className={`grid shrink-0 place-items-center rounded border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink ${slim ? "h-11 w-11" : phone ? "h-[52px] w-[52px]" : "h-[76px] w-[64px]"}`}><Plus size={18} /></button>
+          {!slim && <span className="text-2xs" aria-hidden>&nbsp;</span>}
+        </div>
       </div>
     </div>
   );

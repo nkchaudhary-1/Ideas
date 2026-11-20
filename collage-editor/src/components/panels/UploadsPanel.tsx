@@ -88,7 +88,7 @@ export default function UploadsPanel() {
                     onDragStart={(e) => { e.dataTransfer.setData("application/x-asset", a.id); e.dataTransfer.effectAllowed = "copy"; }}
                     onClick={(e) => click(a, e)}
                     title={`${a.name}\n${a.width}×${a.height} · ${formatBytes(a.size)}`}
-                    className={`relative block aspect-square w-full overflow-hidden rounded ring-1 ${on ? "ring-2 ring-ink/60" : "ring-line hover:ring-ink/40"}`}
+                    className={`relative block aspect-square w-full overflow-hidden rounded ring-1 ring-inset ${on ? "ring-2 ring-ink/60" : "ring-line hover:ring-ink/40"}`}
                   >
                     <img src={a.thumb} alt={a.name} className="h-full w-full object-cover" draggable={false} />
                     {a.kind === "video" && <span className="absolute bottom-1 left-1 flex items-center gap-0.5 rounded bg-black/75 px-1 py-0.5 text-2xs text-white"><Film size={9} /> {formatTime(a.duration ?? 0)}</span>}

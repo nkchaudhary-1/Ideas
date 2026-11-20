@@ -69,6 +69,7 @@ export default function ExportDialog() {
         } catch (e) { setFatal((e as Error).message); }
       }
       setState("done");
+      set({ exportedProject: useStore.getState().project.id });
     } catch (e) {
       if (e instanceof ExportError && e.code === "aborted") { setState("idle"); return; }
       setFatal((e as Error).message); setState("idle");

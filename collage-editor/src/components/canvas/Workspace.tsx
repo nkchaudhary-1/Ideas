@@ -88,7 +88,7 @@ export default function Workspace() {
   }, []);
   useEffect(() => {
     // when the stage is narrow the top pills wrap to two rows, so leave more room above the artboard
-    useStore.getState().setView(fitView(size, { w: slide.width, h: slide.height }, size.w < 560 && window.innerWidth < 900 ? { x: 16, top: 84, bottom: 84 } : size.w < 860 ? { x: 96, top: 176, bottom: 112 } : undefined));
+    useStore.getState().setView(fitView(size, { w: slide.width, h: slide.height }, size.w < 560 && window.innerWidth < 900 ? { x: 16, top: 128, bottom: 84 } : size.w < 860 ? { x: 96, top: 176, bottom: 112 } : undefined));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fitToken, size.w, size.h, slide.id, slide.width, slide.height]);
 

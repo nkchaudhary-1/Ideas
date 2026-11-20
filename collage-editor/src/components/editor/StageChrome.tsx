@@ -6,6 +6,7 @@ import {
 import { useStore, getSlide, useSelectedElements } from "@/lib/store";
 import Logo from "@/components/ui/Logo";
 import PhotoWheel from "./PhotoWheel";
+import { GuideChip } from "./ModeGuide";
 import { cropTargetOf } from "@/components/canvas/Workspace";
 import { IconButton, Toggle } from "@/components/ui/controls";
 import Popover from "@/components/ui/Popover";
@@ -252,6 +253,7 @@ function CompactChrome({ c }: { c: Chrome }) {
           className="pointer-events-auto grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full grad-pill text-pillink shadow-float hover:opacity-90 disabled:pointer-events-none disabled:opacity-40 coarse:h-[60px] coarse:w-[60px] touch:active:scale-95"><Download size={18} /></button>
       </div>
 
+      <GuideChip compact />
       <PhotoWheel compact />
       <div className="absolute inset-x-3 bottom-3 flex justify-center">
         <Pill className="h-[52px] max-w-full coarse:h-[60px]">
@@ -314,6 +316,7 @@ function DesktopChrome({ c }: { c: Chrome }) {
         </div>
       </div>
 
+      <GuideChip compact={false} lowered={size.w < 820} />
       <PhotoWheel compact={false} />
       {/* bottom centre: view */}
       <div className="absolute bottom-5 left-1/2 -translate-x-1/2">

@@ -29,13 +29,10 @@ export default function Dock() {
             onClick={() => set(on ? { sheet: null } : { leftPanel: t.id, sheet: "tools" })}
             className={`${item} ${on ? "grad-accent text-white shadow-card" : "text-mute"}`}>
             {t.icon}
-            <span className="max-w-full truncate">{SHORT[t.id] ?? t.label}</span>
+            <span className="max-w-full truncate">{t.short}</span>
           </button>
         );
       })}
     </nav>
   );
 }
-
-/** the rail's long names do not fit under a dock icon */
-const SHORT: Partial<Record<string, string>> = { layouts: "Layouts", backgrounds: "Backdrop", palettes: "Colours", templates: "Templates" };

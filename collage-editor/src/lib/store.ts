@@ -42,6 +42,8 @@ export interface UIState {
   playing: boolean;
   previewOpen: boolean;
   exportOpen: boolean;
+  /** the project that was last exported in this session (drives the last step of the guide) */
+  exportedProject: string | null;
   importOpen: boolean;
   newProjectOpen: boolean;
   shortcutsOpen: boolean;
@@ -297,6 +299,7 @@ export const useStore = create<Store>()((set, get) => {
       playing: false,
       previewOpen: false,
       exportOpen: false,
+      exportedProject: null,
       importOpen: false,
       newProjectOpen: false,
       shortcutsOpen: false,

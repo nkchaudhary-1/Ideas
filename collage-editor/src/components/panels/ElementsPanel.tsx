@@ -2,7 +2,9 @@
 import { useStore, getSlide } from "@/lib/store";
 import { ELEMENT_PRESETS, inkFor, type ElementPreset } from "@/lib/presets";
 import type { Element, ShapeEl } from "@/lib/types";
-import { Section } from "@/components/ui/controls";
+import { useState } from "react";
+import { Search } from "lucide-react";
+import { ChipRow } from "@/components/ui/controls";
 
 function Preview({ el }: { el: Element }) {
   const sz = 44;
@@ -28,10 +30,15 @@ function Preview({ el }: { el: Element }) {
   return <svg width={sz} height={sz} viewBox="0 0 44 44" className="text-ink/80">{shape}</svg>;
 }
 
+type Cat = "all" | ElementPreset["group"];
+// shapes and graphics are the same kind of thing to the person using them, so they share one grid; the tabs just narrow it down
+const TABS: { id: Cat; label: string }[] = [{ id: "all", label: "All" }, { id: "Basic", label: "Shapes" }, { id: "Decor", label: "Graphics" }, { id: "Labels", label: "Labels" }, { id: "Icons", label: "Icons" }, { id: "UI", label: "Interface" }];
+
 export default function ElementsPanel() {
   const st = useStore.getState;
   const sl = useStore((s) => getSlide(s.project));
-  const groups = ["Basic", "Decor", "Labels", "Icons", "UI"] as const;
+  const [cat, setCat] = useState<Cat>("all");
+  const [q, setQ] = useState("");
   const add = (p: ElementPreset) => {
     const ink = inkFor(sl);
     const el = p.build(sl.width, sl.height, ink);
@@ -41,20 +48,29 @@ export default function ElementsPanel() {
     if (el.type === "shape" && el.stroke?.color === "#ffffff" && ink !== "#ffffff" && p.group !== "UI") el.stroke = { ...el.stroke, color: ink };
     st().addElement(el);
   };
+  const needle = q.trim().toLowerCase();
+  const list = ELEMENT_PRESETS.filter((p) => (cat === "all" || p.group === cat) && (!needle || p.name.toLowerCase().includes(needle)));
   return (
-    <div className="h-full overflow-y-auto" data-testid="elements-panel">
-      {groups.map((g) => (
-        <Section key={g} title={{ Basic: "Shapes", Decor: "Graphics & decor", Labels: "Labels & badges", Icons: "Simple icons", UI: "Interface pieces" }[g]}>
-          <div className="grid grid-cols-4 gap-x-2 gap-y-4">
-            {ELEMENT_PRESETS.filter((p) => p.group === g).map((p) => (
+    <div className="flex h-full min-h-0 flex-col" data-testid="elements-panel">
+      <label className="mx-8 mb-3 flex h-9 shrink-0 items-center gap-2 rounded-full bg-field px-4 text-xs coarse:h-11 focus-within:ring-2 focus-within:ring-accent/40">
+        <Search size={13} className="shrink-0 text-faint" />
+        <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.stopPropagation()} placeholder="Search shapes and graphics" aria-label="Search elements" data-testid="el-search" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-faint" />
+      </label>
+      <ChipRow testId="element-tabs" items={TABS} value={cat} onChange={setCat} />
+      <div className="min-h-0 flex-1 overflow-y-auto px-8 pb-6">
+        {list.length === 0 ? (
+          <p className="py-8 text-center text-xs leading-5 text-mute">Nothing called “{q.trim()}”. Try another word, or pick All.</p>
+        ) : (
+          <div className="grid grid-cols-4 gap-x-2 gap-y-4" role="tabpanel">
+            {list.map((p) => (
               <button key={p.id} type="button" title={p.name} data-testid={`el-${p.id}`} onClick={() => add(p)} className="group flex h-20 flex-col items-center justify-center gap-2 rounded p-1 hover:bg-ink/5">
                 <span className="grid h-11 w-11 place-items-center rounded bg-panel2 text-ink"><Preview el={p.build(1080, 1350, "#ffffff")} /></span>
                 <span className="w-full truncate text-center text-2xs text-mute group-hover:text-ink">{p.name}</span>
               </button>
             ))}
           </div>
-        </Section>
-      ))}
+        )}
+      </div>
     </div>
   );
 }
