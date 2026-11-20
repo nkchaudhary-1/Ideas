@@ -242,12 +242,19 @@ export const useStore = create<Store>()((set, get) => {
       if (get().ready) return;
       const prefs = loadUIPrefs();
       set((s) => ({ ui: { ...s.ui, ...prefs } }));
-      await loadAssets();
-      set({ assets: allAssets() });
-      await get().refreshProjects();
-      const last = localStorage.getItem("collage-studio:last");
-      if (last && (await dbGet<Project>("projects", last))) await get().openProject(last);
-      else set((s) => ({ ui: { ...s.ui, newProjectOpen: true } }));
+      try {
+        await loadAssets();
+        set({ assets: allAssets() });
+        await get().refreshProjects();
+        let last: string | null = null;
+        try { last = localStorage.getItem("collage-studio:last"); } catch { /* storage blocked */ }
+        if (last && (await dbGet<Project>("projects", last))) await get().openProject(last);
+        else set((s) => ({ ui: { ...s.ui, newProjectOpen: true } }));
+      } catch {
+        // IndexedDB can be unavailable (private windows, blocked site data): the editor still works, it just can't keep projects
+        set((s) => ({ ui: { ...s.ui, newProjectOpen: true } }));
+        get().toast("Saving isn't available in this browser mode, so projects won't be kept after you close the tab.", "error");
+      }
       set({ ready: true });
     },
     refreshAssets() { set({ assets: allAssets() }); },

@@ -1,4 +1,5 @@
 import data from "./font-data.json";
+import { assetUrl } from "./util";
 
 export interface FontDef { id: string; family: string; category: string; weights: number[]; italic: number[]; subsets: string[] }
 export const FONTS: FontDef[] = data as FontDef[];
@@ -36,16 +37,22 @@ export function loadFont(family: string, weight = 400, italic = false): Promise<
   const style = it ? "italic" : "normal";
   const p = Promise.all(
     f.subsets.map(async (sub) => {
-      const face = new FontFace(f.family, `url(/fonts/${f.id}-${sub}-${w}-${style}.woff2) format("woff2")`, {
-        weight: String(w),
-        style,
-        unicodeRange: RANGES[sub],
-        display: "swap",
-      });
+      const file = `fonts/${f.id}-${sub}-${w}-${style}.woff2`;
+      const desc = { weight: String(w), style, unicodeRange: RANGES[sub], display: "swap" } as FontFaceDescriptors;
       try {
+        // fetch the bytes ourselves: a FontFace built from data isn't subject to the page's font-src policy
+        const res = await fetch(assetUrl(file));
+        if (!res.ok) return; // a missing subset just falls back
+        const face = new FontFace(f.family, await res.arrayBuffer(), desc);
         await face.load();
         document.fonts.add(face);
-      } catch { /* a missing subset just falls back */ }
+      } catch {
+        try {
+          const face = new FontFace(f.family, `url(${assetUrl(file)}) format("woff2")`, desc);
+          await face.load();
+          document.fonts.add(face);
+        } catch { /* falls back */ }
+      }
     }),
   ).then(() => { listeners.forEach((l) => l()); });
   loaded.set(key, p);

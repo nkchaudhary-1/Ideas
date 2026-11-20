@@ -29,7 +29,29 @@ export function formatBytes(n: number): string {
   return `${(n / 1048576).toFixed(1)} MB`;
 }
 
-export function downloadBlob(blob: Blob, name: string) {
+/** Where bundled static files (fonts, sample photos) live. "/" in the Next app, "" (relative) when the editor is embedded as a single page. */
+export const assetUrl = (path: string) => `${(globalThis as { __ASSET_BASE__?: string }).__ASSET_BASE__ ?? "/"}${path}`;
+
+interface ClaudeDownloads { save(r: { filename: string; data: Blob }): Promise<{ status: string }> }
+export class SaveError extends Error { constructor(message: string, public code: string) { super(message); } }
+
+/**
+ * Hand a generated file to the user. In a plain browser this is an <a download>; inside a host that blocks
+ * scripted downloads it goes through the host's `downloads` capability, which asks the viewer to confirm.
+ */
+export async function downloadBlob(blob: Blob, name: string): Promise<void> {
+  const claude = (globalThis as { claude?: { use?: (n: string) => Promise<unknown> } }).claude;
+  if (claude?.use) {
+    const dl = (await claude.use("downloads").catch(() => null)) as ClaudeDownloads | null;
+    if (dl) {
+      try { await dl.save({ filename: name, data: blob }); }
+      catch (e) {
+        const err = e as { code?: string; message?: string };
+        throw new SaveError(err.code === "declined" ? "Save cancelled." : err.code === "unavailable" ? "Saving files isn't available in this view. Open the editor in its own tab to export." : err.message || "The file couldn't be saved.", err.code ?? "failed");
+      }
+      return;
+    }
+  }
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = name;

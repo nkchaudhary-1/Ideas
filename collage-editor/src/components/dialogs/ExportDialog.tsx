@@ -59,8 +59,10 @@ export default function ExportDialog() {
       setReport(r);
       if (r.files.length) {
         const base = slug(useStore.getState().project.name);
-        if (r.files.length > 1 && cfg.packaging === "zip") downloadBlob(await makeZip(r.files.map((f) => ({ name: f.name, blob: f.blob }))), `${base}.zip`);
-        else for (const f of r.files) { downloadBlob(f.blob, f.name); await new Promise((res) => setTimeout(res, 350)); }
+        try {
+          if (r.files.length > 1 && cfg.packaging === "zip") await downloadBlob(await makeZip(r.files.map((f) => ({ name: f.name, blob: f.blob }))), `${base}.zip`);
+          else for (const f of r.files) { await downloadBlob(f.blob, f.name); await new Promise((res) => setTimeout(res, 350)); }
+        } catch (e) { setFatal((e as Error).message); }
       }
       setState("done");
     } catch (e) {

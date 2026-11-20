@@ -4,12 +4,12 @@ import { Check, Film, ImagePlus, Images, LayoutGrid, Search, Trash2, Upload, Gal
 import { useStore, getSlide } from "@/lib/store";
 import { ACCEPT } from "@/lib/media";
 import type { Asset } from "@/lib/types";
-import { formatBytes, formatTime } from "@/lib/util";
+import { assetUrl, formatBytes, formatTime } from "@/lib/util";
 import { Button, Empty, Select } from "@/components/ui/controls";
 import { createCarouselFromAssets, createCollageFromAssets } from "@/lib/workflows";
 import { useFillTargetLite } from "./useReplaceTarget";
 
-const SAMPLES = Array.from({ length: 9 }, (_, i) => ({ url: `/samples/dharamshala-${i + 1}.jpg`, name: `dharamshala-${i + 1}.jpg` }));
+const SAMPLES = Array.from({ length: 9 }, (_, i) => ({ url: assetUrl(`samples/dharamshala-${i + 1}.jpg`), name: `dharamshala-${i + 1}.jpg` }));
 
 export default function UploadsPanel() {
   const assets = useStore((s) => s.assets);
