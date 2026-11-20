@@ -75,7 +75,10 @@ const firstFill = (page) => page.evaluate(() => {
   await page.evaluate(() => window.__store.getState().setUI({ rightOpen: false })); await page.waitForTimeout(200);
   ok(await page.locator('[data-testid=edit-chip-desktop]').isVisible(), 'with the card shut, an Edit chip brings it back');
   await page.click('[data-testid=wheel-light]'); await page.waitForTimeout(500);
-  ok(await page.locator('[data-testid=properties]').isVisible(), 'Light & colour opens the properties card');
+  ok(await page.locator('[data-testid=quick-adjust]').isVisible() && !(await page.locator('[data-testid=photo-toolbar]').count()), 'Light & colour opens the quick bar and the wheel steps aside');
+  await page.click('[data-testid=quick-more]'); await page.waitForTimeout(500);
+  ok(await page.locator('[data-testid=properties]').isVisible(), '"More" opens the properties card');
+  ok(await page.locator('[data-testid=photo-toolbar]').isVisible(), 'and the wheel comes back');
   await page.click('[data-testid=photo-wheel-close]'); await page.waitForTimeout(250);
   ok(await page.locator('[data-testid=photo-wheel-toggle]').isVisible() && !(await page.locator('[data-testid=photo-toolbar]').count()), 'tapping the middle folds the wheel into a button');
   await page.click('[data-testid=photo-wheel-toggle]'); await page.waitForTimeout(250);
@@ -122,8 +125,10 @@ const firstFill = (page) => page.evaluate(() => {
   await page.tap('[data-testid=photo-zoom-in]'); await page.waitForTimeout(250);
   ok((await firstFill(page)).zoom > 1.05, 'and zooming works by tap');
   await page.tap('[data-testid=wheel-filters]'); await page.waitForTimeout(500);
-  ok(await page.evaluate(() => window.__store.getState().ui.sheet === 'props'), 'Filters opens the properties sheet');
-  ok(!(await page.locator('[data-testid=photo-toolbar]').count()), 'and the wheel steps aside while the sheet is open');
+  ok(await page.evaluate(() => window.__store.getState().ui.quick === 'filters') && await page.locator('[data-testid=quick-adjust]').isVisible(), 'Filters opens the quick bar on its filter row');
+  ok(!(await page.locator('[data-testid=photo-toolbar]').count()), 'and the wheel steps aside while it is open');
+  await page.tap('[data-testid=quick-more]'); await page.waitForTimeout(500);
+  ok(await page.evaluate(() => window.__store.getState().ui.sheet === 'props'), '"More" opens the properties sheet');
   await ctx.close();
 
   ok(errs.length === 0, 'no page errors', errs.slice(0, 2));
