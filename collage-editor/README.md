@@ -27,7 +27,7 @@ Minimal, floating, light or dark. The canvas fills the middle; everything else i
 New projects can be a single post, collage, carousel, panorama, story or a photo and video edit. The editor says which, all the time:
 
 * **Mode chip** under the top bar: `Carousel · Step 1 of 4 · Add photos`. Tap it for the guide: what this kind of project is, and four steps that tick themselves off as you work (add photos, add slides, style, export), each with a button that opens the right tool. The first time you make each kind it opens by itself; "Hide steps" folds it into a help button.
-* **Empty slides explain themselves.** A blank slide shows "Start your carousel" with three ways in: Add photos, Layouts, Templates. Later empty slides say "Slide 2 is empty".
+* **Empty slides stay clear.** Nothing covers a blank canvas; the mode chip says what comes next and its button opens the right tool (Media, Layouts, Templates are always on the rail).
 * **Photo wheel.** Select a photo and a radial wheel appears: zoom, move and crop, turn, flip, replace, filters, light and reset, with the tool's name in the middle. Drag its middle to put it anywhere on the canvas. In Edit mode the adjustments card opens by itself on any window size.
 * **Quick bar** (the Snapseed / Lensa / Instagram way). Pick Filters or Light on the wheel and a bar rises from the bottom: a row of live-preview filters, or a row of adjustments with one slider for the one you chose, and a tick to finish. "More" opens the full card.
 * **Quiet top bar.** Menu (logo, new project, all projects, theme, shortcuts), project name, history pill (undo, redo, preview) and Export. Icon-only buttons show their name on hover, and menus open towards the side with more room, so they are never cut off.

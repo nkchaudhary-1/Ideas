@@ -125,7 +125,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await closeAny();
   await run('pop-guide', async () => { await sheet(null); await page.click('[data-testid=guide-chip]'); await wait(page, 450); });
   await closeAny();
-  await run('empty-canvas', async () => { await sheet(null); await page.evaluate(() => { const s = window.__store.getState(); s.addSlide({ afterId: s.project.activeSlideId }); }); await wait(page, 700); });
+  await run('empty-slide', async () => { await sheet(null); await page.evaluate(() => { const s = window.__store.getState(); s.addSlide({ afterId: s.project.activeSlideId }); }); await wait(page, 700); });
   await page.evaluate(() => { const s = window.__store.getState(); s.deleteSlide(s.project.activeSlideId); });
   await run('pop-picker', async () => {
     await sheet(null); await wait(page, 500);

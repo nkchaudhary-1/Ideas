@@ -1,4 +1,4 @@
-// Knowing where you are: the mode chip and its steps, the empty-canvas prompt, the labelled rail, the merged Elements panel.
+// Knowing where you are: the mode chip and its steps (an empty canvas stays clear), the labelled rail, the merged Elements panel.
 // Run the app first (`npm run dev -- -p 3100`).
 const { chromium, devices } = require('playwright');
 const path = require('path');
@@ -6,6 +6,7 @@ const S = path.resolve(__dirname, '../../public/samples') + '/';
 const base = process.env.BASE_URL || 'http://localhost:3100';
 let pass = 0, fail = 0;
 const ok = (c, m, extra) => { c ? pass++ : fail++; console.log((c ? 'PASS ' : 'FAIL ') + m + (c || extra === undefined ? '' : '  → ' + JSON.stringify(extra))); };
+const addPhoto = (page, file) => page.evaluate(async (f) => { const blob = await (await fetch('/samples/' + f)).blob(); const s = window.__store.getState(); const assets = await s.importMedia([new File([blob], f, { type: blob.type })]); s.addMediaToCanvas(assets[0]); }, file);
 const chipText = async (page) => (await page.locator('[data-testid=guide-chip]').textContent()).replace(/\s+/g, ' ').trim();
 
 (async () => {
@@ -25,16 +26,17 @@ const chipText = async (page) => (await page.locator('[data-testid=guide-chip]')
   ok((await page.locator('[data-testid=guide-panel]').textContent()).includes('You’re making a carousel'), 'and says what you are making');
   ok((await page.locator('[data-testid=guide-step-style]').getAttribute('data-done')) === 'false', 'later steps are not ticked before earlier ones');
   await page.keyboard.press('Escape'); await page.waitForTimeout(250);
-  ok(await page.locator('[data-testid=empty-canvas]').isVisible(), 'an empty slide shows how to start');
-  ok((await page.locator('[data-testid=empty-canvas]').textContent()).includes('Start your carousel'), 'in words that name the mode');
-  await page.setInputFiles('[data-testid=empty-canvas-input]', [S + 'sample-1.jpg']); await page.waitForTimeout(2500);
-  ok(!(await page.locator('[data-testid=empty-canvas]').count()), 'adding a photo removes the prompt');
+  ok(!(await page.locator('[data-testid=empty-canvas]').count()), 'an empty slide stays clear: nothing sits over the canvas');
+  await page.click('[data-testid=guide-chip]'); await page.waitForTimeout(250);
+  await page.click('[data-testid=guide-do-photos]'); await page.waitForTimeout(400);
+  ok(await page.evaluate(() => window.__store.getState().ui.leftPanel === 'uploads'), 'the first step opens Media');
+  await addPhoto(page, 'sample-1.jpg'); await page.waitForTimeout(2000);
   t = await chipText(page);
   ok(/Step 2 of 4/.test(t) && /Add more slides/.test(t), 'and the chip moves to the next step', t);
   await page.evaluate(() => { const s = window.__store.getState(); s.addSlide({ afterId: s.project.activeSlideId }); }); await page.waitForTimeout(500);
   t = await chipText(page);
   ok(/Step 3 of 4/.test(t), 'a second slide completes step 2', t);
-  ok((await page.locator('[data-testid=empty-canvas]').textContent()).includes('Slide 2 is empty'), 'and the empty second slide says so');
+  ok(!(await page.locator('[data-testid=empty-canvas]').count()), 'and the empty second slide stays clear too');
   await page.click('[data-testid=guide-chip]'); await page.waitForTimeout(300);
   ok((await page.locator('[data-testid=guide-step-photos]').getAttribute('data-done')) === 'true', 'finished steps are ticked');
   await page.click('[data-testid=guide-do-style]'); await page.waitForTimeout(400);
@@ -85,8 +87,9 @@ const chipText = async (page) => (await page.locator('[data-testid=guide-chip]')
   t = await chipText(page);
   ok(/Carousel/.test(t) && /1\/4/.test(t), 'on a phone the chip reads "Carousel · 1/4"', t);
   await page.keyboard.press('Escape'); await page.waitForTimeout(300);
-  const box = await page.locator('[data-testid=empty-canvas] > div').boundingBox();
-  ok(!!box && box.x >= 0 && box.x + box.width <= 390, 'the empty-canvas prompt fits the screen', box);
+  const box = await page.locator('[data-testid=guide-chip]').boundingBox();
+  ok(!!box && box.x >= 0 && box.x + box.width <= 390, 'the chip fits the screen', box);
+  ok(!(await page.locator('[data-testid=empty-canvas]').count()), 'and no card covers the canvas');
   const sw = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   ok(sw <= 0, 'no sideways scroll', sw);
   await ctx.close();

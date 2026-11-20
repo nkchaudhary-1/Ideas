@@ -1,17 +1,14 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
-import { Check, ChevronDown, CircleHelp, LayoutGrid, LayoutTemplate, Upload } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Check, ChevronDown, CircleHelp } from "lucide-react";
 import { useStore, type PanelId } from "@/lib/store";
 import { MODES, modeOf, type ModeKey } from "@/lib/modes";
-import { ACCEPT } from "@/lib/media";
 import { slideFills } from "@/lib/timeline";
 import { flatten } from "@/lib/geometry";
 import { cellsOf } from "@/lib/grid-engine";
 import { fillIsNeutral } from "@/lib/filters";
-import { createCarouselFromAssets, createCollageFromAssets } from "@/lib/workflows";
 import { Button, TextButton } from "@/components/ui/controls";
 import Popover from "@/components/ui/Popover";
-import { useCompact } from "@/lib/use-media";
 
 const isCompactNow = () => typeof window !== "undefined" && window.matchMedia("(max-width: 899px)").matches;
 const openTool = (id: PanelId) => {
@@ -154,46 +151,6 @@ export function GuideChip({ compact, lowered }: { compact: boolean; /** the top 
           </div>
         )}
       </Popover>
-    </div>
-  );
-}
-
-/** shown over a slide with nothing on it: what this project is, and the three ways to start */
-export function EmptyCanvas() {
-  const st = useStore.getState;
-  const compact = useCompact();
-  const empty = useStore((s) => s.project.kind !== "edit" && (s.project.slides.find((x) => x.id === s.project.activeSlideId)?.elements.length ?? 1) === 0);
-  const sheet = useStore((s) => s.ui.sheet);
-  const mode = useStore((s) => modeOf(s.project));
-  const index = useStore((s) => s.project.slides.findIndex((x) => x.id === s.project.activeSlideId));
-  const count = useStore((s) => s.project.slides.length);
-  const input = useRef<HTMLInputElement>(null);
-  if (!empty || (compact && sheet)) return null;
-  const info = MODES[mode];
-  const first = count === 1 || index === 0;
-  const pick = async (files: File[]) => {
-    if (!files.length) return;
-    const assets = await st().importMedia(files);
-    if (!assets.length) return;
-    if (mode === "carousel") createCarouselFromAssets(assets);
-    else if (mode === "collage") createCollageFromAssets(assets);
-    else st().addMediaToCanvas(assets[0]);
-  };
-  return (
-    <div className="pointer-events-none absolute inset-0 z-10 grid place-items-center p-6" data-testid="empty-canvas">
-      <div className="pointer-events-auto flex w-full max-w-sm flex-col items-center gap-4 rounded-card bg-panel/95 px-6 py-7 text-center shadow-float ring-1 ring-line/70">
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-pill text-pillink"><info.Icon size={20} /></span>
-        <div>
-          <h2 className="text-base font-extrabold tracking-tight">{first ? `Start your ${info.noun === "edit" ? "edit" : info.noun}` : `Slide ${index + 1} is empty`}</h2>
-          <p className="mt-1 text-xs leading-5 text-mute">{first ? info.blurb : "Add photos, a layout or text to it, or tap another slide below."}</p>
-        </div>
-        <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="empty-canvas-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; void pick(f); }} />
-        <Button variant="primary" className="w-full" onClick={() => input.current?.click()} testId="empty-add-photos"><Upload size={14} /> Add photos</Button>
-        <div className="grid w-full grid-cols-2 gap-2">
-          <Button onClick={() => openTool("layouts")} testId="empty-layouts"><LayoutGrid size={14} /> Layouts</Button>
-          <Button onClick={() => openTool("templates")} testId="empty-templates"><LayoutTemplate size={14} /> Templates</Button>
-        </div>
-      </div>
     </div>
   );
 }

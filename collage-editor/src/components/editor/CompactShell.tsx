@@ -10,7 +10,6 @@ import StageChrome from "./StageChrome";
 import SlideStrip from "./SlideStrip";
 import EditStrip from "./EditStrip";
 import EditEmpty from "./EditEmpty";
-import { EmptyCanvas } from "./ModeGuide";
 import Dock from "./Dock";
 import BottomSheet from "./BottomSheet";
 
@@ -65,7 +64,6 @@ export default function CompactShell() {
       <div className="relative min-h-0 flex-1 overflow-hidden rounded-big bg-stage ring-1 ring-line/70">
         <Workspace />
         <EditEmpty />
-        <EmptyCanvas />
         <StageChrome />
         <EditChip />
         <Toast />
