@@ -28,7 +28,7 @@ const ok = (c, m, extra) => { c ? pass++ : fail++; if (!c || process.env.VERBOSE
   ok(new Set(all.map((c) => c.id)).size === all.length, 'every card is unique');
 
   // category tabs filter the list
-  const chip = (name) => page.getByRole('button', { name, exact: true }).first();
+  const chip = (name) => page.locator('[data-testid=template-tabs]').getByRole('tab', { name, exact: true });
   for (const cat of ['Story', 'Quote', 'Fashion', 'Food', 'Sale', 'Carousel', 'Event']) {
     await chip(cat).click(); await page.waitForTimeout(200);
     const n = (await cards()).length;
