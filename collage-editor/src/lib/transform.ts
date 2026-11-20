@@ -2,7 +2,7 @@ import type { Draft } from "immer";
 import type { Element, MediaEl, Rect, Slide } from "./types";
 import { getAsset } from "./media";
 import { reframe } from "./media-math";
-import { scaleElement } from "./store";
+import { scaleElement } from "./scale-element";
 import { layoutGrid } from "./grid-engine";
 
 export type Anchor = "top-left" | "top-center" | "top-right" | "middle-left" | "middle-right" | "bottom-left" | "bottom-center" | "bottom-right" | "rotater" | null;

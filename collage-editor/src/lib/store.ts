@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { scaleElement } from "./scale-element";
 import { produce, type Draft } from "immer";
 import type {
   Asset, Background, Element, Format, GridEl, Id, MediaEl, MediaFill, NewPreset, Project, ProjectKind, ProjectMeta, Slide, TextEl, UserPreset,
@@ -183,14 +184,7 @@ const savePrefs = debounce((ui: UIState) => {
 
 export const getSlide = (p: Project, id = p.activeSlideId): Slide => p.slides.find((s) => s.id === id) ?? p.slides[0];
 
-export function scaleElement(e: Draft<Element>, sx: number, sy: number, tsx = Math.min(sx, sy)) {
-  e.x *= sx; e.y *= sy; e.width *= sx; e.height *= sy;
-  if (e.type === "text") { e.fontSize *= tsx; e.letterSpacing *= tsx; e.padding *= tsx; }
-  if (e.type === "shape") { e.radius *= tsx; if (e.stroke) e.stroke.width *= tsx; }
-  if (e.type === "grid") { e.margin *= tsx; e.gutter *= tsx; e.radius *= tsx; }
-  if (e.type === "image" || e.type === "video") { e.radius *= tsx; if (e.stroke) e.stroke.width *= tsx; }
-  if (e.type === "group") e.children.forEach((c) => scaleElement(c, sx, sy, tsx));
-}
+export { scaleElement };
 
 /** where a library file is referenced: the open project (live state) and every saved project */
 async function assetUsage(assetId: Id): Promise<{ project: string; count: number }[]> {

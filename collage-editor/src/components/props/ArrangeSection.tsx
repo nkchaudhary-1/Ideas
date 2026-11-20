@@ -16,7 +16,7 @@ function IconRow({ label, children }: { label: string; children: React.ReactNode
   return (
     <div className="space-y-2">
       <div className="text-xs font-semibold text-ink/80">{label}</div>
-      <div className="flex gap-1">{children}</div>
+      <div className="flex gap-1 coarse:gap-0.5">{children}</div>
     </div>
   );
 }

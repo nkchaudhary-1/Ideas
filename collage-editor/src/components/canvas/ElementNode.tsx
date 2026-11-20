@@ -115,6 +115,14 @@ function TextBody({ el, hidden }: { el: TextEl; hidden: boolean }) {
   const decoration = [el.underline ? "underline" : "", el.strike ? "line-through" : ""].filter(Boolean).join(" ");
   const gradient = el.fill.type === "gradient";
 
+  // a font that arrives after the text was laid out (first use of it) changes every glyph width: measure and wrap again
+  useEffect(() => {
+    const n = ref.current as unknown as { _setTextData?: () => void; getLayer: () => Konva.Layer | null } | null;
+    if (!n?._setTextData || !rc.fontsTick) return;
+    n._setTextData();
+    n.getLayer()?.batchDraw();
+  }, [rc.fontsTick]);
+
   // keep the stored height in step with the laid-out text (auto-height boxes)
   useEffect(() => {
     if (rc.mode !== "edit" || !el.autoHeight || !ref.current) return;

@@ -52,7 +52,7 @@ export default function EditStrip() {
   };
 
   return (
-    <div className={`card relative flex shrink-0 flex-col ${phone ? "h-[140px]" : "h-[184px]"}`} data-testid="slide-strip" data-edit-strip>
+    <div className={`card relative flex shrink-0 flex-col ${phone ? "h-[148px]" : "h-[184px]"}`} data-testid="slide-strip" data-edit-strip>
       <div className={`no-scrollbar flex shrink-0 items-center gap-2 overflow-x-auto pt-4 ${phone ? "px-4" : "px-8"}`} data-testid="select-bar">
         <span className="mr-1 shrink-0 whitespace-nowrap text-xs font-bold text-ink" data-testid="selection-count">{chosen.size > 1 ? `${chosen.size} selected` : `${items.length} item${items.length === 1 ? "" : "s"}`}</span>
         <Chip sm data-testid="select-all" onClick={() => selectWhere("all")}>All</Chip>
@@ -61,7 +61,7 @@ export default function EditStrip() {
         <Chip sm data-testid="select-none" disabled={chosen.size < 2} onClick={() => selectWhere("none")}>None</Chip>
         <span className="ml-auto hidden min-w-0 truncate text-2xs text-faint lg:block" title={`Shift-click for a range, ${keys("⌘")}-click to add`}>Shift-click for a range, {keys("⌘")}-click to add</span>
       </div>
-      <div className={`flex min-h-0 flex-1 items-center gap-4 overflow-x-auto pb-5 ${phone ? "px-4" : "px-8"}`}>
+      <div className={`flex min-h-0 flex-1 items-center gap-4 overflow-x-auto ${phone ? "px-4 pb-4" : "px-8 pb-5"}`}>
         {slides.map((s, i) => {
           if (isEmptyEdit(s)) return null;
           const w = Math.max(phone ? 24 : 40, Math.min(150, Math.round(TH * (s.width / s.height))));
@@ -96,7 +96,7 @@ export default function EditStrip() {
         <button type="button" aria-label="Add photos or videos" title="Add photos or videos" data-testid="add-slide" onClick={() => input.current?.click()}
           onDragOver={(e) => { if (e.dataTransfer.types.includes("Files") || e.dataTransfer.types.includes("application/x-asset")) e.preventDefault(); }}
           onDrop={(e) => { e.preventDefault(); const a = getAsset(e.dataTransfer.getData("application/x-asset")); if (a) addAssetsToEdit([a]); else void add([...e.dataTransfer.files]); }}
-          className="grid h-[76px] w-[64px] shrink-0 place-items-center rounded border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink"><Plus size={18} /></button>
+          className={`grid shrink-0 place-items-center rounded border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink ${phone ? "h-[52px] w-[52px]" : "h-[76px] w-[64px]"}`}><Plus size={18} /></button>
       </div>
     </div>
   );

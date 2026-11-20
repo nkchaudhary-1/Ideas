@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { Bookmark, Plus, Trash2 } from "lucide-react";
-import { useCompact } from "@/lib/use-media";
 import { useStore, getSlide } from "@/lib/store";
 import { TEMPLATES, type Template, type TemplateCategory } from "@/lib/templates";
 import { layoutGrid } from "@/lib/grid-engine";
@@ -10,7 +9,7 @@ import { applyTemplate } from "@/lib/workflows";
 import { Button, Chip } from "@/components/ui/controls";
 import { cloneSlide } from "@/lib/factory";
 
-const CATS: (TemplateCategory | "All" | "Saved")[] = ["All", "Instagram portrait", "Instagram square", "Carousel", "Photo collage", "Editorial", "Typography", "Magazine", "Travel", "Event", "Minimal", "Storytelling", "Poster", "Saved"];
+const CATS: (TemplateCategory | "All" | "Saved")[] = ["All", "Story", "Instagram portrait", "Instagram square", "Carousel", "Photo collage", "Quote", "Fashion", "Food", "Sale", "Event", "Travel", "Typography", "Editorial", "Magazine", "Minimal", "Storytelling", "Poster", "Saved"];
 const LS = "collage-studio:templates";
 
 /** a flat schematic of a slide: frames as boxes, text as bars. Cheap, deterministic, always accurate to the layout. */
@@ -47,7 +46,6 @@ export function Schematic({ slide, width = 120 }: { slide: Slide; width?: number
 export default function TemplatesPanel() {
   const st = useStore.getState;
   const project = useStore((s) => s.project);
-  const phone = useCompact();
   const [cat, setCat] = useState<(typeof CATS)[number]>("All");
   const [saved, setSaved] = useState<{ id: string; name: string; slides: Slide[] }[]>([]);
   useEffect(() => { try { setSaved(JSON.parse(localStorage.getItem(LS) || "[]")); } catch { /* ignore */ } }, []);
@@ -67,7 +65,9 @@ export default function TemplatesPanel() {
 
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="templates-panel">
-      <div className={`flex gap-2 px-8 pb-4 ${phone ? "no-scrollbar overflow-x-auto" : "flex-wrap"}`}>
+      {/* one scrollable row: 19 tabs would otherwise take a quarter of the panel; the wheel scrolls it sideways */}
+      <div className="no-scrollbar flex shrink-0 gap-2 overflow-x-auto px-8 pb-4 [mask-image:linear-gradient(to_right,#000_calc(100%-40px),transparent)]"
+        onWheel={(e) => { if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) e.currentTarget.scrollLeft += e.deltaY; }} data-testid="template-tabs">
         {CATS.map((c) => <Chip sm key={c} active={cat === c} onClick={() => setCat(c)}>{c}</Chip>)}
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto px-8 pb-6 pt-2">

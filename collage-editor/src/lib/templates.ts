@@ -2,9 +2,10 @@ import type { Element, MediaEl, ProjectKind, Slide } from "./types";
 import { makeFrame, makeGrid, makeShape, makeSlide, makeText, makeGroup, solidBg, defaultLayoutGrid } from "./factory";
 import { presetById } from "./grid-engine";
 import { ELEMENT_PRESETS } from "./presets";
-import { scaleElement } from "./store";
+import { scaleElement } from "./scale-element";
+import { MORE_TEMPLATES } from "./templates-more";
 
-export type TemplateCategory = "Personal" | "Instagram portrait" | "Instagram square" | "Carousel" | "Photo collage" | "Editorial" | "Typography" | "Magazine" | "Travel" | "Event" | "Minimal" | "Storytelling" | "Poster";
+export type TemplateCategory = "Personal" | "Instagram portrait" | "Instagram square" | "Story" | "Carousel" | "Photo collage" | "Editorial" | "Typography" | "Magazine" | "Travel" | "Event" | "Minimal" | "Storytelling" | "Poster" | "Quote" | "Fashion" | "Food" | "Sale";
 
 export interface Template {
   id: string;
@@ -29,7 +30,7 @@ const slide = (name: string, bg: string, els: Element[], w = W, h = H): Slide =>
 const grid = (id: string, w = W, h = H, over = {}) => makeGrid(presetById(id), w, h, { ...over });
 const preset = (id: string, w = W, h = H, ink = "#111111") => ELEMENT_PRESETS.find((p) => p.id === id)!.build(w, h, ink);
 
-export const TEMPLATES: Template[] = [
+const BASE_TEMPLATES: Template[] = [
   {
     id: "photo-card-title", name: "Photo card · soft title", categories: ["Instagram portrait", "Minimal"], description: "Rounded photo card, soft serif title, handle and location tags.", size: { w: W, h: H }, kind: "single",
     build: () => [slide("Photo card", "#ffffff", [card(), makeText({ text: "wanna go on a long weekend getaway", fontFamily: "Fraunces", fontWeight: 300, fontSize: 72, lineHeight: 1.09, width: 620, fill: { type: "solid", color: "rgba(255,255,255,0.92)" }, name: "Title" }, 116, 190), handle(), location()])],
@@ -65,7 +66,7 @@ export const TEMPLATES: Template[] = [
   },
   {
     id: "giant-word", name: "Giant word", categories: ["Typography", "Poster"], description: "Photo with an oversized gradient word.", size: { w: W, h: H }, kind: "single",
-    build: () => [slide("Giant word", "#ffffff", [card({ bg: "#2b2b2b" }), makeText({ text: "CREW", fontFamily: "Outfit", fontWeight: 800, fontSize: 480, letterSpacing: -36, lineHeight: 1, align: "right", width: 984, height: 520, autoHeight: false, fill: { type: "gradient", angle: 180, stops: [{ offset: 0, color: "rgba(255,255,255,0.95)" }, { offset: 1, color: "rgba(255,255,255,0)" }] }, name: "Giant word" }, 48, 760), handle()])],
+    build: () => [slide("Giant word", "#ffffff", [card({ bg: "#2b2b2b" }), makeText({ text: "CREW", fontFamily: "Outfit", fontWeight: 800, fontSize: 330, letterSpacing: -20, lineHeight: 1, align: "right", width: 984, height: 380, autoHeight: false, fill: { type: "gradient", angle: 180, stops: [{ offset: 0, color: "rgba(255,255,255,0.95)" }, { offset: 1, color: "rgba(255,255,255,0)" }] }, name: "Giant word" }, 48, 880), handle()])],
   },
   {
     id: "quote", name: "Centred quote", categories: ["Typography", "Minimal", "Instagram square"], description: "Quiet serif quote on cream.", size: { w: 1080, h: 1080 }, kind: "single",
@@ -126,10 +127,13 @@ export const TEMPLATES: Template[] = [
     },
   },
   {
-    id: "story-9-16", name: "Story · photo + sticker", categories: ["Instagram portrait", "Personal"], description: "Full-height story with safe-area friendly type.", size: { w: 1080, h: 1920 }, kind: "story",
+    id: "story-9-16", name: "Story · photo + sticker", categories: ["Story", "Personal"], description: "Full-height story with safe-area friendly type.", size: { w: 1080, h: 1920 }, kind: "story",
     build: () => [slide("Story", "#111111", [makeFrame(1080, 1920, { radius: 0, bg: "#222222", name: "Photo" }, 0, 0), makeText({ text: "Saturday\nplans", fontFamily: "Fraunces", fontWeight: 300, fontSize: 150, lineHeight: 0.95, width: 900, fill: white, name: "Title" }, 90, 1300)], 1080, 1920)],
   },
 ];
+
+/** every ready-made template: the first set above plus the rest from templates-more.ts */
+export const TEMPLATES: Template[] = [...BASE_TEMPLATES, ...MORE_TEMPLATES];
 
 /** scale a built slide to another canvas size (stretch, like Resize → Stretch) */
 export function fitSlide(s: Slide, w: number, h: number): Slide {

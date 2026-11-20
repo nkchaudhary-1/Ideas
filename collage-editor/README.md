@@ -88,7 +88,7 @@ Photo editing and image export work in any modern browser.
 | Video | Videos are first-class: place them full-bleed, in frames or in grid cells; trim start / end, cover frame, volume, mute, loop, crop / pan, filters and adjustments, text and shapes on top. Trim data is metadata; the original file is untouched |
 | Preview | Real playback of the whole carousel (videos play with sound), keyboard navigation, autoplay, fullscreen, and a cover / profile-grid preview |
 | Saved presets | Make your own and reuse them everywhere. **Looks**: save a photo/video's filter and adjustments (Photo/Video properties → My looks → *Save current look*), apply to any photo, video or grid cell. **Text styles**: font, size, weight, colour, effects (text properties → *Save as text style*); click one in Text → My styles to restyle the selected text or add new text in that style. **Sizes**: custom canvas sizes (size chip → *Save this size*). **Collage layouts**: cell structure and spacing of a grid (grid properties → *Save layout*), re-applied to any collage with its photos kept. Rename (double-click or the pencil) and delete on hover. Presets live beside your media library, not in a project, so they are available in every project |
-| Templates | 18 editable templates: photo cards, collages, carousels (including a 7-slide mixed-media one), editorial, typography, magazine, travel, poster, story, panorama. Save your own slide or carousel as a template |
+| Templates | 60 editable templates in 18 tabs: Instagram portrait and square, **Story** (1080×1920), Carousel (tutorial, listicle, photo dump, story arc, 3-slide panorama, a 7-slide mixed-media one), Photo collage, Editorial, Typography, Magazine, Travel, Event, Minimal, Storytelling, Poster, **Quote**, **Fashion**, **Food** and **Sale**. Photo spots are tinted frames (tap one to add yours); every piece of type, colour and layout stays editable. Apply to the current slide or add as new slides, and save your own slide or carousel as a template |
 | Colour | Picker with hex / RGB / HSL, eyedropper (where supported), recent colours, palettes (including colours from your Figma file), dominant colours extracted from the selected photo |
 | History | Real undo / redo of document states (150 steps), slider drags coalesce into one step |
 | Export | See below |
@@ -171,7 +171,8 @@ src/
     media-math.ts         crop model (cover + zoom + focal point), drawing
     grid-engine.ts        split-tree layout, dividers, presets
     snap.ts / transform.ts / view-math.ts / geometry.ts
-    fonts.ts / colors.ts / presets.ts / templates.ts / workflows.ts / timeline.ts
+    fonts.ts / colors.ts / presets.ts / workflows.ts / timeline.ts
+    templates.ts          the first templates, the Template type, fitSlide; templates-more.ts holds the rest
     db.ts                 IndexedDB (projects, assets, blobs, kv)
     export/               render.tsx (offscreen scene), image.ts, video.ts, zip.ts, run.ts, thumb.ts
   components/
