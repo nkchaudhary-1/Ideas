@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import { Pencil } from "lucide-react";
 import { useStore, useSelectedElements } from "@/lib/store";
+import { useMediaQuery } from "@/lib/use-media";
 import Workspace from "@/components/canvas/Workspace";
 import Toast from "@/components/ui/Toast";
 import StageChrome from "./StageChrome";
@@ -51,7 +52,10 @@ export default function CompactShell() {
   useEffect(() => { const t = setTimeout(requestFit, 60); return () => clearTimeout(t); }, [sheet, size, requestFit]);
 
   const edit = kind === "edit";
-  // tall sheets (or short screens) leave no room for the strip
+  // a tall sheet leaves no room for the strip. On a short screen (a phone with its browser bars) an open sheet leaves room for
+  // a slim row of photo thumbnails in Edit mode, so you can still switch photos while adjusting; collage slides wait for the sheet to close.
+  const short = useMediaQuery("(max-height: 720px)");
+  const slim = edit && !!sheet && short;
   const showStrip = !sheet || size === "half";
   return (
     <div className="flex h-[100dvh] min-h-0 flex-col gap-2 bg-bg p-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-[max(8px,env(safe-area-inset-top))] text-ink" data-testid="editor-root" data-compact>
@@ -62,7 +66,7 @@ export default function CompactShell() {
         <EditChip />
         <Toast />
       </div>
-      {showStrip && <div className={sheet ? "[@media(max-height:720px)]:hidden" : ""}>{edit ? <EditStrip /> : <SlideStrip />}</div>}
+      {showStrip && (edit ? (!sheet || !short || slim) && <EditStrip slim={slim} /> : !(sheet && short) && <SlideStrip />)}
       <BottomSheet />
       <Dock />
     </div>

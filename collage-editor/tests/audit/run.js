@@ -58,7 +58,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await page.click('[data-testid=intent-collage]');
   await page.click('[data-testid=mode-carousel]');
   await page.click('[data-testid=fmt-4-5]').catch(() => {});
-  await page.setInputFiles('[data-testid=new-project-input]', [S + 'dharamshala-1.jpg', S + 'dharamshala-2.jpg', T + 'clip-portrait.mp4', S + 'dharamshala-3.jpg']);
+  await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg', S + 'sample-2.jpg', T + 'clip-portrait.mp4', S + 'sample-3.jpg']);
   await page.click('[data-testid=create-project]'); await wait(page, 4500);
 
   await page.evaluate(() => window.__store.getState().setUI({ rightOpen: true })); await wait(page, 400); // small windows start with it closed
@@ -144,7 +144,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await page.evaluate(() => window.__store.getState().clearSelection());
   await run('dlg-import-items', async () => {
     await page.evaluate(() => window.__store.getState().setUI({ importOpen: true, importQueue: [] })); await wait(page, 600);
-    await page.setInputFiles('[data-testid=import-input]', [S + 'dharamshala-5.jpg', S + 'dharamshala-6.jpg', T + 'clip-portrait.mp4']); await wait(page, 2500);
+    await page.setInputFiles('[data-testid=import-input]', [S + 'sample-5.jpg', S + 'sample-6.jpg', T + 'clip-portrait.mp4']); await wait(page, 2500);
   });
   await page.evaluate(() => window.__store.getState().setUI({ importOpen: false }));
   await run('dlg-projects-confirm', async () => {
@@ -152,7 +152,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
     await page.getByRole('button', { name: 'Delete project' }).first().click(); await wait(page, 300);
   });
   await page.evaluate(() => window.__store.getState().setUI({ projectsOpen: false }));
-  await run('toast', async () => { await page.evaluate(() => window.__store.getState().toast('3 items matched to “dharamshala-1”', 'ok')); await wait(page, 300); });
+  await run('toast', async () => { await page.evaluate(() => window.__store.getState().toast('3 items matched to “sample-1”', 'ok')); await wait(page, 300); });
 
   // ── dialogs
   await run('dlg-shortcuts', async () => { await page.evaluate(() => window.__store.getState().setUI({ shortcutsOpen: true })); await wait(page, 400); });
@@ -170,7 +170,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   // ── edit mode
   await page.evaluate(() => window.__store.getState().setUI({ newProjectOpen: true })); await wait(page, 400);
   await page.click('[data-testid=intent-edit]');
-  await page.setInputFiles('[data-testid=new-project-input]', [S + 'dharamshala-1.jpg', S + 'dharamshala-2.jpg', T + 'clip-portrait.mp4', S + 'dharamshala-3.jpg']);
+  await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg', S + 'sample-2.jpg', T + 'clip-portrait.mp4', S + 'sample-3.jpg']);
   await page.click('[data-testid=create-project]'); await wait(page, 4500);
   await run('edit-single', async () => { await expandAll(page); });
   await run('edit-reference', async () => { await page.click('[data-testid=set-reference]'); await page.click('[data-testid=thumb-open] >> nth=1'); await page.click('[data-testid=thumb-open] >> nth=3', { modifiers: ['Shift'] }); await wait(page, 400); await expandAll(page); });

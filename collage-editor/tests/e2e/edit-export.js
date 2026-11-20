@@ -10,7 +10,7 @@ const shot = async (page) => { const b = await page.locator('[data-testid=worksp
   page.setDefaultTimeout(30000);
   await page.waitForSelector('[data-testid=new-project-dialog]');
   await page.click('[data-testid=intent-edit]');
-  await page.setInputFiles('[data-testid=new-project-input]', [S + 'dharamshala-1.jpg', S + 'dharamshala-2.jpg', T + 'clip-portrait.mp4']);
+  await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg', S + 'sample-2.jpg', T + 'clip-portrait.mp4']);
   await page.click('[data-testid=create-project]'); await settle(page, 4500);
 
   // ── compare
@@ -42,7 +42,7 @@ const shot = async (page) => { const b = await page.locator('[data-testid=worksp
   await d.saveAs(path); console.log('download:', d.suggestedFilename());
   if (path.endsWith('.zip')) {
     const list = execSync(`unzip -l ${path}`).toString();
-    ok(/dharamshala-1-edit\.png/.test(list) && /dharamshala-2-edit\.png/.test(list), 'files keep their own names: <name>-edit.png', list);
+    ok(/sample-1-edit\.png/.test(list) && /sample-2-edit\.png/.test(list), 'files keep their own names: <name>-edit.png', list);
     ok(/clip-portrait-edit\.(mp4|webm|png)/.test(list), 'the video is exported too, under its own name', list);
     const unz = require('os').tmpdir() + '/edit-export-unz';
     execSync(`rm -rf ${unz} && mkdir ${unz} && cd ${unz} && unzip -q ${path}`);
@@ -51,7 +51,7 @@ import struct,glob
 for f in sorted(glob.glob('${unz}/*.png')):
     d=open(f,'rb').read(32); print(f.split('/')[-1], struct.unpack('>II', d[16:24]))
 "`).toString();
-    ok(/dharamshala-1-edit.png \(900, 1600\)/.test(dims), 'images are exported at their native size (900x1600)', dims);
+    ok(/sample-1-edit.png \(900, 1600\)/.test(dims), 'images are exported at their native size (900x1600)', dims);
   }
   console.log(logs.join('\n') || 'no console errors');
   console.log(`\n${pass} passed, ${fail} failed`);

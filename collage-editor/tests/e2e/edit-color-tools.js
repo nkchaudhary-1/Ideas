@@ -8,7 +8,7 @@ const openSection = async (page, title) => { const b = page.locator('section but
   page.setDefaultTimeout(20000);
   await page.waitForSelector('[data-testid=new-project-dialog]');
   await page.click('[data-testid=intent-edit]');
-  await page.setInputFiles('[data-testid=new-project-input]', [S + 'dharamshala-4.jpg']);
+  await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-4.jpg']);
   await page.click('[data-testid=create-project]'); await settle(page, 3500);
   const scroll = page.locator('[data-testid=properties-scroll]');
 

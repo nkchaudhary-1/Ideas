@@ -10,7 +10,7 @@ import { createCarouselFromAssets, createCollageFromAssets } from "@/lib/workflo
 import { addAssetsToEdit } from "@/lib/edit";
 import { useFillTargetLite } from "./useReplaceTarget";
 
-const SAMPLES = Array.from({ length: 9 }, (_, i) => ({ url: assetUrl(`samples/dharamshala-${i + 1}.jpg`), name: `dharamshala-${i + 1}.jpg` }));
+const SAMPLES = Array.from({ length: 9 }, (_, i) => ({ url: assetUrl(`samples/sample-${i + 1}.jpg`), name: `sample-${i + 1}.jpg` }));
 
 export default function UploadsPanel() {
   const assets = useStore((s) => s.assets);
