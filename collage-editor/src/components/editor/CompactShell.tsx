@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import { Pencil } from "lucide-react";
 import { useStore, useSelectedElements } from "@/lib/store";
+import { useFillTarget } from "@/components/props/fill-target";
 import { useMediaQuery } from "@/lib/use-media";
 import Workspace from "@/components/canvas/Workspace";
 import Toast from "@/components/ui/Toast";
@@ -19,7 +20,8 @@ function EditChip() {
   const sheet = useStore((s) => s.ui.sheet);
   const els = useSelectedElements();
   const cropping = useStore((s) => !!s.ui.cropId || !!s.ui.editingTextId);
-  if (sheet || !els.length || cropping) return null;
+  const photo = useFillTarget(); // a selected photo has its own toolbar, with an Adjust button
+  if (sheet || !els.length || cropping || photo) return null;
   const label = els.length === 1 ? `Edit ${TYPE_LABEL[els[0].type] ?? "item"}` : `Edit ${els.length} selected`;
   return (
     <button type="button" data-testid="edit-chip" onClick={() => useStore.getState().setUI({ sheet: "props" })}

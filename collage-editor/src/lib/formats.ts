@@ -34,6 +34,14 @@ export function ratioLabel(w: number, h: number): string {
   return `${a}:${b}`;
 }
 
+const KIND_NAMES: Record<string, string> = { single: "Single", collage: "Collage", carousel: "Carousel", story: "Story", edit: "Photo & video edit" };
+/** what to call a saved project: a single wide canvas (12:5, 28:5…) is a panorama */
+export function projectKindLabel(kind: string, ratio: string): string {
+  const [a, b] = ratio.split(":").map(Number);
+  if (kind === "single" && a && b && a / b >= 2) return "Panorama";
+  return KIND_NAMES[kind] ?? kind;
+}
+
 export const DEFAULT_FORMAT = FORMATS[1];
 
 /** Panorama = one wide canvas that is cut into N slides on export. 12:5 is three 4:5 slides side by side. */

@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 import { Copy, FilePlus2, Trash2 } from "lucide-react";
 import { useStore } from "@/lib/store";
+import { projectKindLabel } from "@/lib/formats";
 import { Button, Empty, IconButton } from "@/components/ui/controls";
 import Modal from "@/components/ui/Modal";
 
-const KIND: Record<string, string> = { single: "Single", collage: "Collage", carousel: "Carousel", story: "Story", edit: "Photo & video edit" };
 
 export default function ProjectsDialog() {
   const st = useStore.getState;
@@ -31,7 +31,7 @@ export default function ProjectsDialog() {
                     <span className="min-w-0 truncate text-sm font-semibold" title={p.name}>{p.name}</span>
                     {p.id === currentId && <span className="shrink-0 rounded-full bg-ink/10 px-2 py-1 text-2xs font-semibold text-ink">Open</span>}
                   </div>
-                  <div className="text-xs text-mute">{KIND[p.kind] ?? p.kind} · {p.ratio} · {p.slideCount} {p.kind === "edit" ? (p.slideCount === 1 ? "item" : "items") : p.slideCount === 1 ? "slide" : "slides"} · {new Date(p.updatedAt).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}</div>
+                  <div className="text-xs text-mute">{projectKindLabel(p.kind, p.ratio)} · {p.ratio} · {p.slideCount} {p.kind === "edit" ? (p.slideCount === 1 ? "item" : "items") : p.slideCount === 1 ? "slide" : "slides"} · {new Date(p.updatedAt).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}</div>
                 </div>
               </button>
               <div className="flex h-12 items-center justify-end gap-1 px-3">

@@ -80,7 +80,7 @@ export default function SlideStrip() {
               ) : (
                 <span className={`max-w-[160px] truncate text-2xs font-semibold ${active ? "text-ink" : "text-mute"}`} onDoubleClick={() => setRename(s.id)} title="Double-click to rename">{segs > 1 ? `${s.name} · ${segs} slides` : `${i + 1} · ${s.name}`}</span>
               )}
-              <div className={`absolute right-1 top-1 hidden gap-1 group-hover:flex ${active ? "touch:flex" : ""}`}>
+              <div className={`absolute right-1 top-1 hidden gap-1 group-hover:flex ${phone ? "flex-col !gap-0" : ""} ${active ? "touch:flex" : ""}`}>
                 <button type="button" aria-label="Duplicate slide" title="Duplicate slide" onClick={() => st().duplicateSlide(s.id)} className="grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-black"><Copy size={12} /></button>
                 {slides.length > 1 && <button type="button" aria-label="Delete slide" title="Delete slide" onClick={() => st().deleteSlide(s.id)} className="grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-red-600"><Trash2 size={12} /></button>}
               </div>

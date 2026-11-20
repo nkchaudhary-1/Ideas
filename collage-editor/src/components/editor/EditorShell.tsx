@@ -1,5 +1,5 @@
 "use client";
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, useRef } from "react";
 import { useStore } from "@/lib/store";
 import StageChrome from "./StageChrome";
 import SlideStrip from "./SlideStrip";
@@ -41,7 +41,17 @@ function Shell() {
   const previewOpen = useStore((s) => s.ui.previewOpen);
   const exportOpen = useStore((s) => s.ui.exportOpen);
   const compact = useCompact();
+  const projectId = useStore((s) => s.project.id);
   useShortcuts();
+
+  // Editing photos and videos IS the properties card (filters, adjustments, crop). On a smaller window it starts shut like the other modes,
+  // so open it whenever an Edit project opens; on a narrow window close the media panel to give the canvas its room back.
+  const openedFor = useRef<string | null>(null);
+  useEffect(() => {
+    if (compact || kind !== "edit" || openedFor.current === projectId) return;
+    openedFor.current = projectId;
+    useStore.getState().setUI(window.innerWidth < 1300 ? { rightOpen: true, leftPanel: null } : { rightOpen: true });
+  }, [compact, kind, projectId]);
 
   useEffect(() => {
     void useStore.getState().init();
