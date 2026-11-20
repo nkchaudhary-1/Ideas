@@ -1,21 +1,21 @@
 "use client";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { ChevronDown, ChevronRight, RotateCcw } from "lucide-react";
-import { clamp } from "@/lib/util";
+import { ChevronRight, RotateCcw } from "lucide-react";
+import { clamp, keys } from "@/lib/util";
 
-export function IconButton({ icon, label, onClick, active, disabled, className = "", size = 32, shortcut, testId }: {
+export function IconButton({ icon, label, onClick, active, disabled, className = "", size = 36, shortcut, testId }: {
   icon: ReactNode; label: string; onClick?: (e: React.MouseEvent) => void; active?: boolean; disabled?: boolean; className?: string; size?: number; shortcut?: string; testId?: string;
 }) {
   return (
     <button
       type="button"
-      title={shortcut ? `${label} (${shortcut})` : label}
+      title={shortcut ? `${label} (${keys(shortcut)})` : label}
       aria-label={label}
       data-testid={testId}
       disabled={disabled}
       onClick={onClick}
       style={{ width: size, height: size }}
-      className={`grid shrink-0 place-items-center rounded-xl transition-colors ${active ? "bg-ink/10 text-ink" : "text-mute hover:bg-ink/[0.07] hover:text-ink"} disabled:opacity-30 disabled:hover:bg-transparent ${className}`}
+      className={`grid shrink-0 place-items-center rounded-full transition-colors ${active ? "bg-ink/10 text-ink" : "text-mute hover:bg-ink/[0.07] hover:text-ink"} disabled:opacity-30 disabled:hover:bg-transparent ${className}`}
     >
       {icon}
     </button>
@@ -32,7 +32,27 @@ export function Button({ children, onClick, variant = "default", disabled, class
     danger: "bg-red-500/10 text-red-500 hover:bg-red-500/20",
   }[variant];
   return (
-    <button type={type} title={title} data-testid={testId} disabled={disabled} onClick={onClick} className={`inline-flex h-9 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium transition-colors disabled:opacity-40 ${v} ${className}`}>
+    <button type={type} title={title} data-testid={testId} disabled={disabled} onClick={onClick} className={`inline-flex h-9 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-medium transition-colors disabled:opacity-40 ${v} ${className}`}>
+      {children}
+    </button>
+  );
+}
+
+/** a selectable pill: 36px tall, dark when on. `soft` marks an option that is merely switched on (a quiet tint, not the loud primary) */
+export function Chip({ active, soft, sm, children, className = "", ...rest }: { active?: boolean; soft?: boolean; sm?: boolean } & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  const on = soft ? "bg-ink/10 text-ink ring-1 ring-ink/25" : "bg-pill text-pillink";
+  const off = soft ? "bg-field text-faint hover:text-mute" : "bg-field text-mute hover:text-ink";
+  return (
+    <button type="button" aria-pressed={active} className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full font-semibold transition-colors ${sm ? "h-8 px-3 text-2xs" : "h-9 px-4 text-xs"} ${active ? on : off} ${className}`} {...rest}>
+      {children}
+    </button>
+  );
+}
+
+/** a quiet inline action ("Reset", "All", "None"): 32px tall so it is easy to hit, but visually just text */
+export function TextButton({ children, className = "", ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+  return (
+    <button type="button" className={`inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-2xs font-semibold text-mute transition-colors hover:bg-ink/[0.07] hover:text-ink disabled:opacity-40 ${className}`} {...rest}>
       {children}
     </button>
   );
@@ -41,9 +61,9 @@ export function Button({ children, onClick, variant = "default", disabled, class
 export function Section({ title, children, defaultOpen = true, action }: { title: string; children: ReactNode; defaultOpen?: boolean; action?: ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <section className="mx-3 mb-3 rounded-inner bg-panel2 px-5 py-5">
+    <section className="mx-3 mb-3 rounded-in-12 bg-panel2 px-5 py-5">
       <div className="flex items-center justify-between">
-        <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} className="flex flex-1 items-center justify-between text-left text-sm font-bold text-ink">
+        <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} className="flex h-8 flex-1 items-center justify-between text-left text-sm font-bold text-ink">
           {title}
           <ChevronRight size={14} className={`text-mute transition-transform ${open ? "rotate-90" : ""}`} />
         </button>
@@ -57,14 +77,14 @@ export function Section({ title, children, defaultOpen = true, action }: { title
 export function Field({ label, children, className = "" }: { label?: string; children: ReactNode; className?: string }) {
   return (
     <div className={`flex items-center gap-3 ${className}`}>
-      {label && <span className="w-[76px] shrink-0 text-xs text-mute">{label}</span>}
+      {label && <span className="w-20 shrink-0 text-xs text-mute">{label}</span>}
       <div className="flex min-w-0 flex-1 items-center gap-2">{children}</div>
     </div>
   );
 }
 
-export function NumberField({ value, onChange, step = 1, min, max, unit, label, width = 56, precision = 1 }: {
-  value: number; onChange: (v: number) => void; step?: number; min?: number; max?: number; unit?: string; label?: string; width?: number; precision?: number;
+export function NumberField({ value, onChange, step = 1, min, max, unit, label, width = 56, precision = 1, aria }: {
+  value: number; onChange: (v: number) => void; step?: number; min?: number; max?: number; unit?: string; label?: string; width?: number; precision?: number; aria?: string;
 }) {
   const [text, setText] = useState(String(round(value, precision)));
   const focus = useRef(false);
@@ -79,6 +99,7 @@ export function NumberField({ value, onChange, step = 1, min, max, unit, label, 
       <input
         value={text}
         inputMode="decimal"
+        aria-label={aria ?? label}
         onFocus={(e) => { focus.current = true; e.target.select(); }}
         onBlur={() => { focus.current = false; commit(text); setText(String(round(value, precision))); }}
         onChange={(e) => { setText(e.target.value); commit(e.target.value); }}
@@ -92,7 +113,7 @@ export function NumberField({ value, onChange, step = 1, min, max, unit, label, 
             onChange(n);
           }
         }}
-        className="h-8 w-full min-w-0 bg-transparent text-ink outline-none"
+        className="h-9 w-full min-w-0 bg-transparent text-ink outline-none"
       />
       {unit && <span className="shrink-0 text-faint">{unit}</span>}
     </label>
@@ -125,7 +146,7 @@ export function Slider({ label, value, min, max, step = 1, onChange, onReset, ne
   const to = bipolar ? Math.max(pct, nPct) : pct;
   const changed = Math.abs(value - neutral) > 0.001;
   const pill = (
-    <div className="flex h-11 min-w-0 flex-1 items-center rounded-full bg-field px-3.5">
+    <div className="flex h-11 min-w-0 flex-1 items-center rounded-full bg-field px-4">
       <input
         type="range"
         className={track ? "rs-color" : undefined}
@@ -137,15 +158,15 @@ export function Slider({ label, value, min, max, step = 1, onChange, onReset, ne
       />
     </div>
   );
-  const num = <NumberField value={value} onChange={onChange} min={min} max={max} step={step} width={unit ? 68 : 54} unit={unit} />;
+  const num = <NumberField value={value} onChange={onChange} min={min} max={max} step={step} width={unit ? 72 : 56} unit={unit} aria={label || undefined} />;
   if (!label) return <div className="flex items-center gap-3" data-testid={testId}>{pill}{num}</div>;
   return (
     <div data-testid={testId}>
-      <div className="mb-2.5 flex items-center justify-between gap-2">
-        <button type="button" onDoubleClick={onReset} title={onReset ? "Double-click to reset" : undefined} className="min-w-0 truncate text-left text-xs font-semibold text-ink/80">{label}</button>
-        <div className="flex items-center gap-1.5">
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <span onDoubleClick={onReset} title={onReset ? `${label} (double-click to reset)` : label} className="min-w-0 truncate text-left text-xs font-semibold text-ink/80">{label}</span>
+        <div className="flex items-center gap-2">
           {onReset && (
-            <button type="button" onClick={onReset} title="Reset" aria-label={`Reset ${label}`} className={`grid h-6 w-6 place-items-center rounded-full text-mute hover:bg-field hover:text-ink ${changed ? "" : "invisible"}`}>
+            <button type="button" onClick={onReset} title="Reset" aria-label={`Reset ${label}`} className={`grid h-8 w-8 place-items-center rounded-full text-mute hover:bg-field hover:text-ink ${changed ? "" : "invisible"}`}>
               <RotateCcw size={11} />
             </button>
           )}
@@ -176,12 +197,13 @@ export function TickSlider({ label, value, onChange, min = -180, max = 180, unit
   for (let k = first; k <= last; k++) ticks.push(k * 5);
   return (
     <div data-testid={testId}>
-      <div className="mb-2.5 flex items-center justify-between gap-2">
+      <div className="mb-3 flex items-center justify-between gap-2">
         <span className="text-xs font-semibold text-ink/80">{label}</span>
         <NumberField value={value} onChange={(v) => set(v)} min={min} max={max} step={1} width={68} unit={unit} />
       </div>
       <div
         ref={box}
+        data-allow-clip
         role="slider" tabIndex={0} aria-label={label} aria-valuemin={min} aria-valuemax={max} aria-valuenow={Math.round(value)}
         className="relative h-14 cursor-ew-resize touch-none select-none overflow-hidden rounded-full bg-field outline-none focus-visible:ring-2 focus-visible:ring-accent/50"
         onPointerDown={(e) => { (e.target as Element).setPointerCapture?.(e.pointerId); drag.current = { x: e.clientX, v: value }; }}
@@ -194,7 +216,7 @@ export function TickSlider({ label, value, onChange, min = -180, max = 180, unit
         {ticks.map((t) => {
           const x = center + ((t - value) / 5) * PX;
           const major = t % 45 === 0, mid = t % 15 === 0;
-          return <span key={t} className={`absolute bottom-3.5 w-px -translate-x-1/2 rounded-full ${major ? "h-5 bg-ink" : mid ? "h-4 bg-ink/60" : "h-3 bg-ink/25"}`} style={{ left: x }} />;
+          return <span key={t} className={`absolute bottom-4 w-px -translate-x-1/2 rounded-full ${major ? "h-5 bg-ink" : mid ? "h-4 bg-ink/60" : "h-3 bg-ink/25"}`} style={{ left: x }} />;
         })}
         <span className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-field to-transparent" />
         <span className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-field to-transparent" />
@@ -203,11 +225,11 @@ export function TickSlider({ label, value, onChange, min = -180, max = 180, unit
   );
 }
 
-export function Segmented<T extends string | number>({ value, options, onChange, size = "md" }: {
-  value: T; options: { value: T; label?: ReactNode; title?: string }[]; onChange: (v: T) => void; size?: "sm" | "md";
+export function Segmented<T extends string | number>({ value, options, onChange, size = "md", block }: {
+  value: T; options: { value: T; label?: ReactNode; title?: string }[]; onChange: (v: T) => void; size?: "sm" | "md"; /** stretch to the full width, options sharing it equally */ block?: boolean;
 }) {
   return (
-    <div className="inline-flex gap-0.5 rounded-full bg-field p-1">
+    <div className={`${block ? "flex w-full" : "inline-flex"} gap-1 rounded-full bg-field p-1`}>
       {options.map((o) => (
         <button
           key={String(o.value)}
@@ -215,7 +237,7 @@ export function Segmented<T extends string | number>({ value, options, onChange,
           title={o.title}
           onClick={() => onChange(o.value)}
           aria-pressed={o.value === value}
-          className={`grid place-items-center rounded-full px-3.5 font-medium transition-colors ${size === "sm" ? "h-6" : "h-7"} text-xs ${o.value === value ? "bg-seg text-ink shadow-sm" : "text-mute hover:text-ink"}`}
+          className={`grid place-items-center whitespace-nowrap rounded-full font-medium transition-colors ${block ? "flex-1 px-2" : "px-4"} ${size === "sm" ? "h-6" : "h-7"} text-xs ${o.value === value ? "bg-seg text-ink shadow-sm" : "text-mute hover:text-ink"}`}
         >
           {o.label}
         </button>
@@ -237,28 +259,29 @@ export function Toggle({ value, onChange, label }: { value: boolean; onChange: (
 
 export function Select<T extends string>({ value, options, onChange, width, className = "" }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; width?: number; className?: string }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value as T)} style={{ width }} className={`h-8 min-w-0 rounded-full bg-field px-3.5 text-xs font-medium text-ink outline-none focus:ring-2 focus:ring-accent/40 ${className}`}>
+    <select value={value} onChange={(e) => onChange(e.target.value as T)} style={{ width }} className={`h-9 min-w-0 rounded-full bg-field px-4 text-xs font-medium text-ink outline-none focus:ring-2 focus:ring-accent/40 ${className}`}>
       {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>
   );
 }
 
-export function TextInput({ value, onChange, placeholder, className = "", onCommit, testId }: { value: string; onChange?: (v: string) => void; placeholder?: string; className?: string; onCommit?: (v: string) => void; testId?: string }) {
+export function TextInput({ value, onChange, placeholder, className = "", onCommit, testId, aria }: { value: string; onChange?: (v: string) => void; placeholder?: string; className?: string; onCommit?: (v: string) => void; testId?: string; aria?: string }) {
   const [v, setV] = useState(value);
   useEffect(() => setV(value), [value]);
   return (
     <input
       value={v}
       data-testid={testId}
+      aria-label={aria ?? placeholder}
       placeholder={placeholder}
       onChange={(e) => { setV(e.target.value); onChange?.(e.target.value); }}
       onBlur={() => onCommit?.(v)}
       onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
-      className={`h-8 min-w-0 rounded-full bg-field px-4 text-xs font-medium text-ink outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/40 ${className}`}
+      className={`h-9 min-w-0 rounded-full bg-field px-4 text-xs font-medium text-ink outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/40 ${className}`}
     />
   );
 }
 
 export function Empty({ children }: { children: ReactNode }) {
-  return <div className="px-6 py-10 text-center text-xs leading-6 text-mute">{children}</div>;
+  return <div className="px-8 py-10 text-center text-xs leading-6 text-mute">{children}</div>;
 }

@@ -26,23 +26,23 @@ export default function BackgroundsPanel() {
   const apply = (b: Background) => st().setBackground(b, all);
   return (
     <div className="h-full overflow-y-auto" data-testid="backgrounds-panel">
-      {carousel && <div className="px-7 pb-4"><Toggle label="Apply to every slide" value={all} onChange={setAll} /></div>}
+      {carousel && <div className="px-8 pb-4"><Toggle label="Apply to every slide" value={all} onChange={setAll} /></div>}
       <Section title="Solid colours">
-        <div className="flex flex-wrap gap-2.5">
-          {SOLID_BACKGROUNDS.map((c) => <button key={c} type="button" title={c} onClick={() => apply({ type: "solid", color: c })} className={`h-8 w-8 rounded-lg border ${slide.background.type === "solid" && slide.background.color === c ? "border-ink ring-1 ring-ink/60" : "border-ink/15"}`} style={{ background: c }} />)}
+        <div className="flex flex-wrap gap-3">
+          {SOLID_BACKGROUNDS.map((c) => <button key={c} type="button" title={c} onClick={() => apply({ type: "solid", color: c })} className={`h-8 w-8 rounded border ${slide.background.type === "solid" && slide.background.color === c ? "border-ink ring-1 ring-ink/60" : "border-ink/15"}`} style={{ background: c }} />)}
         </div>
       </Section>
       <Section title="Gradients">
         <div className="grid grid-cols-4 gap-3">
           {GRADIENT_PRESETS.map((g) => (
-            <button key={g.name} type="button" title={g.name} data-testid={`grad-${g.name.toLowerCase().replace(/\s/g, "-")}`} onClick={() => apply({ type: "gradient", angle: g.angle, stops: [{ offset: 0, color: g.stops[0] }, { offset: 1, color: g.stops[1] }] })} className="h-12 rounded-md border border-ink/10" style={{ background: `linear-gradient(${g.angle}deg, ${g.stops[0]}, ${g.stops[1]})` }} />
+            <button key={g.name} type="button" title={g.name} data-testid={`grad-${g.name.toLowerCase().replace(/\s/g, "-")}`} onClick={() => apply({ type: "gradient", angle: g.angle, stops: [{ offset: 0, color: g.stops[0] }, { offset: 1, color: g.stops[1] }] })} className="h-12 rounded border border-ink/10" style={{ background: `linear-gradient(${g.angle}deg, ${g.stops[0]}, ${g.stops[1]})` }} />
           ))}
         </div>
       </Section>
       <Section title="Patterns & textures">
         <div className="grid grid-cols-3 gap-3">
           {PATTERNS.map((p) => (
-            <button key={p.id} type="button" data-testid={`pattern-${p.id}`} onClick={() => apply({ type: "pattern", pattern: p.id, color: p.ink, bg: p.bg, size: p.size, opacity: p.opacity })} className="h-14 rounded-md border border-ink/10 text-2xs" style={{ background: p.bg, color: p.ink }}>{p.name}</button>
+            <button key={p.id} type="button" data-testid={`pattern-${p.id}`} onClick={() => apply({ type: "pattern", pattern: p.id, color: p.ink, bg: p.bg, size: p.size, opacity: p.opacity })} className="h-14 rounded border border-ink/10 text-2xs" style={{ background: p.bg, color: p.ink }}>{p.name}</button>
           ))}
         </div>
       </Section>

@@ -17,20 +17,20 @@ export function SavePreset({ label, placeholder, defaultName, onSave, testId, di
   if (!open) {
     return (
       <button type="button" disabled={disabled} data-testid={testId} onClick={() => { setName(defaultName()); setOpen(true); }}
-        className="inline-flex h-8 items-center gap-1.5 rounded-full bg-field px-3 text-xs font-semibold text-ink hover:bg-raised disabled:opacity-40">
+        className="inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-full bg-field px-4 text-xs font-semibold text-ink hover:bg-raised disabled:opacity-40">
         <Bookmark size={13} /> {label}
       </button>
     );
   }
   return (
-    <div className="flex items-center gap-1.5" data-testid="save-preset-row">
+    <div className="flex items-center gap-2" data-testid="save-preset-row">
       <input autoFocus value={name} placeholder={placeholder ?? "Name"} aria-label="Preset name" data-testid="preset-name"
         onFocus={(e) => e.target.select()}
         onChange={(e) => setName(e.target.value)}
         onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter") commit(); if (e.key === "Escape") setOpen(false); }}
-        className="h-8 min-w-0 flex-1 rounded-full bg-field px-3 text-xs font-medium text-ink outline-none focus:ring-2 focus:ring-accent/40" />
-      <button type="button" aria-label="Save" data-testid="preset-save" onClick={commit} className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-pill text-pillink hover:opacity-90"><Check size={14} /></button>
-      <button type="button" aria-label="Cancel" onClick={() => setOpen(false)} className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-mute hover:bg-field hover:text-ink"><X size={14} /></button>
+        className="h-9 min-w-0 flex-1 rounded-full bg-field px-4 text-xs font-medium text-ink outline-none focus:ring-2 focus:ring-accent/40" />
+      <button type="button" aria-label="Save" data-testid="preset-save" onClick={commit} className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-pill text-pillink hover:opacity-90"><Check size={14} /></button>
+      <button type="button" aria-label="Cancel" onClick={() => setOpen(false)} className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-mute hover:bg-field hover:text-ink"><X size={14} /></button>
     </div>
   );
 }
@@ -39,9 +39,9 @@ export function SavePreset({ label, placeholder, defaultName, onSave, testId, di
 export function PresetActions({ id, name, onRename }: { id: string; name: string; onRename: () => void }) {
   const del = useStore((s) => s.deletePreset);
   return (
-    <span className="absolute right-0.5 top-0.5 flex gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
-      <button type="button" aria-label={`Rename ${name}`} title="Rename" onClick={(e) => { e.stopPropagation(); onRename(); }} className="grid h-5 w-5 place-items-center rounded-full bg-black/65 text-white hover:bg-black"><Pencil size={10} /></button>
-      <button type="button" aria-label={`Delete ${name}`} title="Delete" data-testid="preset-delete" onClick={(e) => { e.stopPropagation(); del(id); useStore.getState().toast(`Deleted “${name}”`, "info"); }} className="grid h-5 w-5 place-items-center rounded-full bg-black/65 text-white hover:bg-red-600"><Trash2 size={10} /></button>
+    <span className="absolute right-1 top-1 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+      <button type="button" aria-label={`Rename ${name}`} title="Rename" onClick={(e) => { e.stopPropagation(); onRename(); }} className="grid h-7 w-7 place-items-center rounded-full bg-black/65 text-white hover:bg-black"><Pencil size={10} /></button>
+      <button type="button" aria-label={`Delete ${name}`} title="Delete" data-testid="preset-delete" onClick={(e) => { e.stopPropagation(); del(id); useStore.getState().toast(`Deleted “${name}”`, "info"); }} className="grid h-7 w-7 place-items-center rounded-full bg-black/65 text-white hover:bg-red-600"><Trash2 size={10} /></button>
     </span>
   );
 }
@@ -54,6 +54,6 @@ export function RenameLabel({ id, name, editing, setEditing, className = "" }: {
     <input autoFocus defaultValue={name} aria-label="Preset name" onClick={(e) => e.stopPropagation()}
       onBlur={(e) => { rename(id, e.target.value); setEditing(false); }}
       onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter") (e.target as HTMLInputElement).blur(); if (e.key === "Escape") setEditing(false); }}
-      className="h-5 w-full min-w-0 rounded-full bg-field px-2 text-2xs font-semibold text-ink outline-none ring-1 ring-ink/30" />
+      className="h-7 w-full min-w-0 rounded-full bg-field px-3 text-2xs font-semibold text-ink outline-none ring-1 ring-ink/30" />
   );
 }

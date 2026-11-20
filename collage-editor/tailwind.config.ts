@@ -26,12 +26,17 @@ export default {
       },
       fontFamily: { sans: ["Manrope", "Inter", "system-ui", "-apple-system", "Segoe UI", "sans-serif"] },
       fontSize: { "2xs": ["11px", "15px"], xs: ["12px", "17px"], sm: ["13px", "18px"], base: ["14px", "20px"] },
+      // One corner system (see /CLAUDE.md). Cards are --r (24px, 32px on very large screens); the stage and dialogs are
+      // always 32px. Anything nested is concentric: its radius is the parent's minus the gap between the two edges,
+      // never below 8px. `in-N` is "N px in from a card's edge"; `bin-N` is "N px in from a 32px surface (dialog, stage)".
+      // Add the gaps up when nesting: a control 16px inside a section that sits 12px inside a card is `in-28`.
       borderRadius: {
-        sm: "6px", DEFAULT: "8px",
-        md: "var(--r-in2)", lg: "var(--r-in2)", //  inside something, 20px from its edge
-        xl: "var(--r-in)", "2xl": "var(--r-in)", //  inside a card, 12px from its edge
-        "3xl": "var(--r)",
-        card: "var(--r)", big: "var(--r-big)", inner: "var(--r-in)", inner2: "var(--r-in2)",
+        none: "0px", full: "9999px",
+        sm: "4px", //  glyphs under 24px (ticks, tiny icons)
+        DEFAULT: "8px", //  the floor: leaf controls and thumbnails deep inside a card
+        card: "var(--r)", big: "var(--r-big)",
+        ...Object.fromEntries(Array.from({ length: 32 }, (_, i) => [`in-${i + 1}`, `max(calc(var(--r) - ${i + 1}px), 8px)`])),
+        ...Object.fromEntries(Array.from({ length: 24 }, (_, i) => [`bin-${i + 1}`, `max(calc(var(--r-big) - ${i + 1}px), 8px)`])),
       },
       boxShadow: {
         card: "0 1px 2px rgb(var(--c-shadow) / 0.05), 0 10px 30px rgb(var(--c-shadow) / 0.10)",

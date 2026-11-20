@@ -22,6 +22,23 @@ Minimal, floating, light or dark. The canvas fills the middle; everything else i
 * **Palette:** black, white and one orange. Greys are neutral; orange marks only the active tool, slider fills, toggles and canvas selection, with a soft gradient on the primary button and the page ground. Light and dark themes; the choice is remembered and the first visit follows your system setting.
 * **Controls:** sliders are soft pills with a big white knob on a thin track (fill runs outward from the neutral point); colour adjustments (temperature, tint, hue, saturation) use a gradient pill with a ring knob; rotation uses a tick-mark ruler (drag, arrow keys, double-click to reset); segmented controls and aspect-ratio glyphs sit in the same pill style.
 
+## Design rules
+
+The rules every screen follows live in [`/CLAUDE.md`](../CLAUDE.md) so they apply to every project in this repo:
+one concentric corner system (cards 24px, 32px on very large screens; stage and dialogs 32px; anything nested is the
+parent's radius minus the gap, never below 8px), a 4px spacing grid with a 32px card gutter, 36px controls, and
+sentence-case British copy. They are enforced by an audit that drives the editor through every panel, dialog and popover
+and measures it:
+
+```bash
+npm run dev -- -p 3100                 # in one terminal
+node tests/audit/run.js                # 1600×950; also try --w=2200 --h=1250, --w=1280 --h=800, --theme=dark, --shots
+```
+
+It reports corner radii that break the concentric rule, off-grid spacing, clipped text, hit targets under 24px, controls
+without an accessible name and controls whose height is off the grid. The target is zero findings at every size and in
+both themes.
+
 ## Run it
 
 ```bash
@@ -32,6 +49,7 @@ npm run build && npm start
 npm run typecheck
 npm run test:unit  # colour pipeline + Match look maths, no browser needed
 npm run test:e2e   # browser suites for Edit mode (needs `npm run dev -- -p 3100` and Playwright)
+npm run audit      # UI audit: radii, spacing, clipping, hit targets, names (same prerequisites)
 ```
 
 Node 18.18+ (Next.js 14). Use a current **Chrome, Edge or Safari 16.4+** for video export (WebCodecs).
@@ -148,6 +166,7 @@ src/
     panels/               left rail: templates, layouts, uploads, text, elements, backgrounds, frames, layers, colours
     props/                right panel: canvas, text, shape, media, grid; EditPanel, EditSections, ColorTools for Edit mode
     editor/               top bar, slide strip, EditStrip (filmstrip + multi-select), shortcuts, shell
+    ui/                   shared controls (Button, Chip, TextButton, Slider, Segmented…), Modal, Popover, ErrorBoundary
     dialogs/              import, new project, projects, export, preview, shortcuts
 ```
 

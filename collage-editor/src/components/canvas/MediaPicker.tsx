@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { Button } from "@/components/ui/controls";
 import { Film, Upload } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { ACCEPT } from "@/lib/media";
@@ -68,9 +69,7 @@ export default function MediaPicker() {
     <div ref={panel} data-testid="media-picker" role="dialog" aria-label="Add photo or video" style={{ position: "fixed", left, top, width: W, maxHeight: H }}
       className="pop card z-[70] flex flex-col overflow-hidden p-5 shadow-float">
       <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="media-picker-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; void upload(f); }} />
-      <button type="button" onClick={() => input.current?.click()} data-testid="media-picker-upload" className="grad-pill flex h-11 w-full items-center justify-center gap-2 rounded-full text-sm font-semibold text-pillink hover:opacity-90">
-        <Upload size={15} /> Upload photo or video
-      </button>
+      <Button variant="primary" className="w-full" onClick={() => input.current?.click()} testId="media-picker-upload"><Upload size={15} /> Upload photo or video</Button>
       <div className="mb-3 mt-5 flex items-center justify-between">
         <span className="text-xs font-bold text-ink">From your library</span>
         <span className="text-2xs text-mute">{ready.length} item{ready.length === 1 ? "" : "s"}</span>
@@ -81,7 +80,7 @@ export default function MediaPicker() {
         ) : (
           <div className="grid grid-cols-4 gap-2" data-testid="media-picker-grid">
             {ready.map((a) => (
-              <button key={a.id} type="button" title={a.name} onClick={() => place([a])} className="relative aspect-square overflow-hidden rounded-lg bg-field ring-1 ring-line transition hover:ring-2 hover:ring-ink/40">
+              <button key={a.id} type="button" title={a.name} onClick={() => place([a])} className="relative aspect-square overflow-hidden rounded-in-20 bg-field ring-1 ring-line transition hover:ring-2 hover:ring-ink/40">
                 <img src={a.thumb} alt={a.name} className="h-full w-full object-cover" draggable={false} />
                 {a.kind === "video" && <span className="absolute bottom-0.5 left-0.5 flex items-center gap-0.5 rounded bg-black/70 px-1 text-2xs text-white"><Film size={9} />{formatTime(a.duration ?? 0)}</span>}
               </button>

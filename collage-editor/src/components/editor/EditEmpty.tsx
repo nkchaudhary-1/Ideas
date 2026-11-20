@@ -17,11 +17,11 @@ export default function EditEmpty() {
     <div className="absolute inset-0 z-10 grid place-items-center bg-stage p-8" data-testid="edit-empty"
       onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault(); }}
       onDrop={(e) => { e.preventDefault(); void add([...e.dataTransfer.files]); }}>
-      <div className="flex w-full max-w-md flex-col items-center gap-5 rounded-big border-2 border-dotted border-faint/60 px-10 py-14 text-center">
+      <div className="flex w-full max-w-md flex-col items-center gap-5 rounded border-2 border-dotted border-faint/60 px-10 py-14 text-center">
         <span className="grid h-14 w-14 place-items-center rounded-full bg-field text-mute"><SlidersHorizontal size={22} /></span>
         <div>
           <h2 className="text-lg font-extrabold tracking-tight">Add photos or videos to edit</h2>
-          <p className="mt-1.5 text-sm text-mute">Edit one, or bring in a few and edit them together. Nothing is combined into a collage.</p>
+          <p className="mt-2 text-sm text-mute">Edit one, or bring in a few and edit them together. Nothing is combined into a collage.</p>
         </div>
         <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="edit-empty-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; void add(f); }} />
         <div className="flex gap-2">

@@ -6,7 +6,7 @@ import { TEMPLATES, type Template, type TemplateCategory } from "@/lib/templates
 import { layoutGrid } from "@/lib/grid-engine";
 import type { Slide } from "@/lib/types";
 import { applyTemplate } from "@/lib/workflows";
-import { Button } from "@/components/ui/controls";
+import { Button, Chip } from "@/components/ui/controls";
 import { cloneSlide } from "@/lib/factory";
 
 const CATS: (TemplateCategory | "All" | "Saved")[] = ["All", "Instagram portrait", "Instagram square", "Carousel", "Photo collage", "Editorial", "Typography", "Magazine", "Travel", "Event", "Minimal", "Storytelling", "Poster", "Saved"];
@@ -37,7 +37,7 @@ export function Schematic({ slide, width = 120 }: { slide: Slide; width?: number
       return null;
     });
   return (
-    <svg width={width} height={h} viewBox={`0 0 ${width} ${h}`} className="block rounded-sm" style={{ background: bg }}>
+    <svg width={width} height={h} viewBox={`0 0 ${width} ${h}`} className="block rounded" style={{ background: bg }}>
       {render(slide.elements)}
     </svg>
   );
@@ -56,12 +56,6 @@ export default function TemplatesPanel() {
     return TEMPLATES.filter((t) => cat === "All" || t.categories.includes(cat));
   }, [cat, saved]);
 
-  const saveCurrent = (all: boolean) => {
-    const name = window.prompt?.("") ;
-    void name;
-  };
-  void saveCurrent;
-
   const saveAs = (all: boolean) => {
     const slides = all ? project.slides : [getSlide(project)];
     const entry = { id: "user-" + Date.now().toString(36), name: `${project.name}${all && slides.length > 1 ? ` (${slides.length} slides)` : ""}`, slides: structuredClone(slides) };
@@ -71,28 +65,28 @@ export default function TemplatesPanel() {
 
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="templates-panel">
-      <div className="flex flex-wrap gap-2 px-6 pb-4">
-        {CATS.map((c) => <button key={c} type="button" onClick={() => setCat(c)} className={`rounded px-1.5 py-0.5 text-2xs ${cat === c ? "bg-ink/10 text-ink" : "bg-panel2 text-mute hover:text-ink"}`}>{c}</button>)}
+      <div className="flex flex-wrap gap-2 px-8 pb-4">
+        {CATS.map((c) => <Chip sm key={c} active={cat === c} onClick={() => setCat(c)}>{c}</Chip>)}
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6 pt-2">
+      <div className="min-h-0 flex-1 overflow-y-auto px-8 pb-6 pt-2">
         <div className="grid grid-cols-2 gap-x-4 gap-y-6">
           {list.map((t) => {
             const slides = t.build();
             return (
               <div key={t.id} className="group" data-testid="template-card">
-                <div className="relative overflow-hidden rounded-md ring-1 ring-line group-hover:ring-ink/25">
+                <div className="relative overflow-hidden rounded ring-1 ring-line group-hover:ring-ink/25">
                   <div className="flex min-h-[140px] items-center justify-center bg-stage p-4">
                     <Schematic slide={slides[0]} width={slides[0].width / slides[0].height > 1.3 ? 120 : 96} />
                   </div>
                   {slides.length > 1 && <span className="absolute right-1 top-1 rounded bg-black/70 px-1 text-2xs text-white">{slides.length} slides</span>}
-                  <div className="absolute inset-x-0 bottom-0 flex translate-y-full gap-1 bg-black/80 p-1.5 transition-transform group-hover:translate-y-0 text-white">
+                  <div className="absolute inset-x-0 bottom-0 flex translate-y-full gap-1 bg-black/80 p-2 transition-transform group-hover:translate-y-0 text-white">
                     <Button className="flex-1 !h-6" variant="primary" onClick={() => applyTemplate(t, "replace")} testId={`apply-${t.id}`}>Apply</Button>
-                    <Button className="!h-6 !px-1.5" title="Add as new slide(s)" onClick={() => applyTemplate(t, "append")}><Plus size={12} /></Button>
-                    {cat === "Saved" && <Button className="!h-6 !px-1.5" variant="danger" title="Delete template" onClick={() => persist(saved.filter((s) => s.id !== t.id))}><Trash2 size={12} /></Button>}
+                    <Button className="!h-6 !px-2" title="Add as new slides" onClick={() => applyTemplate(t, "append")}><Plus size={12} /></Button>
+                    {cat === "Saved" && <Button className="!h-6 !px-2" variant="danger" title="Delete template" onClick={() => persist(saved.filter((s) => s.id !== t.id))}><Trash2 size={12} /></Button>}
                   </div>
                 </div>
-                <div className="mt-1 truncate text-xs text-ink/90">{t.name}</div>
-                <div className="line-clamp-2 text-2xs leading-3 text-faint">{t.description}</div>
+                <div className="mt-1 truncate text-xs text-ink/90" title={t.name}>{t.name}</div>
+                <div className="line-clamp-2 text-2xs leading-3 text-faint" title={t.description}>{t.description}</div>
               </div>
             );
           })}

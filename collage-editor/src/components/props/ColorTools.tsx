@@ -1,13 +1,13 @@
 "use client";
 import { useRef, useState } from "react";
-import { Section, Segmented, Slider } from "@/components/ui/controls";
+import { Section, Segmented, Slider, TextButton } from "@/components/ui/controls";
 import { HSL_BANDS, IDENTITY_CURVE, NEUTRAL_GRADE, buildLut, curveActive, gradeActive } from "@/lib/filters";
 import type { Adjustments, CurvePts, Curves, Grade, HslKey, Tri, Wheel } from "@/lib/types";
 import { clamp } from "@/lib/util";
 import type { FillTarget } from "./fill-target";
 
 const resetBtn = (onClick: () => void, id: string, on: boolean) => (
-  <button type="button" className={`text-2xs text-mute hover:text-ink ${on ? "" : "invisible"}`} data-testid={id} onClick={onClick}>Reset</button>
+  <TextButton data-testid={id} onClick={onClick} className={on ? "" : "invisible"}>Reset</TextButton>
 );
 
 // ───────────────────────── HSL colour mix ─────────────────────────
@@ -107,7 +107,7 @@ export function CurvesSection({ target }: { target: FillTarget }) {
   return (
     <Section title="Curves" defaultOpen={false} action={resetBtn(() => target.update((f) => { delete (f.adjustments as Adjustments).curves; }), "reset-curves", any)}>
       <Segmented value={ch} onChange={setCh} size="sm" options={CHANNELS.map((c) => ({ value: c.id, label: c.label, title: c.id === "m" ? "All channels" : `${c.label} channel` }))} />
-      <svg ref={svg} viewBox={`${-PAD} ${-PAD} ${BOX} ${BOX}`} className="mx-auto block w-full max-w-[260px] touch-none select-none rounded-2xl bg-field" data-testid="curve-editor"
+      <svg ref={svg} viewBox={`${-PAD} ${-PAD} ${BOX} ${BOX}`} className="mx-auto block w-full max-w-[260px] touch-none select-none rounded bg-field" data-testid="curve-editor"
         onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={up}
         onDoubleClick={(e) => { // the svg holds pointer capture, so the double-click lands here rather than on the point
           const [x, y] = local(e);
@@ -179,7 +179,7 @@ export function GradeSection({ target }: { target: FillTarget }) {
           <button key={z.id} type="button" aria-pressed={zone === z.id} data-testid={`grade-zone-${z.id}`} onClick={() => setZone(z.id)}
             className={`relative flex h-7 flex-1 items-center justify-center rounded-full text-xs font-medium transition-colors ${zone === z.id ? "bg-seg text-ink shadow-sm" : "text-mute hover:text-ink"}`}>
             {z.label}
-            {zoneOn(z.id) && <span className="absolute right-2 top-1.5 h-1 w-1 rounded-full bg-ink" />}
+            {zoneOn(z.id) && <span className="absolute right-2 top-2 h-1 w-1 rounded-full bg-ink" />}
           </button>
         ))}
       </div>

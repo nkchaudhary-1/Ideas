@@ -1,10 +1,9 @@
 "use client";
 import { useState } from "react";
-import { useStore, getSlide, useActiveSlide } from "@/lib/store";
-import { CUSTOM_FORMAT, FORMATS, PANORAMA_FORMATS, ratioLabel } from "@/lib/formats";
+import { useStore, useActiveSlide } from "@/lib/store";
 import type { Background, Format, LayoutGrid } from "@/lib/types";
 import { ColorField } from "@/components/ui/ColorPicker";
-import { Button, Field, NumberField, Section, Segmented, Select, Slider, Toggle } from "@/components/ui/controls";
+import { Button, Chip, Field, NumberField, Section, Segmented, Select, Slider, TextButton, Toggle } from "@/components/ui/controls";
 import { PaintField } from "./StyleControls";
 import { PALETTES } from "@/lib/colors";
 import AssetPicker from "./AssetPicker";
@@ -16,7 +15,7 @@ import { effectiveTrim, getAsset } from "@/lib/media";
 export function RatioButton({ f, active, onClick }: { f: Format; active: boolean; onClick: () => void }) {
   const k = 26 / Math.max(f.width, f.height);
   return (
-    <button type="button" onClick={onClick} title={`${f.label} · ${f.width}×${f.height}`} data-testid={`format-${f.id}`} className={`flex flex-col items-center gap-1 rounded-md p-1.5 ${active ? "bg-ink/10 ring-1 ring-ink/60" : "hover:bg-ink/5"}`}>
+    <button type="button" onClick={onClick} title={`${f.label} · ${f.width}×${f.height}`} data-testid={`format-${f.id}`} className={`flex flex-col items-center gap-1 rounded-in-20 p-2 ${active ? "bg-ink/10 ring-1 ring-ink/60" : "hover:bg-ink/5"}`}>
       <span className="grid h-7 w-7 place-items-center"><span className="rounded-[2px] border border-ink/70" style={{ width: Math.max(8, f.width * k), height: Math.max(8, f.height * k) }} /></span>
       <span className={`text-2xs ${active ? "text-ink" : "text-mute"}`}>{f.ratio}</span>
     </button>
@@ -36,9 +35,6 @@ export default function CanvasProps() {
   const st = useStore.getState;
   const project = useStore((s) => s.project);
   const slide = useActiveSlide();
-  const [content, setContent] = useState<"stretch" | "fit" | "none">("stretch");
-  const [cw, setCw] = useState(slide.width);
-  const [ch, setCh] = useState(slide.height);
   const [bgPicker, setBgPicker] = useState(false);
   const carousel = project.kind === "carousel" || project.slides.length > 1;
   const bg = slide.background;
@@ -53,6 +49,7 @@ export default function CanvasProps() {
     <>
       <Section title="Background">
         <Segmented
+          block
           value={bg.type}
           options={[{ value: "solid", label: "Solid" }, { value: "gradient", label: "Gradient" }, { value: "pattern", label: "Pattern" }, { value: "image", label: "Photo" }]}
           onChange={(t) => {
@@ -65,8 +62,8 @@ export default function CanvasProps() {
         {bg.type === "solid" && (
           <>
             <Field label="Colour"><ColorField value={bg.color} onChange={(c) => setBg({ type: "solid", color: c })} testId="bg-color" /></Field>
-            <div className="flex flex-wrap gap-1">
-              {PALETTES[0].colors.concat(PALETTES[1].colors.slice(0, 3)).map((c) => <button key={c} type="button" title={c} onClick={() => setBg({ type: "solid", color: c })} className="h-5 w-5 rounded border border-ink/20" style={{ background: c }} />)}
+            <div className="flex flex-wrap gap-2">
+              {PALETTES[0].colors.concat(PALETTES[1].colors.slice(0, 3)).map((c) => <button key={c} type="button" title={c} aria-label={c} onClick={() => setBg({ type: "solid", color: c })} className="h-6 w-6 rounded-full ring-1 ring-inset ring-ink/15 transition-transform hover:scale-110" style={{ background: c }} />)}
             </div>
           </>
         )}
@@ -94,8 +91,8 @@ export default function CanvasProps() {
       </Section>
 
       <Section title="Layout grid" defaultOpen={false}>
-        <div className="grid grid-cols-2 gap-1">
-          {LAYOUT_PRESETS.map((p) => <button key={p.name} type="button" onClick={() => setGrid({ ...p.grid, visible: true })} className="h-6 truncate rounded bg-panel2 px-1.5 text-2xs text-mute ring-1 ring-line hover:text-ink" data-testid={`layout-${p.name.replace(/\W+/g, "-").toLowerCase()}`}>{p.name}</button>)}
+        <div className="grid grid-cols-2 gap-2">
+          {LAYOUT_PRESETS.map((p) => <Chip sm key={p.name} onClick={() => setGrid({ ...p.grid, visible: true })} className="w-full justify-center" data-testid={`layout-${p.name.replace(/\W+/g, "-").toLowerCase()}`}>{p.name}</Chip>)}
         </div>
         <Toggle label="Show grid" value={g.visible} onChange={(v) => setGrid({ visible: v })} />
         <Field label="Type"><Select width={110} value={g.kind} options={[{ value: "none", label: "None" }, { value: "columns", label: "Columns" }, { value: "modular", label: "Modular" }, { value: "baseline", label: "Baseline" }]} onChange={(v) => setGrid({ kind: v, visible: v !== "none" })} /></Field>
@@ -113,12 +110,11 @@ export default function CanvasProps() {
         <Section title="Video slide">
           <Field label="Duration">
             <NumberField width={72} value={slide.duration ?? +clip.toFixed(1)} min={0.5} max={600} unit="s" step={0.5} onChange={(v) => st().commit((p) => { p.slides.find((s) => s.id === p.activeSlideId)!.duration = v; })} />
-            {slide.duration !== null && <button type="button" className="text-2xs text-mute hover:text-ink" onClick={() => st().commit((p) => { p.slides.find((s) => s.id === p.activeSlideId)!.duration = null; })}>Auto</button>}
+            {slide.duration !== null && <TextButton onClick={() => st().commit((p) => { p.slides.find((s) => s.id === p.activeSlideId)!.duration = null; })}>Auto</TextButton>}
           </Field>
           <p className="text-2xs leading-4 text-faint">Auto = the longest trimmed clip ({formatTime(clip)}). Shorter clips loop or hold their last frame.</p>
         </Section>
       )}
-      {void getSlide}
     </>
   );
 }

@@ -3,13 +3,12 @@ import { useState } from "react";
 import { Check, ClipboardPaste, Copy, Crop, FlipHorizontal2, FlipVertical2, RotateCcw, RotateCw, Scan, Sparkles, X } from "lucide-react";
 import { useStore, getSlide } from "@/lib/store";
 import { getAsset } from "@/lib/media";
-import { Button, IconButton, Section, Slider } from "@/components/ui/controls";
+import { Button, Chip, IconButton, Section, Slider, TextButton } from "@/components/ui/controls";
 import Popover from "@/components/ui/Popover";
 import { COPY_ITEMS, DEFAULT_COPY, captureEdit, clearMatch, matchToReference, mediaOf, pasteToSlides, resetGeometry, rotateBy, setAspect, type CopyId } from "@/lib/edit";
 import { DEFAULT_MATCH, type MatchOpts } from "@/lib/match";
 import type { EditTarget } from "./fill-target";
 
-const chip = (on: boolean) => `rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${on ? "bg-pill text-pillink" : "bg-field text-mute hover:text-ink"}`;
 
 // ───────────────────────── crop & transform ─────────────────────────
 
@@ -31,9 +30,9 @@ export function EditCrop({ target }: { target: EditTarget }) {
   const ids = target.slideIds;
   return (
     <Section title="Crop & transform" defaultOpen>
-      <div className="flex flex-wrap gap-1.5" data-testid="aspect-row" role="group" aria-label="Aspect ratio">
+      <div className="flex flex-wrap gap-2" data-testid="aspect-row" role="group" aria-label="Aspect ratio">
         {RATIOS.map((r) => (
-          <button key={r.label} type="button" aria-pressed={active === r.label} data-testid={`aspect-${r.label}`} onClick={() => setAspect(ids, r.r)} className={chip(active === r.label)}>{r.label}</button>
+          <Chip key={r.label} active={active === r.label} data-testid={`aspect-${r.label}`} onClick={() => setAspect(ids, r.r)}>{r.label}</Chip>
         ))}
       </div>
       <div className="flex flex-wrap gap-0.5">
@@ -58,8 +57,8 @@ export function EditCrop({ target }: { target: EditTarget }) {
 
 function Tick({ on, label, onClick, id }: { on: boolean; label: string; onClick: () => void; id: string }) {
   return (
-    <button type="button" role="checkbox" aria-checked={on} data-testid={id} onClick={onClick} className="flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-left text-xs hover:bg-field">
-      <span className={`grid h-[18px] w-[18px] shrink-0 place-items-center rounded-md border ${on ? "border-transparent grad-accent text-white" : "border-faint/60"}`}>{on && <Check size={11} strokeWidth={3} />}</span>
+    <button type="button" role="checkbox" aria-checked={on} data-testid={id} onClick={onClick} className="flex h-8 w-full items-center gap-3 rounded px-2 text-left text-xs hover:bg-field">
+      <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-in-20 border ${on ? "border-transparent grad-accent text-white" : "border-faint/60"}`}>{on && <Check size={11} strokeWidth={3} />}</span>
       {label}
     </button>
   );
@@ -70,17 +69,17 @@ function CopyPicker({ onCopy }: { onCopy: (ids: CopyId[]) => void }) {
   const toggle = (id: CopyId) => setIds((l) => (l.includes(id) ? l.filter((x) => x !== id) : [...l, id]));
   const groups = [...new Set(COPY_ITEMS.map((i) => i.group))];
   return (
-    <div className="-m-2 space-y-4" data-testid="copy-picker">
-      <div className="flex items-center justify-between px-2">
+    <div className="space-y-4" data-testid="copy-picker">
+      <div className="flex items-center justify-between">
         <h3 className="text-sm font-bold">Copy which settings?</h3>
-        <span className="space-x-3 text-2xs text-mute">
-          <button type="button" className="hover:text-ink" data-testid="copy-all" onClick={() => setIds(COPY_ITEMS.map((i) => i.id))}>All</button>
-          <button type="button" className="hover:text-ink" data-testid="copy-none" onClick={() => setIds([])}>None</button>
+        <span className="-mr-3 flex items-center">
+          <TextButton data-testid="copy-all" onClick={() => setIds(COPY_ITEMS.map((i) => i.id))}>All</TextButton>
+          <TextButton data-testid="copy-none" onClick={() => setIds([])}>None</TextButton>
         </span>
       </div>
       {groups.map((g) => (
         <div key={g}>
-          <div className="px-2 pb-1 text-2xs font-semibold text-faint">{g}</div>
+          <div className="pb-1 text-2xs font-semibold text-faint">{g}</div>
           <div className={g === "Light" || g === "Colour" ? "grid grid-cols-2 gap-x-1" : ""}>
             {COPY_ITEMS.filter((i) => i.group === g).map((i) => <Tick key={i.id} id={`copy-${i.id}`} on={ids.includes(i.id)} label={i.label} onClick={() => toggle(i.id)} />)}
           </div>
@@ -104,7 +103,7 @@ export function CopyPasteSection({ target }: { target: EditTarget }) {
   };
   return (
     <Section title="Copy & paste settings" defaultOpen={false}>
-      <div className="flex gap-1.5">
+      <div className="flex gap-2">
         <Popover align="left" width={340} trigger={(open, toggle) => (
           <Button onClick={toggle} testId="copy-settings" className={open ? "ring-2 ring-ink/30" : ""}><Copy size={13} /> Copy settings…</Button>
         )}>
@@ -163,29 +162,29 @@ export function MatchSection({ target }: { target: EditTarget }) {
         </>
       ) : (
         <>
-          <div className="flex items-center gap-3 rounded-2xl bg-field p-2.5" data-testid="reference-card">
-            {refAsset ? <img src={refAsset.thumb} alt="" className="h-10 w-10 rounded-lg object-cover" /> : <span className="h-10 w-10 rounded-lg bg-raised" />}
+          <div className="flex items-center gap-3 rounded bg-field p-3" data-testid="reference-card">
+            {refAsset ? <img src={refAsset.thumb} alt="" className="h-10 w-10 rounded object-cover" /> : <span className="h-10 w-10 rounded-in-20 bg-raised" />}
             <div className="min-w-0 flex-1">
-              <div className="truncate text-xs font-semibold">{refSlide.name}</div>
+              <div className="truncate text-xs font-semibold" title={refSlide.name}>{refSlide.name}</div>
               <div className="text-2xs text-mute">Reference</div>
             </div>
-            {!isRef && <button type="button" className="text-2xs font-semibold text-mute hover:text-ink" data-testid="change-reference" onClick={() => st().setUI({ refSlideId: target.slideId })}>Use current</button>}
+            {!isRef && <TextButton data-testid="change-reference" onClick={() => st().setUI({ refSlideId: target.slideId })}>Use current</TextButton>}
             <IconButton icon={<X size={14} />} label="Clear reference" size={28} testId="clear-reference" onClick={() => st().setUI({ refSlideId: null })} />
           </div>
           {isRef ? (
             <p className="text-2xs leading-4 text-faint">You're editing the reference. Select the photos to match in the strip below, then come back here.</p>
           ) : (
             <>
-              <div className="flex flex-wrap gap-1.5" data-testid="match-options" role="group" aria-label="What to match">
+              <div className="flex flex-wrap gap-2" data-testid="match-options" role="group" aria-label="What to match">
                 {MATCH_CHIPS.map((c) => (
-                  <button key={c.key} type="button" title={c.hint} aria-pressed={opts[c.key]} data-testid={`match-opt-${c.key}`} onClick={() => st().setUI({ matchOpts: { ...opts, [c.key]: !opts[c.key] } })} className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors ${opts[c.key] ? "bg-ink/10 text-ink ring-1 ring-ink/25" : "bg-field text-faint hover:text-mute"}`}>{opts[c.key] && <Check size={11} strokeWidth={3} />}{c.label}</button>
+                  <Chip key={c.key} soft active={opts[c.key]} title={c.hint} data-testid={`match-opt-${c.key}`} onClick={() => st().setUI({ matchOpts: { ...opts, [c.key]: !opts[c.key] } })}>{opts[c.key] && <Check size={12} strokeWidth={3} />}{c.label}</Chip>
                 ))}
               </div>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 <Button variant="primary" disabled={busy || !targets.length} onClick={() => run(targets, targets.length === 1 ? "Photo" : `${targets.length} items`)} testId="match-selected">
                   <Sparkles size={13} /> {busy ? "Matching…" : `Match ${targets.length > 1 ? `${targets.length} selected` : "this one"}`}
                 </Button>
-                {others.length > 1 && <Button variant="ghost" disabled={busy} onClick={() => run(others, "Everything")} testId="match-all">Match all others</Button>}
+                {others.length > 1 && <Button disabled={busy} onClick={() => run(others, "Everything")} testId="match-all">Match all others</Button>}
               </div>
             </>
           )}
@@ -193,9 +192,9 @@ export function MatchSection({ target }: { target: EditTarget }) {
             <>
               <Slider testId="match-intensity" label="Match intensity" value={Math.round(m.intensity)} min={0} max={100} unit="%" neutral={100}
                 onChange={(v) => target.update((f) => { if (f.match) f.match.intensity = v; }, "match-int")} onReset={() => target.update((f) => { if (f.match) f.match.intensity = 100; })} />
-              <div className="flex gap-1.5">
-                <Button variant="ghost" disabled={busy} onClick={() => run(matchedIds, "Updated")} testId="rematch" title="Match again against the reference's current edits">Update match</Button>
-                <Button variant="ghost" onClick={() => clearMatch(target.slideIds)} testId="remove-match">Remove match</Button>
+              <div className="flex gap-2">
+                <Button disabled={busy} onClick={() => run(matchedIds, "Updated")} testId="rematch" title="Match again against the reference's current edits">Update match</Button>
+                <Button onClick={() => clearMatch(target.slideIds)} testId="remove-match">Remove match</Button>
               </div>
               <p className="text-2xs leading-4 text-faint">The match sits on top of this photo's own edits, so you can keep adjusting it by hand.</p>
             </>

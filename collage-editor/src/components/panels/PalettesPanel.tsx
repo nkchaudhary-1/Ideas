@@ -52,7 +52,7 @@ export default function PalettesPanel() {
 
   return (
     <div className="h-full overflow-y-auto" data-testid="palettes-panel">
-      <div className="space-y-3 px-6 pb-5">
+      <div className="space-y-3 px-8 pb-5">
         <div className="text-xs text-mute">{els.length ? `Apply to ${els.length} selected` : "Nothing selected: colours set the background"}</div>
         <Segmented value={target} options={[{ value: "fill", label: "Fill / text" }, { value: "stroke", label: "Border" }, { value: "background", label: "Background" }]} onChange={setTarget} />
       </div>
@@ -61,7 +61,7 @@ export default function PalettesPanel() {
         {photo.length > 0 && (
           <>
             <div className="text-2xs text-faint">{photoName}</div>
-            <div className="flex flex-wrap gap-2.5">{photo.map((c) => <button key={c} type="button" title={c} onClick={() => apply(c)} className="h-8 w-8 rounded-md border border-ink/15" style={{ background: c }} />)}</div>
+            <div className="flex flex-wrap gap-3">{photo.map((c) => <button key={c} type="button" title={c} onClick={() => apply(c)} className="h-8 w-8 rounded border border-ink/15" style={{ background: c }} />)}</div>
             <Button variant="ghost" onClick={() => persist([{ name: `From ${photoName}`, colors: photo }, ...saved].slice(0, 12))}><Plus size={12} /> Save palette</Button>
           </>
         )}
@@ -78,7 +78,7 @@ export default function PalettesPanel() {
       )}
       {PALETTES.map((p) => (
         <Section key={p.name} title={p.name} defaultOpen={p.name === "From your posts"}>
-          <div className="flex flex-wrap gap-2.5">{p.colors.map((c) => <button key={c} type="button" title={c} data-testid={`swatch-${c.slice(1)}`} onClick={() => apply(c)} className="h-8 w-8 rounded-md border border-ink/15" style={{ background: c }} />)}</div>
+          <div className="flex flex-wrap gap-3">{p.colors.map((c) => <button key={c} type="button" title={c} data-testid={`swatch-${c.slice(1)}`} onClick={() => apply(c)} className="h-8 w-8 rounded border border-ink/15" style={{ background: c }} />)}</div>
         </Section>
       ))}
     </div>

@@ -36,6 +36,7 @@ export default function TextEditor({ el, view }: { el: TextEl; view: { scale: nu
   return (
     <textarea
       ref={ref}
+      aria-label="Edit text"
       value={el.text}
       spellCheck={false}
       onChange={(e) => useStore.getState().updateElement(el.id, { text: e.target.value }, { key: "text-" + el.id })}

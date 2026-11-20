@@ -32,26 +32,29 @@ export default function TextProps({ el }: { el: TextEl }) {
           data-testid="text-content"
           onChange={(e) => set((t) => { t.text = e.target.value; }, "text-" + el.id)}
           onKeyDown={(e) => e.stopPropagation()}
-          className="w-full resize-none rounded-md bg-panel2 p-2 text-xs text-ink outline-none ring-1 ring-line focus:ring-accent/70"
+          aria-label="Text" className="w-full resize-none rounded bg-field px-4 py-3 text-xs leading-5 text-ink outline-none focus:ring-2 focus:ring-accent/40"
         />
         <FontPicker family={el.fontFamily} onChange={(fam) => { const ff = fontByFamily(fam); const w = ff?.weights.reduce((b, x) => (Math.abs(x - el.fontWeight) < Math.abs(b - el.fontWeight) ? x : b), ff.weights[0]) ?? el.fontWeight; void loadFont(fam, w, false); set((e) => { e.fontFamily = fam; e.fontWeight = w; if (!ff?.italic.length) e.italic = false; }); }} />
-        <Field label="Size">
-          <Slider label="" value={Math.round(el.fontSize)} min={8} max={400} unit="px" onChange={(v) => set((e) => { e.fontSize = v; }, "fs")} />
-        </Field>
+        <Slider label="Size" value={Math.round(el.fontSize)} min={8} max={400} unit="px" onChange={(v) => set((e) => { e.fontSize = v; }, "fs")} />
         <Field label="Weight">
-          <Select width={96} value={String(el.fontWeight)} options={weights.map((w) => ({ value: String(w), label: weightName(w) }))} onChange={(v) => { set((e) => { e.fontWeight = +v; }); void loadFont(el.fontFamily, +v, el.italic); }} />
+          <Select width={128} value={String(el.fontWeight)} options={weights.map((w) => ({ value: String(w), label: weightName(w) }))} onChange={(v) => { set((e) => { e.fontWeight = +v; }); void loadFont(el.fontFamily, +v, el.italic); }} />
         </Field>
-        <div className="flex items-center gap-0.5">
-          <IconButton icon={<Bold size={15} />} label="Bold" active={bold} onClick={toggleBold} />
-          <IconButton icon={<Italic size={15} />} label={canItalic ? "Italic" : "Italic (not available for this font)"} active={el.italic} disabled={!canItalic} onClick={() => { set((e) => { e.italic = !el.italic; }); void loadFont(el.fontFamily, el.fontWeight, !el.italic); }} />
-          <IconButton icon={<Underline size={15} />} label="Underline" active={el.underline} onClick={() => set((e) => { e.underline = !el.underline; })} />
-          <IconButton icon={<Strikethrough size={15} />} label="Strikethrough" active={el.strike} onClick={() => set((e) => { e.strike = !el.strike; })} />
-          <span className="mx-1 h-4 w-px bg-line" />
-          <IconButton icon={<AlignLeft size={15} />} label="Align left" active={el.align === "left"} onClick={() => set((e) => { e.align = "left"; })} />
-          <IconButton icon={<AlignCenter size={15} />} label="Align centre" active={el.align === "center"} onClick={() => set((e) => { e.align = "center"; })} />
-          <IconButton icon={<AlignRight size={15} />} label="Align right" active={el.align === "right"} onClick={() => set((e) => { e.align = "right"; })} />
-          <IconButton icon={<AlignJustify size={15} />} label="Justify" active={el.align === "justify"} onClick={() => set((e) => { e.align = "justify"; })} />
-        </div>
+        <Field label="Style">
+          <div className="flex gap-1">
+            <IconButton icon={<Bold size={15} />} label="Bold" active={bold} onClick={toggleBold} />
+            <IconButton icon={<Italic size={15} />} label={canItalic ? "Italic" : "Italic (not available for this font)"} active={el.italic} disabled={!canItalic} onClick={() => { set((e) => { e.italic = !el.italic; }); void loadFont(el.fontFamily, el.fontWeight, !el.italic); }} />
+            <IconButton icon={<Underline size={15} />} label="Underline" active={el.underline} onClick={() => set((e) => { e.underline = !el.underline; })} />
+            <IconButton icon={<Strikethrough size={15} />} label="Strikethrough" active={el.strike} onClick={() => set((e) => { e.strike = !el.strike; })} />
+          </div>
+        </Field>
+        <Field label="Align">
+          <div className="flex gap-1">
+            <IconButton icon={<AlignLeft size={15} />} label="Align left" active={el.align === "left"} onClick={() => set((e) => { e.align = "left"; })} />
+            <IconButton icon={<AlignCenter size={15} />} label="Align centre" active={el.align === "center"} onClick={() => set((e) => { e.align = "center"; })} />
+            <IconButton icon={<AlignRight size={15} />} label="Align right" active={el.align === "right"} onClick={() => set((e) => { e.align = "right"; })} />
+            <IconButton icon={<AlignJustify size={15} />} label="Justify" active={el.align === "justify"} onClick={() => set((e) => { e.align = "justify"; })} />
+          </div>
+        </Field>
         <Field label="Case">
           <Segmented size="sm" value={el.textTransform} options={[{ value: "none", label: "Aa" }, { value: "uppercase", label: "AA" }, { value: "lowercase", label: "aa" }, { value: "capitalize", label: "Ab" }]} onChange={(v) => set((e) => { e.textTransform = v; })} />
         </Field>
@@ -72,10 +75,10 @@ export default function TextProps({ el }: { el: TextEl }) {
         <PaintField label="Colour" paint={el.fill} onChange={(p) => p && set((e) => { e.fill = p; }, "fill")} />
         <StrokeField label="Outline" stroke={el.stroke} onChange={(s) => set((e) => { e.stroke = s; })} max={24} />
         <ShadowField shadow={el.shadow} onChange={(s) => set((e) => { e.shadow = s; })} />
-        <Field label="Highlight"><Toggle label={el.background ? "On" : "Off"} value={!!el.background} onChange={(v) => set((e) => { e.background = v ? { color: "#e5ff65", radius: 8 } : null; if (v && e.padding < 8) e.padding = 12; })} /></Field>
+        <Toggle label="Highlight" value={!!el.background} onChange={(v) => set((e) => { e.background = v ? { color: "#e5ff65", radius: 8 } : null; if (v && e.padding < 8) e.padding = 12; })} />
         {el.background && (
           <>
-            <Field label=""><span className="w-[72px]" /><ColorField value={el.background.color} alpha onChange={(c) => set((e) => { if (e.background) e.background.color = c; }, "bgc")} /></Field>
+            <Field label="Colour"><ColorField value={el.background.color} alpha onChange={(c) => set((e) => { if (e.background) e.background.color = c; }, "bgc")} /></Field>
             <Slider label="Corner" value={el.background.radius} min={0} max={80} onChange={(v) => set((e) => { if (e.background) e.background.radius = v; }, "bgr")} />
           </>
         )}

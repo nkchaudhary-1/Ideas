@@ -11,7 +11,8 @@
     "fonts": "node scripts/fetch-fonts.mjs",
     "artifact": "node scripts/build-artifact.mjs",
     "test:unit": "node scripts/run-unit.mjs",
-    "test:e2e": "for f in tests/e2e/edit-*.js; do node \"$f\" || exit 1; done"
+    "test:e2e": "for f in tests/e2e/edit-*.js; do node \"$f\" || exit 1; done",
+    "audit": "node tests/audit/run.js"
   },
   "dependencies": {
     "immer": "10.1.1",

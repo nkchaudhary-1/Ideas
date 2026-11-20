@@ -76,3 +76,12 @@ export function cssColor(token: string, alpha = 1): string {
   const v = typeof document === "undefined" ? "" : getComputedStyle(document.documentElement).getPropertyValue(token).trim();
   return v ? `rgb(${v.split(/\s+/).join(" ")} / ${alpha})` : `rgba(128,128,128,${alpha})`;
 }
+
+/** show a Mac-style shortcut ("⇧⌘Z") the way the user's keyboard writes it ("Shift+Ctrl+Z" off a Mac) */
+export const keys = (s: string): string => {
+  if (typeof navigator === "undefined" || /Mac|iPhone|iPad/.test(navigator.platform)) return s;
+  return s.replace(/⇧/g, "Shift+").replace(/⌥/g, "Alt+").replace(/⌘/g, "Ctrl+").replace(/⌫/g, "Backspace");
+};
+
+/** "1080 × 1350 px": the one way a size reads in a sentence or caption */
+export const dims = (w: number, h: number): string => `${Math.round(w)} × ${Math.round(h)} px`;

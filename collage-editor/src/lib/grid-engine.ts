@@ -87,7 +87,7 @@ export function findSplit(node: GridNode, id: Id): GridSplit | null {
 
 /** Split a cell in two. If its parent already splits in that direction the new cell joins as a sibling. */
 export function splitCell(root: GridNode, cellId: Id, dir: "h" | "v"): GridNode {
-  const visit = (node: GridNode, parent: GridSplit | null): GridNode => {
+  const visit = (node: GridNode): GridNode => {
     if (node.kind === "cell") {
       if (node.id !== cellId) return node;
       return { kind: "split", id: uid("s"), dir, weights: [1, 1], children: [node, cell()] };
@@ -100,9 +100,9 @@ export function splitCell(root: GridNode, cellId: Id, dir: "h" | "v"): GridNode 
       weights.splice(idx + 1, 0, weights[idx]);
       return { ...node, children, weights };
     }
-    return { ...node, children: node.children.map((c) => visit(c, node)) };
+    return { ...node, children: node.children.map(visit) };
   };
-  return visit(root, null);
+  return visit(root);
 }
 
 /** Remove a cell; neighbours absorb its space. Collapses single-child splits. */
@@ -184,7 +184,7 @@ export const GRID_PRESETS: GridPreset[] = [
   // Basic
   { id: "one", name: "1 image", group: "Basic", spec: C },
   { id: "two-v", name: "2 stacked", group: "Basic", spec: V(C, C) },
-  { id: "two-h", name: "2 side by side", group: "Basic", spec: H(C, C) },
+  { id: "two-h", name: "Side by side", group: "Basic", spec: H(C, C) },
   { id: "three-v", name: "3 stacked", group: "Basic", spec: V(C, C, C) },
   { id: "three-h", name: "3 columns", group: "Basic", spec: H(C, C, C) },
   { id: "four", name: "4 equal", group: "Basic", spec: V(H(C, C), H(C, C)) },
@@ -212,9 +212,9 @@ export const GRID_PRESETS: GridPreset[] = [
   { id: "film", name: "Film strip", group: "Editorial", spec: V(C, C, C, C), gutter: 10, margin: 40, radius: 6 },
   { id: "story", name: "Storytelling", group: "Editorial", spec: V([5, C], [2, H(C, C, C)]) },
   // Exact structures found in the Figma posts
-  { id: "fig-quad", name: "2×2 (your posts)", group: "From your posts", spec: V(H(C, C), H(C, C)), gutter: 32, margin: 48, radius: 32 },
-  { id: "fig-stack3", name: "3 stacked cards", group: "From your posts", spec: V(C, C, C), gutter: 30, margin: 48, radius: 64 },
-  { id: "fig-stack2", name: "2 stacked cards", group: "From your posts", spec: V(C, C), gutter: 48, margin: 48, radius: 64 },
+  { id: "fig-quad", name: "2×2 cards", group: "From your posts", spec: V(H(C, C), H(C, C)), gutter: 32, margin: 48, radius: 32 },
+  { id: "fig-stack3", name: "3 cards", group: "From your posts", spec: V(C, C, C), gutter: 30, margin: 48, radius: 64 },
+  { id: "fig-stack2", name: "2 cards", group: "From your posts", spec: V(C, C), gutter: 48, margin: 48, radius: 64 },
   { id: "fig-card", name: "Single card", group: "From your posts", spec: C, gutter: 0, margin: 48, radius: 64 },
 ];
 

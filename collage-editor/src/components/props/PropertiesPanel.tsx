@@ -29,10 +29,10 @@ function CollagePanel() {
 
   return (
     <aside className="card pop flex w-[344px] shrink-0 flex-col overflow-hidden" data-testid="properties">
-      <div className="flex h-[72px] shrink-0 items-center gap-3 px-7">
+      <div className="flex h-[72px] shrink-0 items-center gap-3 px-8">
         {Icon && <Icon size={16} className="text-mute" />}
         {single ? (
-          <TextInput value={single.name} onCommit={(v) => st().updateElement(single.id, { name: v || single.name })} className="h-8 flex-1 !bg-transparent !px-1 text-base !font-extrabold hover:!bg-field" />
+          <TextInput aria="Layer name" value={single.name} onCommit={(v) => st().updateElement(single.id, { name: v || single.name })} className="h-9 flex-1 !bg-transparent !px-3 text-base !font-extrabold hover:!bg-field" />
         ) : (
           <h2 className="text-base font-extrabold tracking-tight">{els.length > 1 ? `${els.length} selected` : "Canvas"}</h2>
         )}
@@ -44,7 +44,7 @@ function CollagePanel() {
         {single?.type === "shape" && <ShapeProps el={single} />}
         {single?.type === "grid" && <GridProps el={single} />}
         {target && <MediaProps target={target} />}
-        {(single?.type === "image" || single?.type === "video") && !target && <EmptyFrame el={single as MediaEl} />}
+        {(single?.type === "image" || single?.type === "video") && !target && <EmptyFrame />}
         {(single?.type === "image" || single?.type === "video") && <FrameProps el={single as MediaEl} />}
         {els.length > 0 && <ArrangeSection els={els} />}
       </div>
@@ -52,14 +52,13 @@ function CollagePanel() {
   );
 }
 
-function EmptyFrame({ el }: { el: MediaEl }) {
+function EmptyFrame() {
   const st = useStore.getState;
   return (
-    <div className="mx-3 mb-3 rounded-inner bg-panel2 px-5 py-5 text-xs leading-5 text-mute">
+    <div className="mx-3 mb-3 rounded-in-12 bg-panel2 px-5 py-5 text-xs leading-5 text-mute">
       <div className="mb-1 text-sm font-bold text-ink">Empty frame</div>
       Click it to add a photo or video, or drop one onto it.
-      <button type="button" className="mt-2.5 block rounded-full bg-pill px-3.5 py-1.5 font-semibold text-pillink" onClick={() => st().setUI({ leftPanel: "uploads" })}>Open media</button>
-      {void el}
+      <button type="button" className="mt-3 block rounded-full bg-pill px-4 py-2 font-semibold text-pillink" onClick={() => st().setUI({ leftPanel: "uploads" })}>Open media</button>
     </div>
   );
 }

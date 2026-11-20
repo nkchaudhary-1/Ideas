@@ -26,13 +26,11 @@
   --accent: 255 106 26;
   --accent2: 255 156 92;
   --glow: 0.10;
-  /* One corner system. A card is 24px (32px on very large screens); big surfaces (the stage, dialogs) are always 32px.
-     Anything nested follows the concentric rule: inner radius = outer radius - the gap between the two edges,
-     with a small floor so corners far from the edge don't go square. */
+  /* One corner system (rules: /CLAUDE.md). A card is 24px (32px on very large screens); the stage and dialogs are always 32px.
+     Anything nested is concentric: inner radius = outer radius - the gap between the two edges, never below 8px.
+     Use the Tailwind tokens rounded-card / rounded-big / rounded-in-N / rounded-bin-N instead of raw values. */
   --r: 24px;
   --r-big: 32px;
-  --r-in: calc(var(--r) - 12px);
-  --r-in2: max(calc(var(--r) - 20px), 8px);
   color-scheme: light;
 }
 :root[data-theme="dark"] {

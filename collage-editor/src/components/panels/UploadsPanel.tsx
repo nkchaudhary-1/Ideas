@@ -1,11 +1,11 @@
 "use client";
 import { useMemo, useRef, useState } from "react";
 import { Check, Film, ImagePlus, Images, LayoutGrid, Search, SlidersHorizontal, Trash2, Upload, GalleryHorizontal } from "lucide-react";
-import { useStore, getSlide } from "@/lib/store";
+import { useStore } from "@/lib/store";
 import { ACCEPT } from "@/lib/media";
 import type { Asset } from "@/lib/types";
 import { assetUrl, formatBytes, formatTime } from "@/lib/util";
-import { Button, Empty, Select } from "@/components/ui/controls";
+import { Button, Empty, Segmented, Select, TextButton } from "@/components/ui/controls";
 import { createCarouselFromAssets, createCollageFromAssets } from "@/lib/workflows";
 import { addAssetsToEdit } from "@/lib/edit";
 import { useFillTargetLite } from "./useReplaceTarget";
@@ -45,7 +45,7 @@ export default function UploadsPanel() {
       const { importUrls } = await import("@/lib/media");
       const res = await importUrls(SAMPLES);
       st().refreshAssets();
-      st().toast(`Added ${res.assets.length} sample photos from your Dharamshala board`, "ok");
+      st().toast(`Added ${res.assets.length} sample photos`, "ok");
     } finally { setBusy(false); }
   };
 
@@ -54,33 +54,27 @@ export default function UploadsPanel() {
       onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault(); }}
       onDrop={(e) => { if (e.dataTransfer.files.length) { e.preventDefault(); st().setUI({ importQueue: [...e.dataTransfer.files], importOpen: true }); } }}
     >
-      <div className="space-y-3 px-6 pb-5">
+      <div className="space-y-3 px-8 pb-5">
         <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="file-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; if (f.length) st().setUI({ importQueue: f, importOpen: true }); }} />
-        <Button variant="primary" className="w-full !h-10" onClick={() => input.current?.click()} testId="upload-button"><Upload size={14} /> Upload photos & videos</Button>
-        <div className="flex gap-2.5">
-          <div className="relative flex-1">
-            <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-faint" />
-            <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.stopPropagation()} placeholder="Search" aria-label="Search media" className="h-9 w-full rounded-full pl-9 pr-3 bg-panel2 pl-6 pr-2 text-xs outline-none ring-1 ring-line focus:ring-accent/70" />
+        <Button variant="primary" className="w-full" onClick={() => input.current?.click()} testId="upload-button"><Upload size={14} /> Upload photos & videos</Button>
+        <div className="flex gap-2">
+          <div className="relative min-w-0 flex-1">
+            <Search size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-faint" />
+            <input value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.stopPropagation()} placeholder="Search" aria-label="Search media" className="h-9 w-full rounded-full bg-field pl-10 pr-4 text-xs outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/40" />
           </div>
-          <Select width={104} value={sort} options={[{ value: "new", label: "Newest" }, { value: "name", label: "Name" }, { value: "type", label: "Type" }, { value: "size", label: "Size" }]} onChange={setSort} className="!h-7" />
+          <Select width={104} value={sort} options={[{ value: "new", label: "Newest" }, { value: "name", label: "Name" }, { value: "type", label: "Type" }, { value: "size", label: "Size" }]} onChange={setSort} />
         </div>
-        <div className="flex gap-1.5">
-          {(["all", "image", "video"] as const).map((f) => (
-            <button key={f} type="button" onClick={() => st().setUI({ libraryFilter: f })} className={`h-8 flex-1 rounded-full text-xs ${filter === f ? "bg-raised text-ink" : "text-mute hover:text-ink"}`}>
-              {{ all: "All", image: "Photos", video: "Videos" }[f]}
-            </button>
-          ))}
-        </div>
-        {replaceTarget && <div className="rounded-2xl bg-ink/[0.06] px-4 py-3 text-2xs leading-4 text-ink">Click media to <b>replace</b> the selected frame. Shift-click to select several.</div>}
+        <Segmented block value={filter} onChange={(f) => st().setUI({ libraryFilter: f })} options={[{ value: "all", label: "All" }, { value: "image", label: "Photos" }, { value: "video", label: "Videos" }]} />
+        {replaceTarget && <div className="rounded bg-ink/[0.06] px-4 py-3 text-2xs leading-4 text-ink">Click media to <b>replace</b> the selected frame. Shift-click to select several.</div>}
       </div>
 
-      <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6 pt-2">
+      <div className="min-h-0 flex-1 overflow-y-auto px-8 pb-6 pt-2">
         {assets.length === 0 ? (
           <Empty>
             <ImagePlus className="mx-auto mb-2" size={22} />
             Drop photos and videos here, or upload them.<br />
             JPG, PNG, WebP · MP4, MOV, WebM
-            <div className="mt-3"><Button onClick={loadSamples} disabled={busy} testId="load-samples">{busy ? "Loading…" : "Try your Dharamshala photos"}</Button></div>
+            <div className="mt-3"><Button onClick={loadSamples} disabled={busy} testId="load-samples">{busy ? "Loading…" : "Try sample photos"}</Button></div>
           </Empty>
         ) : (
           <div className="grid grid-cols-3 gap-3" data-testid="asset-grid">
@@ -94,7 +88,7 @@ export default function UploadsPanel() {
                     onDragStart={(e) => { e.dataTransfer.setData("application/x-asset", a.id); e.dataTransfer.effectAllowed = "copy"; }}
                     onClick={(e) => click(a, e)}
                     title={`${a.name}\n${a.width}×${a.height} · ${formatBytes(a.size)}`}
-                    className={`relative block aspect-square w-full overflow-hidden rounded-md ring-1 ${on ? "ring-2 ring-ink/60" : "ring-line hover:ring-ink/40"}`}
+                    className={`relative block aspect-square w-full overflow-hidden rounded ring-1 ${on ? "ring-2 ring-ink/60" : "ring-line hover:ring-ink/40"}`}
                   >
                     <img src={a.thumb} alt={a.name} className="h-full w-full object-cover" draggable={false} />
                     {a.kind === "video" && <span className="absolute bottom-1 left-1 flex items-center gap-0.5 rounded bg-black/75 px-1 py-0.5 text-2xs text-white"><Film size={9} /> {formatTime(a.duration ?? 0)}</span>}
@@ -106,13 +100,13 @@ export default function UploadsPanel() {
             })}
           </div>
         )}
-        {assets.length > 0 && <div className="mt-3"><Button variant="ghost" onClick={loadSamples} disabled={busy}>{busy ? "Loading…" : "Add your Dharamshala sample photos"}</Button></div>}
+        {assets.length > 0 && <div className="mt-4"><Button onClick={loadSamples} disabled={busy}>{busy ? "Loading…" : "Add sample photos"}</Button></div>}
       </div>
 
       {chosen.length > 0 && (
         <div className="space-y-3 border-t border-line/60 bg-panel2 p-5" data-testid="selection-actions">
-          <div className="flex items-center justify-between text-xs"><span>{chosen.length} selected</span><button type="button" className="text-mute hover:text-ink" onClick={() => st().setUI({ assetSelection: [] })}>Clear</button></div>
-          <div className="grid grid-cols-2 gap-2.5">
+          <div className="flex h-8 items-center justify-between text-xs"><span>{chosen.length} selected</span><TextButton className="-mr-3" onClick={() => st().setUI({ assetSelection: [] })}>Clear</TextButton></div>
+          <div className="grid grid-cols-2 gap-3">
             {editMode ? (
               <Button variant="primary" className="col-span-2" onClick={() => { addAssetsToEdit(chosen); st().setUI({ assetSelection: [] }); }} testId="sel-edit"><Images size={12} /> Add to editor</Button>
             ) : (
@@ -127,7 +121,6 @@ export default function UploadsPanel() {
           </div>
         </div>
       )}
-      {void getSlide}
     </div>
   );
 }

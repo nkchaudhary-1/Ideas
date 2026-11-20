@@ -2,12 +2,13 @@
 import { useRef, useState } from "react";
 import { Check, Copy, Film, Plus, Trash2 } from "lucide-react";
 import { useStore } from "@/lib/store";
+import { keys } from "@/lib/util";
 import SlideView from "@/components/canvas/SlideView";
 import { addAssetsToEdit, isEmptyEdit, mediaOf, selectSlides, selectWhere, slideKind } from "@/lib/edit";
 import { getAsset, ACCEPT } from "@/lib/media";
 import { fillIsNeutral } from "@/lib/filters";
+import { Chip } from "@/components/ui/controls";
 
-const chip = "rounded-full bg-field px-3 py-1 text-2xs font-semibold text-mute transition-colors hover:text-ink";
 
 /** The filmstrip in Edit mode: every photo and video, with multi-select for batch edits. */
 export default function EditStrip() {
@@ -49,16 +50,16 @@ export default function EditStrip() {
   };
 
   return (
-    <div className="card relative flex h-[172px] shrink-0 flex-col" data-testid="slide-strip" data-edit-strip>
-      <div className="flex shrink-0 items-center gap-2 px-7 pt-4" data-testid="select-bar">
-        <span className="mr-1 text-xs font-bold text-ink" data-testid="selection-count">{chosen.size > 1 ? `${chosen.size} selected` : `${items.length} item${items.length === 1 ? "" : "s"}`}</span>
-        <button type="button" className={chip} data-testid="select-all" onClick={() => selectWhere("all")}>All</button>
-        <button type="button" className={chip} data-testid="select-photos" disabled={!photos} onClick={() => selectWhere("image")}>Photos{photos ? ` · ${photos}` : ""}</button>
-        <button type="button" className={chip} data-testid="select-videos" disabled={!videos} onClick={() => selectWhere("video")}>Videos{videos ? ` · ${videos}` : ""}</button>
-        <button type="button" className={chip} data-testid="select-none" disabled={chosen.size < 2} onClick={() => selectWhere("none")}>None</button>
-        <span className="ml-auto hidden text-2xs text-faint lg:block">Shift or ⌘-click to select several</span>
+    <div className="card relative flex h-[184px] shrink-0 flex-col" data-testid="slide-strip" data-edit-strip>
+      <div className="flex shrink-0 items-center gap-2 overflow-hidden px-8 pt-4" data-testid="select-bar">
+        <span className="mr-1 shrink-0 whitespace-nowrap text-xs font-bold text-ink" data-testid="selection-count">{chosen.size > 1 ? `${chosen.size} selected` : `${items.length} item${items.length === 1 ? "" : "s"}`}</span>
+        <Chip sm data-testid="select-all" onClick={() => selectWhere("all")}>All</Chip>
+        <Chip sm data-testid="select-photos" disabled={!photos} onClick={() => selectWhere("image")}>Photos{photos ? ` · ${photos}` : ""}</Chip>
+        <Chip sm data-testid="select-videos" disabled={!videos} onClick={() => selectWhere("video")}>Videos{videos ? ` · ${videos}` : ""}</Chip>
+        <Chip sm data-testid="select-none" disabled={chosen.size < 2} onClick={() => selectWhere("none")}>None</Chip>
+        <span className="ml-auto hidden min-w-0 truncate text-2xs text-faint lg:block" title={`Shift-click for a range, ${keys("⌘")}-click to add`}>Shift-click for a range, {keys("⌘")}-click to add</span>
       </div>
-      <div className="flex min-h-0 flex-1 items-center gap-4 overflow-x-auto px-7 pb-3">
+      <div className="flex min-h-0 flex-1 items-center gap-4 overflow-x-auto px-8 pb-5">
         {slides.map((s, i) => {
           if (isEmptyEdit(s)) return null;
           const w = Math.max(40, Math.min(150, Math.round(TH * (s.width / s.height))));
@@ -73,18 +74,18 @@ export default function EditStrip() {
               onDrop={(e) => { e.preventDefault(); setOver(null); if (drag !== null && drag !== i) st().moveSlide(drag, i); setDrag(null); }}
               onDragEnd={() => { setDrag(null); setOver(null); }}>
               <button type="button" aria-label={`Select ${s.name}`} aria-pressed={picked} data-testid="thumb-open" onClick={(e) => click(e, s.id)}
-                className={`relative overflow-hidden rounded-xl ring-2 transition ${active ? "ring-ink/70" : picked ? "ring-accent/80" : over === i ? "ring-ink/50" : "ring-transparent hover:ring-ink/25"}`}>
+                className={`relative overflow-hidden rounded ring-2 transition ${active ? "ring-ink/70" : picked ? "ring-accent/80" : over === i ? "ring-ink/50" : "ring-transparent hover:ring-ink/25"}`}>
                 <div className="pointer-events-none"><SlideView slide={s} width={w} scope="strip" /></div>
                 {slideKind(s) === "video" && <span className="absolute bottom-1 left-1 grid h-4 w-4 place-items-center rounded-full bg-black/70 text-white" title="Video"><Film size={9} /></span>}
-                {isRef && <span className="absolute bottom-1 right-1 rounded-full bg-black/75 px-1.5 text-[9px] font-bold leading-4 text-white" data-testid="ref-badge">REF</span>}
+                {isRef && <span className="absolute bottom-1 right-1 rounded-full bg-black/75 px-2 text-2xs font-bold leading-4 text-white" data-testid="ref-badge">REF</span>}
                 {edited && !isRef && <span className="absolute bottom-1 right-1 h-2 w-2 rounded-full bg-accent ring-1 ring-black/40" title="Edited" />}
               </button>
               <button type="button" role="checkbox" aria-checked={picked} aria-label={`${picked ? "Deselect" : "Select"} ${s.name}`} data-testid="thumb-check" onClick={() => toggle(s.id)}
-                className={`absolute left-1.5 top-1.5 grid h-5 w-5 place-items-center rounded-full border text-white transition ${picked ? "grad-accent border-transparent opacity-100" : "border-white/80 bg-black/40 opacity-0 group-hover:opacity-100"}`}>{picked && <Check size={11} strokeWidth={3} />}</button>
-              <span className={`max-w-[150px] truncate text-2xs font-semibold ${active ? "text-ink" : "text-mute"}`} title={getAsset(f?.assetId ?? "")?.name ?? s.name}>{s.name}</span>
-              <div className="absolute right-1 top-1 hidden gap-0.5 group-hover:flex">
-                <button type="button" aria-label="Duplicate" title="Duplicate" onClick={() => st().duplicateSlide(s.id)} className="grid h-5 w-5 place-items-center rounded bg-black/70 text-white hover:bg-black"><Copy size={10} /></button>
-                <button type="button" aria-label="Remove from editor" title="Remove from editor" data-testid="thumb-remove" onClick={() => st().removeEditSlides([s.id])} className="grid h-5 w-5 place-items-center rounded bg-black/70 text-white hover:bg-red-600"><Trash2 size={10} /></button>
+                className={`absolute left-2 top-2 grid h-7 w-7 place-items-center rounded-full border text-white transition ${picked ? "grad-accent border-transparent opacity-100" : "border-white/80 bg-black/40 opacity-0 group-hover:opacity-100"}`}>{picked && <Check size={13} strokeWidth={3} />}</button>
+              <span className={`max-w-[152px] truncate text-2xs font-semibold ${active ? "text-ink" : "text-mute"}`} title={getAsset(f?.assetId ?? "")?.name ?? s.name}>{s.name}</span>
+              <div className="absolute right-1 top-1 hidden gap-1 group-hover:flex">
+                <button type="button" aria-label="Duplicate" title="Duplicate" onClick={() => st().duplicateSlide(s.id)} className="grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-black"><Copy size={12} /></button>
+                <button type="button" aria-label="Remove from editor" title="Remove from editor" data-testid="thumb-remove" onClick={() => st().removeEditSlides([s.id])} className="grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-red-600"><Trash2 size={12} /></button>
               </div>
             </div>
           );
@@ -93,7 +94,7 @@ export default function EditStrip() {
         <button type="button" aria-label="Add photos or videos" title="Add photos or videos" data-testid="add-slide" onClick={() => input.current?.click()}
           onDragOver={(e) => { if (e.dataTransfer.types.includes("Files") || e.dataTransfer.types.includes("application/x-asset")) e.preventDefault(); }}
           onDrop={(e) => { e.preventDefault(); const a = getAsset(e.dataTransfer.getData("application/x-asset")); if (a) addAssetsToEdit([a]); else void add([...e.dataTransfer.files]); }}
-          className="grid h-[76px] w-[64px] shrink-0 place-items-center rounded-xl border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink"><Plus size={18} /></button>
+          className="grid h-[76px] w-[64px] shrink-0 place-items-center rounded border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink"><Plus size={18} /></button>
       </div>
     </div>
   );

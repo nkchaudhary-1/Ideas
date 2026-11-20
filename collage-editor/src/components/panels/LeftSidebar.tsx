@@ -37,13 +37,13 @@ export default function LeftSidebar() {
   const current = ALL.find((i) => i.id === panel);
   return (
     <>
-      <nav className={`card flex w-[76px] shrink-0 flex-col items-center gap-1.5 py-5 ${edit ? "self-start" : ""}`} aria-label="Tools" data-testid="left-rail">
+      <nav className={`card flex w-[76px] shrink-0 flex-col items-center gap-2 py-5 ${edit ? "self-start" : ""}`} aria-label="Tools" data-testid="left-rail">
         {(edit ? GROUPS.slice(0, 1).map((g) => g.filter((i) => i.id === "uploads")) : GROUPS).map((g, gi) => (
-          <div key={gi} className="flex flex-col items-center gap-1.5">
+          <div key={gi} className="flex flex-col items-center gap-2">
             {gi > 0 && <span className="my-3 h-px w-7 bg-line" />}
             {g.map((i) => (
               <button key={i.id} type="button" title={i.label} aria-label={i.label} aria-pressed={panel === i.id} data-testid={`rail-${i.id}`} onClick={() => set({ leftPanel: panel === i.id ? null : i.id })}
-                className={`grid h-12 w-12 place-items-center rounded-2xl transition-colors ${panel === i.id ? "grad-accent text-white shadow-card" : "text-mute hover:bg-field hover:text-ink"}`}>
+                className={`grid h-12 w-12 place-items-center rounded-in-14 transition-colors ${panel === i.id ? "grad-accent text-white shadow-card" : "text-mute hover:bg-field hover:text-ink"}`}>
                 {i.icon}
               </button>
             ))}
@@ -52,7 +52,7 @@ export default function LeftSidebar() {
       </nav>
       {current && (
         <section className="card pop flex w-[344px] shrink-0 flex-col overflow-hidden" data-testid="left-panel" aria-label={current.label}>
-          <div className="flex h-[72px] shrink-0 items-center justify-between px-7">
+          <div className="flex h-[72px] shrink-0 items-center justify-between px-8">
             <h2 className="text-base font-extrabold tracking-tight">{current.label}</h2>
             <button type="button" aria-label="Close panel" title="Close" onClick={() => set({ leftPanel: null })} className="grid h-9 w-9 place-items-center rounded-full text-mute hover:bg-field hover:text-ink"><X size={16} /></button>
           </div>

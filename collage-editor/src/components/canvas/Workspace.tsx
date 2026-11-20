@@ -245,7 +245,7 @@ export default function Workspace() {
       const dx = Math.round((e.target.x() - p0.x) * 100) / 100, dy = Math.round((e.target.y() - p0.y) * 100) / 100;
       if (dx || dy) useStore.getState().updateElements(d.ids, (el) => { el.x += dx; el.y += dy; });
     },
-    onDblClick: (e, el) => {
+    onDblClick: (_e, el) => {
       const st = useStore.getState();
       if (el.locked) return;
       if (el.type === "text") { st.select([el.id]); st.setUI({ editingTextId: el.id }); return; }

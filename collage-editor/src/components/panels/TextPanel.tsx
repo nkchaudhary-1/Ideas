@@ -32,14 +32,14 @@ export default function TextPanel() {
   return (
     <div className="h-full overflow-y-auto" data-testid="text-panel">
       <Section title="Add text">
-        <button type="button" onClick={() => add(120, 700, "Heading", "Heading", "Inter")} data-testid="add-heading" className="block w-full rounded-2xl bg-field px-4 py-3.5 text-left text-[22px] font-bold ring-1 ring-line hover:ring-ink/25">Add a heading</button>
-        <button type="button" onClick={() => add(64, 600, "Subheading", "Subheading", "Inter")} data-testid="add-subheading" className="block w-full rounded-2xl bg-field px-4 py-3.5 text-left text-base font-semibold ring-1 ring-line hover:ring-ink/25">Add a subheading</button>
-        <button type="button" onClick={() => add(36, 400, "Body text goes here.", "Body", "Inter", { lineHeight: 1.4 })} data-testid="add-body" className="block w-full rounded-2xl bg-field px-4 py-3.5 text-left text-sm ring-1 ring-line hover:ring-ink/25">Add body text</button>
-        <button type="button" onClick={() => add(26, 300, "caption", "Caption", "Outfit", { letterSpacing: 2.6 })} data-testid="add-caption" className="block w-full rounded-2xl bg-field px-4 py-3.5 text-left text-xs tracking-widest ring-1 ring-line hover:ring-ink/25" style={{ fontFamily: fontStack("Outfit"), fontWeight: 300 }}>Add a caption</button>
+        <button type="button" onClick={() => add(120, 700, "Heading", "Heading", "Inter")} data-testid="add-heading" className="flex h-16 w-full items-center rounded bg-field px-4 text-left text-[22px] font-bold ring-1 ring-line hover:ring-ink/25">Add a heading</button>
+        <button type="button" onClick={() => add(64, 600, "Subheading", "Subheading", "Inter")} data-testid="add-subheading" className="flex h-14 w-full items-center rounded bg-field px-4 text-left text-base font-semibold ring-1 ring-line hover:ring-ink/25">Add a subheading</button>
+        <button type="button" onClick={() => add(36, 400, "Body text goes here.", "Body", "Inter", { lineHeight: 1.4 })} data-testid="add-body" className="flex h-12 w-full items-center rounded bg-field px-4 text-left text-sm ring-1 ring-line hover:ring-ink/25">Add body text</button>
+        <button type="button" onClick={() => add(26, 300, "caption", "Caption", "Outfit", { letterSpacing: 2.6 })} data-testid="add-caption" className="flex h-12 w-full items-center rounded bg-field px-4 text-left text-xs tracking-widest ring-1 ring-line hover:ring-ink/25" style={{ fontFamily: fontStack("Outfit"), fontWeight: 300 }}>Add a caption</button>
       </Section>
       <Section title="My styles">
         {styles.length > 0 ? (
-          <div className="space-y-2.5" data-testid="my-styles">
+          <div className="space-y-3" data-testid="my-styles">
             {styles.map((p) => {
               if (p.kind !== "text") return null;
               const d = p.data;
@@ -47,8 +47,8 @@ export default function TextPanel() {
               return (
                 <div key={p.id} className="group relative" data-testid="style-tile">
                   <button type="button" title="Click to apply to the selected text, or add new text in this style" onMouseEnter={() => void loadFont(d.fontFamily, d.fontWeight, d.italic)} onClick={() => st().applyTextStyle(p.id)}
-                    className="flex w-full items-center gap-3.5 overflow-hidden rounded-2xl bg-field p-2 pr-4 text-left hover:ring-2 hover:ring-ink/25">
-                    <span className="grid h-11 w-14 shrink-0 place-items-center overflow-hidden rounded-lg text-[22px] leading-none" style={{ background: previewBg(ink), color: ink, fontFamily: fontStack(d.fontFamily), fontWeight: d.fontWeight, fontStyle: d.italic ? "italic" : "normal", textTransform: d.textTransform }}>Aa</span>
+                    className="flex w-full items-center gap-4 overflow-hidden rounded-in-12 bg-field p-2 pr-4 text-left hover:ring-2 hover:ring-ink/25">
+                    <span className="grid h-11 w-14 shrink-0 place-items-center overflow-hidden rounded-in-20 text-[22px] leading-none" style={{ background: previewBg(ink), color: ink, fontFamily: fontStack(d.fontFamily), fontWeight: d.fontWeight, fontStyle: d.italic ? "italic" : "normal", textTransform: d.textTransform }}>Aa</span>
                     <span className="min-w-0 flex-1">
                       <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className="block text-xs font-bold text-ink" />
                       <span className="block truncate text-2xs text-mute">{d.fontFamily} · {d.fontWeight}</span>
@@ -64,15 +64,15 @@ export default function TextPanel() {
         )}
       </Section>
       <Section title="Typography presets">
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {TEXT_PRESETS.map((p) => (
-            <button key={p.id} type="button" data-testid={`text-preset-${p.id}`} onMouseEnter={() => void loadFont(p.family, p.weight, !!p.italic)} onClick={() => addPreset(p.id)} className="flex w-full items-center justify-between gap-3 overflow-hidden rounded-2xl bg-field px-4 py-3 text-left hover:ring-2 hover:ring-ink/25">
-              <span className="min-w-0 truncate text-[20px] leading-tight" style={{ fontFamily: fontStack(p.family), fontWeight: p.weight, fontStyle: p.italic ? "italic" : "normal" }}>{p.sample.split("\n")[0]}</span>
+            <button key={p.id} type="button" data-testid={`text-preset-${p.id}`} onMouseEnter={() => void loadFont(p.family, p.weight, !!p.italic)} onClick={() => addPreset(p.id)} className="flex h-12 w-full items-center justify-between gap-3 overflow-hidden rounded bg-field px-4 text-left hover:ring-2 hover:ring-ink/25">
+              <span title={p.sample.split("\n")[0]} className="min-w-0 truncate text-[20px] leading-tight" style={{ fontFamily: fontStack(p.family), fontWeight: p.weight, fontStyle: p.italic ? "italic" : "normal" }}>{p.sample.split("\n")[0]}</span>
               <span className="shrink-0 text-2xs text-mute">{p.name}</span>
             </button>
           ))}
         </div>
-        <p className="text-2xs leading-4 text-faint">Presets create live text you can restyle. The last six come straight from your Figma posts.</p>
+        <p className="text-2xs leading-4 text-faint">Presets add live text you can restyle at any time.</p>
       </Section>
     </div>
   );

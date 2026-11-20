@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { useStore } from "@/lib/store";
 import StageChrome from "./StageChrome";
 import SlideStrip from "./SlideStrip";
@@ -10,18 +10,34 @@ import LeftSidebar from "@/components/panels/LeftSidebar";
 import Workspace from "@/components/canvas/Workspace";
 import PropertiesPanel from "@/components/props/PropertiesPanel";
 import Toast from "@/components/ui/Toast";
+import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import MediaPicker from "@/components/canvas/MediaPicker";
-import ImportDialog from "@/components/dialogs/ImportDialog";
 import NewProjectDialog from "@/components/dialogs/NewProjectDialog";
-import ProjectsDialog from "@/components/dialogs/ProjectsDialog";
-import ShortcutsDialog from "@/components/dialogs/ShortcutsDialog";
-import PreviewDialog from "@/components/dialogs/PreviewDialog";
-import ExportDialog from "@/components/dialogs/ExportDialog";
+
+// Dialogs the user opens on demand load as their own chunks, so the editor starts faster (the video encoder lives in Export).
+const ImportDialog = lazy(() => import("@/components/dialogs/ImportDialog"));
+const ProjectsDialog = lazy(() => import("@/components/dialogs/ProjectsDialog"));
+const ShortcutsDialog = lazy(() => import("@/components/dialogs/ShortcutsDialog"));
+const PreviewDialog = lazy(() => import("@/components/dialogs/PreviewDialog"));
+const ExportDialog = lazy(() => import("@/components/dialogs/ExportDialog"));
 
 export default function EditorShell() {
+  return <ErrorBoundary><Shell /></ErrorBoundary>;
+}
+
+function Shell() {
   const ready = useStore((s) => s.ready);
-  const ui = useStore((s) => s.ui);
-  const ui_kind = useStore((s) => s.project.kind);
+  // one narrow subscription each: panning and zooming change `ui` constantly and must not re-render the whole shell
+  const kind = useStore((s) => s.project.kind);
+  const theme = useStore((s) => s.ui.theme);
+  const accent = useStore((s) => s.ui.accent);
+  const rightOpen = useStore((s) => s.ui.rightOpen);
+  const importOpen = useStore((s) => s.ui.importOpen);
+  const newProjectOpen = useStore((s) => s.ui.newProjectOpen);
+  const projectsOpen = useStore((s) => s.ui.projectsOpen);
+  const shortcutsOpen = useStore((s) => s.ui.shortcutsOpen);
+  const previewOpen = useStore((s) => s.ui.previewOpen);
+  const exportOpen = useStore((s) => s.ui.exportOpen);
   useShortcuts();
 
   useEffect(() => {
@@ -32,9 +48,9 @@ export default function EditorShell() {
 
   // theme + accent are CSS variables, so every control follows them
   useEffect(() => {
-    document.documentElement.dataset.theme = ui.theme;
-    document.documentElement.style.setProperty("--accent", ui.accent);
-  }, [ui.theme, ui.accent]);
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.setProperty("--accent", accent);
+  }, [theme, accent]);
 
   // paste images/videos from the clipboard straight into the library
   useEffect(() => {
@@ -72,18 +88,20 @@ export default function EditorShell() {
           <Workspace />
           <EditEmpty />
           <StageChrome />
+          <Toast />
         </div>
-        {ui_kind === "edit" ? <EditStrip /> : <SlideStrip />}
+        {kind === "edit" ? <EditStrip /> : <SlideStrip />}
       </div>
-      {ui.rightOpen && <PropertiesPanel />}
-      <Toast />
+      {rightOpen && <PropertiesPanel />}
       <MediaPicker />
-      {ui.importOpen && <ImportDialog />}
-      {ui.newProjectOpen && <NewProjectDialog />}
-      {ui.projectsOpen && <ProjectsDialog />}
-      {ui.shortcutsOpen && <ShortcutsDialog />}
-      {ui.previewOpen && <PreviewDialog />}
-      {ui.exportOpen && <ExportDialog />}
+      {newProjectOpen && <NewProjectDialog />}
+      <Suspense fallback={null}>
+        {importOpen && <ImportDialog />}
+        {projectsOpen && <ProjectsDialog />}
+        {shortcutsOpen && <ShortcutsDialog />}
+        {previewOpen && <PreviewDialog />}
+        {exportOpen && <ExportDialog />}
+      </Suspense>
     </div>
   );
 }

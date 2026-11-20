@@ -2,10 +2,10 @@
 import { useEffect, useRef, useState } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, Check, Film, GalleryHorizontal, ImageIcon, LayoutGrid, Library, Loader2, SlidersHorizontal, Square, Trash2, Upload } from "lucide-react";
 import { useStore } from "@/lib/store";
-import { ACCEPT, importFiles, removeAsset } from "@/lib/media";
+import { ACCEPT, importFiles } from "@/lib/media";
 import type { Asset } from "@/lib/types";
 import { formatBytes, formatTime } from "@/lib/util";
-import { Button } from "@/components/ui/controls";
+import { Button, TextButton } from "@/components/ui/controls";
 import Modal from "@/components/ui/Modal";
 import { createCarouselFromAssets, createCollageFromAssets } from "@/lib/workflows";
 import { addAssetsToEdit } from "@/lib/edit";
@@ -58,13 +58,12 @@ export default function ImportDialog() {
     setPicked((p) => { const n = new Set(p); n.delete(it.key); return n; });
     if (it.asset) await st().deleteAsset(it.asset.id);
   };
-  void removeAsset;
 
   const run = (fn: (a: Asset[]) => void) => { fn(chosen); close(); };
   const allSelected = ready.length > 0 && ready.every((i) => picked.has(i.key));
 
   return (
-    <Modal title="Import photos & videos" onClose={close} width={680} testId="import-dialog"
+    <Modal title="Import photos & videos" onClose={close} width={800} testId="import-dialog"
       footer={
         <>
           <span className="mr-auto text-xs text-mute">{chosen.length} selected{nVid ? ` · ${nVid} video${nVid > 1 ? "s" : ""}` : ""}</span>
@@ -84,7 +83,7 @@ export default function ImportDialog() {
     >
       <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="import-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; if (f.length) void ingest(f); }} />
       <div
-        className="mx-8 mb-6 mt-2 flex items-center justify-between gap-4 rounded-inner border-2 border-dotted border-faint/60 px-6 py-5 text-sm text-mute"
+        className="mx-8 mb-6 mt-2 flex items-center justify-between gap-4 rounded border-2 border-dotted border-faint/60 px-6 py-5 text-sm text-mute"
         onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault(); }}
         onDrop={(e) => { e.preventDefault(); const f = [...e.dataTransfer.files]; if (f.length) void ingest(f); }}
       >
@@ -95,14 +94,14 @@ export default function ImportDialog() {
       {items.length > 0 && (
         <div className="px-8 pb-2">
           <div className="mb-2 flex items-center justify-between text-xs text-mute">
-            <button type="button" className="hover:text-ink" onClick={() => setPicked(allSelected ? new Set() : new Set(ready.map((i) => i.key)))}>{allSelected ? "Select none" : "Select all"}</button>
+            <TextButton className="-ml-3" onClick={() => setPicked(allSelected ? new Set() : new Set(ready.map((i) => i.key)))}>{allSelected ? "Select none" : "Select all"}</TextButton>
             <span>Order here becomes slide / cell order. Drag to reorder.</span>
           </div>
           <ul className="space-y-3 pb-4" data-testid="import-list">
             {items.map((it, idx) => (
               <li key={it.key} draggable={it.state === "ready"} onDragStart={() => setDragKey(it.key)} onDragOver={(e) => { if (dragKey) e.preventDefault(); }} onDrop={(e) => { e.preventDefault(); if (dragKey && dragKey !== it.key) { const from = items.findIndex((x) => x.key === dragKey); move(dragKey, idx - from); } setDragKey(null); }}
-                className={`flex items-center gap-4 rounded-2xl border px-4 py-3 ${it.state === "failed" ? "border-red-500/30 bg-red-500/5" : picked.has(it.key) ? "border-ink/40 bg-ink/5" : "border-line bg-panel2"}`} data-testid="import-item">
-                <button type="button" aria-label={picked.has(it.key) ? "Deselect" : "Select"} disabled={it.state !== "ready"} onClick={() => toggle(it.key)} className={`grid h-5 w-5 shrink-0 place-items-center rounded border ${picked.has(it.key) ? "border-ink grad-accent text-white" : "border-line"} disabled:opacity-30`}>{picked.has(it.key) && <Check size={12} />}</button>
+                className={`flex items-center gap-4 rounded border px-4 py-3 ${it.state === "failed" ? "border-red-500/30 bg-red-500/5" : picked.has(it.key) ? "border-ink/40 bg-ink/5" : "border-line bg-panel2"}`} data-testid="import-item">
+                <button type="button" role="checkbox" aria-checked={picked.has(it.key)} aria-label={`${picked.has(it.key) ? "Deselect" : "Select"} ${it.name}`} disabled={it.state !== "ready"} onClick={() => toggle(it.key)} className="grid h-8 w-8 shrink-0 place-items-center rounded-full hover:bg-ink/[0.07] disabled:opacity-30"><span className={`grid h-5 w-5 place-items-center rounded-sm border ${picked.has(it.key) ? "border-transparent grad-accent text-white" : "border-faint/60"}`}>{picked.has(it.key) && <Check size={12} strokeWidth={3} />}</span></button>
                 <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded bg-black">
                   {it.asset ? <img src={it.asset.thumb} alt="" className="h-full w-full object-cover" /> : it.state === "working" ? <Loader2 size={16} className="absolute inset-0 m-auto animate-spin text-mute" /> : <AlertTriangle size={16} className="absolute inset-0 m-auto text-red-300" />}
                   {it.asset?.kind === "video" && <Film size={11} className="absolute bottom-0.5 left-0.5 text-white drop-shadow" />}

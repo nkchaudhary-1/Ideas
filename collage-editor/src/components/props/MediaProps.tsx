@@ -1,12 +1,12 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { Crop, FlipHorizontal2, FlipVertical2, ImageOff, Pause, Play, RefreshCw, RotateCcw, RotateCw, Scan, Volume2, VolumeX } from "lucide-react";
+import { Crop, FlipHorizontal2, FlipVertical2, ImageOff, Pause, Play, RefreshCw, RotateCcw, RotateCw, Volume2, VolumeX } from "lucide-react";
 import type { Adjustments, Asset, MediaEl } from "@/lib/types";
 import { useStore, getSlide } from "@/lib/store";
 import { getAsset, effectiveTrim } from "@/lib/media";
 import { ADJUSTMENT_META, FILTER_PRESETS, NEUTRAL, applyAdjustments, effectiveAdjustments } from "@/lib/filters";
 import { DEFAULT_FILTER, newFill } from "@/lib/media-math";
-import { Button, Field, IconButton, Section, Slider, Toggle, type SliderTrack } from "@/components/ui/controls";
+import { Button, Chip, IconButton, Section, Slider, TextButton, Toggle, type SliderTrack } from "@/components/ui/controls";
 import { formatTime } from "@/lib/util";
 import { PresetActions, RenameLabel, SavePreset } from "@/components/ui/SavePreset";
 import { captureLook, defaultName, sameLook } from "@/lib/user-presets";
@@ -53,9 +53,9 @@ function ThumbCanvas({ asset, adj, className }: { asset: Asset; adj: Adjustments
 
 function FilterThumb({ asset, presetId, active, onClick, name }: { asset: Asset; presetId: string; active: boolean; onClick: () => void; name: string }) {
   return (
-    <button type="button" onClick={onClick} title={name} data-testid={`filter-${presetId}`} className={`group flex flex-col items-center gap-1 rounded-md p-0.5 ${active ? "bg-ink/10 ring-1 ring-ink/60" : "hover:bg-ink/5"}`}>
+    <button type="button" onClick={onClick} title={name} data-testid={`filter-${presetId}`} className={`group flex h-[88px] flex-col items-center justify-center gap-1 rounded p-0.5 ${active ? "bg-ink/10 ring-1 ring-ink/60" : "hover:bg-ink/5"}`}>
       <ThumbCanvas asset={asset} adj={effectiveAdjustments({ ...NEUTRAL }, { id: presetId, intensity: 100 })} className="h-[60px] w-[48px] rounded-sm bg-panel2" />
-      <span className={`text-2xs ${active ? "text-ink" : "text-mute"}`}>{name}</span>
+      <span className={`max-w-full truncate text-2xs ${active ? "text-ink" : "text-mute"}`} title={name}>{name}</span>
     </button>
   );
 }
@@ -76,8 +76,8 @@ function MyLooks({ target, asset }: { target: FillTarget; asset: Asset | undefin
             return (
               <div key={p.id} className="group relative" data-testid="look-tile">
                 <button type="button" title={`Apply “${p.name}”`} onClick={() => target.update((f) => { f.filter = { ...p.data.filter }; f.adjustments = structuredClone(p.data.adjustments) as Adjustments; })}
-                  className={`flex w-full flex-col items-center gap-1 rounded-md p-0.5 ${active ? "bg-ink/10 ring-1 ring-ink/60" : "hover:bg-ink/5"}`}>
-                  {asset ? <ThumbCanvas asset={asset} adj={effectiveAdjustments(p.data.adjustments, p.data.filter)} className="h-[60px] w-[48px] rounded-sm bg-panel2" /> : <span className="block h-[60px] w-[48px] rounded-sm bg-panel2" />}
+                  className={`flex w-full flex-col items-center gap-1 rounded p-0.5 ${active ? "bg-ink/10 ring-1 ring-ink/60" : "hover:bg-ink/5"}`}>
+                  {asset ? <ThumbCanvas asset={asset} adj={effectiveAdjustments(p.data.adjustments, p.data.filter)} className="h-[60px] w-[48px] rounded bg-panel2" /> : <span className="block h-[60px] w-[48px] rounded-sm bg-panel2" />}
                   <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className={`w-full text-center text-2xs ${active ? "text-ink" : "text-mute"}`} />
                 </button>
                 <PresetActions id={p.id} name={p.name} onRename={() => setRenaming(p.id)} />
@@ -126,7 +126,7 @@ export default function MediaProps({ target, edit }: { target: FillTarget; edit?
     <>
       {edit ? <EditCrop target={edit} /> : <>
       <Section title={fill.kind === "video" ? "Video" : "Photo"} defaultOpen>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           {asset ? (
             <img src={asset.thumb} alt="" className="h-10 w-10 rounded object-cover" />
           ) : (
@@ -137,7 +137,7 @@ export default function MediaProps({ target, edit }: { target: FillTarget; edit?
             <div className="text-2xs text-mute">{asset ? `${asset.width}×${asset.height}${asset.duration ? ` · ${formatTime(asset.duration)}` : ""}` : "Re-import this file"}</div>
           </div>
         </div>
-        <div className="relative flex gap-1.5">
+        <div className="relative flex gap-2">
           <Button onClick={() => setPicker((p) => !p)} testId="replace-media"><RefreshCw size={12} /> Replace</Button>
           <Button variant="ghost" onClick={() => target.clear()}>Remove</Button>
           {picker && <AssetPicker onClose={() => setPicker(false)} onPick={(a) => { const t = target; if (t.kind === "element") st().setElementMedia(t.elementId, a); else st().setCellMedia(t.elementId, t.cellId!, a); setPicker(false); }} />}
@@ -145,32 +145,29 @@ export default function MediaProps({ target, edit }: { target: FillTarget; edit?
       </Section>
 
       <Section title="Crop & position">
-        <div className="flex flex-wrap gap-0.5">
-          <Button variant={cropping ? "primary" : "default"} onClick={() => st().setUI({ cropId: cropping ? null : target.elementId })} testId="crop-toggle" title="Drag the picture inside its frame; scroll to zoom">
+        <div className="flex gap-2">
+          <Button className="px-3" variant={cropping ? "primary" : "default"} onClick={() => st().setUI({ cropId: cropping ? null : target.elementId })} testId="crop-toggle" title="Drag the picture inside its frame; scroll to zoom">
             <Crop size={12} /> {cropping ? "Done" : "Crop"}
           </Button>
-          <Button variant="ghost" onClick={() => target.update((f) => { f.zoom = 1; f.fx = 0.5; f.fy = 0.5; })} title="Fill the frame, centred"><Scan size={12} /> Fill</Button>
-          {isEl && <Button variant="ghost" onClick={fitToMedia} title="Resize the frame to show the whole picture">Fit</Button>}
-          <Button variant="ghost" onClick={() => target.update((f) => { f.zoom = 1; f.fx = 0.5; f.fy = 0.5; f.flipX = false; f.flipY = false; f.rotation90 = 0; })} testId="reset-crop"><RotateCcw size={12} /> Reset</Button>
+          <Button className="px-3" variant="ghost" onClick={() => target.update((f) => { f.zoom = 1; f.fx = 0.5; f.fy = 0.5; })} title="Fill the frame, centred">Fill</Button>
+          {isEl && <Button className="px-3" variant="ghost" onClick={fitToMedia} title="Resize the frame to show the whole picture">Fit</Button>}
+          <Button className="px-3" variant="ghost" onClick={() => target.update((f) => { f.zoom = 1; f.fx = 0.5; f.fy = 0.5; f.flipX = false; f.flipY = false; f.rotation90 = 0; })} testId="reset-crop">Reset</Button>
         </div>
         <Slider label="Zoom" value={Math.round(fill.zoom * 100)} min={100} max={800} unit="%" neutral={100} onChange={(v) => target.update((f) => { f.zoom = v / 100; }, "zoom")} onReset={() => target.update((f) => { f.zoom = 1; })} />
         {isEl && (
-          <div data-testid="aspect-row">
-            <div className="mb-2.5 text-xs font-semibold text-ink/80">Aspect</div>
-            <div className="flex items-center justify-between rounded-full bg-field p-1">
-              {RATIOS.filter((r) => r.r !== null).map((r) => {
-                const k = 18 / Math.max(r.r!, 1 / r.r!);
-                return (
-                  <button key={r.label} type="button" title={r.label} aria-label={`Aspect ${r.label}`} onClick={() => setRatio(r.r)} className="grid h-9 w-9 place-items-center rounded-full text-mute transition-colors hover:bg-seg hover:text-ink">
-                    <span className="block rounded-[3px] border-[1.5px] border-current" style={{ width: Math.max(8, r.r! >= 1 ? 18 : 18 * r.r!), height: Math.max(8, r.r! >= 1 ? 18 / r.r! : 18) }} />
-                    <span className="sr-only">{k}</span>
-                  </button>
-                );
-              })}
+          <div className="space-y-2" data-testid="aspect-row">
+            <div className="text-xs font-semibold text-ink/80">Aspect</div>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Aspect ratio">
+              {RATIOS.filter((r) => r.r !== null).map((r) => (
+                <Chip key={r.label} title={`Resize the frame to ${r.label}`} aria-label={`Aspect ${r.label}`} onClick={() => setRatio(r.r)} className="pl-3">
+                  <span className="block rounded-[3px] border-[1.5px] border-current" style={{ width: Math.max(8, r.r! >= 1 ? 16 : 16 * r.r!), height: Math.max(8, r.r! >= 1 ? 16 / r.r! : 16) }} />
+                  {r.label}
+                </Chip>
+              ))}
             </div>
           </div>
         )}
-        <div className="flex items-center gap-0.5">
+        <div className="flex items-center gap-1">
           <IconButton icon={<RotateCcw size={15} />} label="Rotate left 90°" onClick={() => target.update((f) => { f.rotation90 = ((f.rotation90 + 270) % 360) as 0 | 90 | 180 | 270; })} />
           <IconButton icon={<RotateCw size={15} />} label="Rotate right 90°" onClick={() => target.update((f) => { f.rotation90 = ((f.rotation90 + 90) % 360) as 0 | 90 | 180 | 270; })} testId="rotate-right" />
           <IconButton icon={<FlipHorizontal2 size={15} />} label="Flip horizontally" active={fill.flipX} onClick={() => target.update((f) => { f.flipX = !f.flipX; })} />
@@ -184,7 +181,7 @@ export default function MediaProps({ target, edit }: { target: FillTarget; edit?
       <MyLooks target={target} asset={asset} />
 
       {asset && (
-        <Section title="Filters" action={<button type="button" className="text-2xs text-mute hover:text-ink" onClick={() => target.update((f) => { f.filter = { ...DEFAULT_FILTER }; })}>Reset</button>}>
+        <Section title="Filters" action={<TextButton onClick={() => target.update((f) => { f.filter = { ...DEFAULT_FILTER }; })}>Reset</TextButton>}>
           <div className="grid grid-cols-4 gap-0.5">
             {FILTER_PRESETS.map((p) => (
               <FilterThumb key={p.id} asset={asset} presetId={p.id} name={p.name.replace("Black & White", "B&W").replace("High Contrast", "Contrast")} active={fill.filter.id === p.id} onClick={() => target.update((f) => { f.filter = { id: p.id, intensity: f.filter.id === p.id ? f.filter.intensity : 100 }; })} />
@@ -194,9 +191,9 @@ export default function MediaProps({ target, edit }: { target: FillTarget; edit?
         </Section>
       )}
 
-      <Section title="Adjustments" action={<button type="button" className="text-2xs text-mute hover:text-ink" data-testid="reset-adjustments" onClick={() => target.update((f) => { f.adjustments = { ...NEUTRAL }; })}>Reset all</button>}>
+      <Section title="Adjustments" action={<TextButton data-testid="reset-adjustments" onClick={() => target.update((f) => { f.adjustments = { ...NEUTRAL }; })}>Reset all</TextButton>}>
         {(["light", "color", "detail", "effect"] as const).map((g) => (
-          <div key={g} className="space-y-1.5">
+          <div key={g} className="space-y-2">
             <div className="pt-1 text-2xs font-semibold text-faint">{{ light: "Light", color: "Colour", detail: "Detail", effect: "Effects" }[g]}</div>
             {ADJUSTMENT_META.filter((m) => m.group === g).map((m) => (
               <Slider
@@ -229,7 +226,7 @@ function VideoSection({ target, duration, playing }: { target: FillTarget; durat
   const t = effectiveTrim(target.fill, duration);
   return (
     <Section title="Clip" defaultOpen>
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-2">
         <Button onClick={() => st().setUI({ playing: !playing })} testId="clip-play">{playing ? <Pause size={12} /> : <Play size={12} />} {playing ? "Stop" : "Play"}</Button>
         <span className="text-xs tabular-nums text-mute">{formatTime(t.length)} of {formatTime(duration)}</span>
       </div>
@@ -238,9 +235,9 @@ function VideoSection({ target, duration, playing }: { target: FillTarget; durat
       <Slider label="Cover frame" value={+Math.min(Math.max(v.coverTime, t.start), t.end).toFixed(2)} min={t.start} max={t.end} step={0.05} unit="s" neutral={t.start} onChange={(x) => target.update((f) => { f.video!.coverTime = x; }, "cover")} onReset={() => target.update((f) => { f.video!.coverTime = t.start; })} testId="cover-time" />
       <Slider label="Volume" value={Math.round(v.volume * 100)} min={0} max={100} unit="%" neutral={100} onChange={(x) => target.update((f) => { f.video!.volume = x / 100; if (x > 0) f.video!.muted = false; }, "volume")} onReset={() => target.update((f) => { f.video!.volume = 1; })} />
       <div className="flex items-center gap-3">
-        <button type="button" onClick={() => target.update((f) => { f.video!.muted = !f.video!.muted; })} className={`flex items-center gap-1 rounded-md px-2 py-1 text-xs ring-1 ring-line ${v.muted ? "bg-ink/10 text-ink" : "bg-panel2 text-ink/90"}`} data-testid="mute">
-          {v.muted ? <VolumeX size={12} /> : <Volume2 size={12} />} {v.muted ? "Muted" : "Sound on"}
-        </button>
+        <Chip soft active={v.muted} onClick={() => target.update((f) => { f.video!.muted = !f.video!.muted; })} data-testid="mute">
+          {v.muted ? <VolumeX size={14} /> : <Volume2 size={14} />} {v.muted ? "Muted" : "Sound on"}
+        </Chip>
         <Toggle label="Loop" value={v.loop} onChange={(x) => target.update((f) => { f.video!.loop = x; })} />
       </div>
       <p className="text-2xs leading-4 text-faint">The original file is never changed. Trim, cover and volume are saved with the project and applied on export.</p>

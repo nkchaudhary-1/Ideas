@@ -6,7 +6,7 @@ import { Section } from "@/components/ui/controls";
 
 function Preview({ el }: { el: Element }) {
   const sz = 44;
-  if (el.type === "group") return <div className="grid h-11 w-11 place-items-center rounded bg-panel2 text-[9px] text-mute">{el.name.split(" ")[0]}</div>;
+  if (el.type === "group") return <div className="grid h-11 w-11 place-items-center rounded bg-panel2 text-2xs text-mute">{el.name.split(" ")[0]}</div>;
   if (el.type !== "shape") return null;
   const s = el as ShapeEl;
   // elements are authored in white for dark artboards; show white as the theme's ink so it reads on a light card too
@@ -47,7 +47,7 @@ export default function ElementsPanel() {
         <Section key={g} title={{ Basic: "Shapes", Decor: "Graphics & decor", Labels: "Labels & badges", Icons: "Simple icons", UI: "Interface pieces" }[g]}>
           <div className="grid grid-cols-4 gap-x-2 gap-y-4">
             {ELEMENT_PRESETS.filter((p) => p.group === g).map((p) => (
-              <button key={p.id} type="button" title={p.name} data-testid={`el-${p.id}`} onClick={() => add(p)} className="group flex flex-col items-center gap-1.5 rounded-xl p-1 hover:bg-ink/5">
+              <button key={p.id} type="button" title={p.name} data-testid={`el-${p.id}`} onClick={() => add(p)} className="group flex h-20 flex-col items-center justify-center gap-2 rounded p-1 hover:bg-ink/5">
                 <span className="grid h-11 w-11 place-items-center rounded bg-panel2 text-ink"><Preview el={p.build(1080, 1350, "#ffffff")} /></span>
                 <span className="w-full truncate text-center text-2xs text-mute group-hover:text-ink">{p.name}</span>
               </button>

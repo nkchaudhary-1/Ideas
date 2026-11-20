@@ -30,7 +30,6 @@ export function createCarouselFromAssets(assets: Asset[]) {
   const { width: w, height: h } = s.project.format;
   let i = 0;
   if (s.project.slides.length === 1 && isEmptySlide(first)) {
-    s.updateElement; // keep lint quiet
     s.addElement(fullBleed(assets[0], first.width, first.height));
     s.commit((p) => { p.kind = "carousel"; p.slides[0].name = "Slide 1"; });
     i = 1;

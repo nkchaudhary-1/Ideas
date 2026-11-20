@@ -6,10 +6,9 @@ import { SavePreset } from "@/components/ui/SavePreset";
 import { captureLayout, defaultName } from "@/lib/user-presets";
 import { findCell, removeCell, splitCell, updateCell, layoutGrid, cellsOf } from "@/lib/grid-engine";
 import { ColorField } from "@/components/ui/ColorPicker";
-import { Button, Field, Section, Slider } from "@/components/ui/controls";
+import { Button, Field, Section, Slider, TextButton } from "@/components/ui/controls";
 import { makeMedia } from "@/lib/factory";
 import { StrokeField, ShadowField } from "./StyleControls";
-import { getAsset } from "@/lib/media";
 
 export default function GridProps({ el }: { el: GridEl }) {
   const st = useStore.getState;
@@ -63,14 +62,13 @@ export default function GridProps({ el }: { el: GridEl }) {
             </div>
             <Field label="Cell colour">
               <ColorField value={cell.bg ?? el.cellBg} onChange={(c) => set((g) => { g.tree = updateCell(g.tree, cellId, { bg: c }) as GridEl["tree"]; }, "cellbg-" + cellId)} />
-              {cell.bg && <button type="button" className="text-2xs text-mute hover:text-ink" onClick={() => set((g) => { g.tree = updateCell(g.tree, cellId, { bg: null }) as GridEl["tree"]; })}>Reset</button>}
+              {cell.bg && <TextButton onClick={() => set((g) => { g.tree = updateCell(g.tree, cellId, { bg: null }) as GridEl["tree"]; })}>Reset</TextButton>}
             </Field>
             <Slider label="Cell corner" value={Math.round(cell.radius ?? el.radius)} min={0} max={200} unit="px" neutral={el.radius} onChange={(v) => set((g) => { g.tree = updateCell(g.tree, cellId, { radius: v }) as GridEl["tree"]; }, "cr-" + cellId)} onReset={() => set((g) => { g.tree = updateCell(g.tree, cellId, { radius: null }) as GridEl["tree"]; })} />
-            {!cell.fill && <p className="text-xs text-mute">Empty cell. Drag a photo or video here, or pick one from the Uploads panel.</p>}
+            {!cell.fill && <p className="text-xs text-mute">Empty cell. Drag a photo or video here, or pick one from the Media panel.</p>}
           </>
         )}
         <Button variant="ghost" onClick={explode} testId="explode-grid" title="Turn each cell into a free frame you can move and overlap"><Unlink2 size={12} /> Convert to free frames</Button>
-        {void getAsset}
       </Section>
     </>
   );

@@ -7,6 +7,7 @@ import { useStore, useActiveSlide } from "@/lib/store";
 import { flatten } from "@/lib/geometry";
 import { getAsset, peekImage } from "@/lib/media";
 import { clamp } from "@/lib/util";
+import { IconButton } from "@/components/ui/controls";
 
 const photoPaletteCache = new Map<string, string[]>();
 
@@ -83,57 +84,59 @@ export function ColorPopover({ value, onChange, onClose, anchor, alpha }: {
   };
   const cur = hsvToRgb(hsv);
   const pick = (c: string) => { const r = hexToRgb(c); if (!r) return; setHsv(rgbToHsv(r)); setHexText(c); onChange(alpha ? withAlpha(c, alphaV) : c); };
-  const left = clamp(anchor.left - 250, 8, window.innerWidth - 260);
-  const top = clamp(anchor.bottom + 6, 8, window.innerHeight - 420);
+  const left = clamp(anchor.left - 264, 8, window.innerWidth - 304);
+  const top = clamp(anchor.bottom + 8, 8, window.innerHeight - 520);
   const hasEyedropper = typeof window !== "undefined" && "EyeDropper" in window;
 
   return createPortal(
-    <div ref={ref} className="fixed z-[200] w-[244px] rounded-lg border border-line bg-panel p-3 shadow-2xl" style={{ left, top }} data-testid="color-popover">
+    <div ref={ref} className="card pop fixed z-[200] w-[288px] space-y-4 p-5 shadow-float" style={{ left, top }} data-testid="color-popover" role="dialog" aria-label="Colour picker">
       <div
         ref={svRef}
         onPointerDown={dragSV}
-        className="relative h-32 w-full cursor-crosshair rounded-md"
+        className="relative h-36 w-full cursor-crosshair rounded-in-20"
         style={{ background: `linear-gradient(to top,#000,transparent),linear-gradient(to right,#fff,hsl(${hsv.h},100%,50%))` }}
       >
-        <span className="absolute h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow" style={{ left: `${hsv.s * 100}%`, top: `${(1 - hsv.v) * 100}%`, background: rgbToHex(cur) }} />
+        <span className="absolute h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow" style={{ left: `${hsv.s * 100}%`, top: `${(1 - hsv.v) * 100}%`, background: rgbToHex(cur) }} />
       </div>
       <input
-        type="range" min={0} max={360} value={hsv.h} aria-label="Hue" className="mt-2"
-        style={{ ["--p" as string]: "0%", background: "linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)", borderRadius: 4, height: 8 }}
+        type="range" min={0} max={360} value={hsv.h} aria-label="Hue" className="rs-color"
+        style={{ ["--track" as string]: "linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)" }}
         onChange={(e) => { const nh = { ...hsv, h: +e.target.value }; setHsv(nh); emit(nh, alphaV); }}
       />
       {alpha && (
-        <input type="range" min={0} max={100} value={Math.round(alphaV * 100)} aria-label="Opacity" className="mt-2" style={{ ["--p" as string]: `${alphaV * 100}%` }}
+        <input type="range" min={0} max={100} value={Math.round(alphaV * 100)} aria-label="Opacity" style={{ ["--a" as string]: "0%", ["--b" as string]: `${alphaV * 100}%` }}
           onChange={(e) => { const al = +e.target.value / 100; setAlphaV(al); emit(hsv, al); }} />
       )}
-      <div className="mt-2 flex items-center gap-1.5">
-        <input value={hexText} onChange={(e) => setHex(e.target.value)} onKeyDown={(e) => e.stopPropagation()} aria-label="Hex colour" className="h-6 w-[78px] rounded-md bg-panel2 px-1.5 text-xs uppercase outline-none ring-1 ring-line focus:ring-accent/70" />
-        {(["r", "g", "b"] as const).map((k) => (
-          <input key={k} value={Math.round(cur[k])} aria-label={k.toUpperCase()} onChange={(e) => { const n = clamp(+e.target.value || 0, 0, 255); const r = { ...cur, [k]: n }; pick(rgbToHex(r)); }} onKeyDown={(e) => e.stopPropagation()} className="h-6 w-9 rounded-md bg-panel2 px-1 text-center text-xs outline-none ring-1 ring-line focus:ring-accent/70" />
-        ))}
+      <div className="flex items-center gap-2">
+        <input value={hexText} onChange={(e) => setHex(e.target.value)} onKeyDown={(e) => e.stopPropagation()} aria-label="Hex colour" className="h-9 min-w-0 flex-1 rounded-full bg-field px-4 text-xs font-medium uppercase outline-none focus:ring-2 focus:ring-accent/40" />
         {hasEyedropper && (
-          <button type="button" title="Pick from screen" className="grid h-6 w-6 place-items-center rounded-md hover:bg-ink/10" onClick={async () => {
+          <IconButton icon={<Pipette size={15} />} label="Pick from screen" onClick={async () => {
             try { const r = await new (window as unknown as { EyeDropper: new () => { open: () => Promise<{ sRGBHex: string }> } }).EyeDropper().open(); pick(r.sRGBHex); } catch { /* cancelled */ }
-          }}><Pipette size={13} /></button>
+          }} />
         )}
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        {(["r", "g", "b"] as const).map((k) => (
+          <input key={k} value={Math.round(cur[k])} aria-label={k.toUpperCase()} inputMode="numeric" onChange={(e) => { const n = clamp(+e.target.value || 0, 0, 255); const r = { ...cur, [k]: n }; pick(rgbToHex(r)); }} onKeyDown={(e) => e.stopPropagation()} className="h-9 min-w-0 rounded-full bg-field px-3 text-center text-xs font-medium outline-none focus:ring-2 focus:ring-accent/40" />
+        ))}
       </div>
       {recent.length > 0 && <Swatches title="Recent" colors={recent} onPick={pick} />}
       {photo.length > 0 && <Swatches title="From your photo" colors={photo} onPick={pick} />}
-      <div className="mt-2 max-h-28 space-y-1.5 overflow-y-auto">
-        {PALETTES.slice(0, 5).map((p) => <Swatches key={p.name} title={p.name} colors={p.colors} onPick={pick} compact />)}
+      <div className="max-h-32 space-y-3 overflow-y-auto">
+        {PALETTES.slice(0, 5).map((p) => <Swatches key={p.name} title={p.name} colors={p.colors} onPick={pick} />)}
       </div>
     </div>,
     document.body,
   );
 }
 
-function Swatches({ title, colors, onPick, compact }: { title: string; colors: string[]; onPick: (c: string) => void; compact?: boolean }) {
+function Swatches({ title, colors, onPick }: { title: string; colors: string[]; onPick: (c: string) => void }) {
   return (
-    <div className={compact ? "" : "mt-2"}>
-      <div className="mb-1 text-2xs font-semibold text-faint">{title}</div>
-      <div className="flex flex-wrap gap-1">
+    <div>
+      <div className="mb-2 text-2xs font-semibold text-faint">{title}</div>
+      <div className="flex flex-wrap gap-2">
         {colors.map((c, i) => (
-          <button key={c + i} type="button" title={c} onClick={() => onPick(c)} className="h-5 w-5 rounded border border-ink/15" style={{ background: c }} />
+          <button key={c + i} type="button" title={c} aria-label={c} onClick={() => onPick(c)} className="h-6 w-6 rounded-full ring-1 ring-inset ring-ink/15 transition-transform hover:scale-110" style={{ background: c }} />
         ))}
       </div>
     </div>
@@ -155,9 +158,9 @@ export function ColorField({ value, onChange, alpha, testId }: { value: string; 
         data-color-trigger
         data-testid={testId}
         onClick={() => { setRect(btn.current!.getBoundingClientRect()); setOpen((o) => !o); }}
-        className="flex h-6 min-w-0 items-center gap-1.5 rounded-md bg-panel2 pl-1 pr-2 text-xs ring-1 ring-line hover:ring-ink/25"
+        className="flex h-9 shrink-0 items-center gap-2 rounded-full bg-field pl-2 pr-3 text-xs font-medium transition-colors hover:bg-raised"
       >
-        <span className="checker h-4 w-4 shrink-0 overflow-hidden rounded-sm border border-ink/20"><span className="block h-full w-full" style={{ background: value }} /></span>
+        <span className="checker h-5 w-5 shrink-0 overflow-hidden rounded-full ring-1 ring-inset ring-ink/20"><span className="block h-full w-full" style={{ background: value }} /></span>
         <span className="truncate uppercase text-ink/90">{text}</span>
       </button>
       {open && rect && <ColorPopover value={value} alpha={alpha} onChange={onChange} onClose={() => setOpen(false)} anchor={rect} />}

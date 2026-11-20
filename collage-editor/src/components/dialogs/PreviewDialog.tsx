@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Film, Maximize2, Pause, Play, Repeat, X } from "lucide-react";
 import { useStore } from "@/lib/store";
+import { dims } from "@/lib/util";
 import SlideView from "@/components/canvas/SlideView";
 import { slideDuration, slideHasVideo } from "@/lib/timeline";
 import { pauseAllPlayers } from "@/lib/media";
@@ -79,30 +80,30 @@ export default function PreviewDialog() {
   return (
     <div ref={box} className="fixed inset-0 z-[90] flex flex-col bg-[#0b0b0b]" data-testid="preview-dialog" role="dialog" aria-modal="true" aria-label="Preview">
       <header className="flex h-12 shrink-0 items-center justify-between px-4">
-        <div className="flex items-center gap-1 rounded-lg bg-panel2 p-0.5 text-xs">
+        <div className="flex items-center gap-1 rounded-full bg-panel2 p-1 text-xs">
           {(["post", "cover"] as Mode[]).map((m) => (
-            <button key={m} type="button" onClick={() => setMode(m)} data-testid={`preview-mode-${m}`} className={`rounded-md px-3 py-1 ${mode === m ? "bg-raised text-ink" : "text-mute hover:text-ink"}`}>{m === "post" ? "Post" : "Cover & grid"}</button>
+            <button key={m} type="button" onClick={() => setMode(m)} data-testid={`preview-mode-${m}`} className={`h-7 whitespace-nowrap rounded-full px-4 ${mode === m ? "bg-raised text-ink" : "text-mute hover:text-ink"}`}>{m === "post" ? "Post" : "Cover & grid"}</button>
           ))}
         </div>
-        <div className="flex items-center gap-1.5">
-          <button type="button" onClick={() => setAuto(!auto)} title="Autoplay through slides" aria-pressed={auto} className={`flex h-8 items-center gap-1.5 rounded-md px-2.5 text-xs ${auto ? "bg-accent/20 text-accent" : "text-mute hover:bg-white/10 hover:text-ink"}`}><Repeat size={13} /> Autoplay</button>
-          <button type="button" onClick={toggleFs} title="Fullscreen (F)" aria-label="Fullscreen" className="grid h-8 w-8 place-items-center rounded-md text-mute hover:bg-white/10 hover:text-ink"><Maximize2 size={15} /></button>
-          <button type="button" onClick={close} title="Close (Esc)" aria-label="Close preview" data-testid="preview-close" className="grid h-8 w-8 place-items-center rounded-md text-mute hover:bg-white/10 hover:text-ink"><X size={16} /></button>
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={() => setAuto(!auto)} title="Autoplay through slides" aria-pressed={auto} className={`flex h-9 items-center gap-2 whitespace-nowrap rounded-full px-4 text-xs ${auto ? "bg-accent/20 text-accent" : "text-mute hover:bg-white/10 hover:text-ink"}`}><Repeat size={13} /> Autoplay</button>
+          <button type="button" onClick={toggleFs} title="Fullscreen (F)" aria-label="Fullscreen" className="grid h-9 w-9 place-items-center rounded-full text-mute hover:bg-white/10 hover:text-ink"><Maximize2 size={15} /></button>
+          <button type="button" onClick={close} title="Close (Esc)" aria-label="Close preview" data-testid="preview-close" className="grid h-9 w-9 place-items-center rounded-full text-mute hover:bg-white/10 hover:text-ink"><X size={16} /></button>
         </div>
       </header>
 
       <main className="flex min-h-0 flex-1 items-center justify-center gap-4">
         {mode === "post" ? (
           <>
-            <button type="button" aria-label="Previous slide" disabled={i === 0} onClick={() => go(-1)} className="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-25" data-testid="preview-prev"><ChevronLeft /></button>
-            <div className="overflow-hidden rounded-sm shadow-2xl ring-1 ring-white/10" data-testid="preview-stage">
+            <button type="button" aria-label="Previous slide" disabled={i === 0} onClick={() => go(-1)} className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-25" data-testid="preview-prev"><ChevronLeft /></button>
+            <div className="overflow-hidden rounded-sm shadow-2xl ring-1 ring-white/10" data-radius-free data-testid="preview-stage">
               <div className="relative overflow-hidden" style={{ width: Math.round(w), height: Math.round(w / ar) }}>
                 <div className="absolute top-0" style={{ left: -Math.round(w) * frame.part }}>
                   <SlideView key={slide.id + String(playing)} slide={slide} width={Math.round(w) * frame.parts} playing={playing} scope="preview" />
                 </div>
               </div>
             </div>
-            <button type="button" aria-label="Next slide" disabled={i === frames.length - 1} onClick={() => go(1)} className="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-25" data-testid="preview-next"><ChevronRight /></button>
+            <button type="button" aria-label="Next slide" disabled={i === frames.length - 1} onClick={() => go(1)} className="grid h-12 w-12 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-25" data-testid="preview-next"><ChevronRight /></button>
           </>
         ) : (
           <div className="flex items-start gap-10" data-testid="preview-cover">
@@ -116,20 +117,20 @@ export default function PreviewDialog() {
             </figure>
             <figure className="space-y-2 text-center">
               {tile(Math.round(Math.min(260, 300 * cAr)), Math.round(Math.min(260, 300 * cAr) / cAr))}
-              <figcaption className="text-xs text-mute">Full cover · {cParts > 1 ? 1080 : cover.width}×{cover.height}</figcaption>
+              <figcaption className="text-xs text-mute">Full cover · {dims(cParts > 1 ? 1080 : cover.width, cover.height)}</figcaption>
             </figure>
           </div>
         )}
       </main>
 
-      <footer className="flex h-[88px] shrink-0 flex-col items-center justify-center gap-2.5">
-        <div className="flex items-center gap-1.5" data-testid="preview-dots">
+      <footer className="flex h-[88px] shrink-0 flex-col items-center justify-center gap-3">
+        <div className="flex items-center" data-testid="preview-dots">
           {frames.map((f, k) => (
-            <button key={`${f.sl.id}-${f.part}`} type="button" aria-label={`Go to slide ${k + 1}`} onClick={() => setI(k)} className={`h-1.5 rounded-full transition-all ${k === i ? "w-5 bg-white" : "w-1.5 bg-white/30 hover:bg-white/60"}`} />
+            <button key={`${f.sl.id}-${f.part}`} type="button" aria-label={`Go to slide ${k + 1}`} onClick={() => setI(k)} className="grid h-6 min-w-6 place-items-center px-1"><span className={`block h-1.5 rounded-full transition-all ${k === i ? "w-5 bg-white" : "w-1.5 bg-white/30 hover:bg-white/60"}`} /></button>
           ))}
         </div>
         <div className="flex items-center gap-3 text-xs text-mute">
-          <button type="button" onClick={() => setPlaying(!playing)} className="grid h-8 w-8 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label={playing ? "Pause" : "Play"} data-testid="preview-play">{playing ? <Pause size={14} /> : <Play size={14} />}</button>
+          <button type="button" onClick={() => setPlaying(!playing)} className="grid h-9 w-9 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label={playing ? "Pause" : "Play"} data-testid="preview-play">{playing ? <Pause size={14} /> : <Play size={14} />}</button>
           <span data-testid="preview-counter">{i + 1} / {frames.length}</span>
           <span className="text-faint">·</span>
           <span>{frame.parts > 1 ? `${slide.name} · panorama ${frame.part + 1} of ${frame.parts}` : slide.name}</span>

@@ -23,12 +23,12 @@ export default function PanoramaHandles() {
       {Array.from({ length: n }, (_, i) => (
         <button key={i} type="button" data-testid={`pano-chip-${i + 1}`} aria-pressed={pin === i} title={pin === i ? `Layouts will go to slide ${i + 1} (click to undo)` : `Add the next layout to slide ${i + 1}`}
           onPointerDown={stop} onClick={() => st().setUI({ pinSegment: pin === i ? null : i })}
-          className={`pointer-events-auto absolute -translate-x-1/2 rounded-full px-2.5 py-1 text-[11px] font-bold shadow-card transition-colors ${pin === i ? "bg-pill text-pillink" : next === i ? "bg-panel text-ink ring-1 ring-ink/40" : "bg-panel text-mute hover:text-ink"}`}
+          className={`pointer-events-auto absolute -translate-x-1/2 grid h-8 min-w-8 place-items-center rounded-full px-3 text-2xs font-bold shadow-card transition-colors ${pin === i ? "bg-pill text-pillink" : next === i ? "bg-panel text-ink ring-1 ring-ink/40" : "bg-panel text-mute hover:text-ink"}`}
           style={{ left: view.x + sw * (i + 0.5), top }}>
           {i + 1}
         </button>
       ))}
-      <div className="absolute flex -translate-y-1/2 flex-col gap-2.5" style={{ left: right + 16, top: midY }} onPointerDown={stop}>
+      <div className="absolute flex -translate-y-1/2 flex-col gap-3" style={{ left: right + 16, top: midY }} onPointerDown={stop}>
         <button type="button" aria-label="Add a slide to the right" title="Extend by one slide" data-testid="pano-extend" disabled={n >= PANORAMA_MAX} onClick={() => st().setPanoramaSlides(n + 1)}
           className="pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-pill text-pillink shadow-float hover:opacity-90 disabled:opacity-30"><Plus size={16} /></button>
         <button type="button" aria-label="Remove the last slide" title="Shorten by one slide" data-testid="pano-shorten" disabled={n <= PANORAMA_MIN} onClick={() => st().setPanoramaSlides(n - 1)}

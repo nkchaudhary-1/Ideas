@@ -6,7 +6,6 @@ import { Button, Field, NumberField, Section, Segmented } from "@/components/ui/
 import { firstEmptySegment } from "@/lib/store";
 import { panoramaCount } from "@/lib/formats";
 import { createCollageFromAssets } from "@/lib/workflows";
-import { makeGrid } from "@/lib/factory";
 import { cell } from "@/lib/grid-engine";
 import type { GridNode } from "@/lib/types";
 import { uid } from "@/lib/util";
@@ -54,16 +53,16 @@ export default function LayoutsPanel() {
 
   return (
     <div className="h-full overflow-y-auto" data-testid="layouts-panel">
-      <div className="space-y-4 px-7 pb-5" data-testid="layout-target">
+      <div className="space-y-4 px-8 pb-5" data-testid="layout-target">
         {n >= 2 ? (
           <>
             <p className="text-xs leading-5 text-mute">
               {resolved === "replace" ? "Clicking a layout re-arranges the selected grid." : <>Next layout goes to <b className="text-ink">slide {next !== null ? next + 1 : n}</b>. Pick a layout, or drag one onto any slide.</>}
             </p>
-            <div className="flex flex-wrap gap-1.5" role="group" aria-label="Choose slide">
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Choose slide">
               {Array.from({ length: n }, (_, i) => (
                 <button key={i} type="button" data-testid={`layout-slide-${i + 1}`} aria-pressed={pin === i} onClick={() => st().setUI({ pinSegment: pin === i ? null : i })}
-                  className={`h-8 min-w-8 rounded-full px-2.5 text-xs font-bold transition-colors ${pin === i ? "bg-pill text-pillink" : next === i ? "bg-field text-ink ring-1 ring-ink/40" : "bg-field text-mute hover:text-ink"}`}>{i + 1}</button>
+                  className={`h-8 min-w-8 rounded-full px-3 text-xs font-bold transition-colors ${pin === i ? "bg-pill text-pillink" : next === i ? "bg-field text-ink ring-1 ring-ink/40" : "bg-field text-mute hover:text-ink"}`}>{i + 1}</button>
               ))}
             </div>
           </>
@@ -78,20 +77,20 @@ export default function LayoutsPanel() {
       </div>
       {chosen.length > 0 && (
         <Section title={`For your ${chosen.length} selected file${chosen.length > 1 ? "s" : ""}`}>
-          <div className="grid grid-cols-4 gap-3">
-            {suggestions.map((p) => <button key={p.id} type="button" title={p.name} {...drag(p.id)} onClick={() => { st().applyGridPreset(p); }} className="grid place-items-center rounded-xl p-1.5 hover:bg-ink/5"><GridThumb preset={p} /></button>)}
+          <div className="grid grid-cols-3 gap-3">
+            {suggestions.map((p) => <button key={p.id} type="button" title={p.name} {...drag(p.id)} onClick={() => { st().applyGridPreset(p); }} className="grid place-items-center rounded-in-12 p-2 hover:bg-ink/5"><GridThumb preset={p} w={72} h={88} /></button>)}
           </div>
           <Button variant="primary" onClick={() => createCollageFromAssets(chosen)} testId="make-collage">Make a collage from them</Button>
         </Section>
       )}
       <Section title="My layouts" defaultOpen>
         {myLayouts.length > 0 ? (
-          <div className="grid grid-cols-4 gap-3" data-testid="my-layouts">
+          <div className="grid grid-cols-3 gap-3" data-testid="my-layouts">
             {myLayouts.map((p) => (
               p.kind === "layout" ? (
                 <div key={p.id} className="group relative" data-testid="layout-tile">
-                  <button type="button" title={`Apply “${p.name}”`} {...drag(p.id)} onClick={() => st().applyLayoutPreset(p.id)} className="flex w-full flex-col items-center gap-1 rounded-md p-1 hover:bg-ink/5">
-                    <GridThumb tree={p.data.tree} />
+                  <button type="button" title={`Apply “${p.name}”`} {...drag(p.id)} onClick={() => st().applyLayoutPreset(p.id)} className="flex w-full flex-col items-center gap-1 rounded-in-20 p-1 hover:bg-ink/5">
+                    <GridThumb tree={p.data.tree} w={72} h={88} />
                     <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className="w-full text-center text-2xs text-mute" />
                   </button>
                   <PresetActions id={p.id} name={p.name} onRename={() => setRenaming(p.id)} />
@@ -105,10 +104,10 @@ export default function LayoutsPanel() {
       </Section>
       {groups.map((g) => (
         <Section key={g} title={g} defaultOpen={g !== "Dense"}>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {GRID_PRESETS.filter((p) => p.group === g).map((p) => (
-              <button key={p.id} type="button" title={`${p.name} · ${presetCellCount(p)} cell${presetCellCount(p) > 1 ? "s" : ""}`} data-testid={`grid-${p.id}`} {...drag(p.id)} onClick={() => st().applyGridPreset(p)} className="group flex flex-col items-center gap-1.5 rounded-xl p-1.5 hover:bg-ink/5">
-                <GridThumb preset={p} />
+              <button key={p.id} type="button" title={`${p.name} · ${presetCellCount(p)} cell${presetCellCount(p) > 1 ? "s" : ""}`} data-testid={`grid-${p.id}`} {...drag(p.id)} onClick={() => st().applyGridPreset(p)} className="group flex h-32 flex-col items-center gap-2 rounded p-2 hover:bg-ink/5">
+                <GridThumb preset={p} w={72} h={88} />
                 <span className="w-full truncate text-center text-2xs text-mute group-hover:text-ink">{p.name}</span>
               </button>
             ))}

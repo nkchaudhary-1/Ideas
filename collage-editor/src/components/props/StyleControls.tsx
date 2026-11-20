@@ -1,16 +1,16 @@
 "use client";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { createPortal } from "react-dom";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import type { Paint, Shadow, Stroke } from "@/lib/types";
 import { ColorField } from "@/components/ui/ColorPicker";
-import { Field, NumberField, Segmented, Slider, Toggle } from "@/components/ui/controls";
+import { Chip, Field, Segmented, Slider, TextInput, Toggle } from "@/components/ui/controls";
+import Popover from "@/components/ui/Popover";
 import { FONTS, FONT_CATEGORIES, fontStack, loadFont } from "@/lib/fonts";
 
 export function PaintField({ label = "Fill", paint, onChange, alpha = true }: { label?: string; paint: Paint | null; onChange: (p: Paint | null) => void; alpha?: boolean }) {
   const p = paint ?? { type: "solid" as const, color: "#ffffff" };
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-4">
       <Field label={label}>
         <Segmented
           size="sm"
@@ -23,7 +23,7 @@ export function PaintField({ label = "Fill", paint, onChange, alpha = true }: { 
           }}
         />
       </Field>
-      {paint?.type === "solid" && <Field label=""><span className="w-[72px]" /><ColorField value={paint.color} alpha={alpha} onChange={(c) => onChange({ type: "solid", color: c })} /></Field>}
+      {paint?.type === "solid" && <Field label="Colour"><ColorField value={paint.color} alpha={alpha} onChange={(c) => onChange({ type: "solid", color: c })} /></Field>}
       {paint?.type === "gradient" && (
         <>
           <Field label="Colours">
@@ -39,16 +39,13 @@ export function PaintField({ label = "Fill", paint, onChange, alpha = true }: { 
 
 export function StrokeField({ label = "Border", stroke, onChange, max = 80 }: { label?: string; stroke: Stroke | null; onChange: (s: Stroke | null) => void; max?: number }) {
   return (
-    <div className="space-y-1.5">
-      <Field label={label}>
-        <Toggle label={stroke ? "On" : "Off"} value={!!stroke} onChange={(v) => onChange(v ? { color: "#ffffff", width: 4 } : null)} />
-      </Field>
+    <div className="space-y-4">
+      <Toggle label={label} value={!!stroke} onChange={(v) => onChange(v ? { color: "#ffffff", width: 4 } : null)} />
       {stroke && (
-        <Field label="">
-          <span className="w-[72px]" />
-          <ColorField value={stroke.color} onChange={(c) => onChange({ ...stroke, color: c })} />
-          <NumberField value={stroke.width} min={0} max={max} width={56} unit="px" onChange={(w) => onChange({ ...stroke, width: w })} />
-        </Field>
+        <>
+          <Field label="Colour"><ColorField value={stroke.color} onChange={(c) => onChange({ ...stroke, color: c })} /></Field>
+          <Slider label="Width" value={stroke.width} min={0} max={max} unit="px" onChange={(w) => onChange({ ...stroke, width: w })} />
+        </>
       )}
     </div>
   );
@@ -57,11 +54,11 @@ export function StrokeField({ label = "Border", stroke, onChange, max = 80 }: { 
 const DEFAULT_SHADOW: Shadow = { color: "#000000", blur: 24, x: 0, y: 8, opacity: 0.35 };
 export function ShadowField({ shadow, onChange }: { shadow: Shadow | null; onChange: (s: Shadow | null) => void }) {
   return (
-    <div className="space-y-1.5">
-      <Field label="Shadow"><Toggle label={shadow ? "On" : "Off"} value={!!shadow} onChange={(v) => onChange(v ? { ...DEFAULT_SHADOW } : null)} /></Field>
+    <div className="space-y-4">
+      <Toggle label="Shadow" value={!!shadow} onChange={(v) => onChange(v ? { ...DEFAULT_SHADOW } : null)} />
       {shadow && (
         <>
-          <Field label=""><span className="w-[72px]" /><ColorField value={shadow.color} onChange={(c) => onChange({ ...shadow, color: c })} /></Field>
+          <Field label="Colour"><ColorField value={shadow.color} onChange={(c) => onChange({ ...shadow, color: c })} /></Field>
           <Slider label="Blur" value={shadow.blur} min={0} max={120} onChange={(v) => onChange({ ...shadow, blur: v })} />
           <Slider label="Offset X" value={shadow.x} min={-80} max={80} onChange={(v) => onChange({ ...shadow, x: v })} />
           <Slider label="Offset Y" value={shadow.y} min={-80} max={80} onChange={(v) => onChange({ ...shadow, y: v })} />
@@ -73,47 +70,34 @@ export function ShadowField({ shadow, onChange }: { shadow: Shadow | null; onCha
 }
 
 export function FontPicker({ family, onChange }: { family: string; onChange: (f: string) => void }) {
-  const [open, setOpen] = useState(false);
   const [cat, setCat] = useState<string>("All");
   const [q, setQ] = useState("");
-  const btn = useRef<HTMLButtonElement>(null);
-  const pop = useRef<HTMLDivElement>(null);
-  const [rect, setRect] = useState<DOMRect | null>(null);
   const list = useMemo(() => FONTS.filter((f) => (cat === "All" || f.category === cat) && f.family.toLowerCase().includes(q.toLowerCase())), [cat, q]);
-
-  useEffect(() => { if (open) list.slice(0, 40).forEach((f) => void loadFont(f.family, 400, false)); }, [open, list]);
-  useEffect(() => {
-    if (!open) return;
-    const f = (e: MouseEvent) => { if (!pop.current?.contains(e.target as Node) && !btn.current?.contains(e.target as Node)) setOpen(false); };
-    window.addEventListener("mousedown", f);
-    return () => window.removeEventListener("mousedown", f);
-  }, [open]);
-
+  useEffect(() => { list.slice(0, 40).forEach((f) => void loadFont(f.family, 400, false)); }, [list]);
   return (
-    <>
-      <button ref={btn} type="button" data-testid="font-picker" onClick={() => { setRect(btn.current!.getBoundingClientRect()); setOpen(!open); }} className="flex h-7 w-full items-center justify-between rounded-md bg-panel2 px-2 text-sm ring-1 ring-line hover:ring-ink/25" style={{ fontFamily: fontStack(family) }}>
-        <span className="truncate">{family}</span><ChevronDown size={12} className="text-mute" />
+    <Popover align="left" width={320} trigger={(open, toggle) => (
+      <button type="button" data-testid="font-picker" aria-label="Font" aria-expanded={open} onClick={toggle} className={`flex h-9 w-full items-center justify-between gap-2 rounded-full bg-field px-4 text-sm transition-colors hover:bg-raised ${open ? "ring-2 ring-ink/20" : ""}`} style={{ fontFamily: fontStack(family) }}>
+        <span className="truncate">{family}</span><ChevronDown size={14} className="shrink-0 text-mute" />
       </button>
-      {open && rect && createPortal(
-        <div ref={pop} className="fixed z-[200] flex h-[380px] w-[280px] flex-col rounded-lg border border-line bg-panel shadow-2xl" style={{ left: Math.max(8, rect.left - 140), top: Math.min(rect.bottom + 4, window.innerHeight - 390) }}>
-          <input autoFocus placeholder="Search fonts" value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.stopPropagation()} className="m-2 h-7 rounded-md bg-panel2 px-2 text-xs outline-none ring-1 ring-line focus:ring-accent/70" />
-          <div className="flex flex-wrap gap-1 px-2 pb-2">
-            {["All", ...FONT_CATEGORIES].map((c) => (
-              <button key={c} type="button" onClick={() => setCat(c)} className={`rounded px-1.5 py-0.5 text-2xs ${cat === c ? "bg-ink/10 text-ink" : "bg-panel2 text-mute hover:text-ink"}`}>{c}</button>
-            ))}
+    )}>
+      {(close) => (
+        <div className="flex h-[360px] flex-col gap-4" data-testid="font-list">
+          <TextInput value={q} onChange={setQ} placeholder="Search fonts" className="w-full" />
+          <div className="flex flex-wrap gap-2">
+            {["All", ...FONT_CATEGORIES].map((c) => <Chip sm key={c} active={cat === c} onClick={() => setCat(c)}>{c}</Chip>)}
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             {list.map((f) => (
-              <button key={f.id} type="button" data-testid={`font-${f.id}`} onMouseEnter={() => void loadFont(f.family, 400, false)} onClick={() => { onChange(f.family); setOpen(false); }} className={`flex w-full items-baseline justify-between rounded px-2 py-1.5 text-left hover:bg-ink/5 ${f.family === family ? "bg-ink/10" : ""}`}>
-                <span className="truncate text-[15px]" style={{ fontFamily: fontStack(f.family) }}>{f.family}</span>
-                <span className="ml-2 shrink-0 text-2xs text-faint">{f.category}</span>
+              <button key={f.id} type="button" data-testid={`font-${f.id}`} onMouseEnter={() => void loadFont(f.family, 400, false)} onClick={() => { onChange(f.family); close(); }}
+                className={`flex h-10 w-full items-center justify-between gap-3 rounded px-3 text-left hover:bg-ink/5 ${f.family === family ? "bg-ink/10" : ""}`}>
+                <span className="truncate text-[15px]" title={f.family} style={{ fontFamily: fontStack(f.family) }}>{f.family}</span>
+                <span className="shrink-0 text-2xs text-faint">{f.category}</span>
               </button>
             ))}
             {list.length === 0 && <div className="p-4 text-center text-xs text-mute">No fonts match.</div>}
           </div>
-        </div>,
-        document.body,
+        </div>
       )}
-    </>
+    </Popover>
   );
 }
