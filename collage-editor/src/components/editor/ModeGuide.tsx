@@ -84,11 +84,13 @@ export function useGuide(): { mode: ModeKey; steps: Step[]; next: number } {
         exportStep("Download your design as one image."),
       ];
   }
+  // strictly in order: a later step only ticks once every earlier one has, so the list never shows step 3 done while you are on step 1
+  // (a template's own placeholder text, say, must not count as you having styled anything)
+  steps = steps.map((s, i) => ({ ...s, done: s.done && steps.slice(0, i).every((p) => p.done) }));
   const next = steps.findIndex((s) => !s.done);
   return { mode, steps, next };
 }
 
-const SEEN = "collage.guide.seen";
 const MIN = "collage.guide.min";
 const read = (k: string) => { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch { return null; } };
 const write = (k: string, v: unknown) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } };
@@ -98,17 +100,7 @@ export function GuideChip({ compact, lowered }: { compact: boolean; /** the top 
   const { mode, steps, next } = useGuide();
   const info = MODES[mode];
   const [min, setMin] = useState(false);
-  const toggleRef = useRef<() => void>();
-  const projectId = useStore((s) => s.project.id);
   useEffect(() => { setMin(read(MIN) === true); }, []);
-  // the first time someone meets a kind of project, open the guide so they land knowing what it is and what to do
-  useEffect(() => {
-    const seen: string[] = read(SEEN) ?? [];
-    if (seen.includes(mode)) return;
-    write(SEEN, [...seen, mode]);
-    const t = setTimeout(() => toggleRef.current?.(), 700);
-    return () => clearTimeout(t);
-  }, [mode, projectId]);
   const doneAll = next === -1;
   const here = doneAll ? "Ready to export" : `Step ${next + 1} of ${steps.length} · ${steps[next].label}`;
   const short = doneAll ? "Ready" : `${next + 1}/${steps.length}`;
@@ -116,7 +108,6 @@ export function GuideChip({ compact, lowered }: { compact: boolean; /** the top 
   return (
     <div className="pointer-events-none absolute inset-x-0 z-20 flex justify-center px-3" style={{ top: lowered ? 148 : 84 }}>
       <Popover placement="bottom" align="center" width={360} trigger={(open, toggle) => {
-        toggleRef.current = toggle;
         return min && !open ? (
           <button type="button" onClick={toggle} aria-label={`${info.label}: what to do next`} title="What to do next" data-testid="guide-chip"
             className="pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-panel text-mute shadow-float hover:text-ink coarse:h-11 coarse:w-11"><CircleHelp size={16} /></button>

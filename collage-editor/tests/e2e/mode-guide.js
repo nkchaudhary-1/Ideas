@@ -18,9 +18,12 @@ const chipText = async (page) => (await page.locator('[data-testid=guide-chip]')
   await page.click('[data-testid=mode-carousel]'); await page.click('[data-testid=create-project]'); await page.waitForTimeout(1600);
   let t = await chipText(page);
   ok(/Carousel/.test(t) && /Step 1 of 4/.test(t) && /Add photos/.test(t), 'the chip names the mode and the step', t);
-  ok(await page.locator('[data-testid=guide-panel]').isVisible(), 'the first time, the guide opens by itself');
+  ok(!(await page.locator('[data-testid=guide-panel]').count()), 'the guide never opens on its own and covers nothing');
+  await page.click('[data-testid=guide-chip]'); await page.waitForTimeout(300);
+  ok(await page.locator('[data-testid=guide-panel]').isVisible(), 'a tap on the chip opens it');
   ok((await page.locator('[data-testid^=guide-step-]').count()) === 4, 'with four steps');
   ok((await page.locator('[data-testid=guide-panel]').textContent()).includes('You’re making a carousel'), 'and says what you are making');
+  ok((await page.locator('[data-testid=guide-step-style]').getAttribute('data-done')) === 'false', 'later steps are not ticked before earlier ones');
   await page.keyboard.press('Escape'); await page.waitForTimeout(250);
   ok(await page.locator('[data-testid=empty-canvas]').isVisible(), 'an empty slide shows how to start');
   ok((await page.locator('[data-testid=empty-canvas]').textContent()).includes('Start your carousel'), 'in words that name the mode');

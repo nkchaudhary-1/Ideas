@@ -51,7 +51,7 @@ function Shell() {
   useEffect(() => {
     if (compact || kind !== "edit" || openedFor.current === projectId) return;
     openedFor.current = projectId;
-    useStore.getState().setUI(window.innerWidth < 1300 ? { rightOpen: true, leftPanel: null } : { rightOpen: true });
+    useStore.getState().setUI(window.innerWidth < 1500 ? { rightOpen: true, leftPanel: null } : { rightOpen: true });
   }, [compact, kind, projectId]);
 
   useEffect(() => {

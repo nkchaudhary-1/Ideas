@@ -21,6 +21,10 @@ export default function MediaPicker() {
   const input = useRef<HTMLInputElement>(null);
   const panel = useRef<HTMLDivElement>(null);
   const close = () => useStore.getState().setUI({ mediaPicker: null });
+  // opening a tool panel or a sheet means you moved on; the picker must not sit on top of it
+  const sheet = useStore((s) => s.ui.sheet);
+  const tool = useStore((s) => s.ui.leftPanel);
+  useEffect(() => { if (useStore.getState().ui.mediaPicker) close(); }, [sheet, tool]);
 
   useEffect(() => {
     if (!mp) return;

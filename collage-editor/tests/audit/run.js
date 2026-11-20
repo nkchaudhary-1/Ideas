@@ -47,7 +47,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   };
   const run = async (name, fn) => {
     if (ONLY && !ONLY.includes(name)) return;
-    try { const sh = sheetFor(name); if (PHONE && sh && sh.k === 'props') await sheet(sh); await fn(); if (PHONE && !sh) await sheet(null); await record(name); } catch (e) { console.log(`  (skipped ${name}: ${e.message.split('\n').slice(0, 4).join(' | ').slice(0, 300)})`); }
+    try { const sh = sheetFor(name); if (PHONE && sh && sh.k === 'props') await sheet(sh); await fn(); if (PHONE && !sh) await sheet(null); await record(name); } catch (e) { console.log(`  (skipped ${name}: ${e.message.split('\n').slice(0, 14).join(' | ').slice(0, 900)})`); }
   };
   const closeAny = async () => { await page.keyboard.press('Escape'); await wait(page, 150); await page.mouse.click(5, 5).catch(() => {}); await wait(page, 100); };
 

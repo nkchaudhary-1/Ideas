@@ -22,6 +22,7 @@ export default function EditStrip({ slim = false }: { slim?: boolean }) {
   const [over, setOver] = useState<number | null>(null);
   const anchor = useRef<string>(activeId);
   const input = useRef<HTMLInputElement>(null);
+  const press = useRef<{ t?: ReturnType<typeof setTimeout>; fired: boolean }>({ fired: false });
   const items = slides.filter((s) => !isEmptyEdit(s));
   const photos = items.filter((s) => slideKind(s) === "image").length;
   const videos = items.length - photos;
@@ -69,26 +70,33 @@ export default function EditStrip({ slim = false }: { slim?: boolean }) {
           const f = mediaOf(s)?.fill;
           const edited = !!f && (!fillIsNeutral(f) || !!f.match);
           return (
-            <div key={s.id} className="group relative flex shrink-0 flex-col items-center gap-1" draggable data-testid="slide-thumb" data-slide-id={s.id} data-selected={picked} data-active={active}
+            <div key={s.id} className="group flex shrink-0 flex-col items-start gap-1" style={{ width: slim ? w : Math.max(w, phone ? 64 : 88) }} draggable data-testid="slide-thumb" data-slide-id={s.id} data-selected={picked} data-active={active}
               onDragStart={(e) => { setDrag(i); e.dataTransfer.effectAllowed = "move"; }}
               onDragOver={(e) => { if (drag !== null) { e.preventDefault(); setOver(i); } }}
               onDragLeave={() => setOver((o) => (o === i ? null : o))}
               onDrop={(e) => { e.preventDefault(); setOver(null); if (drag !== null && drag !== i) st().moveSlide(drag, i); setDrag(null); }}
               onDragEnd={() => { setDrag(null); setOver(null); }}>
-              <button type="button" aria-label={`Select ${s.name}`} aria-pressed={picked} data-testid="thumb-open" onClick={(e) => click(e, s.id)}
+              {/* the picture, its tick and its hover actions belong together; its name sits under it, starting at the same left edge */}
+              <div className="relative">
+                <button type="button" aria-label={`Select ${s.name}`} aria-pressed={picked} data-testid="thumb-open" title="Click to edit it. Hold to add it to the selection"
+                  onPointerDown={(e) => { if (e.pointerType !== "touch") return; press.current.fired = false; clearTimeout(press.current.t); press.current.t = setTimeout(() => { press.current.fired = true; toggle(s.id); }, 420); }}
+                  onPointerUp={() => clearTimeout(press.current.t)} onPointerLeave={() => clearTimeout(press.current.t)} onPointerCancel={() => clearTimeout(press.current.t)}
+                  onClick={(e) => { if (press.current.fired) { press.current.fired = false; return; } click(e, s.id); }}
                 className={`relative overflow-hidden rounded ring-2 transition ${active ? "ring-ink/70" : picked ? "ring-accent/80" : over === i ? "ring-ink/50" : "ring-transparent hover:ring-ink/25"}`}>
                 <div className="pointer-events-none"><SlideView slide={s} width={w} scope="strip" /></div>
                 {slideKind(s) === "video" && <span className="absolute bottom-1 left-1 grid h-4 w-4 place-items-center rounded-full bg-black/70 text-white" title="Video"><Film size={9} /></span>}
                 {isRef && <span className="absolute bottom-1 right-1 rounded-full bg-black/75 px-2 text-2xs font-bold leading-4 text-white" data-testid="ref-badge">REF</span>}
                 {edited && !isRef && <span className="absolute bottom-1 right-1 h-2 w-2 rounded-full bg-accent ring-1 ring-black/40" title="Edited" />}
               </button>
-              {!slim && <button type="button" role="checkbox" aria-checked={picked} aria-label={`${picked ? "Deselect" : "Select"} ${s.name}`} data-testid="thumb-check" onClick={() => toggle(s.id)}
+                {!slim && w >= 56 && <button type="button" role="checkbox" aria-checked={picked} aria-label={`${picked ? "Deselect" : "Select"} ${s.name}`} data-testid="thumb-check" onClick={() => toggle(s.id)}
                 className={`absolute left-1 top-1 grid h-7 w-7 place-items-center rounded-full border text-white transition ${picked ? "grad-accent border-transparent opacity-100" : "border-white/80 bg-black/40 opacity-0 group-hover:opacity-100 touch:opacity-100"}`}>{picked && <Check size={13} strokeWidth={3} />}</button>}
-              {!slim && <span className={`max-w-[152px] truncate text-2xs font-semibold ${active ? "text-ink" : "text-mute"}`} title={getAsset(f?.assetId ?? "")?.name ?? s.name}>{s.name}</span>}
-              <div className="absolute right-1 top-1 hidden gap-1 group-hover:flex touch:!hidden">
+                {!slim && w < 56 && picked && <span className="pointer-events-none absolute left-1 top-1 grid h-5 w-5 place-items-center rounded-full grad-accent text-white"><Check size={11} strokeWidth={3} /></span>}
+                <div className="absolute right-1 top-1 hidden gap-1 group-hover:flex touch:!hidden">
                 <button type="button" aria-label="Duplicate" title="Duplicate" onClick={() => st().duplicateSlide(s.id)} className="grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-black"><Copy size={12} /></button>
                 <button type="button" aria-label="Remove from editor" title="Remove from editor" data-testid="thumb-remove" onClick={() => st().removeEditSlides([s.id])} className="grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-red-600"><Trash2 size={12} /></button>
               </div>
+              </div>
+              {!slim && <span className={`w-full truncate text-2xs font-semibold ${active ? "text-ink" : "text-mute"}`} title={getAsset(f?.assetId ?? "")?.name ?? s.name}>{s.name}</span>}
             </div>
           );
         })}

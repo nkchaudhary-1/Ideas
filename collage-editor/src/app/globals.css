@@ -121,6 +121,13 @@ input[type="range"].rs-color::-moz-range-thumb { width: 20px; height: 20px; back
 
 /* phones: panels and dialogs rise from the bottom edge like an app's sheets */
 @layer components {
+  @keyframes wheel-pop { from { transform: scale(0.55) rotate(-24deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  .wheel-pop { animation: wheel-pop 260ms cubic-bezier(0.2, 0.9, 0.25, 1.15) both; }
+  .wheel-icon { transition: transform 0.16s ease; }
+  .wheel-seg:hover .wheel-icon, .wheel-seg:focus-visible .wheel-icon { transform: scale(1.22); }
+  .wheel-seg:active .wheel-icon { transform: scale(0.92); }
+  .wheel-wedge { transition: fill 0.12s ease; }
+  @media (prefers-reduced-motion: reduce) { .wheel-pop { animation: none; } .wheel-icon { transition: none; } }
   @keyframes sheet-up { from { transform: translateY(28px); opacity: 0; } to { transform: none; opacity: 1; } }
   .sheet-in { animation: sheet-up 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
   @media (prefers-reduced-motion: reduce) { .sheet-in { animation: none; } }

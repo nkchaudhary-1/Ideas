@@ -56,14 +56,15 @@ export default function LeftSidebar() {
   const current = ALL.find((i) => i.id === panel);
   return (
     <>
-      <nav className={`card no-scrollbar flex w-[88px] shrink-0 flex-col items-center gap-1 overflow-y-auto py-4 ${edit ? "self-start" : ""}`} aria-label="Tools" data-testid="left-rail">
+      {/* Edit mode has one tool, so the rail is one round button, not a tall card with a lonely icon in it */}
+      <nav className={edit ? "card flex h-[72px] w-[72px] shrink-0 items-center justify-center self-start rounded-full" : "card no-scrollbar flex w-[88px] shrink-0 flex-col items-center gap-1 overflow-y-auto py-4"} aria-label="Tools" data-testid="left-rail">
         {(edit ? GROUPS.slice(0, 1).map((g) => g.filter((i) => i.id === "uploads")) : GROUPS).map((g, gi) => (
           <div key={gi} className="flex w-full flex-col items-center gap-1">
             {gi > 0 && <span className="my-2 h-px w-8 bg-line" />}
             {!edit && <span className="mb-1 text-2xs font-semibold text-faint">{GROUP_TITLES[gi]}</span>}
             {g.map((i) => (
               <button key={i.id} type="button" title={i.label} aria-label={i.label} aria-pressed={panel === i.id} data-testid={`rail-${i.id}`} onClick={() => set({ leftPanel: panel === i.id ? null : i.id })}
-                className={`flex h-14 w-[72px] flex-col items-center justify-center gap-1 rounded-in-8 text-2xs font-semibold transition-colors ${panel === i.id ? "grad-accent text-white shadow-card" : "text-mute hover:bg-field hover:text-ink"}`}>
+                className={`flex flex-col items-center justify-center gap-1 text-2xs font-semibold transition-colors ${edit ? "h-14 w-14 rounded-full" : "h-14 w-[72px] rounded-in-8"} ${panel === i.id ? "grad-accent text-white shadow-card" : "text-mute hover:bg-field hover:text-ink"}`}>
                 {i.icon}
                 <span className="whitespace-nowrap">{i.short}</span>
               </button>

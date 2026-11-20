@@ -33,9 +33,23 @@ const firstFill = (page) => page.evaluate(() => {
   // pick one cell
   const geo = await page.evaluate(() => { const b = document.querySelector('[data-testid=workspace]').getBoundingClientRect(); const v = window.__store.getState().ui.view; return { x: b.x + v.x + 270 * v.scale, y: b.y + v.y + 337 * v.scale }; });
   await page.mouse.click(geo.x, geo.y); await page.waitForTimeout(500);
-  ok(await page.locator('[data-testid=photo-toolbar]').isVisible(), 'selecting a photo shows the photo wheel');
+  ok(await page.locator('[data-testid=photo-wheel-toggle]').isVisible(), 'selecting a photo on a narrow stage shows the folded wheel button, so the photo stays clear');
+  await page.click('[data-testid=photo-wheel-toggle]'); await page.waitForTimeout(350);
+  ok(await page.locator('[data-testid=photo-toolbar]').isVisible(), 'and tapping it opens the wheel');
   ok((await page.locator('[data-testid^=wheel-]').count()) === 8, 'the wheel has eight tools');
   ok(await page.locator('[data-testid=properties]').isVisible(), 'the properties card opens by itself on first selection');
+  // the wheel can be dragged anywhere on the canvas by its middle, and stays where it is dropped
+  const wb = await page.locator('[data-testid=photo-toolbar]').boundingBox();
+  const mid = await page.locator('[data-testid=photo-wheel-close]').boundingBox();
+  const mx = mid.x + mid.width / 2, my = mid.y + mid.height / 2;
+  await page.mouse.move(mx, my); await page.mouse.down(); await page.mouse.move(mx - 60, my - 90, { steps: 6 }); await page.mouse.up(); await page.waitForTimeout(300);
+  const wb2 = await page.locator('[data-testid=photo-toolbar]').boundingBox();
+  ok(Math.abs(wb2.x - (wb.x - 60)) < 6 && Math.abs(wb2.y - (wb.y - 90)) < 6, 'dragging the middle moves the wheel', { before: [wb.x, wb.y], after: [wb2.x, wb2.y] });
+  ok(await page.locator('[data-testid=photo-toolbar]').isVisible(), 'and a drag does not fold it');
+  const stageBox = await page.locator('[data-testid=workspace]').boundingBox();
+  await page.mouse.move(wb2.x + wb2.width / 2, wb2.y + wb2.height / 2); await page.mouse.down(); await page.mouse.move(stageBox.x - 400, stageBox.y - 400, { steps: 6 }); await page.mouse.up(); await page.waitForTimeout(300);
+  const wb3 = await page.locator('[data-testid=photo-toolbar]').boundingBox();
+  ok(wb3.x >= stageBox.x - 1 && wb3.y >= stageBox.y - 1, 'it cannot be dragged off the canvas', { wheel: [wb3.x, wb3.y], stage: [stageBox.x, stageBox.y] });
   const z0 = (await firstFill(page)).zoom;
   await page.click('[data-testid=wheel-zoom]'); await page.waitForTimeout(150);
   await page.click('[data-testid=photo-zoom-in]'); await page.click('[data-testid=photo-zoom-in]'); await page.waitForTimeout(250);
@@ -79,6 +93,7 @@ const firstFill = (page) => page.evaluate(() => {
   await page.click('[data-testid=create-project]'); await page.waitForTimeout(3500);
   ok(await page.locator('[data-testid=properties]').isVisible(), 'Edit mode opens the adjustments card on a 1000px window');
   ok(await page.getByText('Filters', { exact: true }).first().isVisible(), 'the Filters section is visible');
+  await page.click('[data-testid=photo-wheel-toggle]'); await page.waitForTimeout(350);
   ok(await page.locator('[data-testid=photo-toolbar]').isVisible(), 'the photo wheel is there without selecting anything');
   const w = await page.evaluate(() => { const r = document.querySelector('[data-testid=photo-toolbar]').getBoundingClientRect(); const s = document.querySelector('[data-testid=workspace]').getBoundingClientRect(); return { l: r.left >= s.left - 1, r: r.right <= s.right + 1 }; });
   ok(w.l && w.r, 'the wheel fits inside the stage', w);
