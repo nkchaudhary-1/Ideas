@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { AlertTriangle, ArrowDown, ArrowUp, Check, Film, GalleryHorizontal, ImageIcon, LayoutGrid, Library, Loader2, Square, Trash2, Upload } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowUp, Check, Film, GalleryHorizontal, ImageIcon, LayoutGrid, Library, Loader2, SlidersHorizontal, Square, Trash2, Upload } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { ACCEPT, importFiles, removeAsset } from "@/lib/media";
 import type { Asset } from "@/lib/types";
@@ -8,6 +8,7 @@ import { formatBytes, formatTime } from "@/lib/util";
 import { Button } from "@/components/ui/controls";
 import Modal from "@/components/ui/Modal";
 import { createCarouselFromAssets, createCollageFromAssets } from "@/lib/workflows";
+import { addAssetsToEdit } from "@/lib/edit";
 
 interface Item { key: string; name: string; state: "working" | "ready" | "failed"; asset?: Asset; reason?: string }
 
@@ -15,6 +16,7 @@ interface Item { key: string; name: string; state: "working" | "ready" | "failed
 export default function ImportDialog() {
   const st = useStore.getState;
   const queue = useStore((s) => s.ui.importQueue);
+  const editMode = useStore((s) => s.project.kind === "edit");
   const [items, setItems] = useState<Item[]>([]);
   const [picked, setPicked] = useState<Set<string>>(new Set());
   const [dragKey, setDragKey] = useState<string | null>(null);
@@ -67,15 +69,22 @@ export default function ImportDialog() {
         <>
           <span className="mr-auto text-xs text-mute">{chosen.length} selected{nVid ? ` · ${nVid} video${nVid > 1 ? "s" : ""}` : ""}</span>
           <Button onClick={close} testId="import-library" title="Keep everything in the library and close"><Library size={13} /> Add to library</Button>
-          <Button disabled={!chosen.length || busy} onClick={() => run((a) => st().addMediaToCanvas(a[0]))} testId="import-single" title="Place the first selected item on the current slide"><Square size={13} /> Single</Button>
-          <Button disabled={chosen.length < 1 || busy} onClick={() => run(createCollageFromAssets)} testId="import-collage"><LayoutGrid size={13} /> Collage</Button>
-          <Button variant="primary" disabled={!chosen.length || busy} onClick={() => run(createCarouselFromAssets)} testId="import-carousel"><GalleryHorizontal size={13} /> Carousel</Button>
+          {editMode ? (
+            <Button variant="primary" disabled={!chosen.length || busy} onClick={() => run(addAssetsToEdit)} testId="import-edit"><SlidersHorizontal size={13} /> Add to editor</Button>
+          ) : (
+            <>
+              <Button disabled={!chosen.length || busy} onClick={() => run(addAssetsToEdit)} testId="import-edit" title="Open these in the photo & video editor, no collage"><SlidersHorizontal size={13} /> Edit</Button>
+              <Button disabled={!chosen.length || busy} onClick={() => run((a) => st().addMediaToCanvas(a[0]))} testId="import-single" title="Place the first selected item on the current slide"><Square size={13} /> Single</Button>
+              <Button disabled={chosen.length < 1 || busy} onClick={() => run(createCollageFromAssets)} testId="import-collage"><LayoutGrid size={13} /> Collage</Button>
+              <Button variant="primary" disabled={!chosen.length || busy} onClick={() => run(createCarouselFromAssets)} testId="import-carousel"><GalleryHorizontal size={13} /> Carousel</Button>
+            </>
+          )}
         </>
       }
     >
       <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="import-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; if (f.length) void ingest(f); }} />
       <div
-        className="mx-8 mb-6 mt-2 flex items-center justify-between gap-4 rounded-inner border border-dashed border-faint/60 px-6 py-5 text-sm text-mute"
+        className="mx-8 mb-6 mt-2 flex items-center justify-between gap-4 rounded-inner border-2 border-dotted border-faint/60 px-6 py-5 text-sm text-mute"
         onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault(); }}
         onDrop={(e) => { e.preventDefault(); const f = [...e.dataTransfer.files]; if (f.length) void ingest(f); }}
       >

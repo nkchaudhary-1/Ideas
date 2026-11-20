@@ -11,7 +11,7 @@ export function defaultName(presets: UserPreset[], kind: PresetKind, base?: stri
   return stem;
 }
 
-export const captureLook = (fill: MediaFill): LookData => ({ filter: { ...fill.filter }, adjustments: { ...fill.adjustments } });
+export const captureLook = (fill: MediaFill): LookData => ({ filter: { ...fill.filter }, adjustments: structuredClone(fill.adjustments) as LookData["adjustments"] });
 
 export const sameLook = (fill: MediaFill, look: LookData) =>
   fill.filter.id === look.filter.id && fill.filter.intensity === look.filter.intensity && JSON.stringify(fill.adjustments) === JSON.stringify(look.adjustments);

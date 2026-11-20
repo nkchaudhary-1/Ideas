@@ -10,10 +10,17 @@ import { FrameProps, ShapeProps } from "./ShapeProps";
 import TextProps from "./TextProps";
 import { useFillTarget } from "./fill-target";
 import { TextInput } from "@/components/ui/controls";
+import EditPanel from "./EditPanel";
 
 const ICON = { image: ImageIcon, video: Film, text: Type, shape: Shapes, grid: LayoutGrid, group: GroupIcon } as const;
 
+/** the card on the right: edit tools in Edit mode, otherwise properties of whatever is selected */
 export default function PropertiesPanel() {
+  const kind = useStore((s) => s.project.kind);
+  return kind === "edit" ? <EditPanel /> : <CollagePanel />;
+}
+
+function CollagePanel() {
   const els = useSelectedElements();
   const target = useFillTarget();
   const st = useStore.getState;

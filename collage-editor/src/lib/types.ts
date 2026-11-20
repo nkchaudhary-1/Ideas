@@ -13,15 +13,19 @@ export interface Rect { x: number; y: number; w: number; h: number }
 
 // ───────────────────────────── media ─────────────────────────────
 
-export interface Adjustments {
+/** the numeric sliders (everything except the nested colour tools below) */
+export interface Tone {
   exposure: number;     // -100..100  (±2 stops)
   brightness: number;   // -100..100
   contrast: number;     // -100..100
-  saturation: number;   // -100..100
-  temperature: number;  // -100..100  (cool → warm)
-  tint: number;         // -100..100  (green → magenta)
   highlights: number;   // -100..100
   shadows: number;      // -100..100
+  whites: number;       // -100..100  (the very brightest tones)
+  blacks: number;       // -100..100  (the very darkest tones; + lifts them)
+  saturation: number;   // -100..100
+  vibrance: number;     // -100..100  (saturation that protects already-vivid colour and skin)
+  temperature: number;  // -100..100  (cool → warm)
+  tint: number;         // -100..100  (green → magenta)
   hue: number;          // -180..180
   sharpness: number;    // 0..100
   blur: number;         // 0..100
@@ -31,6 +35,29 @@ export interface Adjustments {
   vignette: number;     // 0..100
   grain: number;        // 0..100
 }
+export type ToneKey = keyof Tone;
+
+export type HslKey = "red" | "orange" | "yellow" | "green" | "aqua" | "blue" | "purple" | "magenta";
+/** [hue shift, saturation, luminance], each -100..100 */
+export type Tri = [number, number, number];
+/** one colour-grading wheel: [hue 0..360, saturation 0..100, luminance -100..100] */
+export type Wheel = [number, number, number];
+export interface Grade { sh: Wheel; mid: Wheel; hi: Wheel; bal: number }
+/** curve control points, x and y both 0..255 */
+export type CurvePts = [number, number][];
+export interface Curves { m?: CurvePts; r?: CurvePts; g?: CurvePts; b?: CurvePts }
+
+export interface Adjustments extends Tone {
+  hsl?: Partial<Record<HslKey, Tri>>;
+  grade?: Grade;
+  curves?: Curves;
+}
+
+/** a partial set of the above, used by filter presets and the match layer */
+export type AdjustDelta = Partial<Tone> & { hsl?: Adjustments["hsl"]; grade?: Grade; curves?: Curves };
+
+/** "Match look": a stored, additive layer with its own strength, so it can be dialled back or fine-tuned over */
+export interface MatchLayer { ref: string; intensity: number; adj: AdjustDelta }
 
 export interface FilterRef { id: string; intensity: number } // intensity 0..100
 
@@ -57,6 +84,7 @@ export interface MediaFill {
   rotation90: 0 | 90 | 180 | 270;
   adjustments: Adjustments;
   filter: FilterRef;
+  match?: MatchLayer;
   video?: VideoSettings;
 }
 
@@ -209,7 +237,7 @@ export interface Slide {
   duration: number | null;
 }
 
-export type ProjectKind = "single" | "collage" | "carousel" | "story";
+export type ProjectKind = "single" | "collage" | "carousel" | "story" | "edit";
 
 export interface Format { id: string; label: string; ratio: string; width: number; height: number }
 

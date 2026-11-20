@@ -1,6 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
-import { GalleryHorizontal, LayoutGrid, Minus, PenSquare, Plus, Rows3, Square, Upload } from "lucide-react";
+import { GalleryHorizontal, LayoutGrid, Minus, PenSquare, Plus, Rows3, SlidersHorizontal, Square, Upload } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { CUSTOM_FORMAT, FORMATS, PANORAMA_BASES, PANORAMA_MAX, PANORAMA_MIN, panoramaFormat } from "@/lib/formats";
 import type { Format, ProjectKind } from "@/lib/types";
@@ -10,6 +10,13 @@ import Modal from "@/components/ui/Modal";
 import { createCarouselFromAssets, createCollageFromAssets } from "@/lib/workflows";
 import { makeMedia } from "@/lib/factory";
 import { newFill } from "@/lib/media-math";
+import { startEdit } from "@/lib/edit";
+
+type Intent = "collage" | "edit";
+const INTENTS: { id: Intent; label: string; desc: string; icon: React.ReactNode }[] = [
+  { id: "collage", label: "Create collage", desc: "Grids, carousels, panoramas and layouts", icon: <LayoutGrid size={22} /> },
+  { id: "edit", label: "Edit photos & videos", desc: "Colour, light, looks and crops. No collage.", icon: <SlidersHorizontal size={22} /> },
+];
 
 type Mode = "single" | "collage" | "carousel" | "panorama" | "blank";
 const MODES: { id: Mode; label: string; desc: string; icon: React.ReactNode }[] = [
@@ -36,6 +43,7 @@ function RatioChip({ f, active, onClick, id }: { f: Format; active: boolean; onC
 export default function NewProjectDialog() {
   const st = useStore.getState;
   const set = useStore((s) => s.setUI);
+  const [intent, setIntent] = useState<Intent>("collage");
   const [mode, setMode] = useState<Mode>("carousel");
   const [fmt, setFmt] = useState<Format>(FORMATS[1]);
   const [more, setMore] = useState(false);
@@ -53,6 +61,13 @@ export default function NewProjectDialog() {
   const create = async () => {
     setBusy(true);
     try {
+      if (intent === "edit") {
+        const assets = files.length ? await st().importMedia(files) : [];
+        if (files.length && !assets.length) { st().toast("None of those files could be imported", "error"); return; }
+        startEdit(assets);
+        set({ newProjectOpen: false, leftPanel: "uploads" });
+        return;
+      }
       const kind: ProjectKind = mode === "carousel" ? "carousel" : mode === "collage" ? "collage" : format.ratio === "9:16" ? "story" : "single";
       const name = mode === "carousel" ? "Untitled carousel" : mode === "collage" ? "Untitled collage" : pano ? "Untitled panorama" : "Untitled design";
       st().newProject({ kind, format, name });
@@ -77,8 +92,34 @@ export default function NewProjectDialog() {
 
   return (
     <Modal title="New project" onClose={() => set({ newProjectOpen: false })} width={640} testId="new-project-dialog"
-      footer={<><Button onClick={() => set({ newProjectOpen: false })}>Cancel</Button><Button variant="primary" onClick={create} disabled={busy} testId="create-project">{busy ? "Creating…" : "Create"}</Button></>}>
+      footer={<><Button onClick={() => set({ newProjectOpen: false })}>Cancel</Button><Button variant="primary" onClick={create} disabled={busy} testId="create-project">{busy ? (intent === "edit" ? "Opening…" : "Creating…") : intent === "edit" ? "Start editing" : "Create"}</Button></>}>
       <div className="space-y-9 px-8 pb-4 pt-2">
+        <section>
+          <div className="grid grid-cols-2 gap-3" role="group" aria-label="What are you making?">
+            {INTENTS.map((i) => (
+              <button key={i.id} type="button" data-testid={`intent-${i.id}`} aria-pressed={intent === i.id} onClick={() => setIntent(i.id)}
+                className={`flex items-center gap-4 rounded-inner p-5 text-left transition-colors ${intent === i.id ? "bg-pill text-pillink" : "bg-field text-ink hover:bg-raised"}`}>
+                <span className={intent === i.id ? "" : "text-mute"}>{i.icon}</span>
+                <span><span className="block text-sm font-bold">{i.label}</span><span className={`block text-[11px] leading-4 ${intent === i.id ? "opacity-70" : "text-mute"}`}>{i.desc}</span></span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {intent === "edit" && (
+          <section data-testid="edit-options">
+            <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="new-project-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; setFiles((l) => [...l, ...f]); }} />
+            <div className="flex flex-col items-center gap-4 rounded-inner border-2 border-dotted border-faint/60 px-6 py-10 text-center" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); setFiles((l) => [...l, ...e.dataTransfer.files]); }}>
+              <Button onClick={() => input.current?.click()}><Upload size={14} /> Add photos & videos</Button>
+              <span className="max-w-sm text-xs leading-5 text-mute">
+                {files.length ? `${files.length} file${files.length > 1 ? "s" : ""} ready. Each one opens as its own item you can edit alone or with others.` : "Add one or many, photos, videos or both. Each is edited on its own, or together as a batch. You can add more later."}
+              </span>
+              {files.length > 0 && <button type="button" className="text-xs font-semibold text-mute hover:text-ink" onClick={() => setFiles([])}>Clear</button>}
+            </div>
+          </section>
+        )}
+
+        {intent === "collage" && (<>
         <section>
           <div className="grid grid-cols-5 gap-3">
             {MODES.map((m) => (
@@ -131,13 +172,14 @@ export default function NewProjectDialog() {
         {mode !== "blank" && (
           <section>
             <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="new-project-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; setFiles((l) => [...l, ...f]); }} />
-            <div className="flex items-center gap-4 rounded-inner border border-dashed border-faint/60 p-5" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); setFiles((l) => [...l, ...e.dataTransfer.files]); }}>
+            <div className="flex items-center gap-4 rounded-inner border-2 border-dotted border-faint/60 p-5" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); setFiles((l) => [...l, ...e.dataTransfer.files]); }}>
               <Button onClick={() => input.current?.click()}><Upload size={14} /> Add photos & videos</Button>
               <span className="text-xs text-mute">{files.length ? `${files.length} file${files.length > 1 ? "s" : ""} ready: ${mode === "carousel" ? "one slide each" : mode === "collage" ? "poured into a grid" : pano ? (files.length === 1 ? "stretched across the panorama" : "one per slide, side by side") : "the first is placed"}` : "Optional. You can add media later."}</span>
               {files.length > 0 && <button type="button" className="ml-auto text-xs font-semibold text-mute hover:text-ink" onClick={() => setFiles([])}>Clear</button>}
             </div>
           </section>
         )}
+        </>)}
       </div>
     </Modal>
   );

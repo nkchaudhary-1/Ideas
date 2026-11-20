@@ -22,7 +22,9 @@ const DEFAULTS: Omit<ExportSettings, "slideIds"> = {
 export default function ExportDialog() {
   const set = useStore((s) => s.setUI);
   const project = useStore.getState().project;
-  const [slideIds, setSlideIds] = useState<string[]>(project.slides.map((s) => s.id));
+  const isEdit = project.kind === "edit";
+  const picked = useStore.getState().ui.mediaSel.filter((id) => project.slides.some((s) => s.id === id));
+  const [slideIds, setSlideIds] = useState<string[]>(isEdit && picked.length > 1 ? picked : project.slides.map((s) => s.id));
   const [cfg, setCfg] = useState<Omit<ExportSettings, "slideIds">>(() => {
     try { const v = JSON.parse(localStorage.getItem(LS) || "null"); return v ? { ...DEFAULTS, ...v, image: { ...DEFAULTS.image, ...v.image }, video: { ...DEFAULTS.video, ...v.video } } : DEFAULTS; } catch { return DEFAULTS; }
   });
@@ -91,8 +93,8 @@ export default function ExportDialog() {
         <div className="space-y-9 border-r border-line/60 p-8">
           <section>
             <div className="mb-2 flex items-center justify-between text-xs font-bold text-ink">
-              <span>Slides</span>
-              <span className="space-x-3 normal-case tracking-normal"><button type="button" className="hover:text-ink" onClick={() => setSlideIds(project.slides.map((s) => s.id))}>All</button><button type="button" className="hover:text-ink" onClick={() => setSlideIds([project.activeSlideId])}>Current</button></span>
+              <span>{isEdit ? "Photos & videos" : "Slides"}</span>
+              <span className="space-x-3 normal-case tracking-normal"><button type="button" className="hover:text-ink" onClick={() => setSlideIds(project.slides.map((s) => s.id))}>All</button><button type="button" className="hover:text-ink" onClick={() => setSlideIds([project.activeSlideId])}>Current</button>{isEdit && picked.length > 1 && <button type="button" className="hover:text-ink" data-testid="export-selected" onClick={() => setSlideIds(picked)}>Selected</button>}</span>
             </div>
             <div className="flex gap-3 overflow-x-auto pb-2" data-testid="export-slides">
               {project.slides.map((s, i) => {

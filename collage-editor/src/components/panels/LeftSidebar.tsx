@@ -30,13 +30,15 @@ const GROUPS: { id: PanelId; label: string; icon: React.ReactNode }[][] = [
 const ALL = GROUPS.flat();
 
 export default function LeftSidebar() {
-  const panel = useStore((s) => s.ui.leftPanel);
+  const kind = useStore((s) => s.project.kind);
+  const edit = kind === "edit";
+  const panel = useStore((s) => (kind === "edit" ? (s.ui.leftPanel === "uploads" ? "uploads" : null) : s.ui.leftPanel));
   const set = useStore((s) => s.setUI);
   const current = ALL.find((i) => i.id === panel);
   return (
     <>
-      <nav className="card flex w-[76px] shrink-0 flex-col items-center gap-1.5 py-5" aria-label="Tools" data-testid="left-rail">
-        {GROUPS.map((g, gi) => (
+      <nav className={`card flex w-[76px] shrink-0 flex-col items-center gap-1.5 py-5 ${edit ? "self-start" : ""}`} aria-label="Tools" data-testid="left-rail">
+        {(edit ? GROUPS.slice(0, 1).map((g) => g.filter((i) => i.id === "uploads")) : GROUPS).map((g, gi) => (
           <div key={gi} className="flex flex-col items-center gap-1.5">
             {gi > 0 && <span className="my-3 h-px w-7 bg-line" />}
             {g.map((i) => (

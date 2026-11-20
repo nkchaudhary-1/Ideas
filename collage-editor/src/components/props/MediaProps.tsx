@@ -11,7 +11,9 @@ import { formatTime } from "@/lib/util";
 import { PresetActions, RenameLabel, SavePreset } from "@/components/ui/SavePreset";
 import { captureLook, defaultName, sameLook } from "@/lib/user-presets";
 import AssetPicker from "./AssetPicker";
-import type { FillTarget } from "./fill-target";
+import type { EditTarget, FillTarget } from "./fill-target";
+import { CurvesSection, GradeSection, HslSection } from "./ColorTools";
+import { EditCrop } from "./EditSections";
 
 const RATIOS: { label: string; r: number | null }[] = [
   { label: "Free", r: null }, { label: "1:1", r: 1 }, { label: "4:5", r: 4 / 5 }, { label: "3:4", r: 3 / 4 }, { label: "2:3", r: 2 / 3 },
@@ -73,7 +75,7 @@ function MyLooks({ target, asset }: { target: FillTarget; asset: Asset | undefin
             const active = sameLook(target.fill, p.data);
             return (
               <div key={p.id} className="group relative" data-testid="look-tile">
-                <button type="button" title={`Apply “${p.name}”`} onClick={() => target.update((f) => { f.filter = { ...p.data.filter }; f.adjustments = { ...p.data.adjustments }; })}
+                <button type="button" title={`Apply “${p.name}”`} onClick={() => target.update((f) => { f.filter = { ...p.data.filter }; f.adjustments = structuredClone(p.data.adjustments) as Adjustments; })}
                   className={`flex w-full flex-col items-center gap-1 rounded-md p-0.5 ${active ? "bg-ink/10 ring-1 ring-ink/60" : "hover:bg-ink/5"}`}>
                   {asset ? <ThumbCanvas asset={asset} adj={effectiveAdjustments(p.data.adjustments, p.data.filter)} className="h-[60px] w-[48px] rounded-sm bg-panel2" /> : <span className="block h-[60px] w-[48px] rounded-sm bg-panel2" />}
                   <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className={`w-full text-center text-2xs ${active ? "text-ink" : "text-mute"}`} />
@@ -92,7 +94,7 @@ function MyLooks({ target, asset }: { target: FillTarget; asset: Asset | undefin
   );
 }
 
-export default function MediaProps({ target }: { target: FillTarget }) {
+export default function MediaProps({ target, edit }: { target: FillTarget; edit?: EditTarget }) {
   const st = useStore.getState;
   const { fill } = target;
   const asset = getAsset(fill.assetId);
@@ -122,6 +124,7 @@ export default function MediaProps({ target }: { target: FillTarget }) {
 
   return (
     <>
+      {edit ? <EditCrop target={edit} /> : <>
       <Section title={fill.kind === "video" ? "Video" : "Photo"} defaultOpen>
         <div className="flex items-center gap-2">
           {asset ? (
@@ -174,8 +177,9 @@ export default function MediaProps({ target }: { target: FillTarget }) {
           <IconButton icon={<FlipVertical2 size={15} />} label="Flip vertically" active={fill.flipY} onClick={() => target.update((f) => { f.flipY = !f.flipY; })} />
         </div>
       </Section>
+      </>}
 
-      {fill.kind === "video" && asset && <VideoSection target={target} duration={asset.duration ?? 0} playing={playing} />}
+      {fill.kind === "video" && asset && <VideoSection target={edit ? { ...target, update: edit.solo } : target} duration={asset.duration ?? 0} playing={playing} />}
 
       <MyLooks target={target} asset={asset} />
 
@@ -199,7 +203,7 @@ export default function MediaProps({ target }: { target: FillTarget }) {
                 key={m.key}
                 testId={`adj-${m.key}`}
                 label={m.label}
-                value={Math.round(fill.adjustments[m.key])}
+                value={Math.round(fill.adjustments[m.key] ?? 0)}
                 min={m.min}
                 max={m.max}
                 onChange={(v) => target.update((f) => { f.adjustments[m.key] = v; }, "adj-" + m.key)}
@@ -211,6 +215,10 @@ export default function MediaProps({ target }: { target: FillTarget }) {
         ))}
         {fill.kind === "video" && <p className="text-2xs leading-4 text-faint">Colour is applied to every frame of the video on canvas and in the exported file.</p>}
       </Section>
+
+      <HslSection target={target} />
+      <CurvesSection target={target} />
+      <GradeSection target={target} />
     </>
   );
 }

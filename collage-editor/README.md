@@ -1,6 +1,7 @@
 # Collage Studio
 
-A browser-based editor for Instagram posts, collages, editorial typography and **mixed photo + video carousels**.
+A browser-based editor for Instagram posts, collages, editorial typography and **mixed photo + video carousels**, plus a
+standalone **Edit photos & videos** mode for colour, light and look work with no collage involved.
 Figma-style canvas, lightweight photo editing, Canva-style collage maker, real video export. Everything runs
 in the browser; nothing is uploaded anywhere.
 
@@ -29,6 +30,8 @@ npm install
 npm run dev        # http://localhost:3000
 npm run build && npm start
 npm run typecheck
+npm run test:unit  # colour pipeline + Match look maths, no browser needed
+npm run test:e2e   # browser suites for Edit mode (needs `npm run dev -- -p 3100` and Playwright)
 ```
 
 Node 18.18+ (Next.js 14). Use a current **Chrome, Edge or Safari 16.4+** for video export (WebCodecs).
@@ -40,9 +43,9 @@ Photo editing and image export work in any modern browser.
 | --- | --- |
 | Canvas | Zoom (wheel, ⌘/Ctrl-wheel, +/−), pan (space-drag, hand tool, middle mouse), fit, zoom to selection, layout grids (columns, modular, baseline), safe areas, snapping to canvas / objects / guides / grid lines |
 | Formats | 1:1, 4:5, 3:4, 2:3, 5:4, 4:3, 3:2, 16:9, 1.91:1, 9:16 Story/Reel and custom sizes, chosen from the size chip at the top of the canvas. Changing the ratio keeps content (stretch / fit / keep). A carousel has one ratio for every slide |
-| **Panorama (12:5)** | One wide canvas that is cut into slides on export. **12:5 = three 4:5 slides side by side** (3240×1350). Extend it any time with the **+** on the canvas edge (16:5, 20:5, … up to 10 slides) or shorten it with **−**; content stays where it is. Slide numbers and dashed seams show the cuts. Slide shape can be 4:5, 1:1 or 3:4. Preview pages through the slices exactly as they will be published; export writes one image per slice (`name-01.png`, `name-02.png`, …) |
+| **Panorama (12:5)** | One wide canvas that is cut into slides on export. **12:5 = three 4:5 slides side by side** (3240×1350). Extend it any time with the **+** on the canvas edge (16:5, 20:5, … up to 10 slides) or shorten it with **−**; content stays where it is. Slide numbers and dotted seams show the cuts. Slide shape can be 4:5, 1:1 or 3:4. Preview pages through the slices exactly as they will be published; export writes one image per slice (`name-01.png`, `name-02.png`, …) |
 | Media library | JPG, PNG, WebP, MP4, MOV, WebM; drag & drop, paste, multi-file. Search, sort, filter photos/videos, reuse, replace, delete. Library is stored per device and shared across projects |
-| Photo editing (non-destructive) | Exposure, brightness, contrast, highlights, shadows, saturation, temperature, tint, hue, grayscale, sepia, fade, sharpness, blur, vignette, grain, opacity. 16 filter presets with intensity. Per-slider and global reset. The original file is never modified |
+| Photo editing (non-destructive) | Exposure, brightness, contrast, highlights, shadows, **whites, blacks**, saturation, **vibrance**, temperature, tint, hue, grayscale, sepia, fade, sharpness, blur, vignette, grain, opacity; **HSL colour mix** (8 bands), **RGB curves** (RGB / R / G / B), **colour grading** wheels for shadows / midtones / highlights. 20 filter presets with intensity. Per-slider and global reset. The original file is never modified |
 | Crop & position | Free or ratio crop, zoom, pan, rotate 90°, flip, fit / fill / reset, replace media, side-handle crop that keeps pixel scale |
 | Grid collages | Click an empty tile to add a photo or video right there (upload or pick from the library; extra files fill the next empty tiles), then drag to reposition and scroll to zoom. On a panorama each layout you add goes into the next empty slide; pick a slide with its number (in the Layouts panel or on the canvas) or drag a layout onto any slide. *Add new / Replace selected* chooses whether a click adds a layout or re-shapes the selected one. ~30 layouts (basic, asymmetric, dense, editorial, "from your posts"), drag gaps to resize cells, drag a cell onto another to swap, split / remove cells, gutter, margin, radius, cell colour and border, per-cell crop and filters. Convert to free frames at any time |
 | Freeform collages | Frames you can drag, resize, rotate, overlap, mask (rect, circle, rounded, portrait, landscape), border, shadow, reorder |
@@ -59,6 +62,29 @@ Photo editing and image export work in any modern browser.
 | History | Real undo / redo of document states (150 steps), slider drags coalesce into one step |
 | Export | See below |
 | Projects | Autosave to IndexedDB after every change, project manager (open / duplicate / delete) with thumbnails, restores media library on reload |
+
+## Edit photos & videos
+
+Pick **Edit photos & videos** instead of **Create collage** in *New project* (or *Edit* in the import dialog). Every photo or
+video opens as its own item in a filmstrip, shown at its own proportions, with nothing combined into a layout. Photos and
+videos can be mixed; the canvas, undo and export behave exactly as in the collage editor.
+
+| | |
+| --- | --- |
+| **Single or many** | Click an item to edit it alone. Everything is non-destructive: the original is untouched and each item keeps its own settings. |
+| **Light** | Exposure, brightness, contrast, highlights, shadows, whites, blacks |
+| **Colour** | Temperature, tint, saturation, vibrance, hue, **HSL** (hue / saturation / luminance for red, orange, yellow, green, aqua, blue, purple, magenta), **curves** (click the line to add a point, drag to bend it, double-click a point to remove it), **colour grading** (hue and strength wheel + luminance per shadows / midtones / highlights, plus balance) |
+| **Detail & effects** | Sharpness, blur, grain, vignette, fade, grayscale, sepia; 20 filters with an intensity slider; your saved looks |
+| **Crop & transform** | Original, 1:1, 4:5, 3:4, 2:3, 9:16, 4:3, 3:2, 16:9 (each re-cuts the frame at native pixels), move & zoom on the canvas, rotate ±90°, flip, reset |
+| **Batch editing** | **All / Photos / Videos / None** above the filmstrip, plus Shift-click for a range and ⌘/Ctrl-click or the corner tick to add one. With several selected, every slider, filter, look, crop, rotate or flip applies to all of them in one undo step; each item keeps the settings you did not touch. *Reset* clears just the selection. Click one item to go back to editing it alone. Trim and cover-frame edits always stay on the active video |
+| **Copy & paste settings** | *Copy settings…* opens a checklist (exposure, brightness, contrast, highlights, shadows, whites, blacks, temperature, tint, saturation, vibrance, HSL, curves, colour grading, filter, effects, sharpness, grain, vignette; crop, rotation and flip are optional and off by default). Paste onto the active item or the whole selection. `⌘/Ctrl C` and `⌘/Ctrl V` copy and paste everything. Pasted values are ordinary settings and stay editable |
+| **Match look** | Mark one item as the **reference** and edit it the way you like. Select others and press **Match**. It measures the reference's brightness, tonal spread, colour cast and saturation, then solves a small set of adjustments (exposure, highlights, shadows, contrast, saturation, temperature, tint) for each target through the real pixel pipeline, plus optionally the reference's own HSL, curves and grading. Choose what to match with the chips (colour tone, exposure, contrast, saturation, shadows & highlights, reference grading). The result is a separate layer on top of the item's own edits, so **Match intensity** is a slider (0 to 100 %) and manual fine-tuning still works. *Update match* re-solves after you change the reference; *Remove match* clears it |
+| **Compare** | Hold **Compare** (bottom bar) or the `\` key to see the unedited picture |
+| **Export** | The normal export dialog: one file per item named `<name>-edit.png` (or `.mp4`), at the item's own size (photos up to 2048 px on the long edge, videos up to 1920), in one ZIP or as separate files. *Selected* exports just the selection |
+
+Match look is statistical (global tone, colour cast and saturation), not a content-aware transfer: two very different scenes
+will move toward each other's overall feel, not become identical. The solver deliberately aims for most of the way and
+penalises extreme slider moves; the intensity slider handles the rest.
 
 ### Keyboard shortcuts
 
@@ -108,7 +134,9 @@ src/
     types.ts              document model
     store.ts              zustand + immer store: project, history, selection, UI, autosave
     media.ts              library, import (probing, codec checks), decoded-image cache, <video> players
-    filters.ts            adjustment pipeline + 16 presets
+    filters.ts            adjustment pipeline (tone, HSL, curves, grading) + 20 presets
+    match.ts              Match look: measure a reference, solve adjustments through the real pipeline
+    edit.ts               Edit mode: one slide per photo/video, batch ops, copy/paste settings, match runner
     media-math.ts         crop model (cover + zoom + focal point), drawing
     grid-engine.ts        split-tree layout, dividers, presets
     snap.ts / transform.ts / view-math.ts / geometry.ts
@@ -118,8 +146,8 @@ src/
   components/
     canvas/               Konva scene (ElementNode, MediaShape, overlays, selection, workspace)
     panels/               left rail: templates, layouts, uploads, text, elements, backgrounds, frames, layers, colours
-    props/                right panel: canvas, text, shape, media, grid
-    editor/               top bar, slide strip, shortcuts, shell
+    props/                right panel: canvas, text, shape, media, grid; EditPanel, EditSections, ColorTools for Edit mode
+    editor/               top bar, slide strip, EditStrip (filmstrip + multi-select), shortcuts, shell
     dialogs/              import, new project, projects, export, preview, shortcuts
 ```
 
@@ -129,6 +157,10 @@ src/
 * **One renderer.** A single declarative Konva scene draws the editor, the slide thumbnails, the preview and the exporter
   (`RenderContext` mode = edit / preview / export). What you see is what you export, and editor chrome lives in a
   separate layer that the exporter never mounts.
+* **Edit mode reuses the editor.** An Edit project is `kind: "edit"`: one slide per item, sized to the picture, holding one
+  locked full-bleed frame. The edit card targets the active slide, or every selected slide for batch edits (one history step).
+  Adjustments layer additively: the item's own edits, then the filter preset × intensity, then the match layer × its own
+  intensity (`fillEffective`), so each layer stays separately editable.
 * **Non-destructive media.** Originals stay in IndexedDB as Blobs; adjustments are parameters. A processed bitmap is
   cached per (asset, adjustments, resolution). Videos are processed per frame on a downscaled copy and skipped when neutral.
 * **History.** Snapshots of the immutable project (structural sharing makes them cheap), coalesced by key so a slider drag is one step.

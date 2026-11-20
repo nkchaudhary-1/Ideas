@@ -1,4 +1,5 @@
 "use client";
+import { DEFAULT_COPY, captureEdit, mediaOf, pasteToSlides, selectSlides, selectWhere } from "@/lib/edit";
 import { useEffect } from "react";
 import { useStore, getSlide } from "@/lib/store";
 import { isTypingTarget } from "@/lib/util";
@@ -34,9 +35,10 @@ export const SHORTCUTS: { keys: string; action: string }[] = [
 export default function useShortcuts() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (isTypingTarget(e.target)) return;
-      const st = useStore.getState();
       const mod = e.metaKey || e.ctrlKey;
+      // a focused slider is not a text field: ⌘Z, ⌘C and ⌘V should still work right after dragging one
+      if (isTypingTarget(e.target) && !((mod || e.key === "\\") && (e.target as HTMLInputElement).type === "range")) return;
+      const st = useStore.getState();
       const k = e.key.toLowerCase();
       const ui = st.ui;
       if (ui.importOpen || ui.newProjectOpen || ui.exportOpen || ui.previewOpen || ui.projectsOpen) return;
@@ -44,6 +46,30 @@ export default function useShortcuts() {
       const handled = () => { e.preventDefault(); e.stopPropagation(); };
 
       if (mod && k === "z") { handled(); e.shiftKey ? st.redo() : st.undo(); return; }
+      if (st.project.kind === "edit") {
+        // photo & video editor: ⌘A selects every item, ⌘C / ⌘V copy and paste edit settings, arrows step through the strip
+        const sl = getSlide(st.project);
+        const ids = ui.mediaSel.length > 1 && ui.mediaSel.includes(sl.id) ? ui.mediaSel : [sl.id];
+        if (mod && k === "a") { handled(); selectWhere("all"); return; }
+        if (mod && k === "c") { const f = mediaOf(sl)?.fill; if (f) { handled(); st.setEditClip(captureEdit(f, sl, DEFAULT_COPY)); st.toast(`Copied edit settings from “${sl.name}”`, "ok"); } return; }
+        if (mod && k === "v") {
+          if (!st.editClip) return; // nothing copied: let the browser paste an image from the clipboard
+          handled();
+          const n = pasteToSlides(ids, st.editClip);
+          st.toast(n ? `Pasted onto ${n} ${n === 1 ? "item" : "items"}` : "Select a different photo or video to paste onto", n ? "ok" : "info");
+          return;
+        }
+        if (!mod && (k === "delete" || k === "backspace")) { handled(); st.removeEditSlides(ids); return; }
+        if (!mod && (k === "arrowleft" || k === "arrowright")) {
+          handled();
+          const i = st.project.slides.findIndex((x) => x.id === sl.id);
+          const next = st.project.slides[i + (k === "arrowright" ? 1 : -1)];
+          if (next) selectSlides([next.id], next.id);
+          return;
+        }
+        if (!mod && e.key === "\\") { handled(); if (!ui.compare) st.setUI({ compare: true }); return; }
+        if (mod && (k === "d" || k === "g")) { handled(); return; }
+      }
       if (mod && k === "y") { handled(); st.redo(); return; }
       if (mod && k === "c") { handled(); st.copy(); return; }
       if (mod && k === "v") { handled(); st.paste(); return; }
@@ -101,7 +127,9 @@ export default function useShortcuts() {
       if (k === "h") { st.setUI({ tool: "hand" }); return; }
       if (e.key === "?") { st.setUI({ shortcutsOpen: true }); return; }
     };
+    const onUp = (e: KeyboardEvent) => { if (e.key === "\\" && useStore.getState().ui.compare) useStore.getState().setUI({ compare: false }); };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    window.addEventListener("keyup", onUp);
+    return () => { window.removeEventListener("keydown", onKey); window.removeEventListener("keyup", onUp); };
   }, []);
 }

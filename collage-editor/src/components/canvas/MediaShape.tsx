@@ -5,7 +5,9 @@ import type Konva from "konva";
 import type { FrameShape, MediaFill, Shadow, Stroke } from "@/lib/types";
 import { getAsset, getPlayer, peekImage, processedImage, seekVideo, effectiveTrim, peekVideoUrl } from "@/lib/media";
 import { drawMedia, viewOf } from "@/lib/media-math";
-import { adjustmentsKey, applyAdjustments, fillEffective, isNeutral } from "@/lib/filters";
+import { NEUTRAL, adjustmentsKey, applyAdjustments, fillEffective, isNeutral } from "@/lib/filters";
+import { DEFAULT_FILTER } from "@/lib/media-math";
+import { useStore } from "@/lib/store";
 import { clamp } from "@/lib/util";
 import { framePath } from "./frame-path";
 import { useRender } from "./render-context";
@@ -54,6 +56,9 @@ export default function MediaShape(p: MediaShapeProps) {
   const nodeRef = useRef<Konva.Shape>(null);
   const surface = useRef(new VideoSurface());
   const { fill } = p;
+  // hold-to-compare: the main canvas (not thumbnails or exports) shows the picture without any edits
+  const comparing = useStore((s) => s.ui.compare) && rc.mode === "edit" && !rc.scope;
+  const look: MediaFill | null = comparing && fill ? { ...fill, adjustments: { ...NEUTRAL }, filter: DEFAULT_FILTER, match: undefined } : fill;
   const asset = fill?.assetId ? getAsset(fill.assetId) : undefined;
   const isVideo = fill?.kind === "video" && !!asset;
   const playerKey = rc.scope ? `${rc.scope}:${p.elKey}` : p.elKey;
@@ -173,7 +178,7 @@ export default function MediaShape(p: MediaShapeProps) {
       if (!player || player.readyState < 2) { if (!peekVideoUrl(asset.id) && rc.mode !== "export") drawPlaceholder(c, w, h, "Loading video…"); return; }
       const v = viewOf({ w, h }, { w: player.videoWidth, h: player.videoHeight }, fill);
       const maxDim = clamp(Math.max(player.videoWidth, player.videoHeight) * v.k * rc.pixelScale * 1.1, 360, rc.mode === "export" ? 2160 : 960);
-      const f = surface.current.frame(player, fill, maxDim);
+      const f = surface.current.frame(player, look ?? fill, maxDim);
       drawMedia(c, f.source, { w: player.videoWidth, h: player.videoHeight }, { w: f.w, h: f.h }, { w, h }, fill);
       return;
     }
@@ -181,8 +186,8 @@ export default function MediaShape(p: MediaShapeProps) {
     const needed = Math.max(src.w, src.h) * v.k * rc.pixelScale;
     const tier = rc.mode === "export" ? "original" : needed > 1700 ? "original" : "preview";
     const q = Math.pow(1.5, Math.round(Math.log(Math.max(needed, 200)) / Math.log(1.5)));
-    let pr = processedImage(asset.id, tier, fill, q * 1.1);
-    if (!pr && tier === "original") pr = processedImage(asset.id, "preview", fill, q * 1.1);
+    let pr = processedImage(asset.id, tier, look ?? fill, q * 1.1);
+    if (!pr && tier === "original") pr = processedImage(asset.id, "preview", look ?? fill, q * 1.1);
     if (!pr) { if (rc.mode !== "export") drawPlaceholder(c, w, h, "Loading…"); return; }
     drawMedia(c, pr.source, src, { w: pr.w, h: pr.h }, { w, h }, fill);
   }
@@ -213,12 +218,16 @@ function drawPlaceholder(c: CanvasRenderingContext2D, w: number, h: number, labe
   c.fillRect(0, 0, w, h);
   const s = Math.min(w, h);
   const fs = clamp(s * 0.06, 12, 34);
-  c.strokeStyle = "rgba(255,255,255,0.28)";
-  c.lineWidth = Math.max(1.5, s * 0.004);
-  c.setLineDash([s * 0.02, s * 0.02]);
+  // a dotted outline: zero-length dashes with round caps are dots
+  const dot = Math.max(4, s * 0.011);
+  c.strokeStyle = "rgba(255,255,255,0.36)";
+  c.lineWidth = dot;
+  c.lineCap = "round";
+  c.setLineDash([0, dot * 2.6]);
   const m = s * 0.06;
   c.strokeRect(m, m, w - m * 2, h - m * 2);
   c.setLineDash([]);
+  c.lineCap = "butt";
   const cx = w / 2, cy = h / 2 - fs * 0.6, r = Math.max(8, s * 0.05);
   c.beginPath();
   c.moveTo(cx - r, cy); c.lineTo(cx + r, cy); c.moveTo(cx, cy - r); c.lineTo(cx, cy + r);

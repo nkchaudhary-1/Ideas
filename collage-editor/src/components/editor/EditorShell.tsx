@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { useStore } from "@/lib/store";
 import StageChrome from "./StageChrome";
 import SlideStrip from "./SlideStrip";
+import EditStrip from "./EditStrip";
+import EditEmpty from "./EditEmpty";
 import useShortcuts from "./Shortcuts";
 import LeftSidebar from "@/components/panels/LeftSidebar";
 import Workspace from "@/components/canvas/Workspace";
@@ -19,6 +21,7 @@ import ExportDialog from "@/components/dialogs/ExportDialog";
 export default function EditorShell() {
   const ready = useStore((s) => s.ready);
   const ui = useStore((s) => s.ui);
+  const ui_kind = useStore((s) => s.project.kind);
   useShortcuts();
 
   useEffect(() => {
@@ -67,9 +70,10 @@ export default function EditorShell() {
       <div className="flex min-w-0 flex-1 flex-col gap-4">
         <div className="relative min-h-0 flex-1 overflow-hidden rounded-big bg-stage ring-1 ring-line/70">
           <Workspace />
+          <EditEmpty />
           <StageChrome />
         </div>
-        <SlideStrip />
+        {ui_kind === "edit" ? <EditStrip /> : <SlideStrip />}
       </div>
       {ui.rightOpen && <PropertiesPanel />}
       <Toast />

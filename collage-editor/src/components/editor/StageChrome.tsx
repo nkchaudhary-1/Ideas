@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import {
-  Check, ChevronDown, CircleAlert, Download, Eye, FilePlus2, FolderOpen, Frame, Hand, Keyboard, Loader2, Maximize, Minus, Moon, MousePointer2, Pause, PanelRight, Play, Plus, Redo2, SlidersHorizontal, Sun, Undo2,
+  Check, ChevronDown, CircleAlert, Download, Eye, FilePlus2, FolderOpen, Frame, Hand, Keyboard, Loader2, Maximize, Minus, Moon, MousePointer2, Pause, PanelRight, Play, Plus, Redo2, SlidersHorizontal, SplitSquareHorizontal, Sun, Undo2,
 } from "lucide-react";
 import { useStore, getSlide } from "@/lib/store";
 import { IconButton, Toggle } from "@/components/ui/controls";
@@ -26,6 +26,7 @@ export default function StageChrome() {
   const slide = useStore((s) => getSlide(s.project));
   const format = useStore((s) => s.project.format);
   const hasVideo = slideHasVideo(slide);
+  const isEdit = useStore((s) => s.project.kind === "edit");
   const [editing, setEditing] = useState(false);
   const pano = panoramaCount(slide.width);
   const size = ui.canvasSize;
@@ -73,6 +74,12 @@ export default function StageChrome() {
             {status === "error" && <span className="flex items-center gap-1 text-red-500"><CircleAlert size={12} /> Save failed</span>}
           </span>
         </Pill>
+        {isEdit ? (
+          <div data-testid="edit-size" className="pointer-events-auto flex h-[52px] items-center gap-3 rounded-full bg-panel pl-5 pr-5 text-sm shadow-float" title="Pixel size of the active photo or video">
+            <span className="block rounded-[3px] border-[1.5px] border-ink/70" style={{ width: Math.min(26, 14 * (slide.width / slide.height)), height: 14 }} />
+            <span className="font-bold">{slide.width}×{slide.height}</span>
+          </div>
+        ) : (
         <Popover align="left" width={372} trigger={(open, toggle) => (
           <button type="button" onClick={toggle} data-testid="format-chip" aria-label="Canvas size" className={`pointer-events-auto flex h-[52px] items-center gap-3 rounded-full bg-panel pl-5 pr-4 text-sm shadow-float ${open ? "ring-2 ring-ink/30" : ""}`}>
             <span className="block rounded-[3px] border-[1.5px] border-ink/70" style={{ width: Math.min(26, 14 * (slide.width / slide.height)), height: 14 }} />
@@ -83,6 +90,7 @@ export default function StageChrome() {
         )}>
           {(close) => <FormatMenu close={close} />}
         </Popover>
+        )}
       </div>
 
       <div className="ml-auto flex shrink-0 items-center gap-3">
@@ -108,6 +116,15 @@ export default function StageChrome() {
           <button type="button" title="Reset to 100%" data-testid="zoom-pct" onClick={() => st().setView(zoomAround(st().ui.view, 1 / st().ui.view.scale, size.w / 2, size.h / 2))} className="h-9 w-[54px] rounded-full text-center text-xs font-semibold tabular-nums hover:bg-field">{Math.round(ui.view.scale * 100)}%</button>
           <IconButton icon={<Plus size={16} />} label="Zoom in" shortcut="+" onClick={() => zoom(1.25)} testId="zoom-in" size={38} />
           <IconButton icon={<Maximize size={15} />} label="Fit to screen" shortcut="⇧1" onClick={() => st().requestFit()} testId="zoom-fit" size={38} />
+          {isEdit && (
+            <>
+              <span className="mx-1.5 h-5 w-px bg-line" />
+              <button type="button" title="Hold to see the original (or hold the \ key)" aria-label="Hold to compare with the original" data-testid="compare" aria-pressed={ui.compare}
+                onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); st().setUI({ compare: true }); }}
+                onPointerUp={() => st().setUI({ compare: false })} onPointerCancel={() => st().setUI({ compare: false })}
+                className={`flex h-[38px] items-center gap-2 rounded-xl px-3 text-xs font-semibold transition-colors ${ui.compare ? "bg-ink/10 text-ink" : "text-mute hover:bg-ink/[0.07] hover:text-ink"}`}><SplitSquareHorizontal size={15} /> {ui.compare ? "Original" : "Compare"}</button>
+            </>
+          )}
           <span className="mx-1.5 h-5 w-px bg-line" />
           <Popover placement="top" width={250} trigger={(open, toggle) => <IconButton icon={<SlidersHorizontal size={16} />} label="View options" active={open} onClick={toggle} testId="view-menu" size={38} />}>
             {() => (

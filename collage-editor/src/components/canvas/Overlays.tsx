@@ -30,7 +30,7 @@ export function LayoutGridOverlay({ slide }: { slide: Slide }) {
         <Rect key={"r" + i} x={0} y={ys[i * 2]} width={slide.width} height={ys[i * 2 + 1] - ys[i * 2]} fill={fillCol} />
       ))}
       {g.kind === "baseline" && ys.map((y, i) => <Line key={i} points={[0, y, slide.width, y]} stroke={g.color} strokeWidth={1} opacity={0.5} strokeScaleEnabled={false} />)}
-      {g.margin > 0 && <Rect x={g.margin} y={g.margin} width={slide.width - g.margin * 2} height={slide.height - g.margin * 2} stroke={g.color} strokeWidth={1} dash={[6, 6]} opacity={0.5} strokeScaleEnabled={false} />}
+      {g.margin > 0 && <Rect x={g.margin} y={g.margin} width={slide.width - g.margin * 2} height={slide.height - g.margin * 2} stroke={g.color} strokeWidth={2} dash={[0.1, 6]} lineCap="round" opacity={0.6} strokeScaleEnabled={false} />}
       {/* x/y refs kept so tree-shaking cannot drop them in dev */}
       {xs.length < 0 && null}
     </Group>
@@ -46,7 +46,7 @@ export function SlideBoundaries({ slide }: { slide: Slide }) {
   return (
     <Group listening={false}>
       {Array.from({ length: n - 1 }, (_, i) => (
-        <Line key={i} points={[(i + 1) * 1080, 0, (i + 1) * 1080, slide.height]} stroke={col} strokeWidth={1.5} dash={[10, 8]} opacity={0.9} strokeScaleEnabled={false} />
+        <Line key={i} points={[(i + 1) * 1080, 0, (i + 1) * 1080, slide.height]} stroke={col} strokeWidth={3} dash={[0.1, 9]} lineCap="round" opacity={0.95} strokeScaleEnabled={false} />
       ))}
     </Group>
   );
@@ -54,7 +54,7 @@ export function SlideBoundaries({ slide }: { slide: Slide }) {
 
 export function SafeAreas({ slide }: { slide: Slide }) {
   const r = slide.width / slide.height;
-  const common = { stroke: "#ff6b81", strokeWidth: 1.2, dash: [8, 6] as number[], opacity: 0.85, strokeScaleEnabled: false, listening: false };
+  const common = { stroke: "#ff6b81", strokeWidth: 2.4, dash: [0.1, 8] as number[], lineCap: "round" as const, opacity: 0.9, strokeScaleEnabled: false, listening: false };
   if (r < 0.62) {
     // story / reel: keep text clear of the app chrome
     return (
@@ -102,7 +102,7 @@ export function GridEditorOverlay({
   return (
     <Group x={el.x + el.width / 2} y={el.y + el.height / 2} offsetX={el.width / 2} offsetY={el.height / 2} rotation={el.rotation}>
       {cells.map((c) => (
-        <Rect key={c.id} x={c.rect.x} y={c.rect.y} width={c.rect.w} height={c.rect.h} stroke={accent} strokeWidth={1} opacity={0.35} dash={[4, 4]} strokeScaleEnabled={false} listening={false} cornerRadius={c.cell.radius ?? el.radius} />
+        <Rect key={c.id} x={c.rect.x} y={c.rect.y} width={c.rect.w} height={c.rect.h} stroke={accent} strokeWidth={2} opacity={0.5} dash={[0.1, 5]} lineCap="round" strokeScaleEnabled={false} listening={false} cornerRadius={c.cell.radius ?? el.radius} />
       ))}
       {sel && <Rect x={sel.rect.x} y={sel.rect.y} width={sel.rect.w} height={sel.rect.h} stroke={accent} strokeWidth={2.5} strokeScaleEnabled={false} listening={false} cornerRadius={sel.cell.radius ?? el.radius} />}
       {dividers.map((d) => {

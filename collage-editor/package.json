@@ -9,7 +9,9 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "fonts": "node scripts/fetch-fonts.mjs",
-    "artifact": "node scripts/build-artifact.mjs"
+    "artifact": "node scripts/build-artifact.mjs",
+    "test:unit": "node scripts/run-unit.mjs",
+    "test:e2e": "for f in tests/e2e/edit-*.js; do node \"$f\" || exit 1; done"
   },
   "dependencies": {
     "immer": "10.1.1",

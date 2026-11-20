@@ -30,6 +30,13 @@ export function planExport(project: Project, s: ExportSettings): PlanItem[] {
   return items;
 }
 
+/** edit projects keep each file's own name: "beach-edit.png", and "beach-edit-2.png" if two share a name */
+function uniqueName(files: OutputFile[], stem: string, ext: string): string {
+  let name = `${stem}.${ext}`;
+  for (let i = 2; files.some((f) => f.name === name); i++) name = `${stem}-${i}.${ext}`;
+  return name;
+}
+
 /** render everything that was asked for, in slide order. One failing slide doesn't sink the rest. */
 export async function runExport(
   project: Project,
@@ -56,13 +63,13 @@ export async function runExport(
           signal: hooks.signal, onProgress: (f, l) => prog(f, `${slide.name}: ${l}`),
         });
         n++;
-        report.files.push({ name: `${base}-${pad(n)}.${r.ext}`, blob: r.blob, kind: "video", slideIndex: item.slideIndex });
+        report.files.push({ name: project.kind === "edit" ? uniqueName(report.files, `${slug(slide.name)}-edit`, r.ext) : `${base}-${pad(n)}.${r.ext}`, blob: r.blob, kind: "video", slideIndex: item.slideIndex });
         report.notes.push(...r.notes.map((m) => `${slide.name}: ${m}`));
       } else {
         const blobs = await exportSlideImages(slide, s.image);
         for (const b of blobs) {
           n++;
-          report.files.push({ name: `${base}-${pad(n)}.${EXT[s.image.format]}`, blob: b, kind: "image", slideIndex: item.slideIndex });
+          report.files.push({ name: project.kind === "edit" ? uniqueName(report.files, `${slug(slide.name)}-edit`, EXT[s.image.format]) : `${base}-${pad(n)}.${EXT[s.image.format]}`, blob: b, kind: "image", slideIndex: item.slideIndex });
         }
       }
     } catch (e) {

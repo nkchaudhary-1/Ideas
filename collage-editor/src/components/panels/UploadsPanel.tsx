@@ -1,12 +1,13 @@
 "use client";
 import { useMemo, useRef, useState } from "react";
-import { Check, Film, ImagePlus, Images, LayoutGrid, Search, Trash2, Upload, GalleryHorizontal } from "lucide-react";
+import { Check, Film, ImagePlus, Images, LayoutGrid, Search, SlidersHorizontal, Trash2, Upload, GalleryHorizontal } from "lucide-react";
 import { useStore, getSlide } from "@/lib/store";
 import { ACCEPT } from "@/lib/media";
 import type { Asset } from "@/lib/types";
 import { assetUrl, formatBytes, formatTime } from "@/lib/util";
 import { Button, Empty, Select } from "@/components/ui/controls";
 import { createCarouselFromAssets, createCollageFromAssets } from "@/lib/workflows";
+import { addAssetsToEdit } from "@/lib/edit";
 import { useFillTargetLite } from "./useReplaceTarget";
 
 const SAMPLES = Array.from({ length: 9 }, (_, i) => ({ url: assetUrl(`samples/dharamshala-${i + 1}.jpg`), name: `dharamshala-${i + 1}.jpg` }));
@@ -21,6 +22,7 @@ export default function UploadsPanel() {
   const [busy, setBusy] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const replaceTarget = useFillTargetLite();
+  const editMode = useStore((s) => s.project.kind === "edit");
 
   const list = useMemo(() => {
     let l = assets.filter((a) => (filter === "all" || a.kind === filter) && a.name.toLowerCase().includes(q.toLowerCase()));
@@ -111,9 +113,16 @@ export default function UploadsPanel() {
         <div className="space-y-3 border-t border-line/60 bg-panel2 p-5" data-testid="selection-actions">
           <div className="flex items-center justify-between text-xs"><span>{chosen.length} selected</span><button type="button" className="text-mute hover:text-ink" onClick={() => st().setUI({ assetSelection: [] })}>Clear</button></div>
           <div className="grid grid-cols-2 gap-2.5">
-            <Button onClick={() => { createCarouselFromAssets(chosen); st().setUI({ assetSelection: [] }); }} testId="sel-carousel"><GalleryHorizontal size={12} /> Carousel</Button>
-            <Button onClick={() => { createCollageFromAssets(chosen); st().setUI({ assetSelection: [] }); }} testId="sel-collage"><LayoutGrid size={12} /> Collage</Button>
-            <Button onClick={() => chosen.forEach((a) => st().addMediaToCanvas(a))}><Images size={12} /> To canvas</Button>
+            {editMode ? (
+              <Button variant="primary" className="col-span-2" onClick={() => { addAssetsToEdit(chosen); st().setUI({ assetSelection: [] }); }} testId="sel-edit"><Images size={12} /> Add to editor</Button>
+            ) : (
+              <>
+                <Button onClick={() => { createCarouselFromAssets(chosen); st().setUI({ assetSelection: [] }); }} testId="sel-carousel"><GalleryHorizontal size={12} /> Carousel</Button>
+                <Button onClick={() => { createCollageFromAssets(chosen); st().setUI({ assetSelection: [] }); }} testId="sel-collage"><LayoutGrid size={12} /> Collage</Button>
+                <Button onClick={() => chosen.forEach((a) => st().addMediaToCanvas(a))}><Images size={12} /> To canvas</Button>
+                <Button onClick={() => { addAssetsToEdit(chosen); st().setUI({ assetSelection: [] }); }} testId="sel-edit"><SlidersHorizontal size={12} /> Edit</Button>
+              </>
+            )}
             <Button variant="danger" onClick={() => { chosen.forEach((a) => void st().deleteAsset(a.id)); st().setUI({ assetSelection: [] }); }}><Trash2 size={12} /> Delete</Button>
           </div>
         </div>

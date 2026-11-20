@@ -22,7 +22,7 @@ function Preview({ el }: { el: Element }) {
     case "arrow": shape = <><line x1={5} y1={22} x2={34} y2={22} stroke={stroke} strokeWidth={3} strokeLinecap="round" /><path d="M30 14 L40 22 L30 30 Z" fill={stroke} /></>; break;
     case "triangle": shape = <path d="M22 8 L38 36 H6 Z" fill={fill} />; break;
     case "polygon": shape = <path d="M22 6 L37 15 V30 L22 38 L7 30 V15 Z" fill={fill} />; break;
-    case "star": shape = s.sides > 8 ? <circle cx={22} cy={22} r={15} fill={fill} strokeDasharray="3 2" stroke="#000" strokeWidth={1.5} /> : <path d="M22 5 L27 17 L40 18 L30 26 L33 39 L22 32 L11 39 L14 26 L4 18 L17 17 Z" fill={fill} />; break;
+    case "star": shape = s.sides > 8 ? <circle cx={22} cy={22} r={15} fill={fill} strokeDasharray="0.1 3.4" strokeLinecap="round" stroke="#000" strokeWidth={2.2} /> : <path d="M22 5 L27 17 L40 18 L30 26 L33 39 L22 32 L11 39 L14 26 L4 18 L17 17 Z" fill={fill} />; break;
     case "path": shape = <path d={s.path} fill={s.fill ? fill : "none"} stroke={s.stroke ? stroke : "none"} strokeWidth={sw * 2.2} strokeLinecap="round" transform="translate(4 4) scale(0.36)" />; break;
   }
   return <svg width={sz} height={sz} viewBox="0 0 44 44" className="text-ink/80">{shape}</svg>;

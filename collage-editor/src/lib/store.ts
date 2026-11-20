@@ -12,6 +12,9 @@ import { DEFAULT_FORMAT, PANORAMA_MAX, PANORAMA_MIN, panoramaCount, panoramaForm
 import { newFill } from "./media-math";
 import { slideFills } from "./timeline";
 import { allAssets, getAsset, loadAssets, importFiles, removeAsset } from "./media";
+import type { EditClip } from "./edit";
+import { addAssetsToEdit } from "./edit";
+import { DEFAULT_MATCH, type MatchOpts } from "./match";
 import { findCell, mapCells, updateCell, cellsOf, cloneTree, swapFills, removeCell, splitCell, dragDivider, setWeights, type GridPreset, treeFromPreset } from "./grid-engine";
 
 export type PanelId = "templates" | "layouts" | "uploads" | "text" | "elements" | "backgrounds" | "frames" | "layers" | "palettes" | "projects";
@@ -51,6 +54,13 @@ export interface UIState {
   libraryFilter: "all" | "image" | "video";
   canvasSize: { w: number; h: number };
   assetSelection: string[];
+  /** edit mode: the slides (photos/videos) currently selected for batch edits */
+  mediaSel: Id[];
+  /** edit mode: the slide used as the reference for Match look */
+  refSlideId: Id | null;
+  matchOpts: MatchOpts;
+  /** edit mode: while true the canvas shows the original, unedited picture (hold to compare) */
+  compare: boolean;
 }
 
 interface History { past: Project[]; future: Project[]; lastKey: string | null; lastTime: number }
@@ -65,6 +75,8 @@ export interface Store {
   ui: UIState;
   projects: ProjectMeta[];
   presets: UserPreset[];
+  /** edit mode: copied edit settings, ready to paste */
+  editClip: EditClip | null;
 
   // lifecycle
   init(): Promise<void>;
@@ -75,6 +87,10 @@ export interface Store {
   deleteProject(id: Id): Promise<void>;
   duplicateProject(id: Id): Promise<void>;
   renameProject(name: string): void;
+  newEditProject(slides: Slide[], name: string): void;
+  addEditSlides(slides: Slide[]): void;
+  removeEditSlides(ids: Id[]): void;
+  setEditClip(c: EditClip | null): void;
 
   // document edits
   commit(recipe: (p: Draft<Project>) => void, opts?: { key?: string; history?: boolean }): void;
@@ -265,6 +281,7 @@ export const useStore = create<Store>()((set, get) => {
     saveStatus: "saved",
     projects: [],
     presets: [],
+    editClip: null,
     ui: {
       leftPanel: "uploads",
       rightOpen: true,
@@ -296,6 +313,10 @@ export const useStore = create<Store>()((set, get) => {
       libraryFilter: "all",
       canvasSize: { w: 900, h: 600 },
       assetSelection: [],
+      mediaSel: [],
+      refSlideId: null,
+      matchOpts: DEFAULT_MATCH,
+      compare: false,
     },
 
     // ───────── lifecycle ─────────
@@ -335,7 +356,7 @@ export const useStore = create<Store>()((set, get) => {
     async openProject(id) {
       const p = await dbGet<Project>("projects", id);
       if (!p) return;
-      set({ project: p, history: emptyHistory(), selection: [], saveStatus: "saved", ui: { ...get().ui, cropId: null, editingTextId: null, selectedCell: null, projectsOpen: false, newProjectOpen: false, fitToken: get().ui.fitToken + 1 } });
+      set({ project: p, history: emptyHistory(), selection: [], saveStatus: "saved", ui: { ...get().ui, cropId: null, editingTextId: null, selectedCell: null, projectsOpen: false, newProjectOpen: false, mediaSel: [p.activeSlideId], refSlideId: null, leftPanel: p.kind === "edit" ? "uploads" : get().ui.leftPanel, fitToken: get().ui.fitToken + 1 } });
       try { localStorage.setItem("collage-studio:last", id); } catch {}
     },
     async deleteProject(id) {
@@ -360,6 +381,42 @@ export const useStore = create<Store>()((set, get) => {
       await get().refreshProjects();
       get().toast("Project duplicated", "ok");
     },
+    newEditProject(slides, name) {
+      const first = slides[0];
+      const p = makeProject("edit", { id: "custom", label: "Original", ratio: "Original", width: first.width, height: first.height }, name);
+      p.slides = slides;
+      p.activeSlideId = first.id;
+      set({ project: p, history: emptyHistory(), selection: [], saveStatus: "unsaved", ui: { ...get().ui, cropId: null, editingTextId: null, selectedCell: null, newProjectOpen: false, mediaSel: [first.id], refSlideId: null, leftPanel: "uploads", fitToken: get().ui.fitToken + 1 } });
+      try { localStorage.setItem("collage-studio:last", p.id); } catch {}
+    },
+    addEditSlides(slides) {
+      if (!slides.length) return;
+      commit((d) => {
+        const lone = d.slides.length === 1 && !d.slides[0].elements.some((e) => e.type === "image" || e.type === "video");
+        if (lone) d.slides = [] as Draft<Slide>[];
+        d.slides.push(...(slides as Draft<Slide>[]));
+        d.activeSlideId = slides[0].id;
+        const f = d.slides[0];
+        d.format = { id: "custom", label: "Original", ratio: "Original", width: f.width, height: f.height };
+      });
+      set((s) => ({ selection: [], ui: { ...s.ui, mediaSel: [slides[0].id], cropId: null, fitToken: s.ui.fitToken + 1 } }));
+    },
+    removeEditSlides(ids) {
+      const left = get().project.slides.filter((x) => !ids.includes(x.id));
+      commit((d) => {
+        if (!left.length) {
+          const e = makeSlide(1080, 1350, "Slide 1", { type: "solid", color: "#111111" });
+          d.slides = [e as Draft<Slide>];
+          d.activeSlideId = e.id;
+        } else {
+          d.slides = d.slides.filter((x) => !ids.includes(x.id));
+          if (!d.slides.some((x) => x.id === d.activeSlideId)) d.activeSlideId = d.slides[0].id;
+        }
+      });
+      const act = get().project.activeSlideId;
+      set((s) => ({ selection: [], ui: { ...s.ui, mediaSel: [act], cropId: null, refSlideId: ids.includes(s.ui.refSlideId ?? "") ? null : s.ui.refSlideId, fitToken: s.ui.fitToken + 1 } }));
+    },
+    setEditClip(c) { set({ editClip: c }); },
     renameProject(name) { commit((p) => { p.name = name.trim() || "Untitled design"; }, { key: "rename" }); },
 
     // ───────── history ─────────
@@ -804,6 +861,7 @@ export const useStore = create<Store>()((set, get) => {
       });
     },
     addMediaToCanvas(asset, at) {
+      if (get().project.kind === "edit") { addAssetsToEdit([asset]); return; }
       const sl = activeSlide();
       const ar = asset.width / asset.height;
       let w = Math.min(sl.width * 0.8, sl.height * 0.8 * ar);

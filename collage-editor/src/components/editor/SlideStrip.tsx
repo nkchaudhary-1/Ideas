@@ -68,7 +68,7 @@ export default function SlideStrip() {
               <button type="button" aria-label={`Open ${s.name}`} aria-current={active} onClick={() => st().setActiveSlide(s.id)}
                 className={`relative overflow-hidden rounded-md ring-2 transition ${active ? "ring-ink/60" : over === i ? "ring-ink/60" : "ring-transparent hover:ring-ink/25"}`}>
                 <div className="pointer-events-none"><SlideView slide={s} width={w} scope="strip" /></div>
-                {segs > 1 && Array.from({ length: segs - 1 }, (_, k) => <span key={k} className="pointer-events-none absolute inset-y-0 w-px border-l border-dashed border-white/90 mix-blend-difference" style={{ left: `${((k + 1) / segs) * 100}%` }} />)}
+                {segs > 1 && Array.from({ length: segs - 1 }, (_, k) => <span key={k} className="pointer-events-none absolute inset-y-0 w-px border-l-2 border-dotted border-white/90 mix-blend-difference" style={{ left: `${((k + 1) / segs) * 100}%` }} />)}
                 {slideHasVideo(s) && <span className="absolute bottom-1 left-1 grid h-4 w-4 place-items-center rounded-full bg-black/70 text-white" title="Contains video"><Film size={9} /></span>}
               </button>
               {rename === s.id ? (
@@ -88,7 +88,7 @@ export default function SlideStrip() {
         <button ref={addRef} type="button" aria-label="Add slide" title="Add slide" data-testid="add-slide" onClick={toggleMenu}
           onDragOver={(e) => { if (e.dataTransfer.types.includes("application/x-asset")) e.preventDefault(); }}
           onDrop={(e) => { e.preventDefault(); const a = getAsset(e.dataTransfer.getData("application/x-asset")); if (a) createCarouselFromAssets([a]); }}
-          className={`grid shrink-0 place-items-center rounded-xl border border-dashed border-faint/60 text-mute hover:border-ink/50 hover:text-ink ${compact ? "h-[52px] w-[52px]" : "h-[88px] w-[64px]"}`}><Plus size={18} /></button>
+          className={`grid shrink-0 place-items-center rounded-xl border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink ${compact ? "h-[52px] w-[52px]" : "h-[88px] w-[64px]"}`}><Plus size={18} /></button>
       </div>
       <div className="flex shrink-0 flex-col items-end justify-center gap-0.5 pl-4 pr-7 text-2xs text-mute">
         <span className="text-xs font-bold text-ink">{slides.length === 1 && panoramaCount(slides[0].width) > 1 ? `${panoramaCount(slides[0].width)} slides` : `${slides.length} slide${slides.length > 1 ? "s" : ""}`}</span>
