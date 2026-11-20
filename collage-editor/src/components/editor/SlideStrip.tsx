@@ -7,8 +7,8 @@ import SlideView from "@/components/canvas/SlideView";
 import { createCarouselFromAssets } from "@/lib/workflows";
 import { getAsset } from "@/lib/media";
 import { makeSlide } from "@/lib/factory";
+import { panoramaCount } from "@/lib/formats";
 
-const TH = 78; // thumbnail height budget
 
 export default function SlideStrip() {
   const st = useStore.getState;
@@ -20,6 +20,8 @@ export default function SlideStrip() {
   const [rename, setRename] = useState<string | null>(null);
   const [menu, setMenu] = useState(false);
   const scroller = useRef<HTMLDivElement>(null);
+  const compact = slides.length === 1 && kind !== "carousel";
+  const TH = compact ? 44 : 72; // thumbnail height budget
 
   const addBlank = () => {
     const cur = slides.find((s) => s.id === activeId) ?? slides[0];
@@ -31,11 +33,12 @@ export default function SlideStrip() {
   };
 
   return (
-    <div className="relative flex h-[132px] shrink-0 items-stretch border-t border-line bg-panel" data-testid="slide-strip">
-      <div ref={scroller} className="flex flex-1 items-center gap-3 overflow-x-auto px-4 py-2">
+    <div className={`card relative flex shrink-0 items-stretch ${compact ? "h-[76px]" : "h-[120px]"}`} data-testid="slide-strip">
+      <div ref={scroller} className="flex min-w-0 flex-1 items-center gap-3 overflow-x-auto px-5 py-2">
         {slides.map((s, i) => {
           const ar = s.width / s.height;
-          const w = Math.max(44, Math.min(130, Math.round(TH * ar)));
+          const w = Math.max(36, Math.min(compact ? 160 : 260, Math.round(TH * ar)));
+          const segs = panoramaCount(s.width);
           const active = s.id === activeId;
           return (
             <div key={s.id} className="group relative flex shrink-0 flex-col items-center gap-1"
@@ -55,8 +58,9 @@ export default function SlideStrip() {
               data-testid="slide-thumb" data-slide-id={s.id}
             >
               <button type="button" aria-label={`Open ${s.name}`} aria-current={active} onClick={() => st().setActiveSlide(s.id)}
-                className={`relative overflow-hidden rounded-md ring-2 transition ${active ? "ring-accent" : over === i ? "ring-white/60" : "ring-transparent hover:ring-white/25"}`}>
+                className={`relative overflow-hidden rounded-md ring-2 transition ${active ? "ring-accent" : over === i ? "ring-ink/60" : "ring-transparent hover:ring-ink/25"}`}>
                 <div className="pointer-events-none"><SlideView slide={s} width={w} scope="strip" /></div>
+                {segs > 1 && Array.from({ length: segs - 1 }, (_, k) => <span key={k} className="pointer-events-none absolute inset-y-0 w-px border-l border-dashed border-white/90 mix-blend-difference" style={{ left: `${((k + 1) / segs) * 100}%` }} />)}
                 {slideHasVideo(s) && <span className="absolute bottom-1 left-1 grid h-4 w-4 place-items-center rounded-full bg-black/70 text-white" title="Contains video"><Film size={9} /></span>}
               </button>
               {rename === s.id ? (
@@ -64,7 +68,7 @@ export default function SlideStrip() {
                   onBlur={(e) => { st().renameSlide(s.id, e.target.value || s.name); setRename(null); }}
                   onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter" || e.key === "Escape") (e.target as HTMLInputElement).blur(); }} />
               ) : (
-                <span className={`max-w-[110px] truncate text-2xs ${active ? "text-ink" : "text-mute"}`} onDoubleClick={() => setRename(s.id)} title="Double-click to rename">{i + 1} · {s.name}</span>
+                <span className={`max-w-[160px] truncate text-2xs font-semibold ${active ? "text-ink" : "text-mute"}`} onDoubleClick={() => setRename(s.id)} title="Double-click to rename">{segs > 1 ? `${s.name} · ${segs} slides` : `${i + 1} · ${s.name}`}</span>
               )}
               <div className="absolute right-1 top-1 hidden gap-0.5 group-hover:flex">
                 <button type="button" aria-label="Duplicate slide" title="Duplicate slide" onClick={() => st().duplicateSlide(s.id)} className="grid h-5 w-5 place-items-center rounded bg-black/70 text-white hover:bg-black"><Copy size={10} /></button>
@@ -77,23 +81,23 @@ export default function SlideStrip() {
           <button type="button" aria-label="Add slide" title="Add slide" data-testid="add-slide" onClick={() => setMenu((m) => !m)}
             onDragOver={(e) => { if (e.dataTransfer.types.includes("application/x-asset")) e.preventDefault(); }}
             onDrop={(e) => { e.preventDefault(); const a = getAsset(e.dataTransfer.getData("application/x-asset")); if (a) createCarouselFromAssets([a]); }}
-            className="grid h-[78px] w-[62px] place-items-center rounded-md border border-dashed border-line text-mute hover:border-mute hover:text-ink"><Plus size={18} /></button>
+            className={`grid place-items-center rounded-xl border border-dashed border-faint/60 text-mute hover:border-accent hover:text-accent ${compact ? "h-[44px] w-[44px]" : "h-[72px] w-[56px]"}`}><Plus size={18} /></button>
           {menu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setMenu(false)} />
-              <div className="absolute bottom-full left-0 z-50 mb-2 w-52 overflow-hidden rounded-lg border border-line bg-raised py-1 text-sm shadow-xl">
-                <button type="button" className="block w-full px-3 py-1.5 text-left hover:bg-white/10" onClick={addBlank} data-testid="add-blank-slide">Blank slide</button>
-                <button type="button" className="block w-full px-3 py-1.5 text-left hover:bg-white/10" onClick={() => { st().duplicateSlide(activeId); setMenu(false); }}>Duplicate current slide</button>
-                <button type="button" className="block w-full px-3 py-1.5 text-left hover:bg-white/10" onClick={() => { st().setUI({ leftPanel: "templates" }); setMenu(false); st().toast("Pick a template, then use + to add it as a new slide", "info"); }}>From template…</button>
-                <button type="button" className="block w-full px-3 py-1.5 text-left hover:bg-white/10" onClick={() => { st().setUI({ importOpen: true, importQueue: [] }); setMenu(false); }}>From photos & videos…</button>
+              <div className="card pop absolute bottom-full left-0 z-50 mb-2 w-56 overflow-hidden rounded-2xl p-1.5 text-sm shadow-float">
+                <button type="button" className="block w-full rounded-xl px-3 py-2 text-left font-medium hover:bg-field" onClick={addBlank} data-testid="add-blank-slide">Blank slide</button>
+                <button type="button" className="block w-full rounded-xl px-3 py-2 text-left font-medium hover:bg-field" onClick={() => { st().duplicateSlide(activeId); setMenu(false); }}>Duplicate current slide</button>
+                <button type="button" className="block w-full rounded-xl px-3 py-2 text-left font-medium hover:bg-field" onClick={() => { st().setUI({ leftPanel: "templates" }); setMenu(false); st().toast("Pick a template, then use + to add it as a new slide", "info"); }}>From template…</button>
+                <button type="button" className="block w-full rounded-xl px-3 py-2 text-left font-medium hover:bg-field" onClick={() => { st().setUI({ importOpen: true, importQueue: [] }); setMenu(false); }}>From photos & videos…</button>
               </div>
             </>
           )}
         </div>
       </div>
-      <div className="flex w-28 shrink-0 flex-col items-end justify-center gap-0.5 border-l border-line px-3 text-2xs text-faint">
-        <span className="text-xs text-mute">{slides.length} slide{slides.length > 1 ? "s" : ""}</span>
-        <span>{kind === "carousel" || slides.length > 1 ? "Carousel" : "Single"}</span>
+      <div className="flex shrink-0 flex-col items-end justify-center gap-0.5 pl-2 pr-5 text-2xs text-mute">
+        <span className="text-xs font-bold text-ink">{slides.length === 1 && panoramaCount(slides[0].width) > 1 ? `${panoramaCount(slides[0].width)} slides` : `${slides.length} slide${slides.length > 1 ? "s" : ""}`}</span>
+        <span>{slides.length === 1 && panoramaCount(slides[0].width) > 1 ? "Panorama" : kind === "carousel" || slides.length > 1 ? "Carousel" : "Single"}</span>
       </div>
     </div>
   );

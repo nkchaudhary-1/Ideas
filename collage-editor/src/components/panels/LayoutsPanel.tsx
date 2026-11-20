@@ -12,9 +12,9 @@ import { uid } from "@/lib/util";
 export function GridThumb({ preset, w = 54, h = 68, active }: { preset: GridPreset; w?: number; h?: number; active?: boolean }) {
   const { cells } = layoutGrid({ tree: treeFromPreset(preset), width: w, height: h, margin: preset.margin !== undefined ? Math.min(6, preset.margin / 8) : 3, gutter: Math.max(1.5, (preset.gutter ?? 12) / 8) });
   return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className={active ? "text-accent" : "text-ink/70"}>
-      <rect width={w} height={h} rx={3} fill="#2a2a2a" />
-      {cells.map((c, i) => <rect key={i} x={c.rect.x} y={c.rect.y} width={c.rect.w} height={c.rect.h} rx={Math.min(4, (preset.radius ?? 12) / 8)} fill="currentColor" opacity={0.55} />)}
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className={active ? "text-accent" : "text-ink"}>
+      <rect width={w} height={h} rx={6} style={{ fill: "rgb(var(--c-field))" }} />
+      {cells.map((c, i) => <rect key={i} x={c.rect.x} y={c.rect.y} width={c.rect.w} height={c.rect.h} rx={Math.min(4, (preset.radius ?? 12) / 8)} fill="currentColor" opacity={0.5} />)}
     </svg>
   );
 }
@@ -46,7 +46,7 @@ export default function LayoutsPanel() {
       {chosen.length > 0 && (
         <Section title={`For your ${chosen.length} selected file${chosen.length > 1 ? "s" : ""}`}>
           <div className="grid grid-cols-4 gap-1.5">
-            {suggestions.map((p) => <button key={p.id} type="button" title={p.name} onClick={() => { st().applyGridPreset(p); }} className="grid place-items-center rounded-md p-1 hover:bg-white/5"><GridThumb preset={p} /></button>)}
+            {suggestions.map((p) => <button key={p.id} type="button" title={p.name} onClick={() => { st().applyGridPreset(p); }} className="grid place-items-center rounded-md p-1 hover:bg-ink/5"><GridThumb preset={p} /></button>)}
           </div>
           <Button variant="primary" onClick={() => createCollageFromAssets(chosen)} testId="make-collage">Make a collage from them</Button>
         </Section>
@@ -55,7 +55,7 @@ export default function LayoutsPanel() {
         <Section key={g} title={g} defaultOpen={g !== "Dense"}>
           <div className="grid grid-cols-4 gap-1.5">
             {GRID_PRESETS.filter((p) => p.group === g).map((p) => (
-              <button key={p.id} type="button" title={`${p.name} · ${presetCellCount(p)} cell${presetCellCount(p) > 1 ? "s" : ""}`} data-testid={`grid-${p.id}`} onClick={() => st().applyGridPreset(p)} className="group flex flex-col items-center gap-1 rounded-md p-1 hover:bg-white/5">
+              <button key={p.id} type="button" title={`${p.name} · ${presetCellCount(p)} cell${presetCellCount(p) > 1 ? "s" : ""}`} data-testid={`grid-${p.id}`} onClick={() => st().applyGridPreset(p)} className="group flex flex-col items-center gap-1 rounded-md p-1 hover:bg-ink/5">
                 <GridThumb preset={p} />
                 <span className="w-full truncate text-center text-2xs text-mute group-hover:text-ink">{p.name}</span>
               </button>

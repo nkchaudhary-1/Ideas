@@ -16,7 +16,7 @@ import { effectiveTrim, getAsset } from "@/lib/media";
 export function RatioButton({ f, active, onClick }: { f: Format; active: boolean; onClick: () => void }) {
   const k = 26 / Math.max(f.width, f.height);
   return (
-    <button type="button" onClick={onClick} title={`${f.label} · ${f.width}×${f.height}`} data-testid={`format-${f.id}`} className={`flex flex-col items-center gap-1 rounded-md p-1.5 ${active ? "bg-accent/20 ring-1 ring-accent" : "hover:bg-white/5"}`}>
+    <button type="button" onClick={onClick} title={`${f.label} · ${f.width}×${f.height}`} data-testid={`format-${f.id}`} className={`flex flex-col items-center gap-1 rounded-md p-1.5 ${active ? "bg-accent/20 ring-1 ring-accent" : "hover:bg-ink/5"}`}>
       <span className="grid h-7 w-7 place-items-center"><span className="rounded-[2px] border border-ink/70" style={{ width: Math.max(8, f.width * k), height: Math.max(8, f.height * k) }} /></span>
       <span className={`text-2xs ${active ? "text-accent" : "text-mute"}`}>{f.ratio}</span>
     </button>
@@ -51,25 +51,6 @@ export default function CanvasProps() {
 
   return (
     <>
-      <Section title={carousel ? "Carousel format" : "Canvas"}>
-        <div className="grid grid-cols-5 gap-0.5" data-testid="format-grid">
-          {FORMATS.map((f) => <RatioButton key={f.id} f={f} active={project.format.width === f.width && project.format.height === f.height} onClick={() => st().setFormat(f, { content })} />)}
-        </div>
-        <div className="grid grid-cols-2 gap-0.5">
-          {PANORAMA_FORMATS.map((f) => <RatioButton key={f.id} f={f} active={project.format.width === f.width && project.format.height === f.height} onClick={() => st().setFormat(f, { content })} />)}
-        </div>
-        <Field label="Custom">
-          <NumberField width={64} value={cw} min={64} max={8000} onChange={setCw} label="W" />
-          <NumberField width={64} value={ch} min={64} max={8000} onChange={setCh} label="H" />
-          <Button onClick={() => st().setFormat(CUSTOM_FORMAT(cw, ch), { content })} testId="apply-custom">Apply</Button>
-        </Field>
-        <Field label="Resize"><Segmented size="sm" value={content} options={[{ value: "stretch", label: "Stretch" }, { value: "fit", label: "Fit" }, { value: "none", label: "Keep" }]} onChange={setContent} /></Field>
-        <p className="text-2xs leading-4 text-faint">
-          {slide.width} × {slide.height} px · {ratioLabel(slide.width, slide.height)}
-          {carousel ? ". Every slide in a carousel shares one size, as Instagram requires." : ". Content is stretched to the new size; choose Fit or Keep to change that."}
-        </p>
-      </Section>
-
       <Section title="Background">
         <Segmented
           value={bg.type}
@@ -85,7 +66,7 @@ export default function CanvasProps() {
           <>
             <Field label="Colour"><ColorField value={bg.color} onChange={(c) => setBg({ type: "solid", color: c })} testId="bg-color" /></Field>
             <div className="flex flex-wrap gap-1">
-              {PALETTES[0].colors.concat(PALETTES[1].colors.slice(0, 3)).map((c) => <button key={c} type="button" title={c} onClick={() => setBg({ type: "solid", color: c })} className="h-5 w-5 rounded border border-white/20" style={{ background: c }} />)}
+              {PALETTES[0].colors.concat(PALETTES[1].colors.slice(0, 3)).map((c) => <button key={c} type="button" title={c} onClick={() => setBg({ type: "solid", color: c })} className="h-5 w-5 rounded border border-ink/20" style={{ background: c }} />)}
             </div>
           </>
         )}

@@ -9,6 +9,17 @@ Built from an audit of the "Photo Edits" Figma file (see *Design language* below
 spaced uppercase labels and a music-player glass panel. Those patterns ship as grid presets, text presets and
 elements, so the editor starts where your own posts do.
 
+## Interface
+
+Minimal, floating, light or dark. The canvas fills the middle; everything else is a rounded card around it.
+
+* **Left:** an icon-only rail (Media, Layouts, Templates · Text, Elements, Frames, Backgrounds, Colours · Layers). Click one and its panel opens beside it; click again to close.
+* **Top of the canvas:** project name and menu (new / open / shortcuts), the **size chip** (ratio and panorama controls), undo / redo, theme switch, Preview, Export.
+* **Bottom of the canvas:** select and hand tools, zoom, fit, and a **View** menu with rulers, layout grid, safe areas and snapping.
+* **Right:** one properties card that only shows what the current selection needs, in collapsible groups.
+* **Below:** the slide strip (compact for single designs, with seam marks on panoramas).
+* **Themes:** light (lilac-grey, white cards, deep navy pills) and dark (charcoal), one violet accent. The choice is remembered; the first visit follows your system setting.
+
 ## Run it
 
 ```bash
@@ -27,7 +38,8 @@ Photo editing and image export work in any modern browser.
 | Area | Details |
 | --- | --- |
 | Canvas | Zoom (wheel, ⌘/Ctrl-wheel, +/−), pan (space-drag, hand tool, middle mouse), fit, zoom to selection, rulers with drag-out guides, layout grids (columns, modular, baseline), safe areas, snapping to canvas / objects / guides / grid lines |
-| Formats | 1:1, 4:5, 3:4, 2:3, 5:4, 4:3, 3:2, 16:9, 1.91:1, 9:16 Story/Reel, custom size, 2- and 3-slide panoramas. Changing the ratio keeps content (stretch / fit / keep). A carousel has one ratio for every slide |
+| Formats | 1:1, 4:5, 3:4, 2:3, 5:4, 4:3, 3:2, 16:9, 1.91:1, 9:16 Story/Reel and custom sizes, chosen from the size chip at the top of the canvas. Changing the ratio keeps content (stretch / fit / keep). A carousel has one ratio for every slide |
+| **Panorama (12:5)** | One wide canvas that is cut into slides on export. **12:5 = three 4:5 slides side by side** (3240×1350). Extend it any time with the **+** on the canvas edge (16:5, 20:5, … up to 10 slides) or shorten it with **−**; content stays where it is. Slide numbers and dashed seams show the cuts. Slide shape can be 4:5, 1:1 or 3:4. Preview pages through the slices exactly as they will be published; export writes one image per slice (`name-01.png`, `name-02.png`, …) |
 | Media library | JPG, PNG, WebP, MP4, MOV, WebM; drag & drop, paste, multi-file. Search, sort, filter photos/videos, reuse, replace, delete. Library is stored per device and shared across projects |
 | Photo editing (non-destructive) | Exposure, brightness, contrast, highlights, shadows, saturation, temperature, tint, hue, grayscale, sepia, fade, sharpness, blur, vignette, grain, opacity. 16 filter presets with intensity. Per-slider and global reset. The original file is never modified |
 | Crop & position | Free or ratio crop, zoom, pan, rotate 90°, flip, fit / fill / reset, replace media, side-handle crop that keeps pixel scale |
@@ -150,8 +162,9 @@ animated text / transitions, in-browser audio tracks beyond the clips' own sound
 
 ## Design language (from the Figma audit)
 
-* Dark editor (`#181818` canvas surround, `#222` panels, `#262626` secondary, hairline borders, off-white text) with one
-  accent that is configurable (default lime `#d4f56a`, taken from the file's `#e5ff65` / `#ce6161` palette).
+* Floating rounded cards on a soft ground, pill-shaped fields and segmented controls, bold small headings, one accent.
+  Light by default (lilac-grey ground, white cards, deep navy primary pill) with a dark charcoal theme; both are CSS-variable
+  tokens in `src/app/globals.css`, so every control follows the theme. UI type is Manrope.
 * Photo cards with large radii, equal gutters and a consistent outer margin; titles in a light soft serif over photos;
   tiny `@handle` / location tags; wide-tracked uppercase labels.
 

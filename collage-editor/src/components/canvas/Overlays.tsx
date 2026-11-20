@@ -1,4 +1,5 @@
 "use client";
+import { useStore } from "@/lib/store";
 import { Group, Line, Rect } from "react-konva";
 import type Konva from "konva";
 import type { Element, GridEl, MediaEl, Slide } from "@/lib/types";
@@ -39,11 +40,13 @@ export function LayoutGridOverlay({ slide }: { slide: Slide }) {
 export function SlideBoundaries({ slide }: { slide: Slide }) {
   // panorama canvases (multiples of 1080 wide) show where the slides are cut on export
   const n = Math.round(slide.width / 1080);
+  const accent = useStore((s) => s.ui.accent);
   if (n < 2 || Math.abs(slide.width - n * 1080) > 1) return null;
+  const col = `rgb(${accent.split(" ").join(",")})`;
   return (
     <Group listening={false}>
       {Array.from({ length: n - 1 }, (_, i) => (
-        <Line key={i} points={[(i + 1) * 1080, 0, (i + 1) * 1080, slide.height]} stroke="#ffffff" strokeWidth={1.5} dash={[10, 8]} opacity={0.75} strokeScaleEnabled={false} />
+        <Line key={i} points={[(i + 1) * 1080, 0, (i + 1) * 1080, slide.height]} stroke={col} strokeWidth={1.5} dash={[10, 8]} opacity={0.9} strokeScaleEnabled={false} />
       ))}
     </Group>
   );

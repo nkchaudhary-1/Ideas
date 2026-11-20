@@ -33,7 +33,7 @@ export default function FramesPanel() {
                 const s = Math.min(1, (sl.width * 0.7) / f.w, (sl.height * 0.7) / f.h) * (sl.width / 1080 > 1 ? 1 : 1);
                 const w = f.w * s, h = f.h * s;
                 st().addElement(makeFrame(w, h, { shape: f.shape, radius: f.radius * s, name: f.name + " frame" }, (sl.width - w) / 2, (sl.height - h) / 2));
-              }} className="group flex flex-col items-center gap-1 rounded-md p-1.5 hover:bg-white/5">
+              }} className="group flex flex-col items-center gap-1 rounded-md p-1.5 hover:bg-ink/5">
                 <span className="grid h-12 w-full place-items-center">
                   <span className="bg-ink/70" style={{ width: f.w * k, height: f.h * k, borderRadius: f.shape === "circle" ? "50%" : f.shape === "pill" ? 999 : f.shape === "arch" ? `${f.w * k}px ${f.w * k}px 0 0` : f.shape === "squircle" ? "36%" : Math.min(f.radius * k * 0.6, 12) }} />
                 </span>

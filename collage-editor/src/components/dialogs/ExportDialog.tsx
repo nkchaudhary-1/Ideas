@@ -46,7 +46,9 @@ export default function ExportDialog() {
   const setVid = (p: Partial<ExportSettings["video"]>) => setCfg((c) => ({ ...c, video: { ...c.video, ...p } }));
   const toggle = (id: string) => setSlideIds((l) => (l.includes(id) ? l.filter((x) => x !== id) : project.slides.map((s) => s.id).filter((x) => x === id || l.includes(x))));
   const first = project.slides.find((s) => slideIds.includes(s.id)) ?? project.slides[0];
-  const outW = Math.round(first.width * clampScale(first, img.scale)), outH = Math.round(first.height * clampScale(first, img.scale));
+  const sliced = img.slicePanorama && isPanorama(first);
+  const unitW = sliced ? 1080 : first.width;
+  const outW = Math.round(unitW * clampScale({ width: unitW, height: first.height }, img.scale)), outH = Math.round(first.height * clampScale({ width: unitW, height: first.height }, img.scale));
   const wantsVideoButCant = anyVideo && cfg.video.mode === "video" && support && !support.webcodecs;
   const lossy = img.format !== "png";
   const useZip = cfg.packaging === "zip" && fileCount > 1;
@@ -88,7 +90,7 @@ export default function ExportDialog() {
       <div className="grid grid-cols-[1fr_300px]">
         <div className="space-y-5 border-r border-line p-4">
           <section>
-            <div className="mb-2 flex items-center justify-between text-xs font-medium uppercase tracking-wide text-mute">
+            <div className="mb-2 flex items-center justify-between text-xs font-bold text-ink">
               <span>Slides</span>
               <span className="space-x-3 normal-case tracking-normal"><button type="button" className="hover:text-ink" onClick={() => setSlideIds(project.slides.map((s) => s.id))}>All</button><button type="button" className="hover:text-ink" onClick={() => setSlideIds([project.activeSlideId])}>Current</button></span>
             </div>
@@ -99,8 +101,8 @@ export default function ExportDialog() {
                 return (
                   <button key={s.id} type="button" onClick={() => toggle(s.id)} aria-pressed={on} className={`relative shrink-0 overflow-hidden rounded-md ring-2 ${on ? "ring-accent" : "opacity-45 ring-transparent hover:opacity-80"}`}>
                     <SlideView slide={s} width={w} scope="export-pick" />
-                    <span className="absolute left-1 top-1 rounded bg-black/70 px-1 text-[10px]">{i + 1}</span>
-                    {slideHasVideo(s) && <span className="absolute bottom-1 right-1 grid h-4 w-4 place-items-center rounded-full bg-black/70"><Film size={9} /></span>}
+                    <span className="absolute left-1 top-1 rounded bg-black/70 px-1 text-[10px] text-white">{i + 1}</span>
+                    {slideHasVideo(s) && <span className="absolute bottom-1 right-1 grid h-4 w-4 place-items-center rounded-full bg-black/70 text-white"><Film size={9} /></span>}
                   </button>
                 );
               })}
@@ -108,13 +110,13 @@ export default function ExportDialog() {
           </section>
 
           <section className="space-y-3">
-            <h3 className="text-xs font-medium uppercase tracking-wide text-mute">Images</h3>
+            <h3 className="text-xs font-bold text-ink">Images</h3>
             <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Format</span>
               <Segmented<ImageFormat> value={img.format} onChange={(v) => setImg({ format: v, transparent: v === "jpeg" ? false : img.transparent })} options={[{ value: "png", label: "PNG" }, { value: "jpeg", label: "JPEG" }, { value: "webp", label: "WebP" }]} />
             </div>
             <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Size</span>
               <Segmented<number> value={img.scale} onChange={(v) => setImg({ scale: v })} options={[{ value: 0.5, label: "½×" }, { value: 1, label: "1×" }, { value: 1.5, label: "1.5×" }, { value: 2, label: "2×" }]} />
-              <span className="text-xs text-faint">{first.width}×{first.height} → {outW}×{outH}</span>
+              <span className="text-xs text-faint">{first.width}×{first.height} → {sliced ? `${first.width / 1080} × ` : ""}{outW}×{outH}</span>
             </div>
             {lossy && <Slider label="Quality" value={Math.round(img.quality * 100)} min={40} max={100} unit="%" onChange={(v) => setImg({ quality: v / 100 })} neutral={92} />}
             <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Background</span>
@@ -126,7 +128,7 @@ export default function ExportDialog() {
 
           {anyVideo && (
             <section className="space-y-3" data-testid="export-video-section">
-              <h3 className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-mute"><Film size={12} /> Video slides</h3>
+              <h3 className="flex items-center gap-1.5 text-xs font-bold text-ink"><Film size={12} /> Video slides</h3>
               <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Export as</span>
                 <Segmented value={cfg.video.mode} onChange={(v) => setVid({ mode: v })} options={[{ value: "video", label: "Video file" }, { value: "still", label: "Still image" }]} />
               </div>
@@ -156,7 +158,7 @@ export default function ExportDialog() {
 
         <aside className="space-y-4 p-4">
           <section>
-            <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-mute">Output</h3>
+            <h3 className="mb-2 text-xs font-bold text-ink">Output</h3>
             <ul className="space-y-1.5" data-testid="export-plan">
               {plan.map((p, i) => (
                 <li key={p.slideId} className="flex items-center gap-2 rounded-md bg-panel2 px-2.5 py-1.5 text-xs">
@@ -170,7 +172,7 @@ export default function ExportDialog() {
           </section>
           {plan.length > 1 && (
             <section>
-              <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-mute">Delivery</h3>
+              <h3 className="mb-2 text-xs font-bold text-ink">Delivery</h3>
               <Segmented value={cfg.packaging} onChange={(v) => setCfg((c) => ({ ...c, packaging: v }))} options={[{ value: "zip", label: <span className="flex items-center gap-1"><Package size={12} /> ZIP</span> }, { value: "files", label: "Separate files" }]} />
               <p className="mt-1.5 text-xs text-faint">Files are numbered in slide order so they upload to Instagram in the right sequence.</p>
             </section>

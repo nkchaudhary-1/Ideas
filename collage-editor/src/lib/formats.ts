@@ -36,6 +36,24 @@ export function ratioLabel(w: number, h: number): string {
 
 export const DEFAULT_FORMAT = FORMATS[1];
 
+/** Panorama = one wide canvas that is cut into N slides on export. 12:5 is three 4:5 slides side by side. */
+export const PANORAMA_BASES = [
+  { id: "4-5", label: "Portrait 4:5", w: 1080, h: 1350 },
+  { id: "1-1", label: "Square 1:1", w: 1080, h: 1080 },
+  { id: "3-4", label: "Portrait 3:4", w: 1080, h: 1440 },
+] as const;
+export const PANORAMA_MIN = 2;
+export const PANORAMA_MAX = 10;
+
+export function panoramaFormat(slides: number, segH = 1350): Format {
+  const n = Math.max(PANORAMA_MIN, Math.min(PANORAMA_MAX, Math.round(slides)));
+  const w = n * 1080;
+  return { id: `pano-${n}`, label: `Panorama · ${n} slides`, ratio: ratioLabel(w, segH), width: w, height: segH };
+}
+
+/** how many 1080-wide slides a canvas is made of (1 = not a panorama) */
+export const panoramaCount = (width: number) => (width >= 2160 && Math.abs(width / 1080 - Math.round(width / 1080)) < 0.001 ? Math.round(width / 1080) : 1);
+
 /** Multi-slide panorama formats: a photo that runs across slides is cut at the 1080 px boundaries on export. */
 export const PANORAMA_FORMATS: Format[] = [
   { id: "pano-2", label: "Panorama · 2 slides", ratio: "8:5", width: 2160, height: 1350 },

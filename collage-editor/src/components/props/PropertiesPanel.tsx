@@ -21,17 +21,17 @@ export default function PropertiesPanel() {
   const Icon = single ? ICON[single.type] : els.length > 1 ? Box : null;
 
   return (
-    <aside className="flex w-[304px] shrink-0 flex-col border-l border-line bg-panel" data-testid="properties">
-      <div className="flex h-9 shrink-0 items-center gap-2 border-b border-line px-3">
-        {Icon && <Icon size={14} className="text-mute" />}
+    <aside className="card pop flex w-[304px] shrink-0 flex-col overflow-hidden" data-testid="properties">
+      <div className="flex h-14 shrink-0 items-center gap-2 px-5">
+        {Icon && <Icon size={16} className="text-mute" />}
         {single ? (
-          <TextInput value={single.name} onCommit={(v) => st().updateElement(single.id, { name: v || single.name })} className="h-6 flex-1 !bg-transparent !ring-0 hover:!bg-panel2" />
+          <TextInput value={single.name} onCommit={(v) => st().updateElement(single.id, { name: v || single.name })} className="h-8 flex-1 !bg-transparent !px-1 text-base !font-extrabold hover:!bg-field" />
         ) : (
-          <span className="text-sm font-medium">{els.length > 1 ? `${els.length} selected` : "Canvas"}</span>
+          <h2 className="text-base font-extrabold tracking-tight">{els.length > 1 ? `${els.length} selected` : "Canvas"}</h2>
         )}
-        {single && <span className="text-2xs uppercase tracking-wide text-faint">{single.type}</span>}
+        {single && <span className="rounded-full bg-field px-2 py-0.5 text-2xs font-semibold capitalize text-mute">{single.type}</span>}
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto" data-testid="properties-scroll">
+      <div className="min-h-0 flex-1 overflow-y-auto pb-3" data-testid="properties-scroll">
         {els.length === 0 && <CanvasProps />}
         {single?.type === "text" && <TextProps el={single} />}
         {single?.type === "shape" && <ShapeProps el={single} />}
@@ -48,10 +48,10 @@ export default function PropertiesPanel() {
 function EmptyFrame({ el }: { el: MediaEl }) {
   const st = useStore.getState;
   return (
-    <div className="border-b border-line/70 px-3 py-3 text-xs leading-5 text-mute">
-      <div className="mb-2 text-ink">Empty frame</div>
-      Drop a photo or video onto it, or pick one in the Uploads panel.
-      <button type="button" className="mt-2 block rounded-md bg-raised px-2.5 py-1 text-ink ring-1 ring-line hover:bg-[#383838]" onClick={() => st().setUI({ leftPanel: "uploads" })}>Open uploads</button>
+    <div className="mx-3 mb-2.5 rounded-2xl bg-panel2 px-3.5 py-3 text-xs leading-5 text-mute">
+      <div className="mb-1 text-sm font-bold text-ink">Empty frame</div>
+      Drop a photo or video onto it, or pick one in Media.
+      <button type="button" className="mt-2.5 block rounded-full bg-pill px-3.5 py-1.5 font-semibold text-pillink" onClick={() => st().setUI({ leftPanel: "uploads" })}>Open media</button>
       {void el}
     </div>
   );

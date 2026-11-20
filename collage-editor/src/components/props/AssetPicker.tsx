@@ -20,7 +20,7 @@ export default function AssetPicker({ onPick, onClose }: { onPick: (a: Asset) =>
         {assets.filter((a) => a.status === "ready").map((a) => (
           <button key={a.id} type="button" title={a.name} onClick={() => onPick(a)} className="relative aspect-square overflow-hidden rounded ring-1 ring-line hover:ring-accent">
             <img src={a.thumb} alt={a.name} className="h-full w-full object-cover" draggable={false} />
-            {a.kind === "video" && <span className="absolute bottom-0.5 left-0.5 flex items-center gap-0.5 rounded bg-black/70 px-1 text-2xs"><Film size={9} />{formatTime(a.duration ?? 0)}</span>}
+            {a.kind === "video" && <span className="absolute bottom-0.5 left-0.5 flex items-center gap-0.5 rounded bg-black/70 px-1 text-2xs text-white"><Film size={9} />{formatTime(a.duration ?? 0)}</span>}
           </button>
         ))}
       </div>

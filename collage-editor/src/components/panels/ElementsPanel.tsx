@@ -9,8 +9,10 @@ function Preview({ el }: { el: Element }) {
   if (el.type === "group") return <div className="grid h-11 w-11 place-items-center rounded bg-panel2 text-[9px] text-mute">{el.name.split(" ")[0]}</div>;
   if (el.type !== "shape") return null;
   const s = el as ShapeEl;
-  const fill = s.fill?.type === "solid" ? s.fill.color : "#ffffff";
-  const stroke = s.stroke?.color ?? "none";
+  // elements are authored in white for dark artboards; show white as the theme's ink so it reads on a light card too
+  const themed = (c: string) => (/^#f{3}$|^#f{6}$/i.test(c) ? "currentColor" : c);
+  const fill = themed(s.fill?.type === "solid" ? s.fill.color : "#ffffff");
+  const stroke = s.stroke?.color ? themed(s.stroke.color) : "none";
   const sw = s.stroke ? Math.max(2, Math.min(6, s.stroke.width / 3)) : 0;
   let shape: React.ReactNode = null;
   switch (s.kind) {
@@ -23,7 +25,7 @@ function Preview({ el }: { el: Element }) {
     case "star": shape = s.sides > 8 ? <circle cx={22} cy={22} r={15} fill={fill} strokeDasharray="3 2" stroke="#000" strokeWidth={1.5} /> : <path d="M22 5 L27 17 L40 18 L30 26 L33 39 L22 32 L11 39 L14 26 L4 18 L17 17 Z" fill={fill} />; break;
     case "path": shape = <path d={s.path} fill={s.fill ? fill : "none"} stroke={s.stroke ? stroke : "none"} strokeWidth={sw * 2.2} strokeLinecap="round" transform="translate(4 4) scale(0.36)" />; break;
   }
-  return <svg width={sz} height={sz} viewBox="0 0 44 44">{shape}</svg>;
+  return <svg width={sz} height={sz} viewBox="0 0 44 44" className="text-ink/80">{shape}</svg>;
 }
 
 export default function ElementsPanel() {
@@ -45,7 +47,7 @@ export default function ElementsPanel() {
         <Section key={g} title={{ Basic: "Shapes", Decor: "Graphics & decor", Labels: "Labels & badges", Icons: "Simple icons", UI: "Interface pieces" }[g]}>
           <div className="grid grid-cols-4 gap-1.5">
             {ELEMENT_PRESETS.filter((p) => p.group === g).map((p) => (
-              <button key={p.id} type="button" title={p.name} data-testid={`el-${p.id}`} onClick={() => add(p)} className="group flex flex-col items-center gap-0.5 rounded-md p-1 hover:bg-white/5">
+              <button key={p.id} type="button" title={p.name} data-testid={`el-${p.id}`} onClick={() => add(p)} className="group flex flex-col items-center gap-0.5 rounded-md p-1 hover:bg-ink/5">
                 <span className="grid h-11 w-11 place-items-center rounded bg-panel2 text-ink"><Preview el={p.build(1080, 1350, "#ffffff")} /></span>
                 <span className="w-full truncate text-center text-2xs text-mute group-hover:text-ink">{p.name}</span>
               </button>

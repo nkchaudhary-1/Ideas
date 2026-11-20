@@ -5,6 +5,7 @@ import { useStore } from "@/lib/store";
 import SlideView from "@/components/canvas/SlideView";
 import { slideDuration, slideHasVideo } from "@/lib/timeline";
 import { pauseAllPlayers } from "@/lib/media";
+import { panoramaCount } from "@/lib/formats";
 
 type Mode = "post" | "cover";
 
@@ -13,17 +14,20 @@ export default function PreviewDialog() {
   const set = useStore((s) => s.setUI);
   const slides = useStore((s) => s.project.slides);
   const startId = useStore.getState().project.activeSlideId;
-  const [i, setI] = useState(Math.max(0, slides.findIndex((s) => s.id === startId)));
+  // a panorama is cut into N frames on export, so preview it as N swipeable frames
+  const frames = useMemo(() => slides.flatMap((sl) => { const parts = panoramaCount(sl.width); return Array.from({ length: parts }, (_, part) => ({ sl, part, parts })); }), [slides]);
+  const [i, setI] = useState(Math.max(0, frames.findIndex((f) => f.sl.id === startId)));
   const [playing, setPlaying] = useState(true);
   const [auto, setAuto] = useState(false);
   const [mode, setMode] = useState<Mode>("post");
   const [vp, setVp] = useState({ w: 1200, h: 800 });
   const box = useRef<HTMLDivElement>(null);
-  const slide = slides[Math.min(i, slides.length - 1)];
+  const frame = frames[Math.min(i, frames.length - 1)];
+  const slide = frame.sl;
   const dur = useMemo(() => slideDuration(slide), [slide]);
 
   const close = () => { pauseAllPlayers(); set({ previewOpen: false }); };
-  const go = (d: number) => setI((x) => Math.max(0, Math.min(slides.length - 1, x + d)));
+  const go = (d: number) => setI((x) => Math.max(0, Math.min(frames.length - 1, x + d)));
 
   useEffect(() => {
     const on = () => setVp({ w: window.innerWidth, h: window.innerHeight });
@@ -47,25 +51,27 @@ export default function PreviewDialog() {
   // autoplay: advance after the slide's own length (longest clip, explicit duration, or 3 s for stills)
   useEffect(() => {
     if (!auto || !playing) return;
-    const h = setTimeout(() => setI((x) => (x + 1 >= slides.length ? 0 : x + 1)), dur * 1000 + 250);
+    const h = setTimeout(() => setI((x) => (x + 1 >= frames.length ? 0 : x + 1)), dur * 1000 + 250);
     return () => clearTimeout(h);
-  }, [auto, playing, i, dur, slides.length]);
+  }, [auto, playing, i, dur, frames.length]);
 
   const toggleFs = async () => {
     try { if (document.fullscreenElement) await document.exitFullscreen(); else await box.current?.requestFullscreen(); } catch { /* unsupported */ }
   };
 
-  const ar = slide.width / slide.height;
+  const segW = frame.parts > 1 ? 1080 : slide.width;
+  const ar = segW / slide.height;
   const maxW = vp.w * 0.92 - 160, maxH = vp.h - 190;
   const w = Math.max(160, Math.min(maxW, maxH * ar, 1100));
 
-  const cover = slides[0];
-  const cAr = cover.width / cover.height;
+  const cover = frames[0].sl;
+  const cParts = frames[0].parts;
+  const cAr = (cParts > 1 ? 1080 : cover.width) / cover.height;
   const tile = (cw: number, ch: number) => {
     const sw = Math.max(cw, ch * cAr);
     return (
       <div className="relative overflow-hidden bg-black" style={{ width: cw, height: ch }}>
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"><SlideView slide={cover} width={Math.round(sw)} scope="cover" /></div>
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden" style={{ width: Math.round(sw), height: Math.round(sw / cAr) }}><SlideView slide={cover} width={Math.round(sw) * cParts} scope="cover" /></div>
       </div>
     );
   };
@@ -90,9 +96,13 @@ export default function PreviewDialog() {
           <>
             <button type="button" aria-label="Previous slide" disabled={i === 0} onClick={() => go(-1)} className="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-25" data-testid="preview-prev"><ChevronLeft /></button>
             <div className="overflow-hidden rounded-sm shadow-2xl ring-1 ring-white/10" data-testid="preview-stage">
-              <SlideView key={slide.id + String(playing)} slide={slide} width={Math.round(w)} playing={playing} scope="preview" />
+              <div className="relative overflow-hidden" style={{ width: Math.round(w), height: Math.round(w / ar) }}>
+                <div className="absolute top-0" style={{ left: -Math.round(w) * frame.part }}>
+                  <SlideView key={slide.id + String(playing)} slide={slide} width={Math.round(w) * frame.parts} playing={playing} scope="preview" />
+                </div>
+              </div>
             </div>
-            <button type="button" aria-label="Next slide" disabled={i === slides.length - 1} onClick={() => go(1)} className="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-25" data-testid="preview-next"><ChevronRight /></button>
+            <button type="button" aria-label="Next slide" disabled={i === frames.length - 1} onClick={() => go(1)} className="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20 disabled:opacity-25" data-testid="preview-next"><ChevronRight /></button>
           </>
         ) : (
           <div className="flex items-start gap-10" data-testid="preview-cover">
@@ -106,7 +116,7 @@ export default function PreviewDialog() {
             </figure>
             <figure className="space-y-2 text-center">
               {tile(Math.round(Math.min(260, 300 * cAr)), Math.round(Math.min(260, 300 * cAr) / cAr))}
-              <figcaption className="text-xs text-mute">Full cover · {cover.width}×{cover.height}</figcaption>
+              <figcaption className="text-xs text-mute">Full cover · {cParts > 1 ? 1080 : cover.width}×{cover.height}</figcaption>
             </figure>
           </div>
         )}
@@ -114,15 +124,15 @@ export default function PreviewDialog() {
 
       <footer className="flex h-[88px] shrink-0 flex-col items-center justify-center gap-2.5">
         <div className="flex items-center gap-1.5" data-testid="preview-dots">
-          {slides.map((s, k) => (
-            <button key={s.id} type="button" aria-label={`Go to slide ${k + 1}`} onClick={() => setI(k)} className={`h-1.5 rounded-full transition-all ${k === i ? "w-5 bg-white" : "w-1.5 bg-white/30 hover:bg-white/60"}`} />
+          {frames.map((f, k) => (
+            <button key={`${f.sl.id}-${f.part}`} type="button" aria-label={`Go to slide ${k + 1}`} onClick={() => setI(k)} className={`h-1.5 rounded-full transition-all ${k === i ? "w-5 bg-white" : "w-1.5 bg-white/30 hover:bg-white/60"}`} />
           ))}
         </div>
         <div className="flex items-center gap-3 text-xs text-mute">
           <button type="button" onClick={() => setPlaying(!playing)} className="grid h-8 w-8 place-items-center rounded-full bg-white/10 text-white hover:bg-white/20" aria-label={playing ? "Pause" : "Play"} data-testid="preview-play">{playing ? <Pause size={14} /> : <Play size={14} />}</button>
-          <span data-testid="preview-counter">{i + 1} / {slides.length}</span>
+          <span data-testid="preview-counter">{i + 1} / {frames.length}</span>
           <span className="text-faint">·</span>
-          <span>{slide.name}</span>
+          <span>{frame.parts > 1 ? `${slide.name} · panorama ${frame.part + 1} of ${frame.parts}` : slide.name}</span>
           {slideHasVideo(slide) && <span className="flex items-center gap-1 text-accent"><Film size={11} /> video · {dur.toFixed(1)}s</span>}
         </div>
       </footer>

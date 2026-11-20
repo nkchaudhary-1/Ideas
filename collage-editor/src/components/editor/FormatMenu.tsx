@@ -1,0 +1,92 @@
+"use client";
+import { useState } from "react";
+import { Minus, Plus } from "lucide-react";
+import { useStore, getSlide } from "@/lib/store";
+import { CUSTOM_FORMAT, FORMATS, PANORAMA_BASES, PANORAMA_MAX, PANORAMA_MIN, panoramaCount, panoramaFormat, ratioLabel } from "@/lib/formats";
+import type { Format } from "@/lib/types";
+import { Button, NumberField, Segmented } from "@/components/ui/controls";
+
+const NOTE: Record<string, string> = { "4-5": "Feed", "9-16": "Story · Reel", "1-1": "Square", "191-1": "Landscape" };
+
+function Tile({ f, active, onClick }: { f: Format; active: boolean; onClick: () => void }) {
+  const k = 22 / Math.max(f.width, f.height);
+  return (
+    <button type="button" onClick={onClick} data-testid={`format-${f.id}`} title={`${f.width} × ${f.height}px`}
+      className={`flex flex-col items-center gap-1 rounded-xl px-1 py-2 transition-colors ${active ? "bg-pill text-pillink" : "bg-field text-mute hover:text-ink"}`}>
+      <span className="grid h-6 place-items-center"><span className="block rounded-[3px] border-[1.5px] border-current" style={{ width: Math.max(8, f.width * k), height: Math.max(8, f.height * k) }} /></span>
+      <span className="text-xs font-semibold leading-none">{f.ratio}</span>
+      <span className="text-[10px] leading-none opacity-70">{NOTE[f.id] ?? `${f.width}×${f.height}`}</span>
+    </button>
+  );
+}
+
+/** Canvas size: posts and stories, panorama carousels (12:5 = three slides side by side), custom. */
+export default function FormatMenu({ close }: { close: () => void }) {
+  const st = useStore.getState;
+  const project = useStore((s) => s.project);
+  const slide = useStore((s) => getSlide(s.project));
+  const [content, setContent] = useState<"stretch" | "fit" | "none">("stretch");
+  const [cw, setCw] = useState(slide.width);
+  const [ch, setCh] = useState(slide.height);
+  const n = panoramaCount(slide.width);
+  const segH = slide.height;
+  const baseId = PANORAMA_BASES.find((b) => b.h === segH)?.id ?? "4-5";
+  const same = (f: Format) => project.format.width === f.width && project.format.height === f.height;
+  const set = (f: Format) => { st().setFormat(f, { content }); };
+
+  return (
+    <div className="space-y-4" data-testid="format-menu">
+      <section>
+        <h3 className="mb-2 text-xs font-bold text-ink">Post size</h3>
+        <div className="grid grid-cols-5 gap-1.5" data-testid="format-grid">
+          {FORMATS.map((f) => <Tile key={f.id} f={f} active={same(f)} onClick={() => set(f)} />)}
+        </div>
+      </section>
+
+      <section className="rounded-2xl bg-panel2 p-3" data-testid="panorama-section">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h3 className="text-xs font-bold text-ink">Panorama carousel</h3>
+            <p className="mt-0.5 text-[11px] leading-4 text-mute">One wide canvas, cut into slides when you export. 12:5 is three 4:5 slides.</p>
+          </div>
+        </div>
+        <div className="mt-2.5 grid grid-cols-5 gap-1.5">
+          {[2, 3, 4, 5, 6].map((c) => {
+            const f = panoramaFormat(c, segH);
+            const on = n === c;
+            return (
+              <button key={c} type="button" data-testid={`pano-${c}`} onClick={() => st().setPanoramaSlides(c)} title={`${f.width} × ${f.height}px`}
+                className={`rounded-xl px-1 py-1.5 text-center transition-colors ${on ? "bg-pill text-pillink" : "bg-field text-mute hover:text-ink"}`}>
+                <span className="block text-xs font-bold leading-4">{f.ratio}</span>
+                <span className="block text-[10px] leading-3 opacity-70">{c} slides</span>
+              </button>
+            );
+          })}
+        </div>
+        <div className="mt-2.5 flex items-center justify-between gap-2">
+          <Segmented value={baseId} onChange={(id) => { const b = PANORAMA_BASES.find((x) => x.id === id)!; st().setFormat(panoramaFormat(Math.max(PANORAMA_MIN, n), b.h), { content: "none" }); }} options={PANORAMA_BASES.map((b) => ({ value: b.id, label: b.id.replace("-", ":") }))} size="sm" />
+          <div className="flex items-center gap-1" aria-label="Extend panorama">
+            <button type="button" aria-label="Remove a slide" data-testid="pano-minus" disabled={n <= PANORAMA_MIN} onClick={() => st().setPanoramaSlides(n - 1)} className="grid h-7 w-7 place-items-center rounded-full bg-field text-ink hover:bg-raised disabled:opacity-30"><Minus size={13} /></button>
+            <span className="w-14 text-center text-xs font-semibold tabular-nums">{n > 1 ? `${n} slides` : "off"}</span>
+            <button type="button" aria-label="Add a slide" data-testid="pano-plus" disabled={n >= PANORAMA_MAX} onClick={() => st().setPanoramaSlides(Math.max(PANORAMA_MIN, n + 1))} className="grid h-7 w-7 place-items-center rounded-full bg-pill text-pillink hover:opacity-90 disabled:opacity-30"><Plus size={13} /></button>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h3 className="mb-2 text-xs font-bold text-ink">Custom size</h3>
+        <div className="flex items-center gap-2">
+          <NumberField width={78} value={cw} min={64} max={12000} onChange={setCw} label="W" />
+          <NumberField width={78} value={ch} min={64} max={8000} onChange={setCh} label="H" />
+          <Button onClick={() => { set(CUSTOM_FORMAT(cw, ch)); close(); }} testId="apply-custom">Apply</Button>
+        </div>
+      </section>
+
+      <section className="flex items-center justify-between gap-2">
+        <span className="text-xs text-mute">Existing content</span>
+        <Segmented size="sm" value={content} options={[{ value: "stretch", label: "Stretch" }, { value: "fit", label: "Fit" }, { value: "none", label: "Keep" }]} onChange={setContent} />
+      </section>
+      <p className="text-[11px] leading-4 text-faint">{slide.width} × {slide.height}px · {ratioLabel(slide.width, slide.height)}{project.kind === "carousel" && n === 1 ? ". Every slide in a carousel shares one size." : ""}</p>
+    </div>
+  );
+}

@@ -21,7 +21,7 @@ export default function ProjectsDialog() {
           {list.map((p) => (
             <li key={p.id} className={`group overflow-hidden rounded-lg border ${p.id === currentId ? "border-accent/60" : "border-line"} bg-panel2`}>
               <button type="button" className="block w-full text-left" onClick={() => st().openProject(p.id)} data-testid="project-open">
-                <div className="flex h-32 items-center justify-center bg-[#141414]">
+                <div className="flex h-32 items-center justify-center bg-stage">
                   {p.thumb ? <img src={p.thumb} alt="" className="max-h-full max-w-full object-contain" /> : <span className="text-xs text-faint">{p.ratio}</span>}
                 </div>
                 <div className="px-3 pt-2">
@@ -30,7 +30,7 @@ export default function ProjectsDialog() {
                 </div>
               </button>
               <div className="flex justify-end gap-1 p-2">
-                <button type="button" aria-label="Duplicate project" title="Duplicate" onClick={() => st().duplicateProject(p.id)} className="grid h-6 w-6 place-items-center rounded text-mute hover:bg-white/10 hover:text-ink"><Copy size={13} /></button>
+                <button type="button" aria-label="Duplicate project" title="Duplicate" onClick={() => st().duplicateProject(p.id)} className="grid h-6 w-6 place-items-center rounded text-mute hover:bg-ink/10 hover:text-ink"><Copy size={13} /></button>
                 {confirm === p.id ? (
                   <button type="button" className="rounded bg-red-500/20 px-2 text-xs text-red-200" onClick={() => { void st().deleteProject(p.id); setConfirm(null); }}>Delete for good?</button>
                 ) : (

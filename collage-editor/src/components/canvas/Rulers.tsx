@@ -1,4 +1,5 @@
 "use client";
+import { cssColor } from "@/lib/util";
 import { useEffect, useRef } from "react";
 import { useStore, getSlide } from "@/lib/store";
 
@@ -14,6 +15,7 @@ function pickStep(scale: number) {
 /** Rulers show document pixels. Dragging out of a ruler creates a guide. */
 export default function Rulers({ width, height }: { width: number; height: number }) {
   const view = useStore((s) => s.ui.view);
+  const theme = useStore((s) => s.ui.theme);
   const hRef = useRef<HTMLCanvasElement>(null);
   const vRef = useRef<HTMLCanvasElement>(null);
 
@@ -26,11 +28,11 @@ export default function Rulers({ width, height }: { width: number; height: numbe
       cv.height = (horizontal ? SIZE : len) * dpr;
       const c = cv.getContext("2d")!;
       c.scale(dpr, dpr);
-      c.fillStyle = "#1e1e1e";
+      c.fillStyle = cssColor("--c-panel");
       c.fillRect(0, 0, horizontal ? len : SIZE, horizontal ? SIZE : len);
-      c.fillStyle = "#8f8f8f";
-      c.strokeStyle = "#555";
-      c.font = "9px Inter, sans-serif";
+      c.fillStyle = cssColor("--c-mute");
+      c.strokeStyle = cssColor("--c-faint", 0.6);
+      c.font = "9px Manrope, Inter, sans-serif";
       const step = pickStep(view.scale);
       const origin = horizontal ? view.x : view.y;
       const first = Math.floor(-origin / view.scale / step) * step;
@@ -45,7 +47,7 @@ export default function Rulers({ width, height }: { width: number; height: numbe
     };
     draw(hRef.current, true);
     draw(vRef.current, false);
-  }, [view, width, height]);
+  }, [view, width, height, theme]);
 
   const startGuide = (axis: "x" | "y") => (e: React.PointerEvent) => {
     e.preventDefault();

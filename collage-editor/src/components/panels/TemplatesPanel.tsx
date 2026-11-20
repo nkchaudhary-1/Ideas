@@ -81,11 +81,11 @@ export default function TemplatesPanel() {
             return (
               <div key={t.id} className="group" data-testid="template-card">
                 <div className="relative overflow-hidden rounded-md ring-1 ring-line group-hover:ring-accent/60">
-                  <div className="flex min-h-[130px] items-center justify-center bg-[#1a1a1a] p-2">
+                  <div className="flex min-h-[130px] items-center justify-center bg-stage p-2">
                     <Schematic slide={slides[0]} width={slides[0].width / slides[0].height > 1.3 ? 120 : 96} />
                   </div>
-                  {slides.length > 1 && <span className="absolute right-1 top-1 rounded bg-black/70 px-1 text-2xs">{slides.length} slides</span>}
-                  <div className="absolute inset-x-0 bottom-0 flex translate-y-full gap-1 bg-black/80 p-1.5 transition-transform group-hover:translate-y-0">
+                  {slides.length > 1 && <span className="absolute right-1 top-1 rounded bg-black/70 px-1 text-2xs text-white">{slides.length} slides</span>}
+                  <div className="absolute inset-x-0 bottom-0 flex translate-y-full gap-1 bg-black/80 p-1.5 transition-transform group-hover:translate-y-0 text-white">
                     <Button className="flex-1 !h-6" variant="primary" onClick={() => applyTemplate(t, "replace")} testId={`apply-${t.id}`}>Apply</Button>
                     <Button className="!h-6 !px-1.5" title="Add as new slide(s)" onClick={() => applyTemplate(t, "append")}><Plus size={12} /></Button>
                     {cat === "Saved" && <Button className="!h-6 !px-1.5" variant="danger" title="Delete template" onClick={() => persist(saved.filter((s) => s.id !== t.id))}><Trash2 size={12} /></Button>}

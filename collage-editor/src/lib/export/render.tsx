@@ -19,7 +19,7 @@ export interface SlideRenderer {
   seekAll(t: number): Promise<void>;
   hasVideo(): boolean;
   /** rasterise the current state to a fresh canvas at `scale` */
-  frame(): HTMLCanvasElement;
+  frame(region?: { x: number; y: number; width: number; height: number }): HTMLCanvasElement;
   destroy(): void;
 }
 
@@ -77,9 +77,9 @@ export async function createRenderer(slide: Slide, opts: { scale: number; transp
       await Promise.all([...tracker.videos.values()].map((seek) => seek(t)));
     },
     hasVideo: () => tracker.videos.size > 0,
-    frame() {
+    frame(region) {
       if (!stage) throw new Error("renderer not ready");
-      return stage.toCanvas({ pixelRatio: opts.scale });
+      return stage.toCanvas({ pixelRatio: opts.scale, ...(region ?? {}) });
     },
     destroy() {
       try { root.unmount(); } catch { /* already gone */ }

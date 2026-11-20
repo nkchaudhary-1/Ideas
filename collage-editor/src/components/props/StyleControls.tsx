@@ -104,7 +104,7 @@ export function FontPicker({ family, onChange }: { family: string; onChange: (f:
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
             {list.map((f) => (
-              <button key={f.id} type="button" data-testid={`font-${f.id}`} onMouseEnter={() => void loadFont(f.family, 400, false)} onClick={() => { onChange(f.family); setOpen(false); }} className={`flex w-full items-baseline justify-between rounded px-2 py-1.5 text-left hover:bg-white/5 ${f.family === family ? "bg-accent/15" : ""}`}>
+              <button key={f.id} type="button" data-testid={`font-${f.id}`} onMouseEnter={() => void loadFont(f.family, 400, false)} onClick={() => { onChange(f.family); setOpen(false); }} className={`flex w-full items-baseline justify-between rounded px-2 py-1.5 text-left hover:bg-ink/5 ${f.family === family ? "bg-accent/15" : ""}`}>
                 <span className="truncate text-[15px]" style={{ fontFamily: fontStack(f.family) }}>{f.family}</span>
                 <span className="ml-2 shrink-0 text-2xs text-faint">{f.category}</span>
               </button>

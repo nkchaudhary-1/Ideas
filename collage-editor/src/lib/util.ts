@@ -70,3 +70,9 @@ export const isTypingTarget = (t: EventTarget | null) => {
   if (!el) return false;
   return el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT" || el.isContentEditable;
 };
+
+/** a theme token ("--c-panel") as a CSS colour, for canvas drawing that can't use Tailwind classes */
+export function cssColor(token: string, alpha = 1): string {
+  const v = typeof document === "undefined" ? "" : getComputedStyle(document.documentElement).getPropertyValue(token).trim();
+  return v ? `rgb(${v.split(/\s+/).join(" ")} / ${alpha})` : `rgba(128,128,128,${alpha})`;
+}

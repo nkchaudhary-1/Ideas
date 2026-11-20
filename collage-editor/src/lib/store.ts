@@ -7,7 +7,7 @@ import { cloneElement, cloneSlide, makeGrid, makeMedia, makeProject, makeSlide }
 import { boundsOf, findInTree, flatten, rotatePoint, unionRects } from "./geometry";
 import { uid, clamp, debounce } from "./util";
 import { dbAll, dbDelete, dbGet, dbPut } from "./db";
-import { DEFAULT_FORMAT } from "./formats";
+import { DEFAULT_FORMAT, PANORAMA_MAX, PANORAMA_MIN, panoramaFormat } from "./formats";
 import { newFill } from "./media-math";
 import { slideFills } from "./timeline";
 import { allAssets, getAsset, loadAssets, importFiles, removeAsset } from "./media";
@@ -38,6 +38,7 @@ export interface UIState {
   shortcutsOpen: boolean;
   projectsOpen: boolean;
   fitToken: number;
+  theme: "light" | "dark";
   accent: string;
   toast: { id: number; text: string; kind: "info" | "error" | "ok" } | null;
   recentColors: string[];
@@ -76,6 +77,7 @@ export interface Store {
 
   // ui
   setUI(patch: Partial<UIState>): void;
+  setTheme(t: "light" | "dark"): void;
   toast(text: string, kind?: "info" | "error" | "ok"): void;
   addRecentColor(hex: string): void;
   setView(v: Partial<UIState["view"]>): void;
@@ -96,6 +98,7 @@ export interface Store {
   setBackground(bg: Background, allSlides?: boolean): void;
   setFormat(format: Format, opts?: { content?: "none" | "stretch" | "fit" }): void;
   applySlide(slide: Slide): void;
+  setPanoramaSlides(n: number): void;
 
   // elements
   addElement(el: Element, opts?: { select?: boolean; index?: number }): void;
@@ -128,12 +131,20 @@ export interface Store {
 // ───────────────────────── helpers ─────────────────────────
 
 const LS_KEY = "collage-studio:ui";
+export const ACCENTS = { light: "91 66 245", dark: "148 130 255" } as const;
+function systemTheme(): "light" | "dark" {
+  try { return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } catch { return "light"; }
+}
 function loadUIPrefs(): Partial<UIState> {
-  try { return JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch { return {}; }
+  let p: Partial<UIState> = {};
+  try { p = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); } catch { /* storage blocked */ }
+  delete (p as { accent?: string }).accent; // the accent follows the theme
+  const theme = p.theme === "dark" || p.theme === "light" ? p.theme : systemTheme();
+  return { ...p, theme, accent: ACCENTS[theme] };
 }
 const savePrefs = debounce((ui: UIState) => {
   try {
-    localStorage.setItem(LS_KEY, JSON.stringify({ accent: ui.accent, recentColors: ui.recentColors, rulers: ui.rulers, snapObjects: ui.snapObjects, snapCanvas: ui.snapCanvas, snapGrid: ui.snapGrid, safeAreas: ui.safeAreas }));
+    localStorage.setItem(LS_KEY, JSON.stringify({ theme: ui.theme, recentColors: ui.recentColors, rulers: ui.rulers, snapObjects: ui.snapObjects, snapCanvas: ui.snapCanvas, snapGrid: ui.snapGrid, safeAreas: ui.safeAreas }));
   } catch { /* storage may be blocked */ }
 }, 400);
 
@@ -228,7 +239,8 @@ export const useStore = create<Store>()((set, get) => {
       shortcutsOpen: false,
       projectsOpen: false,
       fitToken: 0,
-      accent: "212 245 106",
+      theme: "light",
+      accent: ACCENTS.light,
       toast: null,
       recentColors: [],
       importQueue: [],
@@ -318,6 +330,7 @@ export const useStore = create<Store>()((set, get) => {
 
     // ───────── ui ─────────
     setUI(patch) { set((s) => ({ ui: { ...s.ui, ...patch } })); savePrefs(get().ui); },
+    setTheme(t) { set((s) => ({ ui: { ...s.ui, theme: t, accent: ACCENTS[t] } })); savePrefs(get().ui); },
     toast(text, kind = "info") {
       const id = ++toastId;
       set((s) => ({ ui: { ...s.ui, toast: { id, text, kind } } }));
@@ -395,6 +408,13 @@ export const useStore = create<Store>()((set, get) => {
       commit((d) => {
         for (const s of d.slides) if (all || s.id === d.activeSlideId) s.background = structuredClone(bg) as Draft<Background>;
       }, { key: "bg" });
+    },
+    /** Grow or shorten a panorama canvas by whole slides. Content stays where it is; the canvas extends to the right. */
+    setPanoramaSlides(n) {
+      const sl = getSlide(get().project);
+      const next = Math.max(PANORAMA_MIN, Math.min(PANORAMA_MAX, Math.round(n)));
+      if (Math.round(sl.width / 1080) === next && Math.abs(sl.width - next * 1080) < 1) return;
+      get().setFormat(panoramaFormat(next, sl.height), { content: "none" });
     },
     setFormat(format, opts = {}) {
       const mode = opts.content ?? "stretch";

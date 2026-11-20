@@ -36,7 +36,7 @@ function Row({ el, depth, index, list }: { el: Element; depth: number; index: nu
           e.preventDefault();
         }}
         onClick={(e) => st().select([el.id], e.shiftKey || e.metaKey || e.ctrlKey)}
-        className={`relative flex h-8 cursor-default items-center gap-1 pr-1 text-xs ${selected ? "bg-accent/15 text-ink" : "text-ink/85 hover:bg-white/5"} ${el.visible ? "" : "opacity-50"}`}
+        className={`relative flex h-8 cursor-default items-center gap-1 pr-1 text-xs ${selected ? "bg-accent/15 text-ink" : "text-ink/85 hover:bg-ink/5"} ${el.visible ? "" : "opacity-50"}`}
         style={{ paddingLeft: 6 + depth * 14 }}
       >
         {over === "above" && <span className="absolute inset-x-0 top-0 h-0.5 bg-accent" />}
@@ -66,10 +66,10 @@ export default function LayersPanel() {
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="layers-panel">
       <div className="flex items-center gap-0.5 border-b border-line p-2">
-        <button type="button" title="Duplicate" aria-label="Duplicate layer" disabled={!sel.length} onClick={() => st().duplicateElements()} className="grid h-7 w-7 place-items-center rounded hover:bg-white/10 disabled:opacity-30"><Copy size={14} /></button>
-        <button type="button" title="Group" aria-label="Group layers" disabled={sel.length < 2} onClick={() => st().group()} className="grid h-7 w-7 place-items-center rounded hover:bg-white/10 disabled:opacity-30"><GroupIcon size={14} /></button>
-        <button type="button" title="Ungroup" aria-label="Ungroup" disabled={first?.type !== "group"} onClick={() => st().ungroup()} className="grid h-7 w-7 place-items-center rounded hover:bg-white/10 disabled:opacity-30"><Ungroup size={14} /></button>
-        <button type="button" title="Delete" aria-label="Delete layer" disabled={!sel.length} onClick={() => st().deleteElements()} className="grid h-7 w-7 place-items-center rounded hover:bg-white/10 hover:text-red-300 disabled:opacity-30"><Trash2 size={14} /></button>
+        <button type="button" title="Duplicate" aria-label="Duplicate layer" disabled={!sel.length} onClick={() => st().duplicateElements()} className="grid h-7 w-7 place-items-center rounded hover:bg-ink/10 disabled:opacity-30"><Copy size={14} /></button>
+        <button type="button" title="Group" aria-label="Group layers" disabled={sel.length < 2} onClick={() => st().group()} className="grid h-7 w-7 place-items-center rounded hover:bg-ink/10 disabled:opacity-30"><GroupIcon size={14} /></button>
+        <button type="button" title="Ungroup" aria-label="Ungroup" disabled={first?.type !== "group"} onClick={() => st().ungroup()} className="grid h-7 w-7 place-items-center rounded hover:bg-ink/10 disabled:opacity-30"><Ungroup size={14} /></button>
+        <button type="button" title="Delete" aria-label="Delete layer" disabled={!sel.length} onClick={() => st().deleteElements()} className="grid h-7 w-7 place-items-center rounded hover:bg-ink/10 hover:text-red-300 disabled:opacity-30"><Trash2 size={14} /></button>
         <span className="ml-auto pr-1 text-2xs text-faint">{slide.elements.length} layer{slide.elements.length === 1 ? "" : "s"}</span>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto py-1">

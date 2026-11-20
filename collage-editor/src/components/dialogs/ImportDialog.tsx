@@ -93,7 +93,7 @@ export default function ImportDialog() {
             {items.map((it, idx) => (
               <li key={it.key} draggable={it.state === "ready"} onDragStart={() => setDragKey(it.key)} onDragOver={(e) => { if (dragKey) e.preventDefault(); }} onDrop={(e) => { e.preventDefault(); if (dragKey && dragKey !== it.key) { const from = items.findIndex((x) => x.key === dragKey); move(dragKey, idx - from); } setDragKey(null); }}
                 className={`flex items-center gap-3 rounded-lg border px-2.5 py-2 ${it.state === "failed" ? "border-red-500/30 bg-red-500/5" : picked.has(it.key) ? "border-accent/50 bg-accent/5" : "border-line bg-panel2"}`} data-testid="import-item">
-                <button type="button" aria-label={picked.has(it.key) ? "Deselect" : "Select"} disabled={it.state !== "ready"} onClick={() => toggle(it.key)} className={`grid h-5 w-5 shrink-0 place-items-center rounded border ${picked.has(it.key) ? "border-accent bg-accent text-black" : "border-line"} disabled:opacity-30`}>{picked.has(it.key) && <Check size={12} />}</button>
+                <button type="button" aria-label={picked.has(it.key) ? "Deselect" : "Select"} disabled={it.state !== "ready"} onClick={() => toggle(it.key)} className={`grid h-5 w-5 shrink-0 place-items-center rounded border ${picked.has(it.key) ? "border-accent bg-accent text-white" : "border-line"} disabled:opacity-30`}>{picked.has(it.key) && <Check size={12} />}</button>
                 <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded bg-black">
                   {it.asset ? <img src={it.asset.thumb} alt="" className="h-full w-full object-cover" /> : it.state === "working" ? <Loader2 size={16} className="absolute inset-0 m-auto animate-spin text-mute" /> : <AlertTriangle size={16} className="absolute inset-0 m-auto text-red-300" />}
                   {it.asset?.kind === "video" && <Film size={11} className="absolute bottom-0.5 left-0.5 text-white drop-shadow" />}
@@ -107,8 +107,8 @@ export default function ImportDialog() {
                   </div>
                 </div>
                 <div className="flex items-center gap-0.5">
-                  <button type="button" aria-label="Move up" disabled={idx === 0} onClick={() => move(it.key, -1)} className="grid h-6 w-6 place-items-center rounded text-mute hover:bg-white/10 disabled:opacity-30"><ArrowUp size={13} /></button>
-                  <button type="button" aria-label="Move down" disabled={idx === items.length - 1} onClick={() => move(it.key, 1)} className="grid h-6 w-6 place-items-center rounded text-mute hover:bg-white/10 disabled:opacity-30"><ArrowDown size={13} /></button>
+                  <button type="button" aria-label="Move up" disabled={idx === 0} onClick={() => move(it.key, -1)} className="grid h-6 w-6 place-items-center rounded text-mute hover:bg-ink/10 disabled:opacity-30"><ArrowUp size={13} /></button>
+                  <button type="button" aria-label="Move down" disabled={idx === items.length - 1} onClick={() => move(it.key, 1)} className="grid h-6 w-6 place-items-center rounded text-mute hover:bg-ink/10 disabled:opacity-30"><ArrowDown size={13} /></button>
                   <button type="button" aria-label="Remove" title={it.asset ? "Remove and delete from library" : "Dismiss"} onClick={() => remove(it)} className="grid h-6 w-6 place-items-center rounded text-mute hover:bg-red-500/20 hover:text-red-300"><Trash2 size={13} /></button>
                 </div>
               </li>

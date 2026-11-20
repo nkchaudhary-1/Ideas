@@ -42,7 +42,7 @@ function FilterThumb({ asset, presetId, active, onClick, name }: { asset: Asset;
     return () => { dead = true; };
   }, [asset, presetId]);
   return (
-    <button type="button" onClick={onClick} title={name} data-testid={`filter-${presetId}`} className={`group flex flex-col items-center gap-1 rounded-md p-0.5 ${active ? "bg-accent/20 ring-1 ring-accent" : "hover:bg-white/5"}`}>
+    <button type="button" onClick={onClick} title={name} data-testid={`filter-${presetId}`} className={`group flex flex-col items-center gap-1 rounded-md p-0.5 ${active ? "bg-accent/20 ring-1 ring-accent" : "hover:bg-ink/5"}`}>
       <canvas ref={ref} className="h-[60px] w-[48px] rounded-sm bg-panel2" />
       <span className={`text-2xs ${active ? "text-accent" : "text-mute"}`}>{name}</span>
     </button>
@@ -141,7 +141,7 @@ export default function MediaProps({ target }: { target: FillTarget }) {
       <Section title="Adjustments" action={<button type="button" className="text-2xs text-mute hover:text-ink" data-testid="reset-adjustments" onClick={() => target.update((f) => { f.adjustments = { ...NEUTRAL }; })}>Reset all</button>}>
         {(["light", "color", "detail", "effect"] as const).map((g) => (
           <div key={g} className="space-y-1.5">
-            <div className="pt-1 text-2xs uppercase tracking-wide text-faint">{{ light: "Light", color: "Colour", detail: "Detail", effect: "Effects" }[g]}</div>
+            <div className="pt-1 text-2xs font-semibold text-faint">{{ light: "Light", color: "Colour", detail: "Detail", effect: "Effects" }[g]}</div>
             {ADJUSTMENT_META.filter((m) => m.group === g).map((m) => (
               <Slider
                 key={m.key}

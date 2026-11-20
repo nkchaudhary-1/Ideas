@@ -112,7 +112,7 @@ export function ColorPopover({ value, onChange, onClose, anchor, alpha }: {
           <input key={k} value={Math.round(cur[k])} aria-label={k.toUpperCase()} onChange={(e) => { const n = clamp(+e.target.value || 0, 0, 255); const r = { ...cur, [k]: n }; pick(rgbToHex(r)); }} onKeyDown={(e) => e.stopPropagation()} className="h-6 w-9 rounded-md bg-panel2 px-1 text-center text-xs outline-none ring-1 ring-line focus:ring-accent/70" />
         ))}
         {hasEyedropper && (
-          <button type="button" title="Pick from screen" className="grid h-6 w-6 place-items-center rounded-md hover:bg-white/10" onClick={async () => {
+          <button type="button" title="Pick from screen" className="grid h-6 w-6 place-items-center rounded-md hover:bg-ink/10" onClick={async () => {
             try { const r = await new (window as unknown as { EyeDropper: new () => { open: () => Promise<{ sRGBHex: string }> } }).EyeDropper().open(); pick(r.sRGBHex); } catch { /* cancelled */ }
           }}><Pipette size={13} /></button>
         )}
@@ -130,10 +130,10 @@ export function ColorPopover({ value, onChange, onClose, anchor, alpha }: {
 function Swatches({ title, colors, onPick, compact }: { title: string; colors: string[]; onPick: (c: string) => void; compact?: boolean }) {
   return (
     <div className={compact ? "" : "mt-2"}>
-      <div className="mb-1 text-2xs uppercase tracking-wide text-faint">{title}</div>
+      <div className="mb-1 text-2xs font-semibold text-faint">{title}</div>
       <div className="flex flex-wrap gap-1">
         {colors.map((c, i) => (
-          <button key={c + i} type="button" title={c} onClick={() => onPick(c)} className="h-5 w-5 rounded border border-white/15" style={{ background: c }} />
+          <button key={c + i} type="button" title={c} onClick={() => onPick(c)} className="h-5 w-5 rounded border border-ink/15" style={{ background: c }} />
         ))}
       </div>
     </div>
@@ -157,7 +157,7 @@ export function ColorField({ value, onChange, alpha, testId }: { value: string; 
         onClick={() => { setRect(btn.current!.getBoundingClientRect()); setOpen((o) => !o); }}
         className="flex h-6 min-w-0 items-center gap-1.5 rounded-md bg-panel2 pl-1 pr-2 text-xs ring-1 ring-line hover:ring-accent/50"
       >
-        <span className="checker h-4 w-4 shrink-0 overflow-hidden rounded-sm border border-white/20"><span className="block h-full w-full" style={{ background: value }} /></span>
+        <span className="checker h-4 w-4 shrink-0 overflow-hidden rounded-sm border border-ink/20"><span className="block h-full w-full" style={{ background: value }} /></span>
         <span className="truncate uppercase text-ink/90">{text}</span>
       </button>
       {open && rect && <ColorPopover value={value} alpha={alpha} onChange={onChange} onClose={() => setOpen(false)} anchor={rect} />}

@@ -29,20 +29,20 @@ export default function BackgroundsPanel() {
       {carousel && <div className="border-b border-line p-3"><Toggle label="Apply to every slide" value={all} onChange={setAll} /></div>}
       <Section title="Solid colours">
         <div className="flex flex-wrap gap-1.5">
-          {SOLID_BACKGROUNDS.map((c) => <button key={c} type="button" title={c} onClick={() => apply({ type: "solid", color: c })} className={`h-7 w-7 rounded-md border ${slide.background.type === "solid" && slide.background.color === c ? "border-accent ring-1 ring-accent" : "border-white/15"}`} style={{ background: c }} />)}
+          {SOLID_BACKGROUNDS.map((c) => <button key={c} type="button" title={c} onClick={() => apply({ type: "solid", color: c })} className={`h-7 w-7 rounded-md border ${slide.background.type === "solid" && slide.background.color === c ? "border-accent ring-1 ring-accent" : "border-ink/15"}`} style={{ background: c }} />)}
         </div>
       </Section>
       <Section title="Gradients">
         <div className="grid grid-cols-4 gap-1.5">
           {GRADIENT_PRESETS.map((g) => (
-            <button key={g.name} type="button" title={g.name} data-testid={`grad-${g.name.toLowerCase().replace(/\s/g, "-")}`} onClick={() => apply({ type: "gradient", angle: g.angle, stops: [{ offset: 0, color: g.stops[0] }, { offset: 1, color: g.stops[1] }] })} className="h-12 rounded-md border border-white/10" style={{ background: `linear-gradient(${g.angle}deg, ${g.stops[0]}, ${g.stops[1]})` }} />
+            <button key={g.name} type="button" title={g.name} data-testid={`grad-${g.name.toLowerCase().replace(/\s/g, "-")}`} onClick={() => apply({ type: "gradient", angle: g.angle, stops: [{ offset: 0, color: g.stops[0] }, { offset: 1, color: g.stops[1] }] })} className="h-12 rounded-md border border-ink/10" style={{ background: `linear-gradient(${g.angle}deg, ${g.stops[0]}, ${g.stops[1]})` }} />
           ))}
         </div>
       </Section>
       <Section title="Patterns & textures">
         <div className="grid grid-cols-3 gap-1.5">
           {PATTERNS.map((p) => (
-            <button key={p.id} type="button" data-testid={`pattern-${p.id}`} onClick={() => apply({ type: "pattern", pattern: p.id, color: p.ink, bg: p.bg, size: p.size, opacity: p.opacity })} className="h-14 rounded-md border border-white/10 text-2xs" style={{ background: p.bg, color: p.ink }}>{p.name}</button>
+            <button key={p.id} type="button" data-testid={`pattern-${p.id}`} onClick={() => apply({ type: "pattern", pattern: p.id, color: p.ink, bg: p.bg, size: p.size, opacity: p.opacity })} className="h-14 rounded-md border border-ink/10 text-2xs" style={{ background: p.bg, color: p.ink }}>{p.name}</button>
           ))}
         </div>
       </Section>

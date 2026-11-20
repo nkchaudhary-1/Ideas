@@ -18,6 +18,7 @@ import { CropOverlay, GridEditorOverlay, GuideLines, LayoutGridOverlay, SafeArea
 import SelectionLayer from "./SelectionLayer";
 import TextEditor from "./TextEditor";
 import Rulers from "./Rulers";
+import PanoramaHandles from "./PanoramaHandles";
 import { makeMedia } from "@/lib/factory";
 import { newFill } from "@/lib/media-math";
 
@@ -394,7 +395,7 @@ export default function Workspace() {
   return (
     <div
       ref={containerRef}
-      className="relative h-full w-full overflow-hidden bg-[#141414]"
+      className="relative h-full w-full overflow-hidden bg-stage dots"
       style={{ cursor }}
       onPointerDownCapture={onPointerDownCapture}
       onDragOver={onDragOver}
@@ -461,6 +462,7 @@ export default function Workspace() {
       {swap && <div className="pointer-events-none absolute z-30 h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded border-2 border-accent bg-accent/20" style={{ left: swap.x, top: swap.y }} />}
       {editingEl && <TextEditor el={editingEl} view={view} />}
       {rulers && <Rulers width={size.w} height={size.h} />}
+      <PanoramaHandles />
     </div>
   );
 }

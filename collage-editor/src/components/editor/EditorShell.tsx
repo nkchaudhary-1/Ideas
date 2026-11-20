@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 import { useStore } from "@/lib/store";
-import TopBar from "./TopBar";
+import StageChrome from "./StageChrome";
 import SlideStrip from "./SlideStrip";
 import useShortcuts from "./Shortcuts";
 import LeftSidebar from "@/components/panels/LeftSidebar";
@@ -22,8 +22,11 @@ export default function EditorShell() {
 
   useEffect(() => { void useStore.getState().init(); }, []);
 
-  // accent colour is a CSS variable ("r g b") so every control can use bg-accent/xx
-  useEffect(() => { document.documentElement.style.setProperty("--accent", ui.accent); }, [ui.accent]);
+  // theme + accent are CSS variables, so every control follows them
+  useEffect(() => {
+    document.documentElement.dataset.theme = ui.theme;
+    document.documentElement.style.setProperty("--accent", ui.accent);
+  }, [ui.theme, ui.accent]);
 
   // paste images/videos from the clipboard straight into the library
   useEffect(() => {
@@ -54,16 +57,16 @@ export default function EditorShell() {
   if (!ready) return <div className="grid h-screen place-items-center bg-bg text-sm text-mute" data-testid="loading">Loading editor…</div>;
 
   return (
-    <div className="flex h-screen min-h-0 flex-col bg-bg text-ink" data-testid="editor-root">
-      <TopBar />
-      <div className="flex min-h-0 flex-1">
-        <LeftSidebar />
-        <div className="flex min-w-0 flex-1 flex-col">
-          <div className="min-h-0 flex-1"><Workspace /></div>
-          <SlideStrip />
+    <div className="flex h-screen min-h-0 gap-3 bg-bg p-3 text-ink" data-testid="editor-root">
+      <LeftSidebar />
+      <div className="flex min-w-0 flex-1 flex-col gap-3">
+        <div className="relative min-h-0 flex-1 overflow-hidden rounded-[28px] bg-stage ring-1 ring-line/70">
+          <Workspace />
+          <StageChrome />
         </div>
-        <PropertiesPanel />
+        <SlideStrip />
       </div>
+      {ui.rightOpen && <PropertiesPanel />}
       <Toast />
       {ui.importOpen && <ImportDialog />}
       {ui.newProjectOpen && <NewProjectDialog />}

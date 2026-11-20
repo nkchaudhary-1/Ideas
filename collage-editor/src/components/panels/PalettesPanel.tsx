@@ -61,7 +61,7 @@ export default function PalettesPanel() {
         {photo.length > 0 && (
           <>
             <div className="text-2xs text-faint">{photoName}</div>
-            <div className="flex flex-wrap gap-1.5">{photo.map((c) => <button key={c} type="button" title={c} onClick={() => apply(c)} className="h-8 w-8 rounded-md border border-white/15" style={{ background: c }} />)}</div>
+            <div className="flex flex-wrap gap-1.5">{photo.map((c) => <button key={c} type="button" title={c} onClick={() => apply(c)} className="h-8 w-8 rounded-md border border-ink/15" style={{ background: c }} />)}</div>
             <Button variant="ghost" onClick={() => persist([{ name: `From ${photoName}`, colors: photo }, ...saved].slice(0, 12))}><Plus size={12} /> Save palette</Button>
           </>
         )}
@@ -71,14 +71,14 @@ export default function PalettesPanel() {
           {saved.map((p, i) => (
             <div key={i} className="space-y-1">
               <div className="flex items-center justify-between text-2xs text-faint"><span>{p.name}</span><button type="button" aria-label="Delete palette" onClick={() => persist(saved.filter((_, j) => j !== i))} className="hover:text-red-300"><Trash2 size={10} /></button></div>
-              <div className="flex flex-wrap gap-1">{p.colors.map((c) => <button key={c} type="button" onClick={() => apply(c)} className="h-6 w-6 rounded border border-white/15" style={{ background: c }} />)}</div>
+              <div className="flex flex-wrap gap-1">{p.colors.map((c) => <button key={c} type="button" onClick={() => apply(c)} className="h-6 w-6 rounded border border-ink/15" style={{ background: c }} />)}</div>
             </div>
           ))}
         </Section>
       )}
       {PALETTES.map((p) => (
         <Section key={p.name} title={p.name} defaultOpen={p.name === "From your posts"}>
-          <div className="flex flex-wrap gap-1.5">{p.colors.map((c) => <button key={c} type="button" title={c} data-testid={`swatch-${c.slice(1)}`} onClick={() => apply(c)} className="h-8 w-8 rounded-md border border-white/15" style={{ background: c }} />)}</div>
+          <div className="flex flex-wrap gap-1.5">{p.colors.map((c) => <button key={c} type="button" title={c} data-testid={`swatch-${c.slice(1)}`} onClick={() => apply(c)} className="h-8 w-8 rounded-md border border-ink/15" style={{ background: c }} />)}</div>
         </Section>
       ))}
     </div>
