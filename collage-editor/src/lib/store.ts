@@ -42,6 +42,8 @@ export interface UIState {
   playing: boolean;
   previewOpen: boolean;
   exportOpen: boolean;
+  /** the quick bar over the canvas: one row of adjustments or filters and a single slider */
+  quick: "adjust" | "filters" | null;
   /** the project that was last exported in this session (drives the last step of the guide) */
   exportedProject: string | null;
   importOpen: boolean;
@@ -299,6 +301,7 @@ export const useStore = create<Store>()((set, get) => {
       playing: false,
       previewOpen: false,
       exportOpen: false,
+      quick: null,
       exportedProject: null,
       importOpen: false,
       newProjectOpen: false,

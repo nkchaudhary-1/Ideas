@@ -3,19 +3,20 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronDown, ChevronRight, RotateCcw } from "lucide-react";
 import { clamp, keys } from "@/lib/util";
 
-export function IconButton({ icon, label, onClick, active, disabled, className = "", size = 36, shortcut, testId }: {
-  icon: ReactNode; label: string; onClick?: (e: React.MouseEvent) => void; active?: boolean; disabled?: boolean; className?: string; size?: number; shortcut?: string; testId?: string;
+export function IconButton({ icon, label, onClick, active, disabled, className = "", size = 36, shortcut, testId, tipTop }: {
+  icon: ReactNode; label: string; onClick?: (e: React.MouseEvent) => void; active?: boolean; disabled?: boolean; className?: string; size?: number; shortcut?: string; testId?: string; /** show the tooltip above (for controls near the bottom edge) */ tipTop?: boolean;
 }) {
   return (
     <button
       type="button"
-      title={shortcut ? `${label} (${keys(shortcut)})` : label}
+      data-tip={shortcut ? `${label}  ${keys(shortcut)}` : label}
+      data-tip-top={tipTop ? "" : undefined}
       aria-label={label}
       data-testid={testId}
       disabled={disabled}
       onClick={onClick}
       style={{ width: size, height: size }}
-      className={`grid shrink-0 place-items-center rounded-full transition touch:active:scale-90 ${size === 36 ? "coarse:!h-11 coarse:!w-11" : ""} ${active ? "bg-ink/10 text-ink" : "text-mute hover:bg-ink/[0.07] hover:text-ink"} disabled:opacity-30 disabled:hover:bg-transparent ${className}`}
+      className={`grid shrink-0 place-items-center rounded-full transition active:scale-90 ${size === 36 ? "coarse:!h-11 coarse:!w-11" : ""} ${active ? "bg-ink/10 text-ink" : "text-mute hover:bg-ink/[0.07] hover:text-ink"} disabled:opacity-30 disabled:hover:bg-transparent ${className}`}
     >
       {icon}
     </button>
@@ -32,7 +33,7 @@ export function Button({ children, onClick, variant = "default", disabled, class
     danger: "bg-red-500/10 text-red-500 hover:bg-red-500/20",
   }[variant];
   return (
-    <button type={type} title={title} data-testid={testId} disabled={disabled} onClick={onClick} className={`inline-flex h-9 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-medium transition coarse:h-11 touch:active:scale-[0.97] disabled:opacity-40 ${v} ${className}`}>
+    <button type={type} title={title} data-testid={testId} disabled={disabled} onClick={onClick} className={`inline-flex h-9 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-medium transition coarse:h-11 active:scale-[0.97] disabled:opacity-40 ${v} ${className}`}>
       {children}
     </button>
   );
@@ -43,7 +44,7 @@ export function Chip({ active, soft, sm, children, className = "", ...rest }: { 
   const on = soft ? "bg-ink/10 text-ink ring-1 ring-ink/25" : "bg-pill text-pillink";
   const off = soft ? "bg-field text-faint hover:text-mute" : "bg-field text-mute hover:text-ink";
   return (
-    <button type="button" aria-pressed={active} className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full font-semibold transition touch:active:scale-[0.97] ${sm ? "h-8 px-3 text-2xs coarse:h-10" : "h-9 px-4 text-xs coarse:h-11"} ${active ? on : off} ${className}`} {...rest}>
+    <button type="button" aria-pressed={active} className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full font-semibold transition active:scale-[0.97] ${sm ? "h-8 px-3 text-2xs coarse:h-10" : "h-9 px-4 text-xs coarse:h-11"} ${active ? on : off} ${className}`} {...rest}>
       {children}
     </button>
   );
@@ -52,7 +53,7 @@ export function Chip({ active, soft, sm, children, className = "", ...rest }: { 
 /** a quiet inline action ("Reset", "All", "None"): 32px tall so it is easy to hit, but visually just text */
 export function TextButton({ children, className = "", ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button type="button" className={`inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-2xs font-semibold text-mute transition coarse:h-10 touch:active:scale-[0.97] hover:bg-ink/[0.07] hover:text-ink disabled:opacity-40 ${className}`} {...rest}>
+    <button type="button" className={`inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-2xs font-semibold text-mute transition coarse:h-10 active:scale-[0.97] hover:bg-ink/[0.07] hover:text-ink disabled:opacity-40 ${className}`} {...rest}>
       {children}
     </button>
   );

@@ -30,9 +30,12 @@ export default function Popover({ trigger, children, placement = "bottom", align
     const w = Math.min(width, vw - 32);
     let left = align === "left" ? r.left : align === "right" ? r.right - w : r.left + r.width / 2 - w / 2;
     left = Math.max(16, Math.min(left, vw - w - 16));
-    setPos(placement === "bottom"
-      ? { left, top: r.bottom + 12, maxH: Math.max(160, vh - r.bottom - 12 - 16) }
-      : { left, bottom: vh - r.top + 12, maxH: Math.max(160, r.top - 12 - 16) });
+    // open on the side that has room: the asked-for side if it fits a normal menu, else whichever side is roomier (never off-screen)
+    const below = vh - r.bottom - 28, above = r.top - 28;
+    const side = placement === "bottom" ? (below >= 300 || below >= above ? "bottom" : "top") : (above >= 300 || above >= below ? "top" : "bottom");
+    setPos(side === "bottom"
+      ? { left, top: r.bottom + 12, maxH: Math.max(120, below) }
+      : { left, bottom: vh - r.top + 12, maxH: Math.max(120, above) });
   }, [open, width, align, placement]);
 
   useEffect(() => {

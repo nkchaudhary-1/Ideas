@@ -95,9 +95,8 @@ export default function SlideStrip() {
         <span className="text-2xs" aria-hidden>&nbsp;</span>
         </div>
       </div>
-      <div className="flex shrink-0 flex-col items-end justify-center gap-0.5 pl-4 pr-7 text-2xs text-mute">
+      <div className="flex shrink-0 flex-col items-end justify-center pl-4 pr-7 text-2xs text-mute">
         <span className="text-xs font-bold text-ink">{slides.length === 1 && panoramaCount(slides[0].width) > 1 ? `${panoramaCount(slides[0].width)} slides` : `${slides.length} slide${slides.length > 1 ? "s" : ""}`}</span>
-        <span>{slides.length === 1 && panoramaCount(slides[0].width) > 1 ? "Panorama" : kind === "carousel" || slides.length > 1 ? "Carousel" : "Single"}</span>
       </div>
       {menu && (
         <>

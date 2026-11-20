@@ -38,6 +38,7 @@ export default function PhotoWheel({ compact }: { compact: boolean }) {
   const et = useEditTarget();
   const cropId = useStore((s) => s.ui.cropId);
   const sheet = useStore((s) => s.ui.sheet);
+  const quickOpen = useStore((s) => s.ui.quick);
   const stage = useStore((s) => s.ui.canvasSize);
   // on a narrow stage the open wheel would sit on top of the photo, so it starts folded there (unless you chose otherwise)
   const [choice, setChoice] = useState<boolean | null>(remembered);
@@ -53,7 +54,7 @@ export default function PhotoWheel({ compact }: { compact: boolean }) {
   const key = target?.elKey;
   useEffect(() => { setActive(null); }, [key]);
   useEffect(() => () => clearTimeout(flash.current), []);
-  if (!target || (compact && sheet)) return null;
+  if (!target || (compact && sheet) || quickOpen) return null;
   const f = target.fill;
   const cropping = cropId === target.elementId;
   const zoomBy = (d: number) => target.update((x) => { x.zoom = clamp(Math.round((x.zoom + d) * 100) / 100, 1, 8); }, "zoom");
@@ -67,8 +68,8 @@ export default function PhotoWheel({ compact }: { compact: boolean }) {
     { id: "turn", label: "Turn", Icon: RotateCw, run: () => { target.update((x) => { x.rotation90 = ((x.rotation90 + 90) % 360) as 0 | 90 | 180 | 270; }); quick("turn"); } },
     { id: "flip", label: "Flip", Icon: FlipHorizontal2, run: () => { target.update((x) => { x.flipX = !x.flipX; }); quick("flip"); } },
     ...(edit ? [] : [{ id: "replace", label: "Replace", Icon: RefreshCw, run: (p: { x: number; y: number }) => st().setUI({ mediaPicker: { x: p.x, y: p.y, ...(target.kind === "cell" ? { gridId: target.elementId, cellId: target.cellId } : { elementId: target.elementId }) } }) } as Tool]),
-    { id: "filters", label: "Filters", Icon: Palette, run: () => { openCard(); reveal("Filters"); tell("filters"); } },
-    { id: "light", label: "Light & colour", Icon: Sun, run: () => { openCard(); reveal("Adjustments"); tell("light"); } },
+    { id: "filters", label: "Filters", Icon: Palette, run: () => st().setUI({ quick: "filters" }) },
+    { id: "light", label: "Light & colour", Icon: Sun, run: () => st().setUI({ quick: "adjust" }) },
     { id: "reset", label: "Reset", Icon: RotateCcw, run: () => { target.update((x) => { x.zoom = 1; x.fx = 0.5; x.fy = 0.5; x.flipX = false; x.flipY = false; x.rotation90 = 0; }); st().setUI({ cropId: null }); quick("reset"); } },
   ];
   const n = tools.length, step = 360 / n;

@@ -51,7 +51,7 @@ function ThumbCanvas({ asset, adj, className }: { asset: Asset; adj: Adjustments
   return <canvas ref={ref} className={className} />;
 }
 
-function FilterThumb({ asset, presetId, active, onClick, name }: { asset: Asset; presetId: string; active: boolean; onClick: () => void; name: string }) {
+export function FilterThumb({ asset, presetId, active, onClick, name }: { asset: Asset; presetId: string; active: boolean; onClick: () => void; name: string }) {
   return (
     <button type="button" onClick={onClick} title={name} data-testid={`filter-${presetId}`} className={`group flex h-[88px] flex-col items-center justify-center gap-1 rounded p-0.5 ${active ? "bg-ink/10 ring-1 ring-ink/60" : "hover:bg-ink/5"}`}>
       <ThumbCanvas asset={asset} adj={effectiveAdjustments({ ...NEUTRAL }, { id: presetId, intensity: 100 })} className="h-[60px] w-[48px] rounded-sm bg-panel2" />

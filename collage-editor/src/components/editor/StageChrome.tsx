@@ -6,13 +6,14 @@ import {
 import { useStore, getSlide, useSelectedElements } from "@/lib/store";
 import Logo from "@/components/ui/Logo";
 import PhotoWheel from "./PhotoWheel";
+import QuickAdjust from "./QuickAdjust";
 import { GuideChip } from "./ModeGuide";
 import { cropTargetOf } from "@/components/canvas/Workspace";
 import { IconButton, Toggle } from "@/components/ui/controls";
 import Popover from "@/components/ui/Popover";
 import FormatMenu from "./FormatMenu";
 import { panoramaCount, projectKindLabel, ratioLabel } from "@/lib/formats";
-import { zoomAround } from "@/lib/view-math";
+import { tweenView, zoomAround } from "@/lib/view-math";
 import { slideHasVideo } from "@/lib/timeline";
 import { isEmptyEdit } from "@/lib/edit";
 import { useCompact, isCoarse } from "@/lib/use-media";
@@ -112,9 +113,8 @@ function AppMenu({ compact, dark }: { compact: boolean; dark: boolean }) {
   const items = [
     { icon: <FilePlus2 size={15} />, label: "New project", id: "new-project", run: () => st().setUI({ newProjectOpen: true }) },
     { icon: <FolderOpen size={15} />, label: "All projects…", id: "open-projects", run: () => st().setUI({ projectsOpen: true }) },
-    ...(compact
-      ? [{ icon: dark ? <Sun size={15} /> : <Moon size={15} />, label: dark ? "Light theme" : "Dark theme", id: "toggle-theme", run: () => st().setTheme(dark ? "light" : "dark") }]
-      : [{ icon: <Keyboard size={15} />, label: "Keyboard shortcuts", id: "shortcuts", run: () => st().setUI({ shortcutsOpen: true }) }]),
+    ...(compact ? [] : [{ icon: <Keyboard size={15} />, label: "Keyboard shortcuts", id: "shortcuts", run: () => st().setUI({ shortcutsOpen: true }) }]),
+    { icon: dark ? <Sun size={15} /> : <Moon size={15} />, label: dark ? "Light theme" : "Dark theme", id: "toggle-theme", run: () => st().setTheme(dark ? "light" : "dark") },
   ];
   return (
     <Popover align="left" width={320} trigger={(open, toggle) => (
@@ -170,7 +170,7 @@ function SizeChip({ c, narrow, flat }: { c: Chrome; narrow: boolean; flat?: bool
     );
   }
   return (
-    <Popover align="left" width={424} placement={narrow ? "top" : "bottom"} trigger={(open, toggle) => (
+    <Popover align="left" width={424} placement={flat ? "top" : "bottom"} trigger={(open, toggle) => (
       <button type="button" onClick={toggle} data-testid="format-chip" aria-label="Canvas size" title={pano > 1 ? `Canvas size: ${pano} slides of ${ratio}, ${c.slide.width}×${c.slide.height}px in all` : `Canvas size: ${c.slide.width}×${c.slide.height}px`} className={`pointer-events-auto flex items-center rounded-full text-sm ${shell} ${flat ? "" : "pl-5 pr-4"} ${open ? "ring-2 ring-ink/30" : ""}`}>
         {!narrow && <span className="text-mute">Size</span>}
         <RatioGlyph w={c.slide.width / pano} h={c.slide.height} />
@@ -255,6 +255,7 @@ function CompactChrome({ c }: { c: Chrome }) {
 
       <GuideChip compact />
       <PhotoWheel compact />
+      <QuickAdjust compact />
       <div className="absolute inset-x-3 bottom-3 flex justify-center">
         <Pill className="h-[52px] max-w-full coarse:h-[60px]">
           <SizeChip c={c} narrow flat />
@@ -275,7 +276,7 @@ function DesktopChrome({ c }: { c: Chrome }) {
   const hasVideo = slideHasVideo(c.slide);
   const size = ui.canvasSize;
   const narrow = size.w < 980; // the stage shrinks when both side panels are open
-  const zoom = (f: number) => st().setView(zoomAround(st().ui.view, f, size.w / 2, size.h / 2));
+  const zoom = (f: number) => { const v = st().ui.view; tweenView(v, zoomAround(v, f, size.w / 2, size.h / 2), (n) => st().setView(n)); };
   const dark = ui.theme === "dark";
   // the Properties card starts closed on smaller windows: open it the first time something is selected, and keep an Edit chip while it is shut
   const autoOpened = useRef(false);
@@ -308,16 +309,17 @@ function DesktopChrome({ c }: { c: Chrome }) {
             <IconButton icon={<Undo2 size={17} />} label="Undo" shortcut="⌘Z" onClick={() => st().undo()} disabled={!c.canUndo} testId="undo" />
             <IconButton icon={<Redo2 size={17} />} label="Redo" shortcut="⇧⌘Z" onClick={() => st().redo()} disabled={!c.canRedo} testId="redo" />
             {hasVideo && <IconButton icon={ui.playing ? <Pause size={17} /> : <Play size={17} />} label={ui.playing ? "Stop playback" : "Play slide"} active={ui.playing} onClick={() => st().setUI({ playing: !ui.playing })} testId="play-slide" />}
-            <IconButton icon={dark ? <Sun size={17} /> : <Moon size={17} />} label={dark ? "Light theme" : "Dark theme"} onClick={() => st().setTheme(dark ? "light" : "dark")} testId="toggle-theme" />
-            <IconButton icon={<PanelRight size={17} />} label="Properties" active={ui.rightOpen} onClick={() => st().setUI({ rightOpen: !ui.rightOpen })} testId="toggle-properties" />
+            <span className="mx-1 h-5 w-px bg-line" />
+            <IconButton icon={<Eye size={17} />} label="Preview" onClick={() => st().setUI({ previewOpen: true, playing: false })} disabled={c.nothingToShow} testId="preview" />
+            <IconButton icon={<PanelRight size={17} />} label={ui.rightOpen ? "Hide the edit panel" : "Show the edit panel"} active={ui.rightOpen} onClick={() => st().setUI({ rightOpen: !ui.rightOpen })} testId="toggle-properties" />
           </Pill>
-          <button type="button" onClick={() => st().setUI({ previewOpen: true, playing: false })} data-testid="preview" aria-label="Preview" disabled={c.nothingToShow} className={`pointer-events-auto flex h-[52px] items-center gap-2 rounded-full bg-panel text-sm font-semibold shadow-float hover:bg-panel2 disabled:pointer-events-none disabled:opacity-40 ${narrow ? "w-[52px] justify-center" : "px-5"}`}><Eye size={16} />{!narrow && " Preview"}</button>
           <button type="button" onClick={() => st().setUI({ exportOpen: true, playing: false })} data-testid="export" aria-label="Export" disabled={c.nothingToShow} className="pointer-events-auto flex h-[52px] items-center gap-2 rounded-full grad-pill px-6 text-sm font-bold text-pillink shadow-float hover:opacity-90 disabled:pointer-events-none disabled:opacity-40"><Download size={16} /> Export</button>
         </div>
       </div>
 
       <GuideChip compact={false} lowered={size.w < 820} />
       <PhotoWheel compact={false} />
+      <QuickAdjust compact={false} />
       {/* bottom centre: view */}
       <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
         <Pill className="h-[52px] px-2">
@@ -325,7 +327,7 @@ function DesktopChrome({ c }: { c: Chrome }) {
           <IconButton icon={<Hand size={16} />} label="Hand (pan)" shortcut="H / Space" active={ui.tool === "hand"} onClick={() => st().setUI({ tool: "hand" })} />
           <span className="mx-2 h-5 w-px bg-line" />
           <IconButton icon={<Minus size={16} />} label="Zoom out" shortcut="−" onClick={() => zoom(1 / 1.25)} testId="zoom-out" />
-          <button type="button" title="Reset to 100%" data-testid="zoom-pct" onClick={() => st().setView(zoomAround(st().ui.view, 1 / st().ui.view.scale, size.w / 2, size.h / 2))} className="h-9 w-14 rounded-full text-center text-xs font-semibold tabular-nums hover:bg-field">{Math.round(ui.zoom)}%</button>
+          <button type="button" title="Reset to 100%" data-testid="zoom-pct" onClick={() => { const v = st().ui.view; tweenView(v, zoomAround(v, 1 / v.scale, size.w / 2, size.h / 2), (n) => st().setView(n)); }} className="h-9 w-14 rounded-full text-center text-xs font-semibold tabular-nums hover:bg-field">{Math.round(ui.zoom)}%</button>
           <IconButton icon={<Plus size={16} />} label="Zoom in" shortcut="+" onClick={() => zoom(1.25)} testId="zoom-in" />
           <IconButton icon={<Maximize size={15} />} label="Fit to screen" shortcut="⇧1" onClick={() => st().requestFit()} testId="zoom-fit" />
           {c.isEdit && (

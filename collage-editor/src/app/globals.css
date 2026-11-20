@@ -132,3 +132,21 @@ input[type="range"].rs-color::-moz-range-thumb { width: 20px; height: 20px; back
   .sheet-in { animation: sheet-up 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
   @media (prefers-reduced-motion: reduce) { .sheet-in { animation: none; } }
 }
+
+/* tooltips: a quick, quiet label in the app's own style instead of the browser's slow grey box (mouse and keyboard only; touch has no hover) */
+@media (hover: hover) {
+  :where([data-tip]:not(.absolute):not(.fixed)) { position: relative; }
+  [data-tip]:not(:disabled)::after {
+    content: attr(data-tip); position: absolute; left: 50%; top: calc(100% + 10px); z-index: 90; transform: translate(-50%, 4px);
+    padding: 6px 10px; border-radius: 8px; white-space: nowrap; pointer-events: none; opacity: 0;
+    background: #111; color: #fff; font: 600 11px/15px Manrope, system-ui, sans-serif; letter-spacing: 0.01em; box-shadow: 0 6px 20px rgb(0 0 0 / 0.28);
+    transition: opacity 0.14s ease, transform 0.14s ease;
+  }
+  [data-tip-top]:not(:disabled)::after { top: auto; bottom: calc(100% + 10px); transform: translate(-50%, -4px); }
+  [data-tip]:not(:disabled):hover::after, [data-tip]:not(:disabled):focus-visible::after { opacity: 1; transform: translate(-50%, 0); transition-delay: 0.35s; }
+  :root[data-theme="dark"] [data-tip]::after { background: #f5f5f5; color: #0a0a0a; }
+}
+/* one focus ring for everything you can reach with the keyboard */
+:where(button, [role="button"], [role="tab"], a, select):focus-visible { outline: 2px solid rgb(var(--accent) / 0.75); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { [data-tip]::after { transition: none !important; } }
+

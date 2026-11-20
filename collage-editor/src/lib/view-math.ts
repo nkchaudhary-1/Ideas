@@ -15,6 +15,22 @@ export function fitView(size: Size, doc: Size, pad: number | { x: number; top: n
   return { scale: s, x: (size.w - doc.w * s) / 2, y: p.top + (availH - doc.h * s) / 2 };
 }
 
+let cancelTween: (() => void) | null = null;
+/** glide from one view to another in a short ease-out (a click on zoom should not teleport); jumps straight there if motion is reduced */
+export function tweenView(from: View, to: View, apply: (v: View) => void, ms = 180) {
+  cancelTween?.();
+  if (typeof window === "undefined" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) { apply(to); return; }
+  const t0 = performance.now();
+  let raf = 0;
+  const step = (now: number) => {
+    const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+    apply({ scale: from.scale + (to.scale - from.scale) * e, x: from.x + (to.x - from.x) * e, y: from.y + (to.y - from.y) * e });
+    if (k < 1) raf = requestAnimationFrame(step); else cancelTween = null;
+  };
+  raf = requestAnimationFrame(step);
+  cancelTween = () => cancelAnimationFrame(raf);
+}
+
 /** zoom by `factor` keeping the screen point (cx, cy) fixed */
 export function zoomAround(v: View, factor: number, cx: number, cy: number): View {
   const s = clamp(v.scale * factor, MIN_SCALE, MAX_SCALE);
