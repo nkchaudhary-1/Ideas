@@ -45,13 +45,23 @@ const box = async (page, sel) => { const l = page.locator(sel).first(); return (
   u = await ui(page);
   ok(u.sheet === null, 'dragging down again closes it');
 
-  // ── selecting shows the Edit chip; it opens the properties sheet
+  // ── selecting a photo shows the wheel button (not the Edit chip, which would sit on top of it); the dock opens the properties sheet
   await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); s.select([sl.elements[0].id]); });
   await settle(page, 400);
-  ok(!!(await box(page, '[data-testid=edit-chip]')), 'a selection shows the Edit chip');
-  await page.tap('[data-testid=edit-chip]'); await settle(page, 500);
+  ok(!!(await box(page, '[data-testid=photo-wheel-toggle]')), 'a selected photo shows the wheel button');
+  ok(!(await box(page, '[data-testid=edit-chip]')), 'and no Edit chip over it');
+  await page.tap('[data-testid=dock-props]'); await settle(page, 500);
   u = await ui(page);
-  ok(u.sheet === 'props', 'the chip opens the properties sheet');
+  ok(u.sheet === 'props', 'the dock opens the properties sheet');
+  // anything that is not a photo still gets the Edit chip
+  await page.evaluate(() => window.__store.getState().setUI({ sheet: null })); await settle(page, 300);
+  await page.tap('[data-testid=rail-text]'); await settle(page, 500);
+  await page.tap('[data-testid=add-heading]'); await settle(page, 500);
+  await page.evaluate(() => window.__store.getState().setUI({ sheet: null })); await settle(page, 500);
+  const sel = await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); return sl.elements.filter((e) => s.selection.includes(e.id)).map((e) => e.type); });
+  ok(sel.length === 1 && sel[0] === 'text', 'adding a heading selects it', sel);
+  ok(!!(await box(page, '[data-testid=edit-chip]')), 'a selected text shows the Edit chip');
+  await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); s.select([sl.elements.find((e) => e.type === 'image').id]); s.setUI({ sheet: 'props' }); }); await settle(page, 500);
 
   // ── the capsule slider follows a finger
   await page.evaluate(() => { const s = window.__store.getState(); s.setUI({ sheetSize: 'full' }); document.querySelectorAll('[data-testid=properties] section button[aria-expanded=false]').forEach((b) => b.click()); });
