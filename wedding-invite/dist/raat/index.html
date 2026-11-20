@@ -116,7 +116,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .signoff .city{margin:10px 0 0;color:var(--vows-fg-2);font-size:12px;letter-spacing:.26em;text-transform:uppercase}
 
 /* ---------------- celebration ---------------- */
-.celebrate{position:relative;z-index:3;background:var(--cel-bg);color:var(--cel-fg);border-radius:34px 34px 0 0;margin-top:-34px;overflow:hidden;padding:clamp(100px,16vh,170px) 0 clamp(90px,14vh,150px)}
+.celebrate{position:relative;z-index:3;background:var(--cel-bg);color:var(--cel-fg);border-radius:32px 32px 0 0;margin-top:-32px;overflow:hidden;padding:clamp(100px,16vh,170px) 0 clamp(90px,14vh,150px)}
 .cel-top{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,80px);align-items:center;max-width:1160px;margin:0 auto;padding:0 var(--pad-x)}
 .bignum{display:flex;flex-direction:column;align-items:center}
 .bignum .num{position:relative;font-family:var(--display);font-size:clamp(190px,36vw,430px);line-height:.8;letter-spacing:-.03em;color:transparent;-webkit-text-stroke:1.4px var(--cel-accent);font-variant-numeric:lining-nums tabular-nums}
@@ -190,9 +190,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .venue-grid p{margin:0;color:var(--fg-2);font-size:15px}
 .venue-grid p b{color:var(--fg);font-weight:600}
 .form{display:flex;flex-direction:column;gap:16px;text-align:left}
-.field{display:flex;flex-direction:column;gap:6px}
+.field{display:flex;flex-direction:column;gap:8px}
 .field label,.flabel{font-size:13px;color:var(--fg-2)}
-.field input,.field select{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;width:100%}
+.field input,.field select{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:12px 20px;width:100%}
 .field input::placeholder{color:var(--mute)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .checks{display:flex;flex-wrap:wrap;gap:8px}
@@ -204,7 +204,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .rsvp-foot{font-size:14px;color:var(--fg-2);margin:0;text-align:center}
 .rsvp-foot code{font-family:inherit;color:var(--fg);user-select:all;-webkit-user-select:all}
 .copy{font:inherit;font-size:13px;color:var(--accent-2);background:none;border:0;padding:0 4px;cursor:pointer;text-decoration:underline}
-.msg{margin:0;padding:12px 14px;border-left:2px solid var(--accent);background:var(--surface);color:var(--fg-2);font-size:14px;white-space:pre-wrap;font-family:inherit;border-radius:0 8px 8px 0}
+.msg{margin:0;padding:16px 20px;background:var(--surface);box-shadow:inset 2px 0 0 var(--accent);color:var(--fg-2);font-size:14px;white-space:pre-wrap;font-family:inherit;border-radius:24px}
 
 /* ---------------- finale ---------------- */
 .finale{position:relative;z-index:3;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;background:var(--fin-bg);color:var(--fin-fg);isolation:isolate}
