@@ -93,8 +93,8 @@ export default function UploadsPanel() {
                     <img src={a.thumb} alt={a.name} className="h-full w-full object-cover" draggable={false} />
                     {a.kind === "video" && <span className="absolute bottom-1 left-1 flex items-center gap-0.5 rounded bg-black/75 px-1 py-0.5 text-2xs text-white"><Film size={9} /> {formatTime(a.duration ?? 0)}</span>}
                   </button>
-                  <button type="button" onClick={() => toggle(a.id)} aria-label={on ? "Deselect" : "Select"} className={`absolute left-1 top-1 grid h-4 w-4 place-items-center rounded border ${on ? "border-ink grad-accent text-white" : "border-white/60 bg-black/40 text-white opacity-0 group-hover:opacity-100"}`}>{on && <Check size={11} strokeWidth={3} />}</button>
-                  <button type="button" onClick={() => void st().deleteAsset(a.id)} aria-label={`Delete ${a.name}`} className="absolute right-1 top-1 grid h-4 w-4 place-items-center rounded bg-black/60 opacity-0 hover:text-red-300 group-hover:opacity-100 text-white"><Trash2 size={10} /></button>
+                  <button type="button" onClick={() => toggle(a.id)} aria-label={on ? "Deselect" : "Select"} className={`absolute left-1 top-1 grid h-7 w-7 place-items-center rounded-full border ${on ? "border-ink grad-accent text-white" : "border-white/60 bg-black/40 text-white opacity-0 group-hover:opacity-100 touch:opacity-100"}`}>{on && <Check size={13} strokeWidth={3} />}</button>
+                  <button type="button" onClick={() => void st().deleteAsset(a.id)} aria-label={`Delete ${a.name}`} className="absolute right-1 top-1 grid h-7 w-7 place-items-center rounded-full bg-black/60 text-white opacity-0 hover:text-red-300 group-hover:opacity-100 touch:opacity-100"><Trash2 size={12} /></button>
                 </div>
               );
             })}

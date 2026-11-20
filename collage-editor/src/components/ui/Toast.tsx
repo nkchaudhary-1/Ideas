@@ -14,7 +14,7 @@ export default function Toast() {
   if (!t) return null;
   const Icon = t.kind === "error" ? AlertTriangle : t.kind === "ok" ? CheckCircle2 : Info;
   return (
-    <div role="status" aria-live="polite" data-testid="toast" className="pointer-events-none absolute inset-x-0 bottom-24 z-30 flex justify-center px-6">
+    <div role="status" aria-live="polite" data-testid="toast" className="pointer-events-none absolute inset-x-0 bottom-24 z-30 flex justify-center px-6 max-[899px]:bottom-auto max-[899px]:top-20 max-[899px]:px-4">
       <div data-surface className={`pointer-events-auto flex max-w-xl items-start gap-3 rounded-card border px-4 py-3 text-sm shadow-float ${t.kind === "error" ? "border-red-500/40 bg-red-500/10 text-red-100" : "border-line bg-raised text-ink"}`}>
         <Icon size={16} className={`mt-0.5 shrink-0 ${t.kind === "error" ? "text-red-300" : t.kind === "ok" ? "text-ink" : "text-mute"}`} />
         <div className="whitespace-pre-line leading-snug">{t.text}</div>

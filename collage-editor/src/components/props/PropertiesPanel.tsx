@@ -15,12 +15,12 @@ import EditPanel from "./EditPanel";
 const ICON = { image: ImageIcon, video: Film, text: Type, shape: Shapes, grid: LayoutGrid, group: GroupIcon } as const;
 
 /** the card on the right: edit tools in Edit mode, otherwise properties of whatever is selected */
-export default function PropertiesPanel() {
+export default function PropertiesPanel({ sheet = false }: { sheet?: boolean }) {
   const kind = useStore((s) => s.project.kind);
-  return kind === "edit" ? <EditPanel /> : <CollagePanel />;
+  return kind === "edit" ? <EditPanel sheet={sheet} /> : <CollagePanel sheet={sheet} />;
 }
 
-function CollagePanel() {
+function CollagePanel({ sheet }: { sheet: boolean }) {
   const els = useSelectedElements();
   const target = useFillTarget();
   const st = useStore.getState;
@@ -28,8 +28,8 @@ function CollagePanel() {
   const Icon = single ? ICON[single.type] : els.length > 1 ? Box : null;
 
   return (
-    <aside className="card pop flex w-[344px] shrink-0 flex-col overflow-hidden" data-testid="properties">
-      <div className="flex h-[72px] shrink-0 items-center gap-3 px-8">
+    <aside className={sheet ? "flex min-h-0 flex-1 flex-col overflow-hidden" : "card pop flex w-[344px] shrink-0 flex-col overflow-hidden"} data-testid="properties">
+      <div className={`flex shrink-0 items-center gap-3 px-8 ${sheet ? "h-14" : "h-[72px]"}`}>
         {Icon && <Icon size={16} className="text-mute" />}
         {single ? (
           <TextInput aria="Layer name" value={single.name} onCommit={(v) => st().updateElement(single.id, { name: v || single.name })} className="h-9 flex-1 !bg-transparent !px-3 text-base !font-extrabold hover:!bg-field" />

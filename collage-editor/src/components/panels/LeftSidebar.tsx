@@ -12,7 +12,7 @@ import LayersPanel from "./LayersPanel";
 import PalettesPanel from "./PalettesPanel";
 
 // Icon-only rail in three quiet groups: bring things in, add things, manage what's there.
-const GROUPS: { id: PanelId; label: string; icon: React.ReactNode }[][] = [
+export const GROUPS: { id: PanelId; label: string; icon: React.ReactNode }[][] = [
   [
     { id: "uploads", label: "Media", icon: <Upload size={19} /> },
     { id: "layouts", label: "Layouts & grids", icon: <LayoutGrid size={19} /> },
@@ -27,7 +27,25 @@ const GROUPS: { id: PanelId; label: string; icon: React.ReactNode }[][] = [
   ],
   [{ id: "layers", label: "Layers", icon: <Layers size={19} /> }],
 ];
-const ALL = GROUPS.flat();
+export const ALL_TOOLS = GROUPS.flat();
+const ALL = ALL_TOOLS;
+
+/** the content of one tool panel; shared by the desktop card and the phone sheet */
+export function PanelBody({ panel }: { panel: PanelId | null }) {
+  return (
+    <>
+      {panel === "uploads" && <UploadsPanel />}
+      {panel === "templates" && <TemplatesPanel />}
+      {panel === "layouts" && <LayoutsPanel />}
+      {panel === "text" && <TextPanel />}
+      {panel === "elements" && <ElementsPanel />}
+      {panel === "backgrounds" && <BackgroundsPanel />}
+      {panel === "frames" && <FramesPanel />}
+      {panel === "layers" && <LayersPanel />}
+      {panel === "palettes" && <PalettesPanel />}
+    </>
+  );
+}
 
 export default function LeftSidebar() {
   const kind = useStore((s) => s.project.kind);
@@ -57,15 +75,7 @@ export default function LeftSidebar() {
             <button type="button" aria-label="Close panel" title="Close" onClick={() => set({ leftPanel: null })} className="grid h-9 w-9 place-items-center rounded-full text-mute hover:bg-field hover:text-ink"><X size={16} /></button>
           </div>
           <div className="min-h-0 flex-1">
-            {panel === "uploads" && <UploadsPanel />}
-            {panel === "templates" && <TemplatesPanel />}
-            {panel === "layouts" && <LayoutsPanel />}
-            {panel === "text" && <TextPanel />}
-            {panel === "elements" && <ElementsPanel />}
-            {panel === "backgrounds" && <BackgroundsPanel />}
-            {panel === "frames" && <FramesPanel />}
-            {panel === "layers" && <LayersPanel />}
-            {panel === "palettes" && <PalettesPanel />}
+            <PanelBody panel={panel} />
           </div>
         </section>
       )}

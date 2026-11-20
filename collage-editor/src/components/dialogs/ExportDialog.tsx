@@ -82,15 +82,15 @@ export default function ExportDialog() {
           <><span className="mr-auto flex items-center gap-2 text-xs text-mute"><Loader2 size={13} className="animate-spin" />{progress.label}</span><Button onClick={() => abort.current?.abort()} testId="export-cancel">Cancel</Button></>
         ) : (
           <>
-            <span className="mr-auto text-xs text-mute">{fileCount} file{fileCount === 1 ? "" : "s"}{useZip ? " in one ZIP" : ""} · {dims(outW, outH)}</span>
+            <span className="basis-full text-xs text-mute sm:mr-auto sm:basis-auto">{fileCount} file{fileCount === 1 ? "" : "s"}{useZip ? " in one ZIP" : ""} · {dims(outW, outH)}</span>
             <Button onClick={() => set({ exportOpen: false })}>{state === "done" ? "Close" : "Cancel"}</Button>
             <Button variant="primary" disabled={!slideIds.length || !!wantsVideoButCant && plan.every((p) => p.kind === "video")} onClick={start} testId="export-run"><Download size={14} /> {state === "done" ? "Export again" : useZip ? "Export ZIP" : fileCount > 1 ? "Export files" : "Export"}</Button>
           </>
         )
       }
     >
-      <div className="grid grid-cols-[minmax(0,1fr)_320px]">
-        <div className="space-y-9 border-r border-line/60 p-8">
+      <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="space-y-8 border-b border-line/60 p-6 sm:space-y-9 sm:p-8 md:border-b-0 md:border-r">
           <section>
             <div className="mb-2 flex items-center justify-between text-xs font-bold text-ink">
               <span>{isEdit ? "Photos & videos" : "Slides"}</span>
@@ -113,15 +113,15 @@ export default function ExportDialog() {
 
           <section className="space-y-4">
             <h3 className="text-xs font-bold text-ink">Images</h3>
-            <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Format</span>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2"><span className="w-20 shrink-0 text-xs text-mute">Format</span>
               <Segmented<ImageFormat> value={img.format} onChange={(v) => setImg({ format: v, transparent: v === "jpeg" ? false : img.transparent })} options={[{ value: "png", label: "PNG" }, { value: "jpeg", label: "JPEG" }, { value: "webp", label: "WebP" }]} />
             </div>
-            <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Size</span>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2"><span className="w-20 shrink-0 text-xs text-mute">Size</span>
               <Segmented<number> value={img.scale} onChange={(v) => setImg({ scale: v })} options={[{ value: 0.5, label: "½×" }, { value: 1, label: "1×" }, { value: 1.5, label: "1.5×" }, { value: 2, label: "2×" }]} />
               <span className="text-xs text-faint">{first.width}×{first.height} → {sliced ? `${first.width / 1080} × ` : ""}{outW}×{outH}</span>
             </div>
             {lossy && <Slider label="Quality" value={Math.round(img.quality * 100)} min={40} max={100} unit="%" onChange={(v) => setImg({ quality: v / 100 })} neutral={92} />}
-            <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Background</span>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2"><span className="w-20 shrink-0 text-xs text-mute">Background</span>
               <Toggle label="Transparent background" value={img.transparent && img.format !== "jpeg"} onChange={(v) => setImg({ transparent: v })} />
               <span className="text-xs text-faint">{img.format === "jpeg" ? "JPEG can't be transparent" : img.transparent ? "Only empty areas are transparent" : "Slide background included"}</span>
             </div>
@@ -131,15 +131,15 @@ export default function ExportDialog() {
           {anyVideo && (
             <section className="space-y-4" data-testid="export-video-section">
               <h3 className="flex items-center gap-2 text-xs font-bold text-ink"><Film size={12} /> Video slides</h3>
-              <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Export as</span>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2"><span className="w-20 shrink-0 text-xs text-mute">Export as</span>
                 <Segmented value={cfg.video.mode} onChange={(v) => setVid({ mode: v })} options={[{ value: "video", label: "Video file" }, { value: "still", label: "Still image" }]} />
               </div>
               {cfg.video.mode === "video" && (
                 <>
-                  <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Container</span>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2"><span className="w-20 shrink-0 text-xs text-mute">Container</span>
                     <Segmented value={cfg.video.container} onChange={(v) => setVid({ container: v })} options={[{ value: "mp4", label: "MP4 · H.264" }, { value: "webm", label: "WebM · VP9" }]} />
                   </div>
-                  <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Frame rate</span>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2"><span className="w-20 shrink-0 text-xs text-mute">Frame rate</span>
                     <Segmented<number> value={cfg.video.fps} onChange={(v) => setVid({ fps: v as 24 | 30 | 60 })} options={[{ value: 24, label: "24" }, { value: 30, label: "30" }, { value: 60, label: "60" }]} />
                     <span className="ml-2 text-xs text-mute">Quality</span>
                     <Segmented value={cfg.video.quality} onChange={(v) => setVid({ quality: v })} options={[{ value: "standard", label: "Standard" }, { value: "high", label: "High" }]} />
@@ -158,7 +158,7 @@ export default function ExportDialog() {
           )}
         </div>
 
-        <aside className="min-w-0 space-y-8 p-8">
+        <aside className="min-w-0 space-y-8 p-6 sm:p-8">
           <section>
             <h3 className="mb-2 text-xs font-bold text-ink">Output</h3>
             <ul className="space-y-3" data-testid="export-plan">

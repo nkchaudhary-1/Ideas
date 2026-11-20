@@ -44,7 +44,7 @@ export default function FormatMenu({ close }: { close: () => void }) {
     <div className="space-y-7" data-testid="format-menu">
       <section>
         <h3 className="mb-3 text-xs font-bold text-ink">Post size</h3>
-        <div className="grid grid-cols-5 gap-2" data-testid="format-grid">
+        <div className="grid grid-cols-3 gap-2 min-[420px]:grid-cols-5" data-testid="format-grid">
           {FORMATS.map((f) => <Tile key={f.id} f={f} active={same(f)} onClick={() => set(f)} />)}
         </div>
       </section>
@@ -56,7 +56,7 @@ export default function FormatMenu({ close }: { close: () => void }) {
             <p className="mt-1 text-2xs leading-4 text-mute">One wide canvas, cut into slides when you export. 12:5 is three 4:5 slides.</p>
           </div>
         </div>
-        <div className="mt-4 grid grid-cols-5 gap-2">
+        <div className="mt-4 grid grid-cols-3 gap-2 min-[420px]:grid-cols-5">
           {[2, 3, 4, 5, 6].map((c) => {
             const f = panoramaFormat(c, segH);
             const on = n === c;
@@ -69,7 +69,7 @@ export default function FormatMenu({ close }: { close: () => void }) {
             );
           })}
         </div>
-        <div className="mt-4 flex items-center justify-between gap-3">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <Segmented value={baseId} onChange={(id) => { const b = PANORAMA_BASES.find((x) => x.id === id)!; st().setFormat(panoramaFormat(Math.max(PANORAMA_MIN, n), b.h), { content: "none" }); }} options={PANORAMA_BASES.map((b) => ({ value: b.id, label: b.id.replace("-", ":") }))} size="sm" />
           <div className="flex items-center gap-1" role="group" aria-label="Extend panorama">
             <IconButton icon={<Minus size={14} />} label="Remove a slide" testId="pano-minus" disabled={n <= PANORAMA_MIN} onClick={() => st().setPanoramaSlides(n - 1)} className="bg-field hover:!bg-raised" />
@@ -103,7 +103,7 @@ export default function FormatMenu({ close }: { close: () => void }) {
 
       <section>
         <h3 className="mb-3 text-xs font-bold text-ink">Custom size</h3>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <NumberField width={88} value={cw} min={64} max={12000} onChange={setCw} label="W" />
           <NumberField width={88} value={ch} min={64} max={8000} onChange={setCh} label="H" />
           <Button onClick={() => { set(CUSTOM_FORMAT(cw, ch)); close(); }} testId="apply-custom">Apply</Button>
@@ -114,7 +114,7 @@ export default function FormatMenu({ close }: { close: () => void }) {
         </div>
       </section>
 
-      <section className="flex items-center justify-between gap-2">
+      <section className="flex flex-wrap items-center justify-between gap-2">
         <span className="text-xs text-mute">Existing content</span>
         <Segmented size="sm" value={content} options={[{ value: "stretch", label: "Stretch" }, { value: "fit", label: "Fit" }, { value: "none", label: "Keep" }]} onChange={setContent} />
       </section>

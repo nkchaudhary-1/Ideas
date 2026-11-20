@@ -1,4 +1,5 @@
 "use client";
+import { isCoarse } from "@/lib/use-media";
 import { useEffect, useRef } from "react";
 import { Transformer } from "react-konva";
 import type Konva from "konva";
@@ -61,9 +62,9 @@ export default function SelectionLayer({ ids, slide, accent, hidden }: { ids: st
       borderStrokeWidth={1.5}
       anchorStroke={accent}
       anchorFill="#ffffff"
-      anchorSize={9}
-      anchorCornerRadius={2}
-      rotateAnchorOffset={26}
+      anchorSize={isCoarse() ? 22 : 9}
+      anchorCornerRadius={isCoarse() ? 11 : 2}
+      rotateAnchorOffset={isCoarse() ? 40 : 26}
       ignoreStroke
       boundBoxFunc={(o, n) => (n.width < 10 || n.height < 4 ? o : n)}
       onTransformEnd={onEnd}

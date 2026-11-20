@@ -61,6 +61,9 @@ export interface UIState {
   matchOpts: MatchOpts;
   /** edit mode: while true the canvas shows the original, unedited picture (hold to compare) */
   compare: boolean;
+  /** compact (phone) layout: which bottom sheet is open, and how tall */
+  sheet: "tools" | "props" | null;
+  sheetSize: "half" | "full";
 }
 
 interface History { past: Project[]; future: Project[]; lastKey: string | null; lastTime: number }
@@ -317,6 +320,8 @@ export const useStore = create<Store>()((set, get) => {
       refSlideId: null,
       matchOpts: DEFAULT_MATCH,
       compare: false,
+      sheet: null,
+      sheetSize: "half",
     },
 
     // ───────── lifecycle ─────────

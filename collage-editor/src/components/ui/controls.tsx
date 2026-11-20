@@ -15,7 +15,7 @@ export function IconButton({ icon, label, onClick, active, disabled, className =
       disabled={disabled}
       onClick={onClick}
       style={{ width: size, height: size }}
-      className={`grid shrink-0 place-items-center rounded-full transition-colors ${active ? "bg-ink/10 text-ink" : "text-mute hover:bg-ink/[0.07] hover:text-ink"} disabled:opacity-30 disabled:hover:bg-transparent ${className}`}
+      className={`grid shrink-0 place-items-center rounded-full transition touch:active:scale-90 ${size === 36 ? "coarse:!h-11 coarse:!w-11" : ""} ${active ? "bg-ink/10 text-ink" : "text-mute hover:bg-ink/[0.07] hover:text-ink"} disabled:opacity-30 disabled:hover:bg-transparent ${className}`}
     >
       {icon}
     </button>
@@ -32,7 +32,7 @@ export function Button({ children, onClick, variant = "default", disabled, class
     danger: "bg-red-500/10 text-red-500 hover:bg-red-500/20",
   }[variant];
   return (
-    <button type={type} title={title} data-testid={testId} disabled={disabled} onClick={onClick} className={`inline-flex h-9 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-medium transition-colors disabled:opacity-40 ${v} ${className}`}>
+    <button type={type} title={title} data-testid={testId} disabled={disabled} onClick={onClick} className={`inline-flex h-9 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full px-4 text-sm font-medium transition coarse:h-11 touch:active:scale-[0.97] disabled:opacity-40 ${v} ${className}`}>
       {children}
     </button>
   );
@@ -43,7 +43,7 @@ export function Chip({ active, soft, sm, children, className = "", ...rest }: { 
   const on = soft ? "bg-ink/10 text-ink ring-1 ring-ink/25" : "bg-pill text-pillink";
   const off = soft ? "bg-field text-faint hover:text-mute" : "bg-field text-mute hover:text-ink";
   return (
-    <button type="button" aria-pressed={active} className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full font-semibold transition-colors ${sm ? "h-8 px-3 text-2xs" : "h-9 px-4 text-xs"} ${active ? on : off} ${className}`} {...rest}>
+    <button type="button" aria-pressed={active} className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full font-semibold transition touch:active:scale-[0.97] ${sm ? "h-8 px-3 text-2xs coarse:h-10" : "h-9 px-4 text-xs coarse:h-11"} ${active ? on : off} ${className}`} {...rest}>
       {children}
     </button>
   );
@@ -52,7 +52,7 @@ export function Chip({ active, soft, sm, children, className = "", ...rest }: { 
 /** a quiet inline action ("Reset", "All", "None"): 32px tall so it is easy to hit, but visually just text */
 export function TextButton({ children, className = "", ...rest }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button type="button" className={`inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-2xs font-semibold text-mute transition-colors hover:bg-ink/[0.07] hover:text-ink disabled:opacity-40 ${className}`} {...rest}>
+    <button type="button" className={`inline-flex h-8 shrink-0 items-center whitespace-nowrap rounded-full px-3 text-2xs font-semibold text-mute transition coarse:h-10 touch:active:scale-[0.97] hover:bg-ink/[0.07] hover:text-ink disabled:opacity-40 ${className}`} {...rest}>
       {children}
     </button>
   );
@@ -63,7 +63,7 @@ export function Section({ title, children, defaultOpen = true, action }: { title
   return (
     <section className="mx-3 mb-3 rounded-in-12 bg-panel2 px-5 py-5">
       <div className="flex items-center justify-between">
-        <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} className="flex h-8 flex-1 items-center justify-between text-left text-sm font-bold text-ink">
+        <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} className="flex h-8 flex-1 items-center justify-between text-left text-sm font-bold text-ink coarse:h-10">
           {title}
           <ChevronRight size={14} className={`text-mute transition-transform ${open ? "rotate-90" : ""}`} />
         </button>
@@ -83,8 +83,8 @@ export function Field({ label, children, className = "" }: { label?: string; chi
   );
 }
 
-export function NumberField({ value, onChange, step = 1, min, max, unit, label, width = 56, precision = 1, aria }: {
-  value: number; onChange: (v: number) => void; step?: number; min?: number; max?: number; unit?: string; label?: string; width?: number; precision?: number; aria?: string;
+export function NumberField({ value, onChange, step = 1, min, max, unit, label, width = 56, precision = 1, aria, bare }: {
+  value: number; onChange: (v: number) => void; step?: number; min?: number; max?: number; unit?: string; label?: string; width?: number; precision?: number; aria?: string; /** text only, no pill: the value beside a capsule slider */ bare?: boolean;
 }) {
   const [text, setText] = useState(String(round(value, precision)));
   const focus = useRef(false);
@@ -94,7 +94,7 @@ export function NumberField({ value, onChange, step = 1, min, max, unit, label, 
     if (!isNaN(n)) onChange(clamp(n, min ?? -Infinity, max ?? Infinity));
   };
   return (
-    <label className="flex shrink-0 items-center gap-1 rounded-full bg-field px-3 text-xs font-medium focus-within:ring-2 focus-within:ring-accent/40" style={{ width }}>
+    <label className={`flex shrink-0 items-center gap-1 rounded-full text-xs font-medium focus-within:ring-2 focus-within:ring-accent/40 ${bare ? "justify-end px-2 text-mute focus-within:bg-field focus-within:text-ink" : "bg-field px-3"}`} style={{ width }}>
       {label && <span className="shrink-0 text-faint">{label}</span>}
       <input
         value={text}
@@ -113,7 +113,7 @@ export function NumberField({ value, onChange, step = 1, min, max, unit, label, 
             onChange(n);
           }
         }}
-        className="h-9 w-full min-w-0 bg-transparent text-ink outline-none"
+        className={`h-9 w-full min-w-0 bg-transparent outline-none coarse:h-11 ${bare ? "text-right text-inherit" : "text-ink"}`}
       />
       {unit && <span className="shrink-0 text-faint">{unit}</span>}
     </label>
@@ -131,8 +131,9 @@ const TRACKS: Record<SliderTrack, string> = {
 };
 
 /**
- * A label and value above, a soft pill below holding a big white knob on a thin track.
- * Sliders that edit a colour (`track`) get a thick gradient pill and a ring knob instead.
+ * The capsule slider: label and value above, then a light track whose fill is a black capsule. The knob is a thin white bar
+ * at the end of that capsule (so it is also its round end). The value can be typed; double-click the track to reset.
+ * Sliders that edit a colour (`track`) keep a thick gradient pill and a ring knob.
  */
 export function Slider({ label, value, min, max, step = 1, onChange, onReset, neutral = 0, unit, testId, track }: {
   label: string; value: number; min: number; max: number; step?: number; onChange: (v: number) => void; onReset?: () => void; neutral?: number; unit?: string; testId?: string; track?: SliderTrack;
@@ -142,38 +143,55 @@ export function Slider({ label, value, min, max, step = 1, onChange, onReset, ne
   const nPct = clamp(((neutral - min) / span) * 100, 0, 100);
   // a neutral point inside the range (brightness, tint…) fills outward from it; otherwise fill from the start
   const bipolar = nPct > 1 && nPct < 99;
-  const from = bipolar ? Math.min(pct, nPct) : 0;
-  const to = bipolar ? Math.max(pct, nPct) : pct;
   const changed = Math.abs(value - neutral) > 0.001;
-  const pill = (
-    <div className="flex h-11 min-w-0 flex-1 items-center rounded-full bg-field px-4">
-      <input
-        type="range"
-        className={track ? "rs-color" : undefined}
-        min={min} max={max} step={step} value={value}
-        style={{ ["--a" as string]: `${from}%`, ["--b" as string]: `${to}%`, ["--track" as string]: track ? TRACKS[track] : undefined }}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
-        onDoubleClick={onReset}
-        aria-label={label}
-      />
+  const reset = onReset && (
+    <button type="button" onClick={onReset} title="Reset" aria-label={`Reset ${label}`} className={`grid h-8 w-8 shrink-0 place-items-center rounded-full text-mute hover:bg-field hover:text-ink coarse:h-10 coarse:w-10 ${changed ? "" : "pointer-events-none opacity-0"}`}>
+      <RotateCcw size={12} />
+    </button>
+  );
+  const num = <NumberField bare value={value} onChange={onChange} min={min} max={max} step={step} width={unit ? 60 : 44} unit={unit} aria={label || undefined} />;
+
+  if (track) {
+    // colour sliders: label and value above a thick gradient pill
+    const pill = (
+      <div className="flex h-11 min-w-0 flex-1 items-center rounded-full bg-field px-4">
+        <input type="range" className="rs-color" min={min} max={max} step={step} value={value}
+          style={{ ["--track" as string]: TRACKS[track] }} onChange={(e) => onChange(parseFloat(e.target.value))} onDoubleClick={onReset} aria-label={label} />
+      </div>
+    );
+    return (
+      <div data-testid={testId}>
+        <div className="mb-3 flex items-center justify-between gap-2">
+          <span onDoubleClick={onReset} title={onReset ? `${label} (double-click to reset)` : label} className="min-w-0 truncate text-left text-xs font-semibold text-ink/80">{label}</span>
+          <div className="flex items-center gap-2">{reset}<NumberField value={value} onChange={onChange} min={min} max={max} step={step} width={unit ? 72 : 56} unit={unit} aria={label || undefined} /></div>
+        </div>
+        {pill}
+      </div>
+    );
+  }
+
+  // the knob is a 44px circle, so its centre travels from 22px to (width - 22px)
+  const X = (pc: number) => `(22px + (100% - 44px) * ${(pc / 100).toFixed(4)})`;
+  const fill: React.CSSProperties = !bipolar
+    ? { left: 0, width: `calc${X(pct)}` }
+    : { left: `calc${X(Math.min(pct, nPct))}`, width: `calc((100% - 44px) * ${(Math.abs(pct - nPct) / 100).toFixed(4)})` };
+  const capsule = (
+    <div className="cap relative h-11 min-w-0 flex-1 overflow-hidden rounded-full bg-field coarse:h-12">
+      {bipolar && <span className="absolute top-1/2 h-3 w-0.5 -translate-y-1/2 rounded-full bg-faint/60" style={{ left: `calc${X(nPct)}`, marginLeft: -1 }} />}
+      <span className="absolute inset-y-0 bg-pill" style={fill} />
+      <input type="range" className="rs-cap" min={min} max={max} step={step} value={value} title={onReset ? "Double-click to reset" : undefined}
+        onChange={(e) => onChange(parseFloat(e.target.value))} onDoubleClick={onReset}
+        onKeyDown={(e) => { if (onReset && (e.key === "Backspace" || e.key === "Delete")) { e.preventDefault(); onReset(); } }} aria-label={label || undefined} />
     </div>
   );
-  const num = <NumberField value={value} onChange={onChange} min={min} max={max} step={step} width={unit ? 72 : 56} unit={unit} aria={label || undefined} />;
-  if (!label) return <div className="flex items-center gap-3" data-testid={testId}>{pill}{num}</div>;
+  if (!label) return <div className="flex items-center gap-2" data-testid={testId}>{capsule}{num}</div>;
   return (
     <div data-testid={testId}>
       <div className="mb-3 flex items-center justify-between gap-2">
         <span onDoubleClick={onReset} title={onReset ? `${label} (double-click to reset)` : label} className="min-w-0 truncate text-left text-xs font-semibold text-ink/80">{label}</span>
-        <div className="flex items-center gap-2">
-          {onReset && (
-            <button type="button" onClick={onReset} title="Reset" aria-label={`Reset ${label}`} className={`grid h-8 w-8 place-items-center rounded-full text-mute hover:bg-field hover:text-ink ${changed ? "" : "invisible"}`}>
-              <RotateCcw size={11} />
-            </button>
-          )}
-          {num}
-        </div>
+        <div className="flex items-center gap-1">{reset}{num}</div>
       </div>
-      {pill}
+      {capsule}
     </div>
   );
 }
@@ -237,7 +255,7 @@ export function Segmented<T extends string | number>({ value, options, onChange,
           title={o.title}
           onClick={() => onChange(o.value)}
           aria-pressed={o.value === value}
-          className={`grid place-items-center whitespace-nowrap rounded-full font-medium transition-colors ${block ? "flex-1 px-2" : "px-4"} ${size === "sm" ? "h-6" : "h-7"} text-xs ${o.value === value ? "bg-seg text-ink shadow-sm" : "text-mute hover:text-ink"}`}
+          className={`grid place-items-center whitespace-nowrap rounded-full font-medium transition-colors ${block ? "flex-1 px-2" : "px-4"} ${size === "sm" ? "h-6 coarse:h-8" : "h-7 coarse:h-9"} text-xs ${o.value === value ? "bg-seg text-ink shadow-sm" : "text-mute hover:text-ink"}`}
         >
           {o.label}
         </button>
@@ -259,7 +277,7 @@ export function Toggle({ value, onChange, label }: { value: boolean; onChange: (
 
 export function Select<T extends string>({ value, options, onChange, width, className = "" }: { value: T; options: { value: T; label: string }[]; onChange: (v: T) => void; width?: number; className?: string }) {
   return (
-    <select value={value} onChange={(e) => onChange(e.target.value as T)} style={{ width }} className={`h-9 min-w-0 rounded-full bg-field px-4 text-xs font-medium text-ink outline-none focus:ring-2 focus:ring-accent/40 ${className}`}>
+    <select value={value} onChange={(e) => onChange(e.target.value as T)} style={{ width }} className={`h-9 min-w-0 rounded-full bg-field px-4 text-xs font-medium text-ink outline-none coarse:h-11 focus:ring-2 focus:ring-accent/40 ${className}`}>
       {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
     </select>
   );
@@ -277,7 +295,7 @@ export function TextInput({ value, onChange, placeholder, className = "", onComm
       onChange={(e) => { setV(e.target.value); onChange?.(e.target.value); }}
       onBlur={() => onCommit?.(v)}
       onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
-      className={`h-9 min-w-0 rounded-full bg-field px-4 text-xs font-medium text-ink outline-none placeholder:text-faint focus:ring-2 focus:ring-accent/40 ${className}`}
+      className={`h-9 min-w-0 rounded-full bg-field px-4 text-xs font-medium text-ink outline-none coarse:h-11 placeholder:text-faint focus:ring-2 focus:ring-accent/40 ${className}`}
     />
   );
 }

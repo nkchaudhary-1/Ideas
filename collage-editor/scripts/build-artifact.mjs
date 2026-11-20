@@ -26,24 +26,15 @@ const result = await build({
 });
 const js = result.outputFiles[0].text.replace(/<\/script/gi, "<\\/script").replace(/<!--/g, "<\\!--");
 
-// 3. page shell
+// 3. page shell: the editor adapts to phones itself (compact layout below 900px), so there is no "desktop only" notice
 const html = `<title>Collage Studio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>
 ${css}
-html, body { height: 100%; margin: 0; }
-#root { height: 100%; min-width: 980px; }
-#small { display: none; }
-@media (max-width: 900px) {
-  #small { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px max(16px, env(safe-area-inset-left, 0px)); background: rgb(var(--c-bg)); text-align: center; }
-  #small.off { display: none; }
-  body { overflow: auto; }
-}
-#small div { max-width: 360px; font: 14px/1.55 Manrope, system-ui, sans-serif; color: rgb(var(--c-mute)); }
-#small b { display: block; font-size: 17px; font-weight: 800; color: rgb(var(--c-ink)); margin-bottom: 8px; }
-#small button { margin-top: 18px; height: 36px; padding: 0 18px; border-radius: 999px; border: 0; background: rgb(var(--c-pill)); color: rgb(var(--c-pillink)); font: 600 13px Manrope, system-ui, sans-serif; cursor: pointer; }
+html, body { height: 100%; height: 100dvh; margin: 0; }
+#root { height: 100%; }
 </style>
 <div id="root"></div>
-<div id="small"><div><b>Collage Studio is a desktop editor</b>The canvas, panels and slide strip need a window at least 980&nbsp;px wide. On a phone you can look around, but editing is much easier on a laptop or a tablet in landscape.<br><button type="button" onclick="document.getElementById('small').classList.add('off')">Open it anyway</button></div></div>
 <script>${js}</script>
 `;
 writeFileSync(join(out, "index.html"), html);

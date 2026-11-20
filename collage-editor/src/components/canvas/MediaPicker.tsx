@@ -24,15 +24,17 @@ export default function MediaPicker() {
 
   useEffect(() => {
     if (!mp) return;
-    const down = (e: MouseEvent) => { if (!panel.current?.contains(e.target as Node)) close(); };
+    const down = (e: PointerEvent) => { if (!panel.current?.contains(e.target as Node)) close(); };
     const key = (e: KeyboardEvent) => { if (e.key === "Escape") { e.stopPropagation(); close(); } };
-    const t = setTimeout(() => window.addEventListener("mousedown", down), 0);
+    // pointerdown, not mousedown: a touch gesture on the canvas does not produce a mouse event
+    const t = setTimeout(() => window.addEventListener("pointerdown", down), 0);
     window.addEventListener("keydown", key, true);
-    return () => { clearTimeout(t); window.removeEventListener("mousedown", down); window.removeEventListener("keydown", key, true); };
+    return () => { clearTimeout(t); window.removeEventListener("pointerdown", down); window.removeEventListener("keydown", key, true); };
   }, [mp]);
 
   if (!mp || typeof document === "undefined") return null;
-  const W = 332, H = 392;
+  // fits any screen: never wider or taller than the viewport minus a 16px margin
+  const W = Math.min(332, window.innerWidth - 32), H = Math.min(392, window.innerHeight - 32);
   const left = Math.max(16, Math.min(mp.x - 24, window.innerWidth - W - 16));
   const top = mp.y + 18 + H > window.innerHeight ? Math.max(16, mp.y - H - 18) : mp.y + 18;
 

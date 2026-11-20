@@ -93,12 +93,12 @@ export default function NewProjectDialog() {
   return (
     <Modal title="New project" onClose={() => set({ newProjectOpen: false })} width={680} testId="new-project-dialog"
       footer={<><Button onClick={() => set({ newProjectOpen: false })}>Cancel</Button><Button variant="primary" onClick={create} disabled={busy} testId="create-project">{busy ? (intent === "edit" ? "Opening…" : "Creating…") : intent === "edit" ? "Start editing" : "Create"}</Button></>}>
-      <div className="space-y-9 px-8 pb-4 pt-2">
+      <div className="space-y-8 px-6 pb-4 pt-2 sm:space-y-9 sm:px-8">
         <section>
-          <div className="grid grid-cols-2 gap-3" role="group" aria-label="What are you making?">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2" role="group" aria-label="What are you making?">
             {INTENTS.map((i) => (
               <button key={i.id} type="button" data-testid={`intent-${i.id}`} aria-pressed={intent === i.id} onClick={() => setIntent(i.id)}
-                className={`flex h-24 items-center gap-4 rounded p-5 text-left transition-colors ${intent === i.id ? "bg-pill text-pillink" : "bg-field text-ink hover:bg-raised"}`}>
+                className={`flex h-20 items-center gap-4 rounded p-5 text-left sm:h-24 transition-colors ${intent === i.id ? "bg-pill text-pillink" : "bg-field text-ink hover:bg-raised"}`}>
                 <span className={intent === i.id ? "" : "text-mute"}>{i.icon}</span>
                 <span><span className="block text-sm font-bold">{i.label}</span><span className={`block text-2xs leading-4 ${intent === i.id ? "opacity-70" : "text-mute"}`}>{i.desc}</span></span>
               </button>
@@ -121,10 +121,10 @@ export default function NewProjectDialog() {
 
         {intent === "collage" && (<>
         <section>
-          <div className="grid grid-cols-5 gap-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
             {MODES.map((m) => (
               <button key={m.id} type="button" data-testid={`mode-${m.id}`} onClick={() => setMode(m.id)}
-                className={`flex h-32 flex-col items-start justify-between rounded p-4 text-left transition-colors ${mode === m.id ? "bg-pill text-pillink" : "bg-field text-ink hover:bg-raised"}`}>
+                className={`flex h-28 flex-col items-start justify-between rounded p-4 sm:h-32 text-left transition-colors ${mode === m.id ? "bg-pill text-pillink" : "bg-field text-ink hover:bg-raised"}`}>
                 <span className={mode === m.id ? "" : "text-mute"}>{m.icon}</span>
                 <span><span className="block text-sm font-bold">{m.label}</span><span className={`block text-2xs leading-4 ${mode === m.id ? "opacity-70" : "text-mute"}`}>{m.desc}</span></span>
               </button>
@@ -172,7 +172,7 @@ export default function NewProjectDialog() {
         {mode !== "blank" && (
           <section>
             <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="new-project-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; setFiles((l) => [...l, ...f]); }} />
-            <div className="flex items-center gap-4 rounded border-2 border-dotted border-faint/60 p-5" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); setFiles((l) => [...l, ...e.dataTransfer.files]); }}>
+            <div className="flex flex-wrap items-center gap-4 rounded border-2 border-dotted border-faint/60 p-5" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); setFiles((l) => [...l, ...e.dataTransfer.files]); }}>
               <Button onClick={() => input.current?.click()}><Upload size={14} /> Add photos & videos</Button>
               <span className="text-xs text-mute">{files.length ? `${files.length} file${files.length > 1 ? "s" : ""} ready: ${mode === "carousel" ? "one slide each" : mode === "collage" ? "poured into a grid" : pano ? (files.length === 1 ? "stretched across the panorama" : "one per slide, side by side") : "the first is placed"}` : "Optional. You can add media later."}</span>
               {files.length > 0 && <TextButton className="ml-auto" onClick={() => setFiles([])}>Clear</TextButton>}

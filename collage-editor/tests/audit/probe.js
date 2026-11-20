@@ -45,7 +45,7 @@ module.exports = function probe() {
           let ins = insetOf(cur, par);
           // inside a scrolling list only the side the list does not scroll along says anything about nesting
           let vs = false, hs = false;
-          for (let q = cur.parentElement; q; q = q.parentElement) { const o = getComputedStyle(q); if (/(auto|scroll)/.test(o.overflowY)) vs = true; if (/(auto|scroll)/.test(o.overflowX) && q.scrollWidth > q.clientWidth + 4) hs = true; if (q === par) break; }
+          for (let q = cur.parentElement; q; q = q.parentElement) { const o = getComputedStyle(q); if (/(auto|scroll)/.test(o.overflowY) && q.scrollHeight > q.clientHeight + 4) vs = true; if (/(auto|scroll)/.test(o.overflowX) && q.scrollWidth > q.clientWidth + 4) hs = true; if (q === par) break; }
           if (vs && !hs) ins = [ins[0], ins[2]]; else if (hs && !vs) ins = [ins[1], ins[3]];
           if (ins.some((v) => v < -1.5)) { bad = true; break; }
           N += Math.max(0, Math.min(...ins));
@@ -92,7 +92,8 @@ module.exports = function probe() {
     // ───── hit target + accessible name
     if (e.matches('button,[role=button],a[href],input:not([type=hidden]),select,textarea,[role=checkbox],[role=switch]')) {
       const hit = e.closest('label') ? e.closest('label').getBoundingClientRect() : r;
-      if ((hit.height < 24 || hit.width < 24) && !e.matches('input[type=range],input[type=file]')) R.small.push({ el: desc(e), w: Math.round(hit.width), h: Math.round(hit.height), cls: (e.getAttribute('class') || '').slice(0, 150) });
+      // the in-canvas text editor is sized to the artwork it sits on, so it is exempt
+      if ((hit.height < 24 || hit.width < 24) && !e.matches('input[type=range],input[type=file],textarea[aria-label="Edit text"]')) R.small.push({ el: desc(e), w: Math.round(hit.width), h: Math.round(hit.height), cls: (e.getAttribute('class') || '').slice(0, 150) });
       const name = (e.getAttribute('aria-label') || e.getAttribute('title') || e.innerText || e.getAttribute('placeholder') || '').trim();
       const labelled = (e.id && document.querySelector(`label[for="${e.id}"]`)) || e.closest('label');
       if (!name && !labelled && !e.getAttribute('aria-labelledby')) R.names.push({ el: desc(e), cls: (e.getAttribute('class') || '').slice(0, 150) });
@@ -127,6 +128,7 @@ module.exports = function probe() {
     for (const el of card.querySelectorAll('button,input:not([type=range]),select,section,textarea')) {
       if (!vis(el)) continue; const rr = el.getBoundingClientRect(); if (rr.top < cr.top || rr.bottom > cr.bottom || rr.width < 40) continue;
       if (el.closest('[class*="justify-center"]') && rr.width < 80) continue;
+      if (el.closest('[data-testid^="sheet-"]') && el.matches('[data-testid^="sheet-"]')) continue; // a sheet's own grow / close buttons float over its header
       const par = el.parentElement; if (par && /(^|\s)bg-field(\s|$)/.test(par.getAttribute('class') || '') && /(^|\s)p-1(\s|$)/.test(par.getAttribute('class') || '')) continue; // a segment inside its pill
       if (el.closest('[class*="flex-wrap"], [class*="grid-cols"], [class*="overflow-x-auto"]')) continue; // items flowing in a row or grid sit wherever the flow puts them
       edges.push({ x: Math.round((rr.left - cr.left) * 2) / 2, t: `<${el.tagName.toLowerCase()}> ${(el.innerText || el.getAttribute('aria-label') || '').trim().slice(0, 18)}` });

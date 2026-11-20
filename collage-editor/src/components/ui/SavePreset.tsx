@@ -39,7 +39,7 @@ export function SavePreset({ label, placeholder, defaultName, onSave, testId, di
 export function PresetActions({ id, name, onRename }: { id: string; name: string; onRename: () => void }) {
   const del = useStore((s) => s.deletePreset);
   return (
-    <span className="absolute right-1 top-1 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+    <span className="absolute right-1 top-1 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 touch:opacity-100">
       <button type="button" aria-label={`Rename ${name}`} title="Rename" onClick={(e) => { e.stopPropagation(); onRename(); }} className="grid h-7 w-7 place-items-center rounded-full bg-black/65 text-white hover:bg-black"><Pencil size={10} /></button>
       <button type="button" aria-label={`Delete ${name}`} title="Delete" data-testid="preset-delete" onClick={(e) => { e.stopPropagation(); del(id); useStore.getState().toast(`Deleted “${name}”`, "info"); }} className="grid h-7 w-7 place-items-center rounded-full bg-black/65 text-white hover:bg-red-600"><Trash2 size={10} /></button>
     </span>

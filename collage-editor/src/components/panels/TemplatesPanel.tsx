@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { Bookmark, Plus, Trash2 } from "lucide-react";
+import { useCompact } from "@/lib/use-media";
 import { useStore, getSlide } from "@/lib/store";
 import { TEMPLATES, type Template, type TemplateCategory } from "@/lib/templates";
 import { layoutGrid } from "@/lib/grid-engine";
@@ -46,6 +47,7 @@ export function Schematic({ slide, width = 120 }: { slide: Slide; width?: number
 export default function TemplatesPanel() {
   const st = useStore.getState;
   const project = useStore((s) => s.project);
+  const phone = useCompact();
   const [cat, setCat] = useState<(typeof CATS)[number]>("All");
   const [saved, setSaved] = useState<{ id: string; name: string; slides: Slide[] }[]>([]);
   useEffect(() => { try { setSaved(JSON.parse(localStorage.getItem(LS) || "[]")); } catch { /* ignore */ } }, []);
@@ -65,7 +67,7 @@ export default function TemplatesPanel() {
 
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="templates-panel">
-      <div className="flex flex-wrap gap-2 px-8 pb-4">
+      <div className={`flex gap-2 px-8 pb-4 ${phone ? "no-scrollbar overflow-x-auto" : "flex-wrap"}`}>
         {CATS.map((c) => <Chip sm key={c} active={cat === c} onClick={() => setCat(c)}>{c}</Chip>)}
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto px-8 pb-6 pt-2">
@@ -79,10 +81,10 @@ export default function TemplatesPanel() {
                     <Schematic slide={slides[0]} width={slides[0].width / slides[0].height > 1.3 ? 120 : 96} />
                   </div>
                   {slides.length > 1 && <span className="absolute right-1 top-1 rounded bg-black/70 px-1 text-2xs text-white">{slides.length} slides</span>}
-                  <div className="absolute inset-x-0 bottom-0 flex translate-y-full gap-1 bg-black/80 p-2 transition-transform group-hover:translate-y-0 text-white">
-                    <Button className="flex-1 !h-6" variant="primary" onClick={() => applyTemplate(t, "replace")} testId={`apply-${t.id}`}>Apply</Button>
-                    <Button className="!h-6 !px-2" title="Add as new slides" onClick={() => applyTemplate(t, "append")}><Plus size={12} /></Button>
-                    {cat === "Saved" && <Button className="!h-6 !px-2" variant="danger" title="Delete template" onClick={() => persist(saved.filter((s) => s.id !== t.id))}><Trash2 size={12} /></Button>}
+                  <div className="absolute inset-x-0 bottom-0 flex translate-y-full gap-1 bg-black/80 p-2 transition-transform group-hover:translate-y-0 touch:translate-y-0 text-white">
+                    <Button className="flex-1 !h-7" variant="primary" onClick={() => applyTemplate(t, "replace")} testId={`apply-${t.id}`}>Apply</Button>
+                    <Button className="!h-7 !px-2" title="Add as new slides" onClick={() => applyTemplate(t, "append")}><Plus size={12} /></Button>
+                    {cat === "Saved" && <Button className="!h-7 !px-2" variant="danger" title="Delete template" onClick={() => persist(saved.filter((s) => s.id !== t.id))}><Trash2 size={12} /></Button>}
                   </div>
                 </div>
                 <div className="mt-1 truncate text-xs text-ink/90" title={t.name}>{t.name}</div>
@@ -93,7 +95,7 @@ export default function TemplatesPanel() {
         </div>
         {list.length === 0 && <div className="p-6 text-center text-xs text-mute">{cat === "Saved" ? "No saved templates yet. Save this slide or the whole carousel below." : "No templates in this category."}</div>}
       </div>
-      <div className="flex gap-3 border-t border-line/60 p-5">
+      <div className="flex gap-4 border-t border-line/60 px-8 py-5">
         <Button className="flex-1" onClick={() => saveAs(false)} testId="save-template"><Bookmark size={12} /> Save slide</Button>
         {project.slides.length > 1 && <Button className="flex-1" onClick={() => saveAs(true)}><Bookmark size={12} /> Save all</Button>}
       </div>

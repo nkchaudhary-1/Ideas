@@ -15,7 +15,7 @@ export default class ErrorBoundary extends Component<{ children: ReactNode }, { 
     if (!error) return this.props.children;
     const details = `${error.name}: ${error.message}\n${(error.stack ?? "").split("\n").slice(0, 6).join("\n")}`;
     return (
-      <div className="grid h-screen place-items-center bg-bg p-8 text-ink" role="alert">
+      <div className="grid h-[100dvh] place-items-center bg-bg p-8 text-ink" role="alert">
         <div className="card w-full max-w-[480px] space-y-6 p-8">
           <div className="space-y-2">
             <h1 className="text-lg font-extrabold tracking-tight">Something went wrong</h1>

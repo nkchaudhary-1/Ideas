@@ -11,7 +11,7 @@ import { CopyPasteSection, MatchSection } from "./EditSections";
 import { useEditTarget } from "./fill-target";
 
 /** The properties card in "Edit photos & videos" mode: one photo or video, or a whole selection at once. */
-export default function EditPanel() {
+export default function EditPanel({ sheet = false }: { sheet?: boolean }) {
   const target = useEditTarget();
   const st = useStore.getState;
   const refId = useStore((s) => s.ui.refSlideId);
@@ -21,8 +21,8 @@ export default function EditPanel() {
   const edited = target ? !fillIsNeutral(target.fill) || !!target.fill.match : false;
 
   return (
-    <aside className="card pop flex w-[344px] shrink-0 flex-col overflow-hidden" data-testid="properties">
-      <div className="flex h-[72px] shrink-0 items-center gap-3 px-8">
+    <aside className={sheet ? "flex min-h-0 flex-1 flex-col overflow-hidden" : "card pop flex w-[344px] shrink-0 flex-col overflow-hidden"} data-testid="properties">
+      <div className={`flex shrink-0 items-center gap-3 px-8 ${sheet ? "h-14" : "h-[72px]"}`}>
         {target && (target.fill.kind === "video" ? <Film size={16} className="text-mute" /> : <ImageIcon size={16} className="text-mute" />)}
         <h2 className="min-w-0 flex-1 truncate text-base font-extrabold tracking-tight" data-testid="edit-title">{batch ? `${n} selected` : target?.slide.name ?? "Edit"}</h2>
         {target && refId === target.slideId && <span className="rounded-full bg-field px-2 py-0.5 text-2xs font-semibold text-mute">Reference</span>}
@@ -39,7 +39,7 @@ export default function EditPanel() {
             <div className="mx-3 mb-3 flex items-center gap-3 rounded-in-12 bg-panel2 px-5 py-4" data-testid="edit-file">
               {asset ? <img src={asset.thumb} alt="" className="h-11 w-11 rounded object-cover" /> : <span className="h-11 w-11 rounded-in-12 bg-raised" />}
               <div className="min-w-0 flex-1">
-                <div className="truncate text-xs font-semibold text-ink">{batch ? `${n} items · edits apply to all` : asset?.name ?? "Missing media"}</div>
+                <div className="truncate text-xs font-semibold text-ink" title={batch ? `${n} items · edits apply to all` : asset?.name ?? "Missing media"}>{batch ? `${n} items · edits apply to all` : asset?.name ?? "Missing media"}</div>
                 <div className="text-2xs text-mute">{batch ? "Click one in the strip to edit it alone" : asset ? `${target.slide.width}×${target.slide.height}${asset.duration ? ` · ${formatTime(asset.duration)}` : ""}` : "Re-import this file"}</div>
               </div>
               <button type="button" title={batch ? "Remove the selection from the editor" : "Remove from the editor"} aria-label="Remove from editor" data-testid="remove-from-edit" onClick={() => target.clear()}

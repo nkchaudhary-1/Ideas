@@ -20,7 +20,20 @@ Minimal, floating, light or dark. The canvas fills the middle; everything else i
 * **Right:** one properties card that only shows what the current selection needs, in collapsible groups.
 * **Below:** the slide strip (compact for single designs, with seam marks on panoramas).
 * **Palette:** black, white and one orange. Greys are neutral; orange marks only the active tool, slider fills, toggles and canvas selection, with a soft gradient on the primary button and the page ground. Light and dark themes; the choice is remembered and the first visit follows your system setting.
-* **Controls:** sliders are soft pills with a big white knob on a thin track (fill runs outward from the neutral point); colour adjustments (temperature, tint, hue, saturation) use a gradient pill with a ring knob; rotation uses a tick-mark ruler (drag, arrow keys, double-click to reset); segmented controls and aspect-ratio glyphs sit in the same pill style.
+* **Controls:** sliders are capsules: a black fill ending in a thin white-bar knob (the fill runs outward from the neutral point; double-click to reset); colour adjustments (temperature, tint, hue, saturation) use a gradient pill with a ring knob; rotation uses a tick-mark ruler (drag, arrow keys, double-click to reset); segmented controls and aspect-ratio glyphs sit in the same pill style.
+
+## On a phone
+
+Under 900px wide (a phone, or a tablet held upright) the editor switches to an app layout. Nothing is removed; it is rearranged.
+
+* **Full-screen canvas** with a floating top bar (menu, name, undo / redo, export) and a view pill (size, fit, play, compare, preview).
+* **Tool dock** along the bottom instead of the left rail. Tap a tool and its panel rises as a **bottom sheet** that pushes the canvas up so you still see it; drag the handle for a taller sheet, down to close. Select something and an **Edit** chip opens its properties the same way. In Edit mode the sheet opens on the photo's adjustments.
+* **Dialogs** (new project, import, export, projects) dock to the bottom edge and slide up.
+* **Gestures:** pinch to zoom (the picture itself, in crop mode), two fingers or one finger on empty canvas to pan, tap empty canvas to deselect, tap an empty tile to add a photo or video. A second finger cancels a drag in progress.
+* **Finger-sized:** controls grow to 44px on touch screens, hover-only actions are always visible, text fields are 16px so iOS does not zoom, and the layout respects notches and the home indicator.
+* **Installable:** add it to the home screen for a full-screen, app-like window (manifest, icons and theme colour are set).
+
+Check it with `node tests/audit/run.js --phone`, `node tests/e2e/phone-dialogs.js` and `node tests/e2e/phone-canvas.js`. Only Chromium touch emulation is available in CI, so iOS Safari itself has not been tested.
 
 ## Design rules
 

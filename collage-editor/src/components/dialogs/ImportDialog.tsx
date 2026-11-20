@@ -71,19 +71,19 @@ export default function ImportDialog() {
           {editMode ? (
             <Button variant="primary" disabled={!chosen.length || busy} onClick={() => run(addAssetsToEdit)} testId="import-edit"><SlidersHorizontal size={13} /> Add to editor</Button>
           ) : (
-            <>
-              <Button disabled={!chosen.length || busy} onClick={() => run(addAssetsToEdit)} testId="import-edit" title="Open these in the photo & video editor, no collage"><SlidersHorizontal size={13} /> Edit</Button>
-              <Button disabled={!chosen.length || busy} onClick={() => run((a) => st().addMediaToCanvas(a[0]))} testId="import-single" title="Place the first selected item on the current slide"><Square size={13} /> Single</Button>
-              <Button disabled={chosen.length < 1 || busy} onClick={() => run(createCollageFromAssets)} testId="import-collage"><LayoutGrid size={13} /> Collage</Button>
-              <Button variant="primary" disabled={!chosen.length || busy} onClick={() => run(createCarouselFromAssets)} testId="import-carousel"><GalleryHorizontal size={13} /> Carousel</Button>
-            </>
+            <div className="grid w-full grid-cols-2 gap-3 sm:contents">
+              <Button className="w-full sm:w-auto" disabled={!chosen.length || busy} onClick={() => run(addAssetsToEdit)} testId="import-edit" title="Open these in the photo & video editor, no collage"><SlidersHorizontal size={13} /> Edit</Button>
+              <Button className="w-full sm:w-auto" disabled={!chosen.length || busy} onClick={() => run((a) => st().addMediaToCanvas(a[0]))} testId="import-single" title="Place the first selected item on the current slide"><Square size={13} /> Single</Button>
+              <Button className="w-full sm:w-auto" disabled={chosen.length < 1 || busy} onClick={() => run(createCollageFromAssets)} testId="import-collage"><LayoutGrid size={13} /> Collage</Button>
+              <Button variant="primary" className="w-full sm:w-auto" disabled={!chosen.length || busy} onClick={() => run(createCarouselFromAssets)} testId="import-carousel"><GalleryHorizontal size={13} /> Carousel</Button>
+            </div>
           )}
         </>
       }
     >
       <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="import-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; if (f.length) void ingest(f); }} />
       <div
-        className="mx-8 mb-6 mt-2 flex items-center justify-between gap-4 rounded border-2 border-dotted border-faint/60 px-6 py-5 text-sm text-mute"
+        className="mx-6 mb-6 mt-2 flex flex-wrap items-center justify-between gap-4 rounded border-2 border-dotted border-faint/60 px-5 py-5 sm:mx-8 sm:px-6 text-sm text-mute"
         onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault(); }}
         onDrop={(e) => { e.preventDefault(); const f = [...e.dataTransfer.files]; if (f.length) void ingest(f); }}
       >
@@ -92,7 +92,7 @@ export default function ImportDialog() {
       </div>
 
       {items.length > 0 && (
-        <div className="px-8 pb-2">
+        <div className="px-6 pb-2 sm:px-8">
           <div className="mb-2 flex items-center justify-between text-xs text-mute">
             <TextButton className="-ml-3" onClick={() => setPicked(allSelected ? new Set() : new Set(ready.map((i) => i.key)))}>{allSelected ? "Select none" : "Select all"}</TextButton>
             <span>Order here becomes slide / cell order. Drag to reorder.</span>
@@ -100,32 +100,32 @@ export default function ImportDialog() {
           <ul className="space-y-3 pb-4" data-testid="import-list">
             {items.map((it, idx) => (
               <li key={it.key} draggable={it.state === "ready"} onDragStart={() => setDragKey(it.key)} onDragOver={(e) => { if (dragKey) e.preventDefault(); }} onDrop={(e) => { e.preventDefault(); if (dragKey && dragKey !== it.key) { const from = items.findIndex((x) => x.key === dragKey); move(dragKey, idx - from); } setDragKey(null); }}
-                className={`flex items-center gap-4 rounded border px-4 py-3 ${it.state === "failed" ? "border-red-500/30 bg-red-500/5" : picked.has(it.key) ? "border-ink/40 bg-ink/5" : "border-line bg-panel2"}`} data-testid="import-item">
+                className={`flex items-center gap-3 rounded border px-3 py-3 sm:gap-4 sm:px-4 ${it.state === "failed" ? "border-red-500/30 bg-red-500/5" : picked.has(it.key) ? "border-ink/40 bg-ink/5" : "border-line bg-panel2"}`} data-testid="import-item">
                 <button type="button" role="checkbox" aria-checked={picked.has(it.key)} aria-label={`${picked.has(it.key) ? "Deselect" : "Select"} ${it.name}`} disabled={it.state !== "ready"} onClick={() => toggle(it.key)} className="grid h-8 w-8 shrink-0 place-items-center rounded-full hover:bg-ink/[0.07] disabled:opacity-30"><span className={`grid h-5 w-5 place-items-center rounded-sm border ${picked.has(it.key) ? "border-transparent grad-accent text-white" : "border-faint/60"}`}>{picked.has(it.key) && <Check size={12} strokeWidth={3} />}</span></button>
-                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded bg-black">
+                <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded bg-black sm:h-12 sm:w-12">
                   {it.asset ? <img src={it.asset.thumb} alt="" className="h-full w-full object-cover" /> : it.state === "working" ? <Loader2 size={16} className="absolute inset-0 m-auto animate-spin text-mute" /> : <AlertTriangle size={16} className="absolute inset-0 m-auto text-red-300" />}
                   {it.asset?.kind === "video" && <Film size={11} className="absolute bottom-0.5 left-0.5 text-white drop-shadow" />}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm">{it.name}</div>
-                  <div className={`truncate text-xs ${it.state === "failed" ? "text-red-300 whitespace-normal" : "text-mute"}`}>
+                  <div className="truncate text-sm" title={it.name}>{it.name}</div>
+                  <div className={`text-xs sm:truncate ${it.state === "failed" ? "whitespace-normal text-red-300" : "text-mute"}`}>
                     {it.state === "working" && "Reading…"}
                     {it.state === "failed" && it.reason}
                     {it.asset && <>{it.asset.kind === "video" ? <Film size={10} className="mr-1 inline" /> : <ImageIcon size={10} className="mr-1 inline" />}{it.asset.width}×{it.asset.height} · {formatBytes(it.asset.size)}{it.asset.duration ? ` · ${formatTime(it.asset.duration)}` : ""}{it.asset.kind === "video" && it.asset.hasAudio === false ? " · no audio" : ""}</>}
                   </div>
                 </div>
                 <div className="flex items-center gap-0.5">
-                  <button type="button" aria-label="Move up" disabled={idx === 0} onClick={() => move(it.key, -1)} className="grid h-6 w-6 place-items-center rounded text-mute hover:bg-ink/10 disabled:opacity-30"><ArrowUp size={13} /></button>
-                  <button type="button" aria-label="Move down" disabled={idx === items.length - 1} onClick={() => move(it.key, 1)} className="grid h-6 w-6 place-items-center rounded text-mute hover:bg-ink/10 disabled:opacity-30"><ArrowDown size={13} /></button>
-                  <button type="button" aria-label="Remove" title={it.asset ? "Remove and delete from library" : "Dismiss"} onClick={() => remove(it)} className="grid h-6 w-6 place-items-center rounded text-mute hover:bg-red-500/20 hover:text-red-300"><Trash2 size={13} /></button>
+                  <button type="button" aria-label="Move up" disabled={idx === 0} onClick={() => move(it.key, -1)} className="grid h-7 w-7 place-items-center rounded-full text-mute hover:bg-ink/10 disabled:opacity-30"><ArrowUp size={13} /></button>
+                  <button type="button" aria-label="Move down" disabled={idx === items.length - 1} onClick={() => move(it.key, 1)} className="grid h-7 w-7 place-items-center rounded-full text-mute hover:bg-ink/10 disabled:opacity-30"><ArrowDown size={13} /></button>
+                  <button type="button" aria-label="Remove" title={it.asset ? "Remove and delete from library" : "Dismiss"} onClick={() => remove(it)} className="grid h-7 w-7 place-items-center rounded-full text-mute hover:bg-red-500/20 hover:text-red-300"><Trash2 size={13} /></button>
                 </div>
               </li>
             ))}
           </ul>
         </div>
       )}
-      {items.length === 0 && <p className="px-8 pb-8 text-sm text-faint">Nothing queued yet.</p>}
-      <p className="px-8 pb-8 text-xs leading-relaxed text-faint">
+      {items.length === 0 && <p className="px-6 pb-8 text-sm text-faint sm:px-8">Nothing queued yet.</p>}
+      <p className="px-6 pb-8 text-xs leading-relaxed text-faint sm:px-8">
         Supported: JPG, PNG, WebP, MP4, MOV, WebM. Videos must use a codec your browser can decode (H.264/AAC MP4 works everywhere; HEVC .mov works in Safari). If a clip is refused, convert it first, e.g. <code className="rounded bg-panel2 px-1">ffmpeg -i in.mov -c:v libx264 -c:a aac out.mp4</code>. Originals are never altered. Everything stays on this device.
       </p>
     </Modal>

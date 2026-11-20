@@ -19,7 +19,7 @@ export default function ProjectsDialog() {
     <Modal title="Projects" onClose={() => set({ projectsOpen: false })} width={640} testId="projects-dialog"
       footer={<Button variant="primary" onClick={() => set({ projectsOpen: false, newProjectOpen: true })}><FilePlus2 size={13} /> New project</Button>}>
       {list.length === 0 ? <Empty>No saved projects yet. Everything you make is saved automatically on this device.</Empty> : (
-        <ul className="grid grid-cols-2 gap-5 px-8 pb-8 pt-2" data-testid="project-list">
+        <ul className="grid grid-cols-1 gap-5 px-6 pb-6 pt-2 min-[480px]:grid-cols-2 sm:px-8 sm:pb-8" data-testid="project-list">
           {list.map((p) => (
             <li key={p.id} className={`group overflow-hidden rounded bg-panel2 ${p.id === currentId ? "ring-2 ring-ink/40" : ""}`}>
               <button type="button" className="block w-full text-left" onClick={() => st().openProject(p.id)} data-testid="project-open">

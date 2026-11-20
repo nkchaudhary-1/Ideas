@@ -1,16 +1,19 @@
 // UI audit: drives the editor through every screen, dialog and popover and measures corner radii, spacing, clipping,
 // hit targets and accessible names (see probe.js). Writes a screenshot per state next to a findings summary.
 //   node tests/audit/run.js [--w=1600] [--h=950] [--theme=light|dark] [--out=/tmp/audit] [--only=name,name] [--shots]
+//   node tests/audit/run.js --phone [--w=390] [--h=844]   the same states on an emulated phone (touch, tool dock, bottom sheets)
 const path = require('path');
 const fs = require('fs');
-const { chromium } = require('playwright');
+const { chromium, devices } = require('playwright');
 const probe = require('./probe');
 const S = path.resolve(__dirname, '../../public/samples') + '/';
 const T = path.resolve(__dirname, '../fixtures') + '/';
 const arg = (k, d) => { const a = process.argv.find((x) => x.startsWith(`--${k}=`)); return a ? a.split('=')[1] : d; };
-const W = +arg('w', 1600), H = +arg('h', 950), THEME = arg('theme', 'light'), OUT = arg('out', '/tmp/audit');
+const PHONE = process.argv.includes('--phone');
+const W = +arg('w', PHONE ? 390 : 1600), H = +arg('h', PHONE ? 844 : 950), THEME = arg('theme', 'light'), OUT = arg('out', '/tmp/audit');
 const ONLY = arg('only', '') ? arg('only', '').split(',') : null;
 const SHOTS = process.argv.includes('--shots');
+const TAG = PHONE ? `phone-${THEME}` : THEME;
 fs.mkdirSync(OUT, { recursive: true });
 
 const wait = (p, ms = 350) => p.waitForTimeout(ms);
@@ -19,25 +22,30 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
 
 (async () => {
   const browser = await chromium.launch();
-  const ctx = await browser.newContext({ viewport: { width: W, height: H }, acceptDownloads: true });
+  const ctx = await browser.newContext(PHONE ? { ...devices['iPhone 13'], viewport: { width: W, height: H }, acceptDownloads: true } : { viewport: { width: W, height: H }, acceptDownloads: true });
   const page = await ctx.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push('pageerror ' + e.message));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text().slice(0, 160)); });
   await page.goto(process.env.BASE_URL || 'http://localhost:3100', { waitUntil: 'networkidle' });
   await page.waitForSelector('[data-testid=new-project-dialog]');
+  await page.evaluate((p) => { window.__phone = p; }, PHONE);
   if (THEME === 'dark') { await page.evaluate(() => window.__store.getState().setTheme('dark')); await wait(page); }
 
+  // On a phone the tool rail is a dock and panels / properties are bottom sheets; open the one a state needs.
+  const sheet = (v) => PHONE ? page.evaluate((x) => window.__store.getState().setUI(x ? { sheet: x.k, sheetSize: x.size } : { sheet: null }), v) : Promise.resolve();
+  const openTool = async (id) => { if (PHONE) await page.evaluate((i) => window.__store.getState().setUI({ leftPanel: i, sheet: 'tools', sheetSize: 'full' }), id); else await page.click(`[data-testid=rail-${id}]`); };
+  const sheetFor = (name) => /^(edit-|save-preset)/.test(name) ? { k: 'props', size: 'half' } : /^(props-|pop-color)/.test(name) && !/-cell$/.test(name) ? { k: 'props', size: 'full' } : /^panel-/.test(name) ? { k: 'tools', size: 'full' } : null;
   const findings = {};
   const record = async (name) => {
     await wait(page, 250);
     const f = await page.evaluate(`(${probe.toString()})()`);
     findings[name] = f;
-    if (SHOTS) await page.screenshot({ path: path.join(OUT, `${THEME}-${W}-${name}.png`) });
+    if (SHOTS) await page.screenshot({ path: path.join(OUT, `${TAG}-${W}-${name}.png`) });
   };
   const run = async (name, fn) => {
     if (ONLY && !ONLY.includes(name)) return;
-    try { await fn(); await record(name); } catch (e) { console.log(`  (skipped ${name}: ${e.message.split('\n')[0]})`); }
+    try { const sh = sheetFor(name); if (PHONE && sh && sh.k === 'props') await sheet(sh); await fn(); if (PHONE && !sh) await sheet(null); await record(name); } catch (e) { console.log(`  (skipped ${name}: ${e.message.split('\n')[0]})`); }
   };
   const closeAny = async () => { await page.keyboard.press('Escape'); await wait(page, 150); await page.mouse.click(5, 5).catch(() => {}); await wait(page, 100); };
 
@@ -58,7 +66,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   for (const id of ['uploads', 'layouts', 'templates', 'text', 'elements', 'frames', 'backgrounds', 'palettes', 'layers']) {
     await run(`panel-${id}`, async () => {
       const open = await page.evaluate(() => window.__store.getState().ui.leftPanel);
-      if (open !== id) await page.click(`[data-testid=rail-${id}]`);
+      if (PHONE) await openTool(id); else if (open !== id) await page.click(`[data-testid=rail-${id}]`);
       await wait(page, 500); await expandAll(page); await wait(page, 200);
     });
   }
@@ -68,7 +76,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await run('props-canvas-bg-pattern', async () => { await page.getByRole('button', { name: 'Pattern', exact: true }).click(); await wait(page, 300); await expandAll(page); });
   await page.getByRole('button', { name: 'Solid', exact: true }).click();
   await run('props-image', async () => {
-    await page.click('[data-testid=rail-uploads]').catch(() => {}); // close panel for more canvas room
+    if (PHONE) await page.evaluate(() => window.__store.getState().setUI({ leftPanel: null })); else await page.click('[data-testid=rail-uploads]').catch(() => {}); // close panel for more canvas room
     await page.evaluate(() => { const s = window.__store.getState(); s.setActiveSlide(s.project.slides[0].id); });
     await wait(page, 400);
     await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); s.select([sl.elements[0].id]); });
@@ -84,7 +92,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await page.keyboard.press('Escape');
 
   // ── text, shape, grid, frame
-  const addVia = async (rail, pick) => { await page.click(`[data-testid=rail-${rail}]`); await wait(page, 400); await pick(); await wait(page, 500); await expandAll(page); };
+  const addVia = async (rail, pick) => { await openTool(rail); await wait(page, 400); await pick(); await wait(page, 500); await sheet({ k: 'props', size: 'full' }); await wait(page, 300); await expandAll(page); };
   await page.evaluate(() => { const s = window.__store.getState(); s.setActiveSlide(s.project.slides[1].id); s.clearSelection(); });
   await run('props-text', async () => { await addVia('text', async () => { await page.getByText('Add a heading').first().click(); }); await page.keyboard.press('Escape'); await wait(page, 300); await expandAll(page); });
   await run('props-shape', async () => { await addVia('elements', async () => { await page.locator('[data-testid=left-panel] button').nth(1).click(); }); });
@@ -93,15 +101,16 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
     await addVia('layouts', async () => { await page.click('[data-testid=grid-four]'); });
   });
   await run('props-grid-cell', async () => {
+    await sheet(null); await wait(page, 500);
     const b = await page.locator('[data-testid=workspace]').boundingBox();
     const v = await page.evaluate(() => { const s = window.__store.getState(); return s.ui.view; });
-    await page.mouse.click(b.x + v.x + 540 * v.scale * 0.5, b.y + v.y + 675 * v.scale * 0.5); await wait(page, 400); await expandAll(page);
+    await page.mouse.click(b.x + v.x + 540 * v.scale * 0.5, b.y + v.y + 675 * v.scale * 0.5); await wait(page, 400); await sheet({ k: 'props', size: 'full' }); await wait(page, 300); await expandAll(page);
   });
   await run('props-multi', async () => { await page.evaluate(() => { const s = window.__store.getState(); s.setActiveSlide(s.project.slides[1].id); const sl = s.project.slides[1]; s.select(sl.elements.map((e) => e.id)); }); await wait(page, 400); await expandAll(page); });
   await run('props-frame', async () => { await addVia('frames', async () => { await page.locator('[data-testid=left-panel] button').nth(2).click(); }); });
 
   // ── popovers
-  await page.evaluate(() => { const s = window.__store.getState(); s.clearSelection(); s.setUI({ leftPanel: null }); });
+  await page.evaluate(() => { const s = window.__store.getState(); s.clearSelection(); s.setUI({ leftPanel: null, sheet: null }); });
   await run('pop-format', async () => { await page.click('[data-testid=format-chip]'); await wait(page, 400); });
   await closeAny();
   await run('pop-view', async () => { await page.click('[data-testid=view-menu]'); await wait(page, 400); });
@@ -113,6 +122,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await run('pop-color', async () => { await page.click('[data-testid=bg-color]'); await wait(page, 400); });
   await closeAny();
   await run('pop-picker', async () => {
+    await sheet(null); await wait(page, 500);
     await page.evaluate(() => { const s = window.__store.getState(); s.setActiveSlide(s.project.slides[3].id); });
     await wait(page, 400);
     const b = await page.locator('[data-testid=workspace]').boundingBox(); const v = await page.evaluate(() => window.__store.getState().ui.view);
@@ -123,7 +133,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
 
   // ── states that only appear mid-task
   await run('panel-layers-selected', async () => {
-    await page.evaluate(() => { const s = window.__store.getState(); s.setActiveSlide(s.project.slides[1].id); s.select(s.project.slides[1].elements.map((e) => e.id).slice(0, 1)); s.setUI({ leftPanel: 'layers' }); });
+    await page.evaluate(() => { const s = window.__store.getState(); s.setActiveSlide(s.project.slides[1].id); s.select(s.project.slides[1].elements.map((e) => e.id).slice(0, 1)); s.setUI({ leftPanel: 'layers', sheet: window.__phone ? 'tools' : null, sheetSize: 'full' }); });
     await wait(page, 500);
   });
   await run('save-preset-open', async () => {
@@ -155,7 +165,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await page.evaluate(() => window.__store.getState().setUI({ importOpen: false }));
   await run('dlg-projects', async () => { await page.evaluate(() => window.__store.getState().setUI({ projectsOpen: true })); await wait(page, 600); });
   await page.evaluate(() => window.__store.getState().setUI({ projectsOpen: false }));
-  await run('editor-chrome', async () => { await page.evaluate(() => window.__store.getState().setUI({ leftPanel: 'uploads' })); await wait(page, 300); });
+  await run('editor-chrome', async () => { await page.evaluate(() => window.__store.getState().setUI({ leftPanel: 'uploads', sheet: window.__phone ? 'tools' : null })); await wait(page, 300); });
 
   // ── edit mode
   await page.evaluate(() => window.__store.getState().setUI({ newProjectOpen: true })); await wait(page, 400);
@@ -180,13 +190,13 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
     }
   }
   const rows = Object.values(bucket);
-  fs.writeFileSync(path.join(OUT, `${THEME}-${W}-findings.json`), JSON.stringify({ errors, rows, findings }, null, 1));
+  fs.writeFileSync(path.join(OUT, `${TAG}-${W}-findings.json`), JSON.stringify({ errors, rows, findings }, null, 1));
   const by = (k) => rows.filter((r) => r.cat === k);
   const show = (k, n = 80) => {
     const list = by(k); console.log(`\n## ${k}: ${list.length}`);
     list.slice(0, n).forEach((r) => console.log(`  ${r.kind ? `[${r.kind}] ` : ''}${r.el}  ${Object.entries(r).filter(([a]) => !['kind', 'cat', 'el', 'states', 'chain', 'cls', 'aEx', 'bEx'].includes(a)).map(([a, b]) => `${a}=${b}`).join(' ')}  (${r.states.length} state${r.states.length > 1 ? 's' : ''}: ${r.states.slice(0, 3).join(',')})`));
   };
-  console.log(`audit ${THEME} ${W}x${H}: ${Object.keys(findings).length} states, console errors: ${errors.length}`);
+  console.log(`audit ${TAG} ${W}x${H}: ${Object.keys(findings).length} states, console errors: ${errors.length}`);
   errors.slice(0, 5).forEach((e) => console.log('  !', e));
   for (const k of (arg('show', 'radius,grid,clip,small,names,align,heights')).split(',')) show(k, +arg('n', 60));
   await browser.close();

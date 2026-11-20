@@ -8,6 +8,7 @@ import { createCarouselFromAssets } from "@/lib/workflows";
 import { getAsset } from "@/lib/media";
 import { makeSlide } from "@/lib/factory";
 import { panoramaCount } from "@/lib/formats";
+import { useCompact } from "@/lib/use-media";
 
 
 export default function SlideStrip() {
@@ -28,8 +29,9 @@ export default function SlideStrip() {
     setMenu({ left: Math.max(16, Math.min(r.left, window.innerWidth - 256)), bottom: window.innerHeight - r.top + 12 });
   };
   const scroller = useRef<HTMLDivElement>(null);
+  const phone = useCompact();
   const compact = slides.length === 1 && kind !== "carousel";
-  const TH = compact ? 52 : 88; // thumbnail height budget
+  const TH = phone ? 56 : compact ? 52 : 88; // thumbnail height budget
 
   const addBlank = () => {
     const cur = slides.find((s) => s.id === activeId) ?? slides[0];
@@ -41,11 +43,11 @@ export default function SlideStrip() {
   };
 
   return (
-    <div className={`card relative flex shrink-0 items-stretch ${compact ? "h-[92px]" : "h-[144px]"}`} data-testid="slide-strip">
-      <div ref={scroller} className="flex min-w-0 flex-1 items-center gap-4 overflow-x-auto px-8 py-3">
+    <div className={`card relative flex shrink-0 items-stretch ${phone ? "h-28" : compact ? "h-[92px]" : "h-[144px]"}`} data-testid="slide-strip">
+      <div ref={scroller} className={`flex min-w-0 flex-1 items-center gap-4 overflow-x-auto py-3 ${phone ? "px-4" : "px-8"}`}>
         {slides.map((s, i) => {
           const ar = s.width / s.height;
-          const w = Math.max(36, Math.min(compact ? 160 : 260, Math.round(TH * ar)));
+          const w = Math.max(phone ? 28 : 36, Math.min(compact ? 160 : 260, Math.round(TH * ar)));
           const segs = panoramaCount(s.width);
           const active = s.id === activeId;
           return (
@@ -78,7 +80,7 @@ export default function SlideStrip() {
               ) : (
                 <span className={`max-w-[160px] truncate text-2xs font-semibold ${active ? "text-ink" : "text-mute"}`} onDoubleClick={() => setRename(s.id)} title="Double-click to rename">{segs > 1 ? `${s.name} · ${segs} slides` : `${i + 1} · ${s.name}`}</span>
               )}
-              <div className="absolute right-1 top-1 hidden gap-1 group-hover:flex">
+              <div className={`absolute right-1 top-1 hidden gap-1 group-hover:flex ${active ? "touch:flex" : ""}`}>
                 <button type="button" aria-label="Duplicate slide" title="Duplicate slide" onClick={() => st().duplicateSlide(s.id)} className="grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-black"><Copy size={12} /></button>
                 {slides.length > 1 && <button type="button" aria-label="Delete slide" title="Delete slide" onClick={() => st().deleteSlide(s.id)} className="grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-red-600"><Trash2 size={12} /></button>}
               </div>
@@ -88,7 +90,7 @@ export default function SlideStrip() {
         <button ref={addRef} type="button" aria-label="Add slide" title="Add slide" data-testid="add-slide" onClick={toggleMenu}
           onDragOver={(e) => { if (e.dataTransfer.types.includes("application/x-asset")) e.preventDefault(); }}
           onDrop={(e) => { e.preventDefault(); const a = getAsset(e.dataTransfer.getData("application/x-asset")); if (a) createCarouselFromAssets([a]); }}
-          className={`grid shrink-0 place-items-center rounded border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink ${compact ? "h-[52px] w-[52px]" : "h-[88px] w-[64px]"}`}><Plus size={18} /></button>
+          className={`grid shrink-0 place-items-center border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink ${phone ? "h-14 w-14 rounded" : compact ? "h-[52px] w-[52px] rounded" : "h-[88px] w-[64px] rounded"}`}><Plus size={18} /></button>
       </div>
       <div className="flex shrink-0 flex-col items-end justify-center gap-0.5 pl-4 pr-7 text-2xs text-mute">
         <span className="text-xs font-bold text-ink">{slides.length === 1 && panoramaCount(slides[0].width) > 1 ? `${panoramaCount(slides[0].width)} slides` : `${slides.length} slide${slides.length > 1 ? "s" : ""}`}</span>

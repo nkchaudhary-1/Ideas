@@ -1,4 +1,5 @@
 "use client";
+import { isCoarse } from "@/lib/use-media";
 import { useStore } from "@/lib/store";
 import { Group, Line, Rect } from "react-konva";
 import type Konva from "konva";
@@ -98,7 +99,7 @@ export function GridEditorOverlay({
 }) {
   const { cells, dividers } = layoutGrid(el);
   const sel = selectedCell ? cells.find((c) => c.id === selectedCell) : null;
-  const hit = Math.max(14 / scale, el.gutter);
+  const hit = Math.max((isCoarse() ? 36 : 14) / scale, el.gutter);
   return (
     <Group x={el.x + el.width / 2} y={el.y + el.height / 2} offsetX={el.width / 2} offsetY={el.height / 2} rotation={el.rotation}>
       {cells.map((c) => (
@@ -118,6 +119,7 @@ export function GridEditorOverlay({
             onMouseEnter={(e) => { const rr = e.target as Konva.Rect; rr.opacity(0.5); e.target.getStage()!.container().style.cursor = horizontal ? "col-resize" : "row-resize"; rr.getLayer()?.batchDraw(); }}
             onMouseLeave={(e) => { const rr = e.target as Konva.Rect; rr.opacity(0.001); e.target.getStage()!.container().style.cursor = ""; rr.getLayer()?.batchDraw(); }}
             onMouseDown={(e) => { e.cancelBubble = true; onDividerDown(d.splitId, d.index, d.dir); }}
+            onTouchStart={(e) => { e.cancelBubble = true; onDividerDown(d.splitId, d.index, d.dir); }}
           />
         );
       })}

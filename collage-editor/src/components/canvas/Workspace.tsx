@@ -30,6 +30,12 @@ const useFontsTick = () => {
   return t;
 };
 
+/** where a mouse or finger is, in screen pixels (a touch has no clientX on the event itself) */
+const ptOf = (ev: MouseEvent | TouchEvent): { x: number; y: number } => {
+  const t = "changedTouches" in ev ? (ev.touches[0] ?? ev.changedTouches[0]) : ev;
+  return { x: t?.clientX ?? 0, y: t?.clientY ?? 0 };
+};
+
 type CropTarget = { el: Element; rect: R; fill: MediaFill; radius: number; key: string; gridId?: string; cellId?: string };
 
 export function cropTargetOf(slide: ReturnType<typeof getSlide>, cropId: string | null, selectedCell: { gridId: string; cellId: string } | null): CropTarget | null {
@@ -82,7 +88,7 @@ export default function Workspace() {
   }, []);
   useEffect(() => {
     // when the stage is narrow the top pills wrap to two rows, so leave more room above the artboard
-    useStore.getState().setView(fitView(size, { w: slide.width, h: slide.height }, size.w < 860 ? { x: 96, top: 176, bottom: 112 } : undefined));
+    useStore.getState().setView(fitView(size, { w: slide.width, h: slide.height }, size.w < 560 ? { x: 16, top: 84, bottom: 84 } : size.w < 860 ? { x: 96, top: 176, bottom: 112 } : undefined));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fitToken, size.w, size.h, slide.id, slide.width, slide.height]);
 
@@ -184,12 +190,13 @@ export default function Workspace() {
       const st = useStore.getState();
       if (spaceRef.current || st.ui.tool === "hand") return;
       const ev = e.evt as MouseEvent;
+      const pt = ptOf(e.evt as MouseEvent | TouchEvent);
       if (ev.button === 1) return;
       e.cancelBubble = true;
       if (el.locked) return;
       pickStart.current = null;
       if (st.ui.cropId && st.ui.cropId !== el.id) st.setUI({ cropId: null });
-      if ((el.type === "image" || el.type === "video") && !el.fill?.assetId) pickStart.current = { elementId: el.id, x: ev.clientX, y: ev.clientY };
+      if ((el.type === "image" || el.type === "video") && !el.fill?.assetId) pickStart.current = { elementId: el.id, x: pt.x, y: pt.y };
       if (ev.shiftKey) st.select([el.id], true);
       else if (!st.selection.includes(el.id)) st.select([el.id]);
       if (el.type === "grid") {
@@ -199,8 +206,8 @@ export default function Workspace() {
         if (hit && hit.el.id === el.id && hit.cellId) {
           st.setUI({ selectedCell: { gridId: el.id, cellId: hit.cellId } });
           const cell = findCell((el as GridEl).tree, hit.cellId);
-          if (cell?.fill) cellDrag.current = { gridId: el.id, cellId: hit.cellId, sx: ev.clientX, sy: ev.clientY, active: false };
-          else pickStart.current = { gridId: el.id, cellId: hit.cellId, x: ev.clientX, y: ev.clientY };
+          if (cell?.fill) cellDrag.current = { gridId: el.id, cellId: hit.cellId, sx: pt.x, sy: pt.y, active: false };
+          else pickStart.current = { gridId: el.id, cellId: hit.cellId, x: pt.x, y: pt.y };
         } else st.setUI({ selectedCell: null });
       }
     },
@@ -259,17 +266,19 @@ export default function Workspace() {
   }), [pointer]);
 
   // ── stage background: marquee selection
-  const onStageDown = (e: Konva.KonvaEventObject<MouseEvent>) => {
+  const onStageDown = (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
     const st = useStore.getState();
-    if (spaceRef.current || st.ui.tool === "hand" || e.evt.button !== 0) return;
+    const touch = e.type.startsWith("touch");
+    if (spaceRef.current || st.ui.tool === "hand" || (!touch && (e.evt as MouseEvent).button !== 0)) return;
     if (e.target !== e.target.getStage()) return;
+    if (touch) return; // a finger on the empty canvas pans it; a quick tap deselects (see the gesture effect)
     st.setUI({ cropId: null, editingTextId: null, selectedCell: null });
     if (!e.evt.shiftKey) st.clearSelection();
     const p = pointer();
     if (p) { marqueeStart.current = { x: p.x, y: p.y, additive: e.evt.shiftKey }; setMarquee({ x: p.x, y: p.y, w: 0, h: 0 }); }
   };
 
-  const onStageMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
+  const onStageMove = (e: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
     const p = pointer();
     if (!p) return;
     const st = useStore.getState();
@@ -303,17 +312,19 @@ export default function Workspace() {
     }
     const cd = cellDrag.current;
     if (cd) {
-      if (!cd.active && Math.hypot(e.evt.clientX - cd.sx, e.evt.clientY - cd.sy) > 8) cd.active = true;
+      const pt = ptOf(e.evt as MouseEvent | TouchEvent);
+      if (!cd.active && Math.hypot(pt.x - cd.sx, pt.y - cd.sy) > 8) cd.active = true;
       if (cd.active) { const sp = stageRef.current!.getPointerPosition()!; setSwap({ x: sp.x, y: sp.y }); }
     }
   };
 
   useEffect(() => {
-    const up = (ev: MouseEvent) => {
+    const up = (ev: MouseEvent | TouchEvent) => {
       const st = useStore.getState();
       const ps = pickStart.current;
       pickStart.current = null;
-      if (ps && Math.hypot(ev.clientX - ps.x, ev.clientY - ps.y) < 6 && st.ui.tool === "select") st.setUI({ mediaPicker: { ...ps } });
+      const pt = ptOf(ev);
+      if (ps && Math.hypot(pt.x - ps.x, pt.y - ps.y) < 6 && st.ui.tool === "select") st.setUI({ mediaPicker: { ...ps } });
       if (marqueeStart.current) {
         const m = marqueeStart.current;
         marqueeStart.current = null;
@@ -356,8 +367,97 @@ export default function Workspace() {
       } else setSwap(null);
     };
     window.addEventListener("mouseup", up);
-    return () => window.removeEventListener("mouseup", up);
+    window.addEventListener("touchend", up);
+    window.addEventListener("touchcancel", up);
+    return () => { window.removeEventListener("mouseup", up); window.removeEventListener("touchend", up); window.removeEventListener("touchcancel", up); };
   }, [pointer]);
+
+  // ── touch gestures: two fingers pinch (zoom the view, or the picture in crop mode) and pan together;
+  // one finger on the empty canvas pans it, and a quick tap there deselects
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    type G = { mode: "pan" | "pinch" | "done" | null; x: number; y: number; vx: number; vy: number; d0: number; view0: { scale: number; x: number; y: number }; fill0?: MediaFill; moved: number; t0: number };
+    const g: G = { mode: null, x: 0, y: 0, vx: 0, vy: 0, d0: 1, view0: { scale: 1, x: 0, y: 0 }, moved: 0, t0: 0 };
+    const local = (t: Touch) => { const r = el.getBoundingClientRect(); return { x: t.clientX - r.left, y: t.clientY - r.top }; };
+    const dist = (a: Touch, b: Touch) => Math.max(1, Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY));
+    const mid = (a: Touch, b: Touch) => local({ clientX: (a.clientX + b.clientX) / 2, clientY: (a.clientY + b.clientY) / 2 } as Touch);
+    const typing = (e: TouchEvent) => (e.target as HTMLElement | null)?.closest?.("textarea,input,select,[contenteditable]");
+
+    // a second finger lands mid-drag: undo the drag in progress so the picture or element doesn't jump
+    const cancelSingle = () => {
+      const d = drag.current;
+      drag.current = null;
+      if (d) { const stage = stageRef.current; d.start.forEach((p, id) => { const n = stage?.findOne("#" + id); n?.position(p); n?.stopDrag(); }); setSnapLines([]); }
+      marqueeStart.current = null; setMarquee(null);
+      cropDrag.current = null; dividerDrag.current = null; cellDrag.current = null; pickStart.current = null; setSwap(null);
+    };
+
+    const start = (e: TouchEvent) => {
+      if (typing(e)) return;
+      const st = useStore.getState();
+      if (e.touches.length >= 2) {
+        e.stopPropagation(); e.preventDefault();
+        cancelSingle();
+        const [a, b] = [e.touches[0], e.touches[1]];
+        const ct = cropTargetOf(getSlide(st.project), st.ui.cropId, st.ui.selectedCell);
+        Object.assign(g, { mode: "pinch", d0: dist(a, b), view0: { ...st.ui.view }, fill0: ct ? structuredClone(ct.fill) : undefined, moved: 99 });
+        const m = mid(a, b); g.x = m.x; g.y = m.y; g.vx = st.ui.view.x; g.vy = st.ui.view.y;
+        return;
+      }
+      if (g.mode === "done") return;
+      const t = e.touches[0];
+      const p = local(t);
+      const hit = stageRef.current?.getIntersection(p);
+      const onPanel = (e.target as HTMLElement | null)?.closest?.("button,[data-no-pan]");
+      if (onPanel || (hit && st.ui.tool !== "hand")) { g.mode = null; return; }
+      Object.assign(g, { mode: "pan", x: t.clientX, y: t.clientY, vx: st.ui.view.x, vy: st.ui.view.y, moved: 0, t0: Date.now() });
+    };
+
+    const move = (e: TouchEvent) => {
+      const st = useStore.getState();
+      if (g.mode === "pinch" && e.touches.length >= 2) {
+        e.stopPropagation(); e.preventDefault();
+        const [a, b] = [e.touches[0], e.touches[1]];
+        const f = dist(a, b) / g.d0;
+        const ct = g.fill0 ? cropTargetOf(getSlide(st.project), st.ui.cropId, st.ui.selectedCell) : null;
+        if (ct && g.fill0) { applyCropFill(ct, zoomFill(ct.fill, g.fill0.zoom * f)); return; }
+        const m = mid(a, b);
+        // zoom about the first midpoint, then follow the fingers as they travel
+        const z = zoomAround(g.view0, f, g.x, g.y);
+        st.setView({ scale: z.scale, x: z.x + (m.x - g.x), y: z.y + (m.y - g.y) });
+        return;
+      }
+      if (g.mode === "pan" && e.touches.length === 1) {
+        const t = e.touches[0];
+        const dx = t.clientX - g.x, dy = t.clientY - g.y;
+        g.moved = Math.max(g.moved, Math.hypot(dx, dy));
+        if (g.moved > 6) { e.preventDefault(); st.setView({ x: g.vx + dx, y: g.vy + dy }); }
+      }
+    };
+
+    const end = (e: TouchEvent) => {
+      const st = useStore.getState();
+      if (g.mode === "pan" && e.touches.length === 0 && g.moved <= 6 && Date.now() - g.t0 < 500 && !typing(e)) {
+        st.setUI({ cropId: null, editingTextId: null, selectedCell: null });
+        st.clearSelection();
+      }
+      if (g.mode === "pinch" && e.touches.length > 0) { g.mode = "done"; return; } // the finger left behind must not start a pan
+      if (e.touches.length === 0) g.mode = null;
+    };
+
+    el.addEventListener("touchstart", start, { capture: true, passive: false });
+    el.addEventListener("touchmove", move, { capture: true, passive: false });
+    el.addEventListener("touchend", end, { capture: true });
+    el.addEventListener("touchcancel", end, { capture: true });
+    return () => {
+      el.removeEventListener("touchstart", start, { capture: true } as never);
+      el.removeEventListener("touchmove", move, { capture: true } as never);
+      el.removeEventListener("touchend", end, { capture: true } as never);
+      el.removeEventListener("touchcancel", end, { capture: true } as never);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── drag & drop from the library / desktop
   const onDragOver = (e: React.DragEvent) => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; };
@@ -413,7 +513,7 @@ export default function Workspace() {
   return (
     <div
       ref={containerRef}
-      className="relative h-full w-full overflow-hidden bg-stage dots"
+      className="relative h-full w-full touch-none overflow-hidden bg-stage dots"
       style={{ cursor }}
       onPointerDownCapture={onPointerDownCapture}
       onDragOver={onDragOver}
@@ -431,6 +531,7 @@ export default function Workspace() {
         onMouseDown={onStageDown}
         onMouseMove={onStageMove}
         onTouchStart={onStageDown as never}
+        onTouchMove={onStageMove as never}
         onContextMenu={(e) => e.evt.preventDefault()}
       >
         <RenderContext.Provider value={rc}>

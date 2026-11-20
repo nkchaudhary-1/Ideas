@@ -28,7 +28,7 @@ export default function PanoramaHandles() {
           {i + 1}
         </button>
       ))}
-      <div className="absolute flex -translate-y-1/2 flex-col gap-3" style={{ left: right + 16, top: midY }} onPointerDown={stop}>
+      <div className="absolute flex -translate-y-1/2 flex-col gap-3" style={{ left: `min(${right + 16}px, calc(100% - 52px))`, top: midY }} onPointerDown={stop}>
         <button type="button" aria-label="Add a slide to the right" title="Extend by one slide" data-testid="pano-extend" disabled={n >= PANORAMA_MAX} onClick={() => st().setPanoramaSlides(n + 1)}
           className="pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-pill text-pillink shadow-float hover:opacity-90 disabled:opacity-30"><Plus size={16} /></button>
         <button type="button" aria-label="Remove the last slide" title="Shorten by one slide" data-testid="pano-shorten" disabled={n <= PANORAMA_MIN} onClick={() => st().setPanoramaSlides(n - 1)}

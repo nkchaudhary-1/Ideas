@@ -54,11 +54,18 @@
   color-scheme: dark;
 }
 @media (min-width: 1920px) { :root { --r: 32px; } }
-html, body { height: 100%; margin: 0; color: rgb(var(--c-ink)); overflow: hidden; overscroll-behavior: none; }
+html, body { height: 100%; height: 100dvh; margin: 0; color: rgb(var(--c-ink)); overflow: hidden; overscroll-behavior: none; }
+/* phones: no double-tap zoom delay, and text fields stay selectable (iOS Safari refuses to type into user-select:none fields) */
+body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+input, textarea, [contenteditable] { -webkit-user-select: text; user-select: text; }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+/* iOS zooms the page when a field under 16px gets focus: on touch devices fields are 16px */
+@media (pointer: coarse) { input:not([type="range"]):not([type="checkbox"]):not([type="file"]), select, textarea { font-size: 16px !important; } }
 html { background: rgb(var(--c-bg)); }
 /* a barely-there warm glow at two corners of the page ground */
 body { background: radial-gradient(900px 620px at 104% -12%, rgb(var(--accent) / var(--glow)), transparent 68%), radial-gradient(760px 520px at -6% 112%, rgb(var(--accent) / calc(var(--glow) * 0.5)), transparent 64%), rgb(var(--c-bg)); }
-body { font-family: Manrope, Inter, system-ui, sans-serif; font-size: 13px; -webkit-font-smoothing: antialiased; user-select: none; }
+body { font-family: Manrope, Inter, system-ui, sans-serif; font-size: 13px; -webkit-font-smoothing: antialiased; user-select: none; -webkit-touch-callout: none; }
 input, textarea, select, button { font: inherit; color: inherit; }
 ::selection { background: rgb(var(--accent) / 0.28); }
 :focus-visible { outline: 2px solid rgb(var(--accent) / 0.55); outline-offset: 1px; }
@@ -76,6 +83,21 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24p
 input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.07); }
 input[type="range"]::-moz-range-track { height: 3px; border-radius: 999px; background: linear-gradient(to right, rgb(var(--c-faint) / 0.45) var(--a, 0%), rgb(var(--accent2)) var(--a, 0%), rgb(var(--accent)) var(--b, 0%), rgb(var(--c-faint) / 0.45) var(--b, 0%)); }
 input[type="range"]::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 0; box-shadow: 0 2px 8px rgb(0 0 0 / 0.28); }
+/* capsule slider: a transparent native range on top of a black fill. The knob is a 44px black circle with a thin white bar,
+   so it also rounds off the end of the fill. Its centre travels from 22px to (width - 22px); the fill is sized to match. */
+input[type="range"].rs-cap {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  --knob: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Crect x='20' y='12' width='4' height='20' rx='2' fill='%23fff'/%3E%3C/svg%3E") center / 100% 100% no-repeat, rgb(var(--c-pill));
+}
+:root[data-theme="dark"] input[type="range"].rs-cap {
+  --knob: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 44 44'%3E%3Crect x='20' y='12' width='4' height='20' rx='2' fill='%230a0a0a'/%3E%3C/svg%3E") center / 100% 100% no-repeat, rgb(var(--c-pill));
+}
+input[type="range"].rs-cap::-webkit-slider-runnable-track { height: 100%; background: transparent; }
+input[type="range"].rs-cap::-webkit-slider-thumb { width: 44px; height: 44px; margin-top: 0; border-radius: 50%; box-shadow: none; background: var(--knob); transition: transform .12s ease; }
+input[type="range"].rs-cap::-moz-range-track { height: 100%; background: transparent; }
+input[type="range"].rs-cap::-moz-range-thumb { width: 44px; height: 44px; border: 0; border-radius: 50%; box-shadow: none; background: var(--knob); }
+input[type="range"].rs-cap:active::-webkit-slider-thumb { transform: scale(1.06); }
+.cap:focus-within { box-shadow: 0 0 0 2px rgb(var(--accent) / 0.45); }
 /* colour sliders (temperature, tint, hue, saturation): a thick gradient pill with a ring knob */
 input[type="range"].rs-color::-webkit-slider-runnable-track { height: 28px; border-radius: 999px; background: var(--track); }
 input[type="range"].rs-color::-webkit-slider-thumb { width: 26px; height: 26px; margin-top: 1px; background: transparent; border: 3px solid #fff; box-shadow: 0 0 0 1px rgb(0 0 0 / 0.16), 0 2px 6px rgb(0 0 0 / 0.25), inset 0 0 0 1px rgb(0 0 0 / 0.12); }
@@ -96,3 +118,10 @@ input[type="range"].rs-color::-moz-range-thumb { width: 20px; height: 20px; back
 @keyframes pop { from { opacity: 0; transform: translateY(4px) scale(.98); } to { opacity: 1; transform: none; } }
 .pop { animation: pop .14s ease-out; }
 @media (prefers-reduced-motion: reduce) { .pop { animation: none; } * { transition-duration: 0s !important; } }
+
+/* phones: panels and dialogs rise from the bottom edge like an app's sheets */
+@layer components {
+  @keyframes sheet-up { from { transform: translateY(28px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .sheet-in { animation: sheet-up 240ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+  @media (prefers-reduced-motion: reduce) { .sheet-in { animation: none; } }
+}

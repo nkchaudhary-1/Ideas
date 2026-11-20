@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 
 // Every colour is a CSS variable holding "r g b", so one class works in light and dark and takes /opacity.
 const token = (name: string) => `rgb(var(--${name}) / <alpha-value>)`;
@@ -44,5 +45,12 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // `touch:` = the device has no hover (phones, tablets): show what hover would have revealed.
+    // `coarse:` = the main pointer is a finger: give controls a finger-sized hit area.
+    plugin(({ addVariant }) => {
+      addVariant("touch", "@media (hover: none)");
+      addVariant("coarse", "@media (pointer: coarse)");
+    }),
+  ],
 } satisfies Config;

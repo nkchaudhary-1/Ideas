@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { Check, Copy, Film, Plus, Trash2 } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { keys } from "@/lib/util";
+import { useCompact } from "@/lib/use-media";
 import SlideView from "@/components/canvas/SlideView";
 import { addAssetsToEdit, isEmptyEdit, mediaOf, selectSlides, selectWhere, slideKind } from "@/lib/edit";
 import { getAsset, ACCEPT } from "@/lib/media";
@@ -25,7 +26,8 @@ export default function EditStrip() {
   const photos = items.filter((s) => slideKind(s) === "image").length;
   const videos = items.length - photos;
   const chosen = new Set(sel.length ? sel : [activeId]);
-  const TH = 76;
+  const phone = useCompact();
+  const TH = phone ? 52 : 76;
 
   const click = (e: React.MouseEvent, id: string) => {
     if (e.shiftKey) {
@@ -50,8 +52,8 @@ export default function EditStrip() {
   };
 
   return (
-    <div className="card relative flex h-[184px] shrink-0 flex-col" data-testid="slide-strip" data-edit-strip>
-      <div className="flex shrink-0 items-center gap-2 overflow-hidden px-8 pt-4" data-testid="select-bar">
+    <div className={`card relative flex shrink-0 flex-col ${phone ? "h-[140px]" : "h-[184px]"}`} data-testid="slide-strip" data-edit-strip>
+      <div className={`no-scrollbar flex shrink-0 items-center gap-2 overflow-x-auto pt-4 ${phone ? "px-4" : "px-8"}`} data-testid="select-bar">
         <span className="mr-1 shrink-0 whitespace-nowrap text-xs font-bold text-ink" data-testid="selection-count">{chosen.size > 1 ? `${chosen.size} selected` : `${items.length} item${items.length === 1 ? "" : "s"}`}</span>
         <Chip sm data-testid="select-all" onClick={() => selectWhere("all")}>All</Chip>
         <Chip sm data-testid="select-photos" disabled={!photos} onClick={() => selectWhere("image")}>Photos{photos ? ` · ${photos}` : ""}</Chip>
@@ -59,10 +61,10 @@ export default function EditStrip() {
         <Chip sm data-testid="select-none" disabled={chosen.size < 2} onClick={() => selectWhere("none")}>None</Chip>
         <span className="ml-auto hidden min-w-0 truncate text-2xs text-faint lg:block" title={`Shift-click for a range, ${keys("⌘")}-click to add`}>Shift-click for a range, {keys("⌘")}-click to add</span>
       </div>
-      <div className="flex min-h-0 flex-1 items-center gap-4 overflow-x-auto px-8 pb-5">
+      <div className={`flex min-h-0 flex-1 items-center gap-4 overflow-x-auto pb-5 ${phone ? "px-4" : "px-8"}`}>
         {slides.map((s, i) => {
           if (isEmptyEdit(s)) return null;
-          const w = Math.max(40, Math.min(150, Math.round(TH * (s.width / s.height))));
+          const w = Math.max(phone ? 24 : 40, Math.min(150, Math.round(TH * (s.width / s.height))));
           const active = s.id === activeId, picked = chosen.has(s.id), isRef = s.id === refId;
           const f = mediaOf(s)?.fill;
           const edited = !!f && (!fillIsNeutral(f) || !!f.match);
@@ -81,9 +83,9 @@ export default function EditStrip() {
                 {edited && !isRef && <span className="absolute bottom-1 right-1 h-2 w-2 rounded-full bg-accent ring-1 ring-black/40" title="Edited" />}
               </button>
               <button type="button" role="checkbox" aria-checked={picked} aria-label={`${picked ? "Deselect" : "Select"} ${s.name}`} data-testid="thumb-check" onClick={() => toggle(s.id)}
-                className={`absolute left-2 top-2 grid h-7 w-7 place-items-center rounded-full border text-white transition ${picked ? "grad-accent border-transparent opacity-100" : "border-white/80 bg-black/40 opacity-0 group-hover:opacity-100"}`}>{picked && <Check size={13} strokeWidth={3} />}</button>
+                className={`absolute left-1 top-1 grid h-7 w-7 place-items-center rounded-full border text-white transition ${picked ? "grad-accent border-transparent opacity-100" : "border-white/80 bg-black/40 opacity-0 group-hover:opacity-100 touch:opacity-100"}`}>{picked && <Check size={13} strokeWidth={3} />}</button>
               <span className={`max-w-[152px] truncate text-2xs font-semibold ${active ? "text-ink" : "text-mute"}`} title={getAsset(f?.assetId ?? "")?.name ?? s.name}>{s.name}</span>
-              <div className="absolute right-1 top-1 hidden gap-1 group-hover:flex">
+              <div className="absolute right-1 top-1 hidden gap-1 group-hover:flex touch:!hidden">
                 <button type="button" aria-label="Duplicate" title="Duplicate" onClick={() => st().duplicateSlide(s.id)} className="grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-black"><Copy size={12} /></button>
                 <button type="button" aria-label="Remove from editor" title="Remove from editor" data-testid="thumb-remove" onClick={() => st().removeEditSlides([s.id])} className="grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-red-600"><Trash2 size={12} /></button>
               </div>

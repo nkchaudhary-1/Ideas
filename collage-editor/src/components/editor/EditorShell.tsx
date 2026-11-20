@@ -13,6 +13,8 @@ import Toast from "@/components/ui/Toast";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import MediaPicker from "@/components/canvas/MediaPicker";
 import NewProjectDialog from "@/components/dialogs/NewProjectDialog";
+import CompactShell from "./CompactShell";
+import { useCompact } from "@/lib/use-media";
 
 // Dialogs the user opens on demand load as their own chunks, so the editor starts faster (the video encoder lives in Export).
 const ImportDialog = lazy(() => import("@/components/dialogs/ImportDialog"));
@@ -38,6 +40,7 @@ function Shell() {
   const shortcutsOpen = useStore((s) => s.ui.shortcutsOpen);
   const previewOpen = useStore((s) => s.ui.previewOpen);
   const exportOpen = useStore((s) => s.ui.exportOpen);
+  const compact = useCompact();
   useShortcuts();
 
   useEffect(() => {
@@ -50,6 +53,8 @@ function Shell() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.setProperty("--accent", accent);
+    // the browser bar / status bar follows the app's ground colour
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "dark" ? "#080808" : "#eaeaea");
   }, [theme, accent]);
 
   // paste images/videos from the clipboard straight into the library
@@ -78,21 +83,27 @@ function Shell() {
     return () => window.removeEventListener("beforeunload", onUnload);
   }, []);
 
-  if (!ready) return <div className="grid h-screen place-items-center bg-bg text-sm text-mute" data-testid="loading">Loading editor…</div>;
+  if (!ready) return <div className="grid h-[100dvh] place-items-center bg-bg text-sm text-mute" data-testid="loading">Loading editor…</div>;
 
   return (
-    <div className="flex h-screen min-h-0 gap-4 bg-bg p-4 text-ink" data-testid="editor-root">
-      <LeftSidebar />
-      <div className="flex min-w-0 flex-1 flex-col gap-4">
-        <div className="relative min-h-0 flex-1 overflow-hidden rounded-big bg-stage ring-1 ring-line/70">
-          <Workspace />
-          <EditEmpty />
-          <StageChrome />
-          <Toast />
+    <>
+      {compact ? (
+        <CompactShell />
+      ) : (
+        <div className="flex h-[100dvh] min-h-0 gap-4 bg-bg p-4 text-ink" data-testid="editor-root">
+          <LeftSidebar />
+          <div className="flex min-w-0 flex-1 flex-col gap-4">
+            <div className="relative min-h-0 flex-1 overflow-hidden rounded-big bg-stage ring-1 ring-line/70">
+              <Workspace />
+              <EditEmpty />
+              <StageChrome />
+              <Toast />
+            </div>
+            {kind === "edit" ? <EditStrip /> : <SlideStrip />}
+          </div>
+          {rightOpen && <PropertiesPanel />}
         </div>
-        {kind === "edit" ? <EditStrip /> : <SlideStrip />}
-      </div>
-      {rightOpen && <PropertiesPanel />}
+      )}
       <MediaPicker />
       {newProjectOpen && <NewProjectDialog />}
       <Suspense fallback={null}>
@@ -102,6 +113,6 @@ function Shell() {
         {previewOpen && <PreviewDialog />}
         {exportOpen && <ExportDialog />}
       </Suspense>
-    </div>
+    </>
   );
 }
