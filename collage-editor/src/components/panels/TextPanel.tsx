@@ -3,10 +3,16 @@ import { useStore, getSlide } from "@/lib/store";
 import { makeText } from "@/lib/factory";
 import { TEXT_PRESETS, inkFor } from "@/lib/presets";
 import { fontStack, loadFont } from "@/lib/fonts";
+import { useState } from "react";
 import { Section } from "@/components/ui/controls";
+import { PresetActions, RenameLabel } from "@/components/ui/SavePreset";
+import { previewBg } from "@/lib/user-presets";
 
 export default function TextPanel() {
   const st = useStore.getState;
+  const presets = useStore((s) => s.presets);
+  const [renaming, setRenaming] = useState<string | null>(null);
+  const styles = presets.filter((p) => p.kind === "text");
   const add = (size: number, weight: number, text: string, name: string, family = "Inter", extra = {}) => {
     const sl = getSlide(st().project);
     const ink = inkFor(sl);
@@ -30,6 +36,32 @@ export default function TextPanel() {
         <button type="button" onClick={() => add(64, 600, "Subheading", "Subheading", "Inter")} data-testid="add-subheading" className="block w-full rounded-md bg-panel2 px-3 py-2 text-left text-base font-semibold ring-1 ring-line hover:ring-accent/50">Add a subheading</button>
         <button type="button" onClick={() => add(36, 400, "Body text goes here.", "Body", "Inter", { lineHeight: 1.4 })} data-testid="add-body" className="block w-full rounded-md bg-panel2 px-3 py-2 text-left text-sm ring-1 ring-line hover:ring-accent/50">Add body text</button>
         <button type="button" onClick={() => add(26, 300, "caption", "Caption", "Outfit", { letterSpacing: 2.6 })} data-testid="add-caption" className="block w-full rounded-md bg-panel2 px-3 py-2 text-left text-xs tracking-widest ring-1 ring-line hover:ring-accent/50" style={{ fontFamily: fontStack("Outfit"), fontWeight: 300 }}>Add a caption</button>
+      </Section>
+      <Section title="My styles">
+        {styles.length > 0 ? (
+          <div className="space-y-1.5" data-testid="my-styles">
+            {styles.map((p) => {
+              if (p.kind !== "text") return null;
+              const d = p.data;
+              const ink = d.fill.type === "solid" ? d.fill.color : "#ffffff";
+              return (
+                <div key={p.id} className="group relative" data-testid="style-tile">
+                  <button type="button" title="Click to apply to the selected text, or add new text in this style" onMouseEnter={() => void loadFont(d.fontFamily, d.fontWeight, d.italic)} onClick={() => st().applyTextStyle(p.id)}
+                    className="flex w-full items-center gap-3 overflow-hidden rounded-xl bg-panel2 p-1.5 pr-3 text-left hover:ring-2 hover:ring-accent/40">
+                    <span className="grid h-11 w-14 shrink-0 place-items-center overflow-hidden rounded-lg text-[22px] leading-none" style={{ background: previewBg(ink), color: ink, fontFamily: fontStack(d.fontFamily), fontWeight: d.fontWeight, fontStyle: d.italic ? "italic" : "normal", textTransform: d.textTransform }}>Aa</span>
+                    <span className="min-w-0 flex-1">
+                      <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className="block text-xs font-bold text-ink" />
+                      <span className="block truncate text-2xs text-mute">{d.fontFamily} · {d.fontWeight}</span>
+                    </span>
+                  </button>
+                  <PresetActions id={p.id} name={p.name} onRename={() => setRenaming(p.id)} />
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-2xs leading-4 text-faint">Style a text layer, then choose “Save as text style” in its properties. Your styles appear here.</p>
+        )}
       </Section>
       <Section title="Typography presets">
         <div className="space-y-1.5">

@@ -8,13 +8,14 @@ import { makeGrid } from "@/lib/factory";
 import { cell } from "@/lib/grid-engine";
 import type { GridNode } from "@/lib/types";
 import { uid } from "@/lib/util";
+import { PresetActions, RenameLabel } from "@/components/ui/SavePreset";
 
-export function GridThumb({ preset, w = 54, h = 68, active }: { preset: GridPreset; w?: number; h?: number; active?: boolean }) {
-  const { cells } = layoutGrid({ tree: treeFromPreset(preset), width: w, height: h, margin: preset.margin !== undefined ? Math.min(6, preset.margin / 8) : 3, gutter: Math.max(1.5, (preset.gutter ?? 12) / 8) });
+export function GridThumb({ preset, tree, w = 54, h = 68, active }: { preset?: GridPreset; tree?: GridNode; w?: number; h?: number; active?: boolean }) {
+  const { cells } = layoutGrid({ tree: tree ?? treeFromPreset(preset!), width: w, height: h, margin: preset?.margin !== undefined ? Math.min(6, preset.margin / 8) : 3, gutter: Math.max(1.5, (preset?.gutter ?? 12) / 8) });
   return (
     <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className={active ? "text-accent" : "text-ink"}>
       <rect width={w} height={h} rx={6} style={{ fill: "rgb(var(--c-field))" }} />
-      {cells.map((c, i) => <rect key={i} x={c.rect.x} y={c.rect.y} width={c.rect.w} height={c.rect.h} rx={Math.min(4, (preset.radius ?? 12) / 8)} fill="currentColor" opacity={0.5} />)}
+      {cells.map((c, i) => <rect key={i} x={c.rect.x} y={c.rect.y} width={c.rect.w} height={c.rect.h} rx={Math.min(4, (preset?.radius ?? 12) / 8)} fill="currentColor" opacity={0.5} />)}
     </svg>
   );
 }
@@ -25,6 +26,9 @@ export default function LayoutsPanel() {
   const sel = useStore((s) => s.ui.assetSelection);
   const slide = useStore((s) => getSlide(s.project));
   const els = useSelectedElements();
+  const presets = useStore((s) => s.presets);
+  const [renaming, setRenaming] = useState<string | null>(null);
+  const myLayouts = presets.filter((p) => p.kind === "layout");
   const [rows, setRows] = useState(3);
   const [cols, setCols] = useState(2);
   const chosen = sel.map((id) => assets.find((a) => a.id === id)).filter(Boolean) as typeof assets;
@@ -51,6 +55,25 @@ export default function LayoutsPanel() {
           <Button variant="primary" onClick={() => createCollageFromAssets(chosen)} testId="make-collage">Make a collage from them</Button>
         </Section>
       )}
+      <Section title="My layouts" defaultOpen>
+        {myLayouts.length > 0 ? (
+          <div className="grid grid-cols-4 gap-1.5" data-testid="my-layouts">
+            {myLayouts.map((p) => (
+              p.kind === "layout" ? (
+                <div key={p.id} className="group relative" data-testid="layout-tile">
+                  <button type="button" title={`Apply “${p.name}”`} onClick={() => st().applyLayoutPreset(p.id)} className="flex w-full flex-col items-center gap-1 rounded-md p-1 hover:bg-ink/5">
+                    <GridThumb tree={p.data.tree} />
+                    <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className="w-full text-center text-2xs text-mute" />
+                  </button>
+                  <PresetActions id={p.id} name={p.name} onRename={() => setRenaming(p.id)} />
+                </div>
+              ) : null
+            ))}
+          </div>
+        ) : (
+          <p className="text-2xs leading-4 text-faint">Shape a collage, then choose “Save layout” in its properties. Your layouts appear here.</p>
+        )}
+      </Section>
       {groups.map((g) => (
         <Section key={g} title={g} defaultOpen={g !== "Dense"}>
           <div className="grid grid-cols-4 gap-1.5">

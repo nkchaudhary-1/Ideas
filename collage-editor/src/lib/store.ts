@@ -1,9 +1,10 @@
 import { create } from "zustand";
 import { produce, type Draft } from "immer";
 import type {
-  Asset, Background, Element, Format, GridEl, Id, MediaEl, MediaFill, Project, ProjectKind, ProjectMeta, Slide, TextEl,
+  Asset, Background, Element, Format, GridEl, Id, MediaEl, MediaFill, NewPreset, Project, ProjectKind, ProjectMeta, Slide, TextEl, UserPreset,
 } from "./types";
-import { cloneElement, cloneSlide, makeGrid, makeMedia, makeProject, makeSlide } from "./factory";
+import { cloneElement, cloneSlide, makeGrid, makeMedia, makeProject, makeSlide, makeText } from "./factory";
+import { loadFont } from "./fonts";
 import { boundsOf, findInTree, flatten, rotatePoint, unionRects } from "./geometry";
 import { uid, clamp, debounce } from "./util";
 import { dbAll, dbDelete, dbGet, dbPut } from "./db";
@@ -59,6 +60,7 @@ export interface Store {
   saveStatus: SaveStatus;
   ui: UIState;
   projects: ProjectMeta[];
+  presets: UserPreset[];
 
   // lifecycle
   init(): Promise<void>;
@@ -98,6 +100,13 @@ export interface Store {
   setBackground(bg: Background, allSlides?: boolean): void;
   setFormat(format: Format, opts?: { content?: "none" | "stretch" | "fit" }): void;
   applySlide(slide: Slide): void;
+
+  // saved presets (looks, text styles, sizes, layouts)
+  addPreset(p: NewPreset): UserPreset;
+  renamePreset(id: Id, name: string): void;
+  deletePreset(id: Id): void;
+  applyTextStyle(id: Id): void;
+  applyLayoutPreset(id: Id): void;
   setPanoramaSlides(n: number): void;
 
   // elements
@@ -217,6 +226,7 @@ export const useStore = create<Store>()((set, get) => {
     assets: [],
     saveStatus: "saved",
     projects: [],
+    presets: [],
     ui: {
       leftPanel: "uploads",
       rightOpen: true,
@@ -255,6 +265,8 @@ export const useStore = create<Store>()((set, get) => {
       const prefs = loadUIPrefs();
       set((s) => ({ ui: { ...s.ui, ...prefs } }));
       try {
+        const saved = await dbGet<UserPreset[]>("kv", "presets").catch(() => undefined);
+        if (Array.isArray(saved)) set({ presets: saved });
         await loadAssets();
         set({ assets: allAssets() });
         await get().refreshProjects();
@@ -434,6 +446,71 @@ export const useStore = create<Store>()((set, get) => {
         d.format = format as Draft<Format>;
       });
       get().requestFit();
+    },
+    // ───────── saved presets ─────────
+    addPreset(p) {
+      const preset = { ...p, id: uid("pre"), createdAt: Date.now() } as UserPreset;
+      set((s) => ({ presets: [...s.presets, preset] }));
+      return preset;
+    },
+    renamePreset(id, name) {
+      const n = name.trim();
+      if (!n) return;
+      set((s) => ({ presets: s.presets.map((p) => (p.id === id ? { ...p, name: n } : p)) }));
+    },
+    deletePreset(id) {
+      set((s) => ({ presets: s.presets.filter((p) => p.id !== id) }));
+    },
+    /** restyle the selected text layers, or drop a new text layer in that style when none is selected */
+    applyTextStyle(id) {
+      const pr = get().presets.find((p) => p.id === id);
+      if (!pr || pr.kind !== "text") return;
+      const d = pr.data;
+      const sl = activeSlide();
+      void loadFont(d.fontFamily, d.fontWeight, d.italic);
+      const style = (e: Draft<TextEl> | TextEl) => {
+        e.fontFamily = d.fontFamily; e.fontSize = Math.max(6, d.sizeRatio * sl.width); e.fontWeight = d.fontWeight; e.italic = d.italic;
+        e.underline = d.underline; e.strike = d.strike; e.align = d.align; e.lineHeight = d.lineHeight; e.letterSpacing = d.letterRatio * sl.width;
+        e.textTransform = d.textTransform; e.fill = structuredClone(d.fill) as never; e.stroke = d.stroke ? { ...d.stroke } : null;
+        e.background = d.background ? { ...d.background } : null; e.shadow = d.shadow ? { ...d.shadow } : null;
+      };
+      const ids = flatten(sl.elements).filter((e) => e.type === "text" && get().selection.includes(e.id)).map((e) => e.id);
+      if (ids.length) {
+        get().updateElements(ids, (e) => { if (e.type === "text") style(e); });
+        get().toast(`Applied “${pr.name}”`, "ok");
+        return;
+      }
+      const t = makeText({ text: "Your text", name: pr.name }, sl.width * 0.15, sl.height * 0.4);
+      t.width = sl.width * 0.7;
+      style(t);
+      get().addElement(t);
+      get().setUI({ editingTextId: t.id });
+    },
+    /** re-shape the selected collage into a saved layout (photos kept, in order), or add it as a new collage */
+    applyLayoutPreset(id) {
+      const pr = get().presets.find((p) => p.id === id);
+      if (!pr || pr.kind !== "layout") return;
+      const d = pr.data;
+      const sl = activeSlide();
+      const k = sl.width / d.refWidth;
+      const fresh = mapCells(cloneTree(d.tree), (c) => ({ ...c, fill: null }));
+      const existing = get().selection.length === 1 ? sl.elements.find((e) => e.id === get().selection[0] && e.type === "grid") : null;
+      if (existing && existing.type === "grid") {
+        const old = cellsOf(existing.tree).map((c) => c.fill).filter(Boolean) as MediaFill[];
+        let i = 0;
+        const tree = mapCells(fresh, (c) => (i < old.length ? { ...c, fill: old[i++] } : c));
+        commit((dr) => {
+          const f = findInTree((dr.slides.find((s) => s.id === dr.activeSlideId)!.elements) as Element[], existing.id);
+          const g = f?.el as Draft<GridEl>;
+          g.tree = tree as Draft<GridEl["tree"]>;
+          g.name = pr.name; g.margin = d.margin * k; g.gutter = d.gutter * k; g.radius = d.radius * k;
+          g.cellBg = d.cellBg; g.cellStroke = d.cellStroke ? { ...d.cellStroke } : null;
+        });
+        set((s) => ({ ui: { ...s.ui, selectedCell: null } }));
+        get().toast(`Applied “${pr.name}”`, "ok");
+        return;
+      }
+      get().addElement(makeGrid(undefined, sl.width, sl.height, { name: pr.name, tree: fresh, margin: d.margin * k, gutter: d.gutter * k, radius: d.radius * k, cellBg: d.cellBg, cellStroke: d.cellStroke ? { ...d.cellStroke } : null }));
     },
     applySlide(slide) {
       const s = structuredClone(slide);
@@ -774,6 +851,15 @@ const thumbJob = debounce(async () => {
     if (t) { await dbPut("kv", `thumb:${p.id}`, t); void useStore.getState().refreshProjects(); }
   } catch { /* thumbnails are a nicety, never an error */ }
 }, 2500);
+
+// saved presets live beside the library, not in any project, so they follow you everywhere
+const savePresets = debounce(() => { void dbPut("kv", "presets", useStore.getState().presets).catch(() => {}); }, 300);
+let lastPresets = useStore.getState().presets;
+useStore.subscribe((s) => {
+  if (s.presets === lastPresets) return;
+  lastPresets = s.presets;
+  if (s.ready) savePresets(); // the initial load happens before `ready`, and must not be written straight back
+});
 
 let lastProject: Project | null = null;
 useStore.subscribe((s) => {

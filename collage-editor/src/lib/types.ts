@@ -226,3 +226,26 @@ export interface Project {
 }
 
 export interface ProjectMeta { id: Id; name: string; kind: ProjectKind; updatedAt: number; slideCount: number; thumb?: string; ratio: string }
+
+// ───────────────────────────── user presets ─────────────────────────────
+
+/** A saved photo/video look: the filter and every adjustment. */
+export interface LookData { filter: FilterRef; adjustments: Adjustments }
+/** A saved text style. Sizes are stored relative to the canvas width so a style fits any format. */
+export interface TextStyleData {
+  fontFamily: string; sizeRatio: number; fontWeight: number; italic: boolean; underline: boolean; strike: boolean;
+  align: TextEl["align"]; lineHeight: number; letterRatio: number; textTransform: TextEl["textTransform"];
+  fill: Paint; stroke: Stroke | null; background: TextEl["background"]; shadow: Shadow | null;
+}
+export interface SizeData { width: number; height: number }
+/** A saved collage layout: the cell structure (no photos) plus its spacing, relative to the canvas it was made on. */
+export interface LayoutData { tree: GridNode; margin: number; gutter: number; radius: number; cellBg: string; cellStroke: Stroke | null; refWidth: number }
+
+export type UserPreset = { id: Id; name: string; createdAt: number } & (
+  | { kind: "look"; data: LookData }
+  | { kind: "text"; data: TextStyleData }
+  | { kind: "size"; data: SizeData }
+  | { kind: "layout"; data: LayoutData }
+);
+export type PresetKind = UserPreset["kind"];
+export type NewPreset = UserPreset extends infer U ? (U extends UserPreset ? Omit<U, "id" | "createdAt"> : never) : never;

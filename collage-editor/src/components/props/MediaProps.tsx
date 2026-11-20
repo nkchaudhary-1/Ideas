@@ -1,13 +1,15 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { Crop, FlipHorizontal2, FlipVertical2, ImageOff, Pause, Play, RefreshCw, RotateCcw, RotateCw, Scan, Volume2, VolumeX } from "lucide-react";
-import type { Asset, MediaEl } from "@/lib/types";
+import type { Adjustments, Asset, MediaEl } from "@/lib/types";
 import { useStore, getSlide } from "@/lib/store";
 import { getAsset, effectiveTrim } from "@/lib/media";
 import { ADJUSTMENT_META, FILTER_PRESETS, NEUTRAL, applyAdjustments, effectiveAdjustments } from "@/lib/filters";
 import { DEFAULT_FILTER, newFill } from "@/lib/media-math";
 import { Button, Field, IconButton, Section, Slider, Toggle } from "@/components/ui/controls";
 import { formatTime } from "@/lib/util";
+import { PresetActions, RenameLabel, SavePreset } from "@/components/ui/SavePreset";
+import { captureLook, defaultName, sameLook } from "@/lib/user-presets";
 import AssetPicker from "./AssetPicker";
 import type { FillTarget } from "./fill-target";
 
@@ -17,8 +19,10 @@ const RATIOS: { label: string; r: number | null }[] = [
 ];
 
 const thumbImgs = new Map<string, HTMLImageElement>();
-function FilterThumb({ asset, presetId, active, onClick, name }: { asset: Asset; presetId: string; active: boolean; onClick: () => void; name: string }) {
+/** a small preview of `asset` with `adj` applied */
+function ThumbCanvas({ asset, adj, className }: { asset: Asset; adj: Adjustments; className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  const key = JSON.stringify(adj);
   useEffect(() => {
     let dead = false;
     const draw = (img: HTMLImageElement) => {
@@ -29,7 +33,7 @@ function FilterThumb({ asset, presetId, active, onClick, name }: { asset: Asset;
       const ctx = cv.getContext("2d", { willReadFrequently: true })!;
       const s = Math.max(w / img.width, h / img.height);
       ctx.drawImage(img, (w - img.width * s) / 2, (h - img.height * s) / 2, img.width * s, img.height * s);
-      applyAdjustments(ctx, w, h, effectiveAdjustments({ ...NEUTRAL }, { id: presetId, intensity: 100 }), 3);
+      applyAdjustments(ctx, w, h, adj, 3);
     };
     let img = thumbImgs.get(asset.id);
     if (img?.complete) draw(img);
@@ -40,12 +44,51 @@ function FilterThumb({ asset, presetId, active, onClick, name }: { asset: Asset;
       if (!img.src) img.src = asset.thumb;
     }
     return () => { dead = true; };
-  }, [asset, presetId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [asset, key]);
+  return <canvas ref={ref} className={className} />;
+}
+
+function FilterThumb({ asset, presetId, active, onClick, name }: { asset: Asset; presetId: string; active: boolean; onClick: () => void; name: string }) {
   return (
     <button type="button" onClick={onClick} title={name} data-testid={`filter-${presetId}`} className={`group flex flex-col items-center gap-1 rounded-md p-0.5 ${active ? "bg-accent/20 ring-1 ring-accent" : "hover:bg-ink/5"}`}>
-      <canvas ref={ref} className="h-[60px] w-[48px] rounded-sm bg-panel2" />
+      <ThumbCanvas asset={asset} adj={effectiveAdjustments({ ...NEUTRAL }, { id: presetId, intensity: 100 })} className="h-[60px] w-[48px] rounded-sm bg-panel2" />
       <span className={`text-2xs ${active ? "text-accent" : "text-mute"}`}>{name}</span>
     </button>
+  );
+}
+
+/** the user's own saved looks: a filter plus every adjustment, reusable on any photo or video */
+function MyLooks({ target, asset }: { target: FillTarget; asset: Asset | undefined }) {
+  const st = useStore.getState;
+  const presets = useStore((s) => s.presets);
+  const [renaming, setRenaming] = useState<string | null>(null);
+  const looks = presets.filter((p) => p.kind === "look");
+  return (
+    <Section title="My looks" defaultOpen>
+      {looks.length > 0 ? (
+        <div className="grid grid-cols-4 gap-1" data-testid="my-looks">
+          {looks.map((p) => {
+            if (p.kind !== "look") return null;
+            const active = sameLook(target.fill, p.data);
+            return (
+              <div key={p.id} className="group relative" data-testid="look-tile">
+                <button type="button" title={`Apply “${p.name}”`} onClick={() => target.update((f) => { f.filter = { ...p.data.filter }; f.adjustments = { ...p.data.adjustments }; })}
+                  className={`flex w-full flex-col items-center gap-1 rounded-md p-0.5 ${active ? "bg-accent/20 ring-1 ring-accent" : "hover:bg-ink/5"}`}>
+                  {asset ? <ThumbCanvas asset={asset} adj={effectiveAdjustments(p.data.adjustments, p.data.filter)} className="h-[60px] w-[48px] rounded-sm bg-panel2" /> : <span className="block h-[60px] w-[48px] rounded-sm bg-panel2" />}
+                  <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className={`w-full text-center text-2xs ${active ? "text-accent" : "text-mute"}`} />
+                </button>
+                <PresetActions id={p.id} name={p.name} onRename={() => setRenaming(p.id)} />
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="text-2xs leading-4 text-faint">Adjust a photo or video, then save the result as a look to reuse it anywhere.</p>
+      )}
+      <SavePreset label="Save current look" testId="save-look" placeholder="Look name" defaultName={() => defaultName(presets, "look")}
+        onSave={(name) => { st().addPreset({ kind: "look", name, data: captureLook(target.fill) }); st().toast(`Saved look “${name}”`, "ok"); }} />
+    </Section>
   );
 }
 
@@ -126,6 +169,8 @@ export default function MediaProps({ target }: { target: FillTarget }) {
       </Section>
 
       {fill.kind === "video" && asset && <VideoSection target={target} duration={asset.duration ?? 0} playing={playing} />}
+
+      <MyLooks target={target} asset={asset} />
 
       {asset && (
         <Section title="Filters" action={<button type="button" className="text-2xs text-mute hover:text-ink" onClick={() => target.update((f) => { f.filter = { ...DEFAULT_FILTER }; })}>Reset</button>}>

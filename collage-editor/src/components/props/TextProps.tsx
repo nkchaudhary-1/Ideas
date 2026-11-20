@@ -1,7 +1,9 @@
 "use client";
 import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Italic, Strikethrough, Underline } from "lucide-react";
 import type { TextEl } from "@/lib/types";
-import { useStore } from "@/lib/store";
+import { useStore, getSlide } from "@/lib/store";
+import { SavePreset } from "@/components/ui/SavePreset";
+import { captureTextStyle, defaultName } from "@/lib/user-presets";
 import { fontByFamily, loadFont } from "@/lib/fonts";
 import { ColorField } from "@/components/ui/ColorPicker";
 import { Field, IconButton, Section, Segmented, Select, Slider, Toggle } from "@/components/ui/controls";
@@ -53,6 +55,8 @@ export default function TextProps({ el }: { el: TextEl }) {
         <Field label="Case">
           <Segmented size="sm" value={el.textTransform} options={[{ value: "none", label: "Aa" }, { value: "uppercase", label: "AA" }, { value: "lowercase", label: "aa" }, { value: "capitalize", label: "Ab" }]} onChange={(v) => set((e) => { e.textTransform = v; })} />
         </Field>
+              <SavePreset label="Save as text style" testId="save-text-style" placeholder="Style name" defaultName={() => defaultName(useStore.getState().presets, "text")}
+          onSave={(name) => { const sl = getSlide(st().project); st().addPreset({ kind: "text", name, data: captureTextStyle(el, sl) }); st().toast(`Saved style “${name}”`, "ok"); }} />
       </Section>
 
       <Section title="Spacing">

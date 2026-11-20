@@ -1,7 +1,9 @@
 "use client";
 import { Columns2, Eraser, Rows2, Trash2, Unlink2, LayoutGrid } from "lucide-react";
 import type { GridEl } from "@/lib/types";
-import { useStore } from "@/lib/store";
+import { useStore, getSlide } from "@/lib/store";
+import { SavePreset } from "@/components/ui/SavePreset";
+import { captureLayout, defaultName } from "@/lib/user-presets";
 import { findCell, removeCell, splitCell, updateCell, layoutGrid, cellsOf } from "@/lib/grid-engine";
 import { ColorField } from "@/components/ui/ColorPicker";
 import { Button, Field, Section, Slider } from "@/components/ui/controls";
@@ -38,6 +40,8 @@ export default function GridProps({ el }: { el: GridEl }) {
           <span data-testid="grid-count">{count} cell{count === 1 ? "" : "s"}</span>
           <Button variant="ghost" onClick={() => st().setUI({ leftPanel: "layouts" })}><LayoutGrid size={12} /> Change layout</Button>
         </div>
+        <SavePreset label="Save layout" testId="save-layout" placeholder="Layout name" defaultName={() => defaultName(useStore.getState().presets, "layout")}
+          onSave={(name) => { st().addPreset({ kind: "layout", name, data: captureLayout(el, getSlide(st().project)) }); st().toast(`Saved layout “${name}”`, "ok"); }} />
         <Slider label="Outer margin" value={Math.round(el.margin)} min={0} max={200} unit="px" onChange={(v) => set((g) => { g.margin = v; }, "margin")} testId="grid-margin" />
         <Slider label="Gutter" value={Math.round(el.gutter)} min={0} max={120} unit="px" onChange={(v) => set((g) => { g.gutter = v; }, "gutter")} testId="grid-gutter" />
         <Slider label="Corner" value={Math.round(el.radius)} min={0} max={200} unit="px" onChange={(v) => set((g) => { g.radius = v; }, "gradius")} testId="grid-radius" />

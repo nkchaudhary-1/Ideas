@@ -5,6 +5,8 @@ import { useStore, getSlide } from "@/lib/store";
 import { CUSTOM_FORMAT, FORMATS, PANORAMA_BASES, PANORAMA_MAX, PANORAMA_MIN, panoramaCount, panoramaFormat, ratioLabel } from "@/lib/formats";
 import type { Format } from "@/lib/types";
 import { Button, NumberField, Segmented } from "@/components/ui/controls";
+import { PresetActions, RenameLabel, SavePreset } from "@/components/ui/SavePreset";
+import { defaultName } from "@/lib/user-presets";
 
 const NOTE: Record<string, string> = { "4-5": "Feed", "9-16": "Story · Reel", "1-1": "Square", "191-1": "Landscape" };
 
@@ -28,6 +30,9 @@ export default function FormatMenu({ close }: { close: () => void }) {
   const [content, setContent] = useState<"stretch" | "fit" | "none">("stretch");
   const [cw, setCw] = useState(slide.width);
   const [ch, setCh] = useState(slide.height);
+  const presets = useStore((s) => s.presets);
+  const [renaming, setRenaming] = useState<string | null>(null);
+  const sizes = presets.filter((p) => p.kind === "size");
   const n = panoramaCount(slide.width);
   const segH = slide.height;
   const baseId = PANORAMA_BASES.find((b) => b.h === segH)?.id ?? "4-5";
@@ -73,12 +78,38 @@ export default function FormatMenu({ close }: { close: () => void }) {
         </div>
       </section>
 
+      {sizes.length > 0 && (
+        <section data-testid="my-sizes">
+          <h3 className="mb-2 text-xs font-bold text-ink">My sizes</h3>
+          <div className="grid grid-cols-2 gap-1.5">
+            {sizes.map((p) => {
+              if (p.kind !== "size") return null;
+              const f = CUSTOM_FORMAT(p.data.width, p.data.height);
+              const on = same(f);
+              return (
+                <div key={p.id} className="group relative" data-testid="size-tile">
+                  <button type="button" title={`${p.data.width} × ${p.data.height}px`} onClick={() => set(f)} className={`flex w-full flex-col items-start rounded-xl px-3 py-2 text-left transition-colors ${on ? "bg-pill text-pillink" : "bg-field text-ink hover:bg-raised"}`}>
+                    <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className="w-full text-xs font-bold" />
+                    <span className="text-[10px] opacity-70">{f.ratio} · {p.data.width}×{p.data.height}</span>
+                  </button>
+                  <PresetActions id={p.id} name={p.name} onRename={() => setRenaming(p.id)} />
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
       <section>
         <h3 className="mb-2 text-xs font-bold text-ink">Custom size</h3>
         <div className="flex items-center gap-2">
           <NumberField width={78} value={cw} min={64} max={12000} onChange={setCw} label="W" />
           <NumberField width={78} value={ch} min={64} max={8000} onChange={setCh} label="H" />
           <Button onClick={() => { set(CUSTOM_FORMAT(cw, ch)); close(); }} testId="apply-custom">Apply</Button>
+        </div>
+        <div className="mt-2.5">
+          <SavePreset label="Save this size" testId="save-size" placeholder="Size name" defaultName={() => defaultName(presets, "size")}
+            onSave={(name) => { st().addPreset({ kind: "size", name, data: { width: Math.round(cw), height: Math.round(ch) } }); st().toast(`Saved size “${name}”`, "ok"); }} />
         </div>
       </section>
 
