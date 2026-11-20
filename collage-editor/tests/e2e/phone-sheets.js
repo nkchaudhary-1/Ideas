@@ -57,11 +57,11 @@ const box = async (page, sel) => { const l = page.locator(sel).first(); return (
   await page.evaluate(() => window.__store.getState().setUI({ sheet: null })); await settle(page, 300);
   await page.tap('[data-testid=rail-text]'); await settle(page, 500);
   await page.tap('[data-testid=add-heading]'); await settle(page, 500);
-  await page.evaluate(() => window.__store.getState().setUI({ sheet: null })); await settle(page, 500);
+  await page.evaluate(() => window.__store.getState().setUI({ sheet: null, editingTextId: null })); await settle(page, 500);
   const sel = await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); return sl.elements.filter((e) => s.selection.includes(e.id)).map((e) => e.type); });
   ok(sel.length === 1 && sel[0] === 'text', 'adding a heading selects it', sel);
   ok(!!(await box(page, '[data-testid=edit-chip]')), 'a selected text shows the Edit chip');
-  await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); s.select([sl.elements.find((e) => e.type === 'image').id]); s.setUI({ sheet: 'props' }); }); await settle(page, 500);
+  await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); s.select([sl.elements.find((e) => e.type === 'image').id]); s.setUI({ sheet: 'props', editingTextId: null }); }); await settle(page, 500);
 
   // ── the capsule slider follows a finger
   await page.evaluate(() => { const s = window.__store.getState(); s.setUI({ sheetSize: 'full' }); document.querySelectorAll('[data-testid=properties] section button[aria-expanded=false]').forEach((b) => b.click()); });
@@ -78,7 +78,8 @@ const box = async (page, sel) => { const l = page.locator(sel).first(); return (
   ok(fillW > 0.2 && fillW < 0.45, 'the black fill follows the knob', { fill: fillW });
 
   // ── the media picker fits the screen and closes on a tap outside
-  await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); s.setUI({ sheet: null, mediaPicker: { x: window.innerWidth - 30, y: window.innerHeight - 140, elementId: sl.elements[0].id } }); });
+  await page.evaluate(() => window.__store.getState().setUI({ sheet: null })); await settle(page, 400);
+  await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); s.setUI({ mediaPicker: { x: window.innerWidth - 30, y: window.innerHeight - 140, elementId: sl.elements.find((e) => e.type === 'image').id } }); });
   await settle(page, 500);
   const pk = await box(page, '[data-testid=media-picker]');
   ok(!!pk && pk.x >= 0 && pk.x + pk.width <= vp.width && pk.y >= 0 && pk.y + pk.height <= vp.height, 'the media picker stays inside the screen', pk);
