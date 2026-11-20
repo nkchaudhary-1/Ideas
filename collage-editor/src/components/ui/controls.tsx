@@ -41,7 +41,7 @@ export function Button({ children, onClick, variant = "default", disabled, class
 export function Section({ title, children, defaultOpen = true, action }: { title: string; children: ReactNode; defaultOpen?: boolean; action?: ReactNode }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <section className="mx-4 mb-4 rounded-3xl bg-panel2 px-5 py-5">
+    <section className="mx-3 mb-3 rounded-inner bg-panel2 px-5 py-5">
       <div className="flex items-center justify-between">
         <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} className="flex flex-1 items-center justify-between text-left text-sm font-bold text-ink">
           {title}

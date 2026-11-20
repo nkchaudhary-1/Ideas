@@ -48,7 +48,7 @@ export default function FormatMenu({ close }: { close: () => void }) {
         </div>
       </section>
 
-      <section className="rounded-3xl bg-panel2 p-5" data-testid="panorama-section">
+      <section className="rounded-inner bg-panel2 p-5" data-testid="panorama-section">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="text-xs font-bold text-ink">Panorama carousel</h3>

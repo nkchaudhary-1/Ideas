@@ -109,11 +109,6 @@ export default function CanvasProps() {
         <p className="text-2xs leading-4 text-faint">The grid is a guide. It is never part of exported images.</p>
       </Section>
 
-      <Section title="Guides" defaultOpen={false}>
-        <div className="text-xs text-mute">{slide.guides.x.length + slide.guides.y.length} guides · drag from the rulers to add (⇧R shows rulers)</div>
-        <Button variant="ghost" disabled={!slide.guides.x.length && !slide.guides.y.length} onClick={() => st().commit((p) => { const s = p.slides.find((x) => x.id === p.activeSlideId)!; s.guides = { x: [], y: [] }; })}>Clear guides</Button>
-      </Section>
-
       {videos.length > 0 && (
         <Section title="Video slide">
           <Field label="Duration">

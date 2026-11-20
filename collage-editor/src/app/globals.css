@@ -26,6 +26,13 @@
   --accent: 255 106 26;
   --accent2: 255 156 92;
   --glow: 0.10;
+  /* One corner system. A card is 24px (32px on very large screens); big surfaces (the stage, dialogs) are always 32px.
+     Anything nested follows the concentric rule: inner radius = outer radius - the gap between the two edges,
+     with a small floor so corners far from the edge don't go square. */
+  --r: 24px;
+  --r-big: 32px;
+  --r-in: calc(var(--r) - 12px);
+  --r-in2: max(calc(var(--r) - 20px), 8px);
   color-scheme: light;
 }
 :root[data-theme="dark"] {
@@ -48,6 +55,7 @@
   --glow: 0.16;
   color-scheme: dark;
 }
+@media (min-width: 1920px) { :root { --r: 32px; } }
 html, body { height: 100%; margin: 0; color: rgb(var(--c-ink)); overflow: hidden; overscroll-behavior: none; }
 html { background: rgb(var(--c-bg)); }
 /* a barely-there warm glow at two corners of the page ground */
@@ -84,7 +92,7 @@ input[type="range"].rs-color::-moz-range-thumb { width: 20px; height: 20px; back
 .checker { background-image: linear-gradient(45deg, rgb(var(--c-faint) / .35) 25%, transparent 25%), linear-gradient(-45deg, rgb(var(--c-faint) / .35) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgb(var(--c-faint) / .35) 75%), linear-gradient(-45deg, transparent 75%, rgb(var(--c-faint) / .35) 75%); background-size: 10px 10px; background-position: 0 0, 0 5px, 5px -5px, -5px 0; background-color: rgb(var(--c-field)); }
 
 /* floating surfaces */
-.card { background: rgb(var(--c-panel)); border-radius: 24px; box-shadow: 0 1px 2px rgb(var(--c-shadow) / 0.05), 0 10px 30px rgb(var(--c-shadow) / 0.10); }
+.card { background: rgb(var(--c-panel)); border-radius: var(--r); box-shadow: 0 1px 2px rgb(var(--c-shadow) / 0.05), 0 10px 30px rgb(var(--c-shadow) / 0.10); }
 :root[data-theme="dark"] .card { box-shadow: 0 0 0 1px rgb(var(--c-line) / 0.7), 0 12px 34px rgb(0 0 0 / 0.35); }
 .dots { background-image: radial-gradient(rgb(var(--c-ink) / 0.13) 1px, transparent 1.2px); background-size: 22px 22px; }
 @keyframes pop { from { opacity: 0; transform: translateY(4px) scale(.98); } to { opacity: 1; transform: none; } }

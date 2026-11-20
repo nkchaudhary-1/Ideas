@@ -86,35 +86,6 @@ export function SnapLinesView({ lines, accent }: { lines: SnapLine[]; accent: st
   );
 }
 
-export function GuideLines({ slide, scale, onMove }: { slide: Slide; scale: number; onMove: (axis: "x" | "y", index: number, pos: number | null) => void }) {
-  const big = 20000;
-  const mk = (axis: "x" | "y", pos: number, i: number) => (
-    <Line
-      key={axis + i}
-      points={axis === "x" ? [0, -big, 0, big] : [-big, 0, big, 0]}
-      x={axis === "x" ? pos : 0}
-      y={axis === "y" ? pos : 0}
-      stroke="#27d3ff"
-      strokeWidth={1}
-      strokeScaleEnabled={false}
-      hitStrokeWidth={10 / scale}
-      draggable
-      dragBoundFunc={function (this: Konva.Node, p) {
-        const t = this.getAbsoluteTransform().copy();
-        void t;
-        return axis === "x" ? { x: p.x, y: this.absolutePosition().y } : { x: this.absolutePosition().x, y: p.y };
-      }}
-      onMouseEnter={(e) => { e.target.getStage()!.container().style.cursor = axis === "x" ? "col-resize" : "row-resize"; }}
-      onMouseLeave={(e) => { e.target.getStage()!.container().style.cursor = ""; }}
-      onDragEnd={(e) => {
-        const pos = axis === "x" ? e.target.x() : e.target.y();
-        const limit = axis === "x" ? slide.width : slide.height;
-        onMove(axis, i, pos < -8 || pos > limit + 8 ? null : Math.round(pos * 100) / 100);
-      }}
-    />
-  );
-  return <Group>{slide.guides.x.map((p, i) => mk("x", p, i))}{slide.guides.y.map((p, i) => mk("y", p, i))}</Group>;
-}
 
 export function GridEditorOverlay({
   el, selectedCell, accent, scale, onDividerDown,

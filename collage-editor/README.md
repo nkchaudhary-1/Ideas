@@ -15,7 +15,7 @@ Minimal, floating, light or dark. The canvas fills the middle; everything else i
 
 * **Left:** an icon-only rail (Media, Layouts, Templates · Text, Elements, Frames, Backgrounds, Colours · Layers). Click one and its panel opens beside it; click again to close.
 * **Top of the canvas:** project name and menu (new / open / shortcuts), the **size chip** (ratio and panorama controls), undo / redo, theme switch, Preview, Export.
-* **Bottom of the canvas:** select and hand tools, zoom, fit, and a **View** menu with rulers, layout grid, safe areas and snapping.
+* **Bottom of the canvas:** select and hand tools, zoom, fit, and a **View** menu with layout grid, safe areas and snapping.
 * **Right:** one properties card that only shows what the current selection needs, in collapsible groups.
 * **Below:** the slide strip (compact for single designs, with seam marks on panoramas).
 * **Palette:** black, white and one orange. Greys are neutral; orange marks only the active tool, slider fills, toggles and canvas selection, with a soft gradient on the primary button and the page ground. Light and dark themes; the choice is remembered and the first visit follows your system setting.
@@ -38,13 +38,13 @@ Photo editing and image export work in any modern browser.
 
 | Area | Details |
 | --- | --- |
-| Canvas | Zoom (wheel, ⌘/Ctrl-wheel, +/−), pan (space-drag, hand tool, middle mouse), fit, zoom to selection, rulers with drag-out guides, layout grids (columns, modular, baseline), safe areas, snapping to canvas / objects / guides / grid lines |
+| Canvas | Zoom (wheel, ⌘/Ctrl-wheel, +/−), pan (space-drag, hand tool, middle mouse), fit, zoom to selection, layout grids (columns, modular, baseline), safe areas, snapping to canvas / objects / guides / grid lines |
 | Formats | 1:1, 4:5, 3:4, 2:3, 5:4, 4:3, 3:2, 16:9, 1.91:1, 9:16 Story/Reel and custom sizes, chosen from the size chip at the top of the canvas. Changing the ratio keeps content (stretch / fit / keep). A carousel has one ratio for every slide |
 | **Panorama (12:5)** | One wide canvas that is cut into slides on export. **12:5 = three 4:5 slides side by side** (3240×1350). Extend it any time with the **+** on the canvas edge (16:5, 20:5, … up to 10 slides) or shorten it with **−**; content stays where it is. Slide numbers and dashed seams show the cuts. Slide shape can be 4:5, 1:1 or 3:4. Preview pages through the slices exactly as they will be published; export writes one image per slice (`name-01.png`, `name-02.png`, …) |
 | Media library | JPG, PNG, WebP, MP4, MOV, WebM; drag & drop, paste, multi-file. Search, sort, filter photos/videos, reuse, replace, delete. Library is stored per device and shared across projects |
 | Photo editing (non-destructive) | Exposure, brightness, contrast, highlights, shadows, saturation, temperature, tint, hue, grayscale, sepia, fade, sharpness, blur, vignette, grain, opacity. 16 filter presets with intensity. Per-slider and global reset. The original file is never modified |
 | Crop & position | Free or ratio crop, zoom, pan, rotate 90°, flip, fit / fill / reset, replace media, side-handle crop that keeps pixel scale |
-| Grid collages | ~30 layouts (basic, asymmetric, dense, editorial, "from your posts"), drag gaps to resize cells, drag a cell onto another to swap, split / remove cells, gutter, margin, radius, cell colour and border, per-cell crop and filters. Convert to free frames at any time |
+| Grid collages | Click an empty tile to add a photo or video right there (upload or pick from the library; extra files fill the next empty tiles), then drag to reposition and scroll to zoom. On a panorama each layout you add goes into the next empty slide; pick a slide with its number (in the Layouts panel or on the canvas) or drag a layout onto any slide. *Add new / Replace selected* chooses whether a click adds a layout or re-shapes the selected one. ~30 layouts (basic, asymmetric, dense, editorial, "from your posts"), drag gaps to resize cells, drag a cell onto another to swap, split / remove cells, gutter, margin, radius, cell colour and border, per-cell crop and filters. Convert to free frames at any time |
 | Freeform collages | Frames you can drag, resize, rotate, overlap, mask (rect, circle, rounded, portrait, landscape), border, shadow, reorder |
 | Typography | Edit directly on the canvas. 45 OFL fonts in 8 categories (sans, serif, display, handwritten, script, mono, condensed, experimental), size, weight, italic, case, alignment, line height, letter spacing, padding, fill / gradient, outline, shadow, highlight, 16 editable text presets |
 | Elements | Shapes, lines, arrows, stars, polygons, badges, tags, stickers, a music-player card, all editable |
@@ -64,14 +64,14 @@ Photo editing and image export work in any modern browser.
 
 Press `?` in the editor for the full list. Highlights: `⌘/Ctrl Z` / `⇧⌘Z` undo/redo, `⌘D` duplicate, `⌘G` group,
 `Delete`, arrows (⇧ = 10 px), `⌘] / ⌘[` order, `T` add text, `Enter` edit text / crop, `Space` pan, `⇧1` fit,
-`⇧2` zoom to selection, `⇧R` rulers, `Alt` while dragging disables snapping.
+`⇧2` zoom to selection, `Alt` while dragging disables snapping.
 
 ## Export
 
 The Export dialog lets you pick slides (all / current / any subset) and shows exactly which files will be made.
 
 * **Images:** PNG, JPEG or WebP at ½×, 1×, 1.5× or 2×, quality slider (JPEG / WebP), transparent background (PNG / WebP).
-  Panorama canvases can be sliced into 1080 px slides. Editor chrome (selection, guides, rulers, grids) is never rendered.
+  Panorama canvases can be sliced into 1080 px slides. Editor chrome (selection, grids, safe areas) is never rendered.
 * **Video slides:** exported as **real video files**, not stills. Each frame is rendered through the same scene the editor
   shows (trims, filters, text and shapes included), encoded with WebCodecs and muxed to **MP4 (H.264)** or **WebM (VP9)**,
   at 24 / 30 / 60 fps. Audio from unmuted clips is mixed (trim, volume, loop respected). Slide length is the longest
@@ -116,7 +116,7 @@ src/
     db.ts                 IndexedDB (projects, assets, blobs, kv)
     export/               render.tsx (offscreen scene), image.ts, video.ts, zip.ts, run.ts, thumb.ts
   components/
-    canvas/               Konva scene (ElementNode, MediaShape, overlays, selection, rulers, workspace)
+    canvas/               Konva scene (ElementNode, MediaShape, overlays, selection, workspace)
     panels/               left rail: templates, layouts, uploads, text, elements, backgrounds, frames, layers, colours
     props/                right panel: canvas, text, shape, media, grid
     editor/               top bar, slide strip, shortcuts, shell
@@ -165,7 +165,9 @@ animated text / transitions, in-browser audio tracks beyond the clips' own sound
 ## Design language (from the Figma audit)
 
 * Floating rounded cards with generous spacing (16 px page gutter, 20 px card padding), pill-shaped fields and segmented
-  controls, bold small headings, black / white / orange only. Light and dark themes are CSS-variable tokens in
+  controls, bold small headings, black / white / orange only. Corners are concentric: a card is 24 px (32 px on very large
+  screens), big surfaces (the canvas card, dialogs) are 32 px, and anything nested uses outer radius − the gap between the
+  two edges (12 px inside a 12 px inset, 20 px on very large screens), with an 8 px floor. See `--r*` in `globals.css`. Light and dark themes are CSS-variable tokens in
   `src/app/globals.css`, so every control follows the theme. UI type is Manrope.
 * Photo cards with large radii, equal gutters and a consistent outer margin; titles in a light soft serif over photos;
   tiny `@handle` / location tags; wide-tracked uppercase labels.

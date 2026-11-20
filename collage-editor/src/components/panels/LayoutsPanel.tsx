@@ -1,8 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useStore, getSlide, useSelectedElements } from "@/lib/store";
 import { GRID_PRESETS, layoutGrid, presetCellCount, suggestPresets, treeFromPreset, type GridPreset } from "@/lib/grid-engine";
-import { Button, Field, NumberField, Section } from "@/components/ui/controls";
+import { Button, Field, NumberField, Section, Segmented } from "@/components/ui/controls";
+import { firstEmptySegment } from "@/lib/store";
+import { panoramaCount } from "@/lib/formats";
 import { createCollageFromAssets } from "@/lib/workflows";
 import { makeGrid } from "@/lib/factory";
 import { cell } from "@/lib/grid-engine";
@@ -27,6 +29,8 @@ export default function LayoutsPanel() {
   const slide = useStore((s) => getSlide(s.project));
   const els = useSelectedElements();
   const presets = useStore((s) => s.presets);
+  const pin = useStore((s) => s.ui.pinSegment);
+  const layoutMode = useStore((s) => s.ui.layoutMode);
   const [renaming, setRenaming] = useState<string | null>(null);
   const myLayouts = presets.filter((p) => p.kind === "layout");
   const [rows, setRows] = useState(3);
@@ -34,23 +38,48 @@ export default function LayoutsPanel() {
   const chosen = sel.map((id) => assets.find((a) => a.id === id)).filter(Boolean) as typeof assets;
   const groups = ["From your posts", "Basic", "Asymmetric", "Dense", "Editorial"] as const;
   const activeGrid = els.length === 1 && els[0].type === "grid" ? els[0] : null;
+  const n = panoramaCount(slide.width);
+  const free = firstEmptySegment(slide);
+  const next = pin ?? free;
+  // what a click does when a grid is selected: on a panorama with a free slide, add; otherwise re-shape the selected grid
+  const resolved: "add" | "replace" = !activeGrid ? "add" : layoutMode !== "auto" ? layoutMode : n >= 2 && next !== null ? "add" : "replace";
+  useEffect(() => { st().setUI({ layoutMode: "auto" }); }, [activeGrid?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const drag = (id: string) => ({ draggable: true, onDragStart: (e: React.DragEvent) => { e.dataTransfer.setData("application/x-layout", id); e.dataTransfer.effectAllowed = "copy"; } });
   const suggestions = chosen.length ? suggestPresets(chosen.length, slide.width / slide.height) : [];
 
   const custom = () => {
     const tree: GridNode = { kind: "split", id: uid("s"), dir: "v", weights: Array(rows).fill(1), children: Array.from({ length: rows }, () => ({ kind: "split", id: uid("s"), dir: "h", weights: Array(cols).fill(1), children: Array.from({ length: cols }, () => cell()) }) as GridNode) };
-    const g = makeGrid(undefined, slide.width, slide.height, { tree, name: `Custom ${cols}×${rows}` });
-    st().addElement(g);
+    st().addGridTree(tree, `Custom ${cols}×${rows}`);
   };
 
   return (
     <div className="h-full overflow-y-auto" data-testid="layouts-panel">
-      <div className="px-7 pb-5 text-xs leading-5 text-mute">
-        Every layout makes real, editable cells. {activeGrid ? <span className="text-ink">A grid is selected: clicking a layout re-arranges it and keeps your photos.</span> : "Pick one to add it to the slide."}
+      <div className="space-y-4 px-7 pb-5" data-testid="layout-target">
+        {n >= 2 ? (
+          <>
+            <p className="text-xs leading-5 text-mute">
+              {resolved === "replace" ? "Clicking a layout re-arranges the selected grid." : <>Next layout goes to <b className="text-ink">slide {next !== null ? next + 1 : n}</b>. Pick a layout, or drag one onto any slide.</>}
+            </p>
+            <div className="flex flex-wrap gap-1.5" role="group" aria-label="Choose slide">
+              {Array.from({ length: n }, (_, i) => (
+                <button key={i} type="button" data-testid={`layout-slide-${i + 1}`} aria-pressed={pin === i} onClick={() => st().setUI({ pinSegment: pin === i ? null : i })}
+                  className={`h-8 min-w-8 rounded-full px-2.5 text-xs font-bold transition-colors ${pin === i ? "bg-pill text-pillink" : next === i ? "bg-field text-ink ring-1 ring-ink/40" : "bg-field text-mute hover:text-ink"}`}>{i + 1}</button>
+              ))}
+            </div>
+          </>
+        ) : (
+          <p className="text-xs leading-5 text-mute">
+            Every layout makes real, editable cells. {activeGrid ? (resolved === "replace" ? "A grid is selected: clicking a layout re-arranges it and keeps your photos." : "Clicking a layout adds it as a new grid.") : "Pick one to add it to the slide, or drag it onto the canvas."}
+          </p>
+        )}
+        {activeGrid && (
+          <Segmented size="sm" value={resolved} onChange={(v) => st().setUI({ layoutMode: v })} options={[{ value: "add", label: "Add new" }, { value: "replace", label: "Replace selected" }]} />
+        )}
       </div>
       {chosen.length > 0 && (
         <Section title={`For your ${chosen.length} selected file${chosen.length > 1 ? "s" : ""}`}>
           <div className="grid grid-cols-4 gap-3">
-            {suggestions.map((p) => <button key={p.id} type="button" title={p.name} onClick={() => { st().applyGridPreset(p); }} className="grid place-items-center rounded-xl p-1.5 hover:bg-ink/5"><GridThumb preset={p} /></button>)}
+            {suggestions.map((p) => <button key={p.id} type="button" title={p.name} {...drag(p.id)} onClick={() => { st().applyGridPreset(p); }} className="grid place-items-center rounded-xl p-1.5 hover:bg-ink/5"><GridThumb preset={p} /></button>)}
           </div>
           <Button variant="primary" onClick={() => createCollageFromAssets(chosen)} testId="make-collage">Make a collage from them</Button>
         </Section>
@@ -61,7 +90,7 @@ export default function LayoutsPanel() {
             {myLayouts.map((p) => (
               p.kind === "layout" ? (
                 <div key={p.id} className="group relative" data-testid="layout-tile">
-                  <button type="button" title={`Apply “${p.name}”`} onClick={() => st().applyLayoutPreset(p.id)} className="flex w-full flex-col items-center gap-1 rounded-md p-1 hover:bg-ink/5">
+                  <button type="button" title={`Apply “${p.name}”`} {...drag(p.id)} onClick={() => st().applyLayoutPreset(p.id)} className="flex w-full flex-col items-center gap-1 rounded-md p-1 hover:bg-ink/5">
                     <GridThumb tree={p.data.tree} />
                     <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className="w-full text-center text-2xs text-mute" />
                   </button>
@@ -78,7 +107,7 @@ export default function LayoutsPanel() {
         <Section key={g} title={g} defaultOpen={g !== "Dense"}>
           <div className="grid grid-cols-4 gap-3">
             {GRID_PRESETS.filter((p) => p.group === g).map((p) => (
-              <button key={p.id} type="button" title={`${p.name} · ${presetCellCount(p)} cell${presetCellCount(p) > 1 ? "s" : ""}`} data-testid={`grid-${p.id}`} onClick={() => st().applyGridPreset(p)} className="group flex flex-col items-center gap-1.5 rounded-xl p-1.5 hover:bg-ink/5">
+              <button key={p.id} type="button" title={`${p.name} · ${presetCellCount(p)} cell${presetCellCount(p) > 1 ? "s" : ""}`} data-testid={`grid-${p.id}`} {...drag(p.id)} onClick={() => st().applyGridPreset(p)} className="group flex flex-col items-center gap-1.5 rounded-xl p-1.5 hover:bg-ink/5">
                 <GridThumb preset={p} />
                 <span className="w-full truncate text-center text-2xs text-mute group-hover:text-ink">{p.name}</span>
               </button>

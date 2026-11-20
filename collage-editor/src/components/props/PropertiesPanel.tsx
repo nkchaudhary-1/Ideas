@@ -48,9 +48,9 @@ export default function PropertiesPanel() {
 function EmptyFrame({ el }: { el: MediaEl }) {
   const st = useStore.getState;
   return (
-    <div className="mx-4 mb-4 rounded-3xl bg-panel2 px-5 py-5 text-xs leading-5 text-mute">
+    <div className="mx-3 mb-3 rounded-inner bg-panel2 px-5 py-5 text-xs leading-5 text-mute">
       <div className="mb-1 text-sm font-bold text-ink">Empty frame</div>
-      Drop a photo or video onto it, or pick one in Media.
+      Click it to add a photo or video, or drop one onto it.
       <button type="button" className="mt-2.5 block rounded-full bg-pill px-3.5 py-1.5 font-semibold text-pillink" onClick={() => st().setUI({ leftPanel: "uploads" })}>Open media</button>
       {void el}
     </div>

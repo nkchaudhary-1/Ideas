@@ -112,14 +112,12 @@ export default function StageChrome() {
           <Popover placement="top" width={250} trigger={(open, toggle) => <IconButton icon={<SlidersHorizontal size={16} />} label="View options" active={open} onClick={toggle} testId="view-menu" size={38} />}>
             {() => (
               <div className="space-y-4 p-1" data-testid="view-options">
-                <Toggle label="Rulers" value={ui.rulers} onChange={(v) => st().setUI({ rulers: v })} />
                 <Toggle label="Layout grid" value={slide.grid.visible} onChange={(v) => st().commit((p) => { const s = p.slides.find((x) => x.id === p.activeSlideId)!; s.grid.visible = v; if (v && s.grid.kind === "none") s.grid.kind = "columns"; })} />
                 <Toggle label="Safe areas" value={ui.safeAreas} onChange={(v) => st().setUI({ safeAreas: v })} />
                 <div className="h-px bg-line" />
                 <Toggle label="Snap to canvas" value={ui.snapCanvas} onChange={(v) => st().setUI({ snapCanvas: v })} />
                 <Toggle label="Snap to objects" value={ui.snapObjects} onChange={(v) => st().setUI({ snapObjects: v })} />
-                <Toggle label="Snap to grid and guides" value={ui.snapGrid} onChange={(v) => st().setUI({ snapGrid: v })} />
-                <Toggle label="Show guides" value={ui.guides} onChange={(v) => st().setUI({ guides: v })} />
+                <Toggle label="Snap to layout grid" value={ui.snapGrid} onChange={(v) => st().setUI({ snapGrid: v })} />
               </div>
             )}
           </Popover>

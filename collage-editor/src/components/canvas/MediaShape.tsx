@@ -164,7 +164,7 @@ export default function MediaShape(p: MediaShapeProps) {
   function drawContent(c: CanvasRenderingContext2D, w: number, h: number, ghost: boolean) {
     if (ghost) c.globalAlpha = 0.35;
     if (!fill || !fill.assetId) {
-      if (rc.mode !== "export" && rc.showPlaceholders) drawPlaceholder(c, w, h, "Drop a photo or video");
+      if (rc.mode !== "export" && rc.showPlaceholders) drawPlaceholder(c, w, h, "Click to add photo or video");
       return;
     }
     if (!asset) { if (rc.mode !== "export") drawPlaceholder(c, w, h, "Media missing"); return; }

@@ -83,7 +83,7 @@ export default function NewProjectDialog() {
           <div className="grid grid-cols-5 gap-3">
             {MODES.map((m) => (
               <button key={m.id} type="button" data-testid={`mode-${m.id}`} onClick={() => setMode(m.id)}
-                className={`flex flex-col items-start gap-4 rounded-3xl p-4 text-left transition-colors ${mode === m.id ? "bg-pill text-pillink" : "bg-field text-ink hover:bg-raised"}`}>
+                className={`flex flex-col items-start gap-4 rounded-inner p-4 text-left transition-colors ${mode === m.id ? "bg-pill text-pillink" : "bg-field text-ink hover:bg-raised"}`}>
                 <span className={mode === m.id ? "" : "text-mute"}>{m.icon}</span>
                 <span><span className="block text-sm font-bold">{m.label}</span><span className={`block text-[11px] leading-4 ${mode === m.id ? "opacity-70" : "text-mute"}`}>{m.desc}</span></span>
               </button>
@@ -131,7 +131,7 @@ export default function NewProjectDialog() {
         {mode !== "blank" && (
           <section>
             <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="new-project-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; setFiles((l) => [...l, ...f]); }} />
-            <div className="flex items-center gap-4 rounded-3xl border border-dashed border-faint/60 p-5" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); setFiles((l) => [...l, ...e.dataTransfer.files]); }}>
+            <div className="flex items-center gap-4 rounded-inner border border-dashed border-faint/60 p-5" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); setFiles((l) => [...l, ...e.dataTransfer.files]); }}>
               <Button onClick={() => input.current?.click()}><Upload size={14} /> Add photos & videos</Button>
               <span className="text-xs text-mute">{files.length ? `${files.length} file${files.length > 1 ? "s" : ""} ready: ${mode === "carousel" ? "one slide each" : mode === "collage" ? "poured into a grid" : pano ? (files.length === 1 ? "stretched across the panorama" : "one per slide, side by side") : "the first is placed"}` : "Optional. You can add media later."}</span>
               {files.length > 0 && <button type="button" className="ml-auto text-xs font-semibold text-mute hover:text-ink" onClick={() => setFiles([])}>Clear</button>}

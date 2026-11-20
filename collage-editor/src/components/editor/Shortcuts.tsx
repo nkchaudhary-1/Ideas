@@ -26,7 +26,6 @@ export const SHORTCUTS: { keys: string; action: string }[] = [
   { keys: "Enter  ·  double-click", action: "Edit text / crop a photo or video" },
   { keys: "V  ·  H", action: "Select tool  ·  hand tool" },
   { keys: "T", action: "Add text" },
-  { keys: "⇧ R", action: "Toggle rulers" },
   { keys: "Alt while dragging", action: "Temporarily disable snapping" },
   { keys: "?", action: "This list" },
 ];
@@ -87,7 +86,6 @@ export default function useShortcuts() {
         return;
       }
       if (k === "0" && !e.shiftKey) { handled(); st.setView(zoomAround(ui.view, 1 / ui.view.scale, size.w / 2, size.h / 2)); return; }
-      if (k === "r" && e.shiftKey) { handled(); st.setUI({ rulers: !ui.rulers }); return; }
       if (k === "t" && !e.shiftKey) {
         handled();
         const sl = getSlide(st.project);

@@ -26,7 +26,13 @@ export default {
       },
       fontFamily: { sans: ["Manrope", "Inter", "system-ui", "-apple-system", "Segoe UI", "sans-serif"] },
       fontSize: { "2xs": ["11px", "15px"], xs: ["12px", "17px"], sm: ["13px", "18px"], base: ["14px", "20px"] },
-      borderRadius: { sm: "6px", DEFAULT: "8px", md: "10px", lg: "14px", xl: "18px", "2xl": "22px", "3xl": "28px" },
+      borderRadius: {
+        sm: "6px", DEFAULT: "8px",
+        md: "var(--r-in2)", lg: "var(--r-in2)", //  inside something, 20px from its edge
+        xl: "var(--r-in)", "2xl": "var(--r-in)", //  inside a card, 12px from its edge
+        "3xl": "var(--r)",
+        card: "var(--r)", big: "var(--r-big)", inner: "var(--r-in)", inner2: "var(--r-in2)",
+      },
       boxShadow: {
         card: "0 1px 2px rgb(var(--c-shadow) / 0.05), 0 10px 30px rgb(var(--c-shadow) / 0.10)",
         float: "0 2px 6px rgb(var(--c-shadow) / 0.08), 0 14px 40px rgb(var(--c-shadow) / 0.16)",

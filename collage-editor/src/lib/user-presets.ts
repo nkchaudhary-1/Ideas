@@ -27,7 +27,7 @@ export function captureTextStyle(el: TextEl, slide: Pick<Slide, "width">): TextS
 export function captureLayout(g: GridEl, slide: Pick<Slide, "width">): LayoutData {
   return {
     tree: mapCells(structuredClone(g.tree), (c) => ({ ...c, fill: null })),
-    margin: g.margin, gutter: g.gutter, radius: g.radius, cellBg: g.cellBg, cellStroke: g.cellStroke ? { ...g.cellStroke } : null, refWidth: slide.width,
+    margin: g.margin, gutter: g.gutter, radius: g.radius, cellBg: g.cellBg, cellStroke: g.cellStroke ? { ...g.cellStroke } : null, refWidth: g.width || slide.width,
   };
 }
 

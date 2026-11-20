@@ -8,6 +8,7 @@ import LeftSidebar from "@/components/panels/LeftSidebar";
 import Workspace from "@/components/canvas/Workspace";
 import PropertiesPanel from "@/components/props/PropertiesPanel";
 import Toast from "@/components/ui/Toast";
+import MediaPicker from "@/components/canvas/MediaPicker";
 import ImportDialog from "@/components/dialogs/ImportDialog";
 import NewProjectDialog from "@/components/dialogs/NewProjectDialog";
 import ProjectsDialog from "@/components/dialogs/ProjectsDialog";
@@ -64,7 +65,7 @@ export default function EditorShell() {
     <div className="flex h-screen min-h-0 gap-4 bg-bg p-4 text-ink" data-testid="editor-root">
       <LeftSidebar />
       <div className="flex min-w-0 flex-1 flex-col gap-4">
-        <div className="relative min-h-0 flex-1 overflow-hidden rounded-[32px] bg-stage ring-1 ring-line/70">
+        <div className="relative min-h-0 flex-1 overflow-hidden rounded-big bg-stage ring-1 ring-line/70">
           <Workspace />
           <StageChrome />
         </div>
@@ -72,6 +73,7 @@ export default function EditorShell() {
       </div>
       {ui.rightOpen && <PropertiesPanel />}
       <Toast />
+      <MediaPicker />
       {ui.importOpen && <ImportDialog />}
       {ui.newProjectOpen && <NewProjectDialog />}
       {ui.projectsOpen && <ProjectsDialog />}

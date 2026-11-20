@@ -75,7 +75,7 @@ export default function ImportDialog() {
     >
       <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="import-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; if (f.length) void ingest(f); }} />
       <div
-        className="mx-8 mb-6 mt-2 flex items-center justify-between gap-4 rounded-3xl border border-dashed border-faint/60 px-6 py-5 text-sm text-mute"
+        className="mx-8 mb-6 mt-2 flex items-center justify-between gap-4 rounded-inner border border-dashed border-faint/60 px-6 py-5 text-sm text-mute"
         onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault(); }}
         onDrop={(e) => { e.preventDefault(); const f = [...e.dataTransfer.files]; if (f.length) void ingest(f); }}
       >

@@ -14,12 +14,13 @@ import { getAsset, mediaVersion, subscribeMedia } from "@/lib/media";
 import { onFontsLoaded } from "@/lib/fonts";
 import { SlideBody, type NodeHandlers } from "./ElementNode";
 import { RenderContext } from "./render-context";
-import { CropOverlay, GridEditorOverlay, GuideLines, LayoutGridOverlay, SafeAreas, SlideBoundaries, SnapLinesView } from "./Overlays";
+import { CropOverlay, GridEditorOverlay, LayoutGridOverlay, SafeAreas, SlideBoundaries, SnapLinesView } from "./Overlays";
 import SelectionLayer from "./SelectionLayer";
 import TextEditor from "./TextEditor";
-import Rulers from "./Rulers";
 import PanoramaHandles from "./PanoramaHandles";
 import { makeMedia } from "@/lib/factory";
+import { GRID_PRESETS } from "@/lib/grid-engine";
+import { panoramaCount } from "@/lib/formats";
 import { newFill } from "@/lib/media-math";
 
 const accentOf = (a: string) => `rgb(${a.split(" ").join(",")})`;
@@ -54,8 +55,6 @@ export default function Workspace() {
   const editingTextId = useStore((s) => s.ui.editingTextId);
   const selectedCell = useStore((s) => s.ui.selectedCell);
   const playing = useStore((s) => s.ui.playing);
-  const rulers = useStore((s) => s.ui.rulers);
-  const guidesOn = useStore((s) => s.ui.guides);
   const safeAreas = useStore((s) => s.ui.safeAreas);
   const accent = accentOf(useStore((s) => s.ui.accent));
   const fitToken = useStore((s) => s.ui.fitToken);
@@ -82,7 +81,8 @@ export default function Workspace() {
     return () => ro.disconnect();
   }, []);
   useEffect(() => {
-    useStore.getState().setView(fitView(size, { w: slide.width, h: slide.height }));
+    // when the stage is narrow the top pills wrap to two rows, so leave more room above the artboard
+    useStore.getState().setView(fitView(size, { w: slide.width, h: slide.height }, size.w < 860 ? { x: 96, top: 176, bottom: 112 } : undefined));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fitToken, size.w, size.h, slide.id, slide.width, slide.height]);
 
@@ -158,6 +158,8 @@ export default function Workspace() {
   const cropDrag = useRef<{ last: { x: number; y: number } } | null>(null);
   const dividerDrag = useRef<{ gridId: string; splitId: string; index: number; dir: "h" | "v"; last: { x: number; y: number } } | null>(null);
   const cellDrag = useRef<{ gridId: string; cellId: string; sx: number; sy: number; active: boolean } | null>(null);
+  // a press on an empty tile or frame: if it ends as a click (not a drag) we offer to add media there
+  const pickStart = useRef<{ gridId?: string; cellId?: string; elementId?: string; x: number; y: number } | null>(null);
 
   const toLocal = (el: Element, p: { x: number; y: number }) => {
     const cx = el.x + el.width / 2, cy = el.y + el.height / 2;
@@ -168,7 +170,7 @@ export default function Workspace() {
 
   const snapOpts = () => {
     const st = useStore.getState();
-    return { threshold: 6 / st.ui.view.scale, objects: st.ui.snapObjects, canvas: st.ui.snapCanvas, grid: st.ui.snapGrid, guides: true };
+    return { threshold: 6 / st.ui.view.scale, objects: st.ui.snapObjects, canvas: st.ui.snapCanvas, grid: st.ui.snapGrid, guides: false };
   };
 
   const handlers = useMemo<NodeHandlers>(() => ({
@@ -185,7 +187,9 @@ export default function Workspace() {
       if (ev.button === 1) return;
       e.cancelBubble = true;
       if (el.locked) return;
+      pickStart.current = null;
       if (st.ui.cropId && st.ui.cropId !== el.id) st.setUI({ cropId: null });
+      if ((el.type === "image" || el.type === "video") && !el.fill?.assetId) pickStart.current = { elementId: el.id, x: ev.clientX, y: ev.clientY };
       if (ev.shiftKey) st.select([el.id], true);
       else if (!st.selection.includes(el.id)) st.select([el.id]);
       if (el.type === "grid") {
@@ -196,6 +200,7 @@ export default function Workspace() {
           st.setUI({ selectedCell: { gridId: el.id, cellId: hit.cellId } });
           const cell = findCell((el as GridEl).tree, hit.cellId);
           if (cell?.fill) cellDrag.current = { gridId: el.id, cellId: hit.cellId, sx: ev.clientX, sy: ev.clientY, active: false };
+          else pickStart.current = { gridId: el.id, cellId: hit.cellId, x: ev.clientX, y: ev.clientY };
         } else st.setUI({ selectedCell: null });
       }
     },
@@ -304,8 +309,11 @@ export default function Workspace() {
   };
 
   useEffect(() => {
-    const up = () => {
+    const up = (ev: MouseEvent) => {
       const st = useStore.getState();
+      const ps = pickStart.current;
+      pickStart.current = null;
+      if (ps && Math.hypot(ev.clientX - ps.x, ev.clientY - ps.y) < 6 && st.ui.tool === "select") st.setUI({ mediaPicker: { ...ps } });
       if (marqueeStart.current) {
         const m = marqueeStart.current;
         marqueeStart.current = null;
@@ -370,6 +378,16 @@ export default function Workspace() {
       if (sl.elements.length === 0) st.addMediaToCanvas(asset);
       else st.addElement(makeMedia(asset.kind, w, h, newFill(asset.id, asset.kind), { name: asset.name.replace(/\.[^.]+$/, "") }, p.x - w / 2, p.y - h / 2));
     };
+    const layoutId = e.dataTransfer.getData("application/x-layout");
+    if (layoutId) {
+      // a layout dragged from the Layouts panel: add it to the slide section under the cursor
+      const n = panoramaCount(sl.width);
+      const segment = n >= 2 ? Math.max(0, Math.min(n - 1, Math.floor(p.x / 1080))) : undefined;
+      const preset = GRID_PRESETS.find((g) => g.id === layoutId);
+      if (preset) st.applyGridPreset(preset, { mode: "add", segment });
+      else st.applyLayoutPreset(layoutId, { mode: "add", segment });
+      return;
+    }
     const id = e.dataTransfer.getData("application/x-asset");
     if (id) { place(id); return; }
     const files = [...e.dataTransfer.files];
@@ -438,19 +456,6 @@ export default function Workspace() {
                 }}
               />
             )}
-            {guidesOn && (
-              <GuideLines
-                slide={slide}
-                scale={view.scale}
-                onMove={(axis, i, pos) =>
-                  useStore.getState().commit((p) => {
-                    const s = p.slides.find((x) => x.id === p.activeSlideId)!;
-                    if (pos === null) s.guides[axis].splice(i, 1);
-                    else s.guides[axis][i] = pos;
-                  })
-                }
-              />
-            )}
             <SnapLinesView lines={snapLines} accent="#ff3d7f" />
             <SelectionLayer ids={selection} slide={slide} accent={accent} hidden={!!cropId || !!editingTextId || tool === "hand"} />
             {marquee && <Rect x={marquee.x} y={marquee.y} width={marquee.w} height={marquee.h} fill={accent.replace("rgb", "rgba").replace(")", ",0.12)")} stroke={accent} strokeWidth={1} strokeScaleEnabled={false} listening={false} />}
@@ -461,7 +466,6 @@ export default function Workspace() {
 
       {swap && <div className="pointer-events-none absolute z-30 h-16 w-16 -translate-x-1/2 -translate-y-1/2 rounded border-2 border-accent bg-accent/20" style={{ left: swap.x, top: swap.y }} />}
       {editingEl && <TextEditor el={editingEl} view={view} />}
-      {rulers && <Rulers width={size.w} height={size.h} />}
       <PanoramaHandles />
     </div>
   );

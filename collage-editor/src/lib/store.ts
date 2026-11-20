@@ -8,7 +8,7 @@ import { loadFont } from "./fonts";
 import { boundsOf, findInTree, flatten, rotatePoint, unionRects } from "./geometry";
 import { uid, clamp, debounce } from "./util";
 import { dbAll, dbDelete, dbGet, dbPut } from "./db";
-import { DEFAULT_FORMAT, PANORAMA_MAX, PANORAMA_MIN, panoramaFormat } from "./formats";
+import { DEFAULT_FORMAT, PANORAMA_MAX, PANORAMA_MIN, panoramaCount, panoramaFormat } from "./formats";
 import { newFill } from "./media-math";
 import { slideFills } from "./timeline";
 import { allAssets, getAsset, loadAssets, importFiles, removeAsset } from "./media";
@@ -22,8 +22,6 @@ export interface UIState {
   rightOpen: boolean;
   view: { scale: number; x: number; y: number };
   tool: "select" | "hand";
-  rulers: boolean;
-  guides: boolean;
   snapObjects: boolean;
   snapCanvas: boolean;
   snapGrid: boolean;
@@ -31,6 +29,12 @@ export interface UIState {
   cropId: Id | null;
   editingTextId: Id | null;
   selectedCell: { gridId: Id; cellId: Id } | null;
+  /** what clicking a layout does when a grid is selected: auto picks Add (a free panorama slide exists) or Replace */
+  layoutMode: "auto" | "add" | "replace";
+  /** panorama: the slide (0-based) the next added layout should go to; null = the next empty one */
+  pinSegment: number | null;
+  /** a pending "choose a photo or video" popover for an empty tile */
+  mediaPicker: { gridId?: Id; cellId?: Id; elementId?: Id; x: number; y: number } | null;
   playing: boolean;
   previewOpen: boolean;
   exportOpen: boolean;
@@ -106,7 +110,8 @@ export interface Store {
   renamePreset(id: Id, name: string): void;
   deletePreset(id: Id): void;
   applyTextStyle(id: Id): void;
-  applyLayoutPreset(id: Id): void;
+  applyLayoutPreset(id: Id, opts?: LayoutOpts): void;
+  addGridTree(tree: GridEl["tree"], name: string): void;
   setPanoramaSlides(n: number): void;
 
   // elements
@@ -130,7 +135,7 @@ export interface Store {
   setElementMedia(elId: Id, asset: Asset): void;
   setCellMedia(gridId: Id, cellId: Id, asset: Asset): void;
   addMediaToCanvas(asset: Asset, at?: { x: number; y: number }): void;
-  applyGridPreset(preset: GridPreset): void;
+  applyGridPreset(preset: GridPreset, opts?: LayoutOpts): void;
   gridOp(gridId: Id, op: (g: Draft<GridEl>) => void, opts?: { key?: string }): void;
   replaceAsset(assetId: Id): void;
   deleteAsset(assetId: Id): Promise<boolean>;
@@ -153,7 +158,7 @@ function loadUIPrefs(): Partial<UIState> {
 }
 const savePrefs = debounce((ui: UIState) => {
   try {
-    localStorage.setItem(LS_KEY, JSON.stringify({ theme: ui.theme, recentColors: ui.recentColors, rulers: ui.rulers, snapObjects: ui.snapObjects, snapCanvas: ui.snapCanvas, snapGrid: ui.snapGrid, safeAreas: ui.safeAreas }));
+    localStorage.setItem(LS_KEY, JSON.stringify({ theme: ui.theme, recentColors: ui.recentColors, snapObjects: ui.snapObjects, snapCanvas: ui.snapCanvas, snapGrid: ui.snapGrid, safeAreas: ui.safeAreas }));
   } catch { /* storage may be blocked */ }
 }, 400);
 
@@ -182,6 +187,26 @@ async function assetUsage(assetId: Id): Promise<{ project: string; count: number
   }
   return out;
 }
+export interface LayoutOpts { mode?: "add" | "replace"; segment?: number }
+const SEG = 1080;
+/** a panorama slide section (0-based) counts as taken when something covers a good part of it */
+function segmentTaken(slide: Slide, i: number): boolean {
+  return slide.elements.some((e) => e.visible !== false && Math.max(0, Math.min(e.x + e.width, (i + 1) * SEG) - Math.max(e.x, i * SEG)) >= SEG * 0.4);
+}
+export function firstEmptySegment(slide: Slide): number | null {
+  const n = panoramaCount(slide.width);
+  if (n < 2) return null;
+  for (let i = 0; i < n; i++) if (!segmentTaken(slide, i)) return i;
+  return null;
+}
+/** where a newly added layout goes: its own slide section on a panorama, the whole canvas otherwise */
+function layoutTarget(slide: Slide, pin: number | null, override?: number): { x: number; y: number; w: number; h: number; segment: number | null } {
+  const n = panoramaCount(slide.width);
+  if (n < 2) return { x: 0, y: 0, w: slide.width, h: slide.height, segment: null };
+  const seg = Math.max(0, Math.min(n - 1, override ?? pin ?? firstEmptySegment(slide) ?? n - 1));
+  return { x: seg * SEG, y: 0, w: SEG, h: slide.height, segment: seg };
+}
+
 let clipboard: Element[] = [];
 let toastId = 0;
 
@@ -211,6 +236,19 @@ export const useStore = create<Store>()((set, get) => {
   };
 
   const activeSlide = () => getSlide(get().project);
+
+  /** Add or Replace? An explicit choice wins. Otherwise: add while a panorama still has a free slide, else re-shape the selected grid. */
+  const resolveLayoutMode = (forced?: "add" | "replace"): { mode: "add" | "replace"; grid: GridEl | null } => {
+    const sl = activeSlide();
+    const sel = get().selection;
+    const el = sel.length === 1 ? sl.elements.find((e) => e.id === sel[0]) : undefined;
+    const grid = el && el.type === "grid" ? (el as GridEl) : null;
+    if (!grid) return { mode: "add", grid: null };
+    const lm = get().ui.layoutMode;
+    const chosen: "add" | "replace" | undefined = forced ?? (lm === "auto" ? undefined : lm);
+    const free = get().ui.pinSegment !== null || firstEmptySegment(sl) !== null;
+    return { mode: chosen ?? (free ? "add" : "replace"), grid };
+  };
   const selOr = (ids?: Id[]) => ids ?? get().selection;
 
   const topLevel = (slide: Slide, ids: Id[]) => {
@@ -232,8 +270,6 @@ export const useStore = create<Store>()((set, get) => {
       rightOpen: true,
       view: { scale: 0.5, x: 0, y: 0 },
       tool: "select",
-      rulers: false,
-      guides: true,
       snapObjects: true,
       snapCanvas: true,
       snapGrid: true,
@@ -241,6 +277,9 @@ export const useStore = create<Store>()((set, get) => {
       cropId: null,
       editingTextId: null,
       selectedCell: null,
+      layoutMode: "auto",
+      pinSegment: null,
+      mediaPicker: null,
       playing: false,
       previewOpen: false,
       exportOpen: false,
@@ -486,21 +525,29 @@ export const useStore = create<Store>()((set, get) => {
       get().addElement(t);
       get().setUI({ editingTextId: t.id });
     },
-    /** re-shape the selected collage into a saved layout (photos kept, in order), or add it as a new collage */
-    applyLayoutPreset(id) {
+    /** add a hand-made grid (custom rows x columns) to the target slide section */
+    addGridTree(tree, name) {
+      const t = layoutTarget(activeSlide(), get().ui.pinSegment);
+      const g = makeGrid(undefined, t.w, t.h, { tree, name });
+      g.x = t.x; g.y = t.y;
+      get().addElement(g);
+      set((s) => ({ ui: { ...s.ui, pinSegment: null, layoutMode: "auto" } }));
+    },
+    /** apply a saved layout: re-shape the selected collage (photos kept, in order) or add it as a new collage */
+    applyLayoutPreset(id, opts) {
       const pr = get().presets.find((p) => p.id === id);
       if (!pr || pr.kind !== "layout") return;
       const d = pr.data;
       const sl = activeSlide();
-      const k = sl.width / d.refWidth;
       const fresh = mapCells(cloneTree(d.tree), (c) => ({ ...c, fill: null }));
-      const existing = get().selection.length === 1 ? sl.elements.find((e) => e.id === get().selection[0] && e.type === "grid") : null;
-      if (existing && existing.type === "grid") {
-        const old = cellsOf(existing.tree).map((c) => c.fill).filter(Boolean) as MediaFill[];
+      const { mode, grid } = resolveLayoutMode(opts?.mode);
+      if (mode === "replace" && grid) {
+        const k = grid.width / d.refWidth;
+        const old = cellsOf(grid.tree).map((c) => c.fill).filter(Boolean) as MediaFill[];
         let i = 0;
         const tree = mapCells(fresh, (c) => (i < old.length ? { ...c, fill: old[i++] } : c));
         commit((dr) => {
-          const f = findInTree((dr.slides.find((s) => s.id === dr.activeSlideId)!.elements) as Element[], existing.id);
+          const f = findInTree((dr.slides.find((s) => s.id === dr.activeSlideId)!.elements) as Element[], grid.id);
           const g = f?.el as Draft<GridEl>;
           g.tree = tree as Draft<GridEl["tree"]>;
           g.name = pr.name; g.margin = d.margin * k; g.gutter = d.gutter * k; g.radius = d.radius * k;
@@ -510,7 +557,12 @@ export const useStore = create<Store>()((set, get) => {
         get().toast(`Applied “${pr.name}”`, "ok");
         return;
       }
-      get().addElement(makeGrid(undefined, sl.width, sl.height, { name: pr.name, tree: fresh, margin: d.margin * k, gutter: d.gutter * k, radius: d.radius * k, cellBg: d.cellBg, cellStroke: d.cellStroke ? { ...d.cellStroke } : null }));
+      const t = layoutTarget(sl, get().ui.pinSegment, opts?.segment);
+      const k = t.w / d.refWidth;
+      const g = makeGrid(undefined, t.w, t.h, { name: pr.name, tree: fresh, margin: d.margin * k, gutter: d.gutter * k, radius: d.radius * k, cellBg: d.cellBg, cellStroke: d.cellStroke ? { ...d.cellStroke } : null });
+      g.x = t.x; g.y = t.y;
+      get().addElement(g);
+      set((s) => ({ ui: { ...s.ui, pinSegment: null, layoutMode: "auto" } }));
     },
     applySlide(slide) {
       const s = structuredClone(slide);
@@ -763,18 +815,17 @@ export const useStore = create<Store>()((set, get) => {
       const el = makeMedia(asset.kind, frame.w, frame.h, newFill(asset.id, asset.kind), { name: asset.name.replace(/\.[^.]+$/, "") }, frame.x, frame.y);
       get().addElement(el);
     },
-    applyGridPreset(preset) {
+    applyGridPreset(preset, opts) {
       const sl = activeSlide();
-      const sel = get().selection;
-      const existing = sel.length === 1 ? sl.elements.find((e) => e.id === sel[0] && e.type === "grid") : null;
-      if (existing && existing.type === "grid") {
+      const { mode, grid } = resolveLayoutMode(opts?.mode);
+      if (mode === "replace" && grid) {
         // keep photos: pour existing media into the new cells in order
-        const old = cellsOf(existing.tree).map((c) => c.fill).filter(Boolean) as MediaFill[];
+        const old = cellsOf(grid.tree).map((c) => c.fill).filter(Boolean) as MediaFill[];
         let tree = treeFromPreset(preset);
         let i = 0;
         tree = mapCells(tree, (c) => (i < old.length ? { ...c, fill: old[i++] } : c));
         commit((d) => {
-          const f = findInTree((d.slides.find((s) => s.id === d.activeSlideId)!.elements) as Element[], existing.id);
+          const f = findInTree((d.slides.find((s) => s.id === d.activeSlideId)!.elements) as Element[], grid.id);
           const g = f?.el as Draft<GridEl>;
           g.tree = tree as Draft<GridEl["tree"]>;
           g.name = preset.name;
@@ -785,8 +836,11 @@ export const useStore = create<Store>()((set, get) => {
         set((s) => ({ ui: { ...s.ui, selectedCell: null } }));
         return;
       }
-      const g = makeGrid(preset, sl.width, sl.height);
+      const t = layoutTarget(sl, get().ui.pinSegment, opts?.segment);
+      const g = makeGrid(preset, t.w, t.h);
+      g.x = t.x; g.y = t.y;
       get().addElement(g);
+      set((s) => ({ ui: { ...s.ui, pinSegment: null, layoutMode: "auto" } }));
     },
     gridOp(gridId, op, opts) {
       commit((d) => {

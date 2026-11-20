@@ -10,7 +10,7 @@ export default function Modal({ title, onClose, children, width = 560, footer, t
   }, [onClose]);
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/65 p-4 backdrop-blur-[2px]" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }} data-testid={testId}>
-      <div role="dialog" aria-modal="true" aria-label={title} style={{ width }} className="flex max-h-[92vh] max-w-full flex-col overflow-hidden rounded-[28px] bg-panel shadow-float">
+      <div role="dialog" aria-modal="true" aria-label={title} style={{ width }} className="flex max-h-[92vh] max-w-full flex-col overflow-hidden rounded-big bg-panel shadow-float">
         {!bare && (
           <div className="flex h-20 shrink-0 items-center justify-between px-8">
             <h2 className="text-lg font-extrabold tracking-tight">{title}</h2>

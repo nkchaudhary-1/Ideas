@@ -27,7 +27,7 @@ const raf = () => new Promise<void>((r) => requestAnimationFrame(() => r()));
 
 /**
  * Renders a slide through the very same Konva scene the editor displays, off-screen, in `export` mode.
- * No editor chrome (selection handles, guides, rulers, grid overlays) is part of this tree.
+ * No editor chrome (selection handles, grid overlays, safe areas) is part of this tree.
  */
 export async function createRenderer(slide: Slide, opts: { scale: number; transparent?: boolean }): Promise<SlideRenderer> {
   const host = document.createElement("div");
