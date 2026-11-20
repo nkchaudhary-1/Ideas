@@ -20,7 +20,11 @@ export default function EditorShell() {
   const ui = useStore((s) => s.ui);
   useShortcuts();
 
-  useEffect(() => { void useStore.getState().init(); }, []);
+  useEffect(() => {
+    void useStore.getState().init();
+    // on small windows the properties card starts closed so the canvas keeps room; the top-bar toggle opens it
+    if (window.innerWidth < 1500) useStore.getState().setUI({ rightOpen: false });
+  }, []);
 
   // theme + accent are CSS variables, so every control follows them
   useEffect(() => {
@@ -57,10 +61,10 @@ export default function EditorShell() {
   if (!ready) return <div className="grid h-screen place-items-center bg-bg text-sm text-mute" data-testid="loading">Loading editor…</div>;
 
   return (
-    <div className="flex h-screen min-h-0 gap-3 bg-bg p-3 text-ink" data-testid="editor-root">
+    <div className="flex h-screen min-h-0 gap-4 bg-bg p-4 text-ink" data-testid="editor-root">
       <LeftSidebar />
-      <div className="flex min-w-0 flex-1 flex-col gap-3">
-        <div className="relative min-h-0 flex-1 overflow-hidden rounded-[28px] bg-stage ring-1 ring-line/70">
+      <div className="flex min-w-0 flex-1 flex-col gap-4">
+        <div className="relative min-h-0 flex-1 overflow-hidden rounded-[32px] bg-stage ring-1 ring-line/70">
           <Workspace />
           <StageChrome />
         </div>

@@ -71,17 +71,17 @@ export default function TemplatesPanel() {
 
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="templates-panel">
-      <div className="flex flex-wrap gap-1 border-b border-line p-2.5">
-        {CATS.map((c) => <button key={c} type="button" onClick={() => setCat(c)} className={`rounded px-1.5 py-0.5 text-2xs ${cat === c ? "bg-accent/20 text-accent" : "bg-panel2 text-mute hover:text-ink"}`}>{c}</button>)}
+      <div className="flex flex-wrap gap-2 px-6 pb-4">
+        {CATS.map((c) => <button key={c} type="button" onClick={() => setCat(c)} className={`rounded px-1.5 py-0.5 text-2xs ${cat === c ? "bg-ink/10 text-ink" : "bg-panel2 text-mute hover:text-ink"}`}>{c}</button>)}
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto p-3">
-        <div className="grid grid-cols-2 gap-3">
+      <div className="min-h-0 flex-1 overflow-y-auto px-6 pb-6 pt-2">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-6">
           {list.map((t) => {
             const slides = t.build();
             return (
               <div key={t.id} className="group" data-testid="template-card">
-                <div className="relative overflow-hidden rounded-md ring-1 ring-line group-hover:ring-accent/60">
-                  <div className="flex min-h-[130px] items-center justify-center bg-stage p-2">
+                <div className="relative overflow-hidden rounded-md ring-1 ring-line group-hover:ring-ink/25">
+                  <div className="flex min-h-[140px] items-center justify-center bg-stage p-4">
                     <Schematic slide={slides[0]} width={slides[0].width / slides[0].height > 1.3 ? 120 : 96} />
                   </div>
                   {slides.length > 1 && <span className="absolute right-1 top-1 rounded bg-black/70 px-1 text-2xs text-white">{slides.length} slides</span>}
@@ -99,7 +99,7 @@ export default function TemplatesPanel() {
         </div>
         {list.length === 0 && <div className="p-6 text-center text-xs text-mute">{cat === "Saved" ? "No saved templates yet. Save this slide or the whole carousel below." : "No templates in this category."}</div>}
       </div>
-      <div className="flex gap-1.5 border-t border-line p-2.5">
+      <div className="flex gap-3 border-t border-line/60 p-5">
         <Button className="flex-1" onClick={() => saveAs(false)} testId="save-template"><Bookmark size={12} /> Save slide</Button>
         {project.slides.length > 1 && <Button className="flex-1" onClick={() => saveAs(true)}><Bookmark size={12} /> Save all</Button>}
       </div>

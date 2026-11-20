@@ -12,13 +12,13 @@ export default function Modal({ title, onClose, children, width = 560, footer, t
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/65 p-4 backdrop-blur-[2px]" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }} data-testid={testId}>
       <div role="dialog" aria-modal="true" aria-label={title} style={{ width }} className="flex max-h-[92vh] max-w-full flex-col overflow-hidden rounded-[28px] bg-panel shadow-float">
         {!bare && (
-          <div className="flex h-16 shrink-0 items-center justify-between px-6">
+          <div className="flex h-20 shrink-0 items-center justify-between px-8">
             <h2 className="text-lg font-extrabold tracking-tight">{title}</h2>
             <button type="button" aria-label="Close" onClick={onClose} className="grid h-8 w-8 place-items-center rounded-full text-mute hover:bg-field hover:text-ink"><X size={16} /></button>
           </div>
         )}
         <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
-        {footer && <div className="flex shrink-0 items-center justify-end gap-2 px-6 py-4">{footer}</div>}
+        {footer && <div className="flex shrink-0 items-center justify-end gap-3 px-8 py-6">{footer}</div>}
       </div>
     </div>
   );

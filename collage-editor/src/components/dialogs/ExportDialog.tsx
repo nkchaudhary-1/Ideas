@@ -74,7 +74,7 @@ export default function ExportDialog() {
   };
 
   return (
-    <Modal title="Export" onClose={() => { abort.current?.abort(); set({ exportOpen: false }); }} width={760} testId="export-dialog"
+    <Modal title="Export" onClose={() => { abort.current?.abort(); set({ exportOpen: false }); }} width={820} testId="export-dialog"
       footer={
         state === "running" ? (
           <><span className="mr-auto flex items-center gap-2 text-xs text-mute"><Loader2 size={13} className="animate-spin" />{progress.label}</span><Button onClick={() => abort.current?.abort()} testId="export-cancel">Cancel</Button></>
@@ -87,19 +87,19 @@ export default function ExportDialog() {
         )
       }
     >
-      <div className="grid grid-cols-[1fr_300px]">
-        <div className="space-y-5 border-r border-line p-4">
+      <div className="grid grid-cols-[minmax(0,1fr)_320px]">
+        <div className="space-y-9 border-r border-line/60 p-8">
           <section>
             <div className="mb-2 flex items-center justify-between text-xs font-bold text-ink">
               <span>Slides</span>
               <span className="space-x-3 normal-case tracking-normal"><button type="button" className="hover:text-ink" onClick={() => setSlideIds(project.slides.map((s) => s.id))}>All</button><button type="button" className="hover:text-ink" onClick={() => setSlideIds([project.activeSlideId])}>Current</button></span>
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-1" data-testid="export-slides">
+            <div className="flex gap-3 overflow-x-auto pb-2" data-testid="export-slides">
               {project.slides.map((s, i) => {
                 const on = slideIds.includes(s.id);
                 const w = Math.round(64 * Math.min(1.6, s.width / s.height));
                 return (
-                  <button key={s.id} type="button" onClick={() => toggle(s.id)} aria-pressed={on} className={`relative shrink-0 overflow-hidden rounded-md ring-2 ${on ? "ring-accent" : "opacity-45 ring-transparent hover:opacity-80"}`}>
+                  <button key={s.id} type="button" onClick={() => toggle(s.id)} aria-pressed={on} className={`relative shrink-0 overflow-hidden rounded-md ring-2 ${on ? "ring-ink/60" : "opacity-45 ring-transparent hover:opacity-80"}`}>
                     <SlideView slide={s} width={w} scope="export-pick" />
                     <span className="absolute left-1 top-1 rounded bg-black/70 px-1 text-[10px] text-white">{i + 1}</span>
                     {slideHasVideo(s) && <span className="absolute bottom-1 right-1 grid h-4 w-4 place-items-center rounded-full bg-black/70 text-white"><Film size={9} /></span>}
@@ -109,7 +109,7 @@ export default function ExportDialog() {
             </div>
           </section>
 
-          <section className="space-y-3">
+          <section className="space-y-4">
             <h3 className="text-xs font-bold text-ink">Images</h3>
             <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Format</span>
               <Segmented<ImageFormat> value={img.format} onChange={(v) => setImg({ format: v, transparent: v === "jpeg" ? false : img.transparent })} options={[{ value: "png", label: "PNG" }, { value: "jpeg", label: "JPEG" }, { value: "webp", label: "WebP" }]} />
@@ -127,7 +127,7 @@ export default function ExportDialog() {
           </section>
 
           {anyVideo && (
-            <section className="space-y-3" data-testid="export-video-section">
+            <section className="space-y-4" data-testid="export-video-section">
               <h3 className="flex items-center gap-1.5 text-xs font-bold text-ink"><Film size={12} /> Video slides</h3>
               <div className="flex items-center gap-3"><span className="w-16 text-xs text-mute">Export as</span>
                 <Segmented value={cfg.video.mode} onChange={(v) => setVid({ mode: v })} options={[{ value: "video", label: "Video file" }, { value: "still", label: "Still image" }]} />
@@ -156,13 +156,13 @@ export default function ExportDialog() {
           )}
         </div>
 
-        <aside className="space-y-4 p-4">
+        <aside className="min-w-0 space-y-8 p-8">
           <section>
             <h3 className="mb-2 text-xs font-bold text-ink">Output</h3>
-            <ul className="space-y-1.5" data-testid="export-plan">
+            <ul className="space-y-2.5" data-testid="export-plan">
               {plan.map((p, i) => (
-                <li key={p.slideId} className="flex items-center gap-2 rounded-md bg-panel2 px-2.5 py-1.5 text-xs">
-                  {p.kind === "video" ? <Film size={13} className="text-accent" /> : <ImageIcon size={13} className="text-mute" />}
+                <li key={p.slideId} className="flex items-center gap-3 rounded-2xl bg-field px-4 py-3 text-xs">
+                  {p.kind === "video" ? <Film size={13} className="text-ink" /> : <ImageIcon size={13} className="text-mute" />}
                   <span className="min-w-0 flex-1 truncate">{i + 1}. {p.slideName}</span>
                   <span className="shrink-0 text-faint">{p.kind === "video" ? `${cfg.video.container.toUpperCase()} · ${(p.seconds ?? 0).toFixed(1)}s` : `${img.format.toUpperCase()}${p.files > 1 ? ` ×${p.files}` : ""}`}</span>
                 </li>
@@ -183,7 +183,7 @@ export default function ExportDialog() {
           {fatal && <p className="flex gap-1.5 rounded-md border border-red-500/40 bg-red-500/10 p-2.5 text-xs text-red-200" role="alert"><AlertTriangle size={14} className="shrink-0" />{fatal}</p>}
           {report && (
             <div className="space-y-2 text-xs" data-testid="export-report">
-              {report.files.length > 0 && <p className="flex gap-1.5 text-accent"><CheckCircle2 size={14} className="shrink-0" />Exported {report.files.length} file{report.files.length > 1 ? "s" : ""} ({formatBytes(report.files.reduce((n, f) => n + f.blob.size, 0))}).</p>}
+              {report.files.length > 0 && <p className="flex gap-1.5 text-ink"><CheckCircle2 size={14} className="shrink-0" />Exported {report.files.length} file{report.files.length > 1 ? "s" : ""} ({formatBytes(report.files.reduce((n, f) => n + f.blob.size, 0))}).</p>}
               {report.errors.map((e) => <p key={e.slide} className="flex gap-1.5 rounded-md border border-red-500/40 bg-red-500/10 p-2 text-red-200"><AlertTriangle size={14} className="mt-0.5 shrink-0" /><span><b>{e.slide}:</b> {e.message}</span></p>)}
               {report.notes.map((n, i) => <p key={i} className="rounded-md border border-line bg-panel2 p-2 text-mute">{n}</p>)}
             </div>

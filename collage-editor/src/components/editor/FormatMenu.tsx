@@ -40,22 +40,22 @@ export default function FormatMenu({ close }: { close: () => void }) {
   const set = (f: Format) => { st().setFormat(f, { content }); };
 
   return (
-    <div className="space-y-4" data-testid="format-menu">
+    <div className="space-y-7" data-testid="format-menu">
       <section>
-        <h3 className="mb-2 text-xs font-bold text-ink">Post size</h3>
-        <div className="grid grid-cols-5 gap-1.5" data-testid="format-grid">
+        <h3 className="mb-3 text-xs font-bold text-ink">Post size</h3>
+        <div className="grid grid-cols-5 gap-2" data-testid="format-grid">
           {FORMATS.map((f) => <Tile key={f.id} f={f} active={same(f)} onClick={() => set(f)} />)}
         </div>
       </section>
 
-      <section className="rounded-2xl bg-panel2 p-3" data-testid="panorama-section">
+      <section className="rounded-3xl bg-panel2 p-5" data-testid="panorama-section">
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="text-xs font-bold text-ink">Panorama carousel</h3>
             <p className="mt-0.5 text-[11px] leading-4 text-mute">One wide canvas, cut into slides when you export. 12:5 is three 4:5 slides.</p>
           </div>
         </div>
-        <div className="mt-2.5 grid grid-cols-5 gap-1.5">
+        <div className="mt-4 grid grid-cols-5 gap-2">
           {[2, 3, 4, 5, 6].map((c) => {
             const f = panoramaFormat(c, segH);
             const on = n === c;
@@ -68,7 +68,7 @@ export default function FormatMenu({ close }: { close: () => void }) {
             );
           })}
         </div>
-        <div className="mt-2.5 flex items-center justify-between gap-2">
+        <div className="mt-4 flex items-center justify-between gap-3">
           <Segmented value={baseId} onChange={(id) => { const b = PANORAMA_BASES.find((x) => x.id === id)!; st().setFormat(panoramaFormat(Math.max(PANORAMA_MIN, n), b.h), { content: "none" }); }} options={PANORAMA_BASES.map((b) => ({ value: b.id, label: b.id.replace("-", ":") }))} size="sm" />
           <div className="flex items-center gap-1" aria-label="Extend panorama">
             <button type="button" aria-label="Remove a slide" data-testid="pano-minus" disabled={n <= PANORAMA_MIN} onClick={() => st().setPanoramaSlides(n - 1)} className="grid h-7 w-7 place-items-center rounded-full bg-field text-ink hover:bg-raised disabled:opacity-30"><Minus size={13} /></button>
@@ -80,8 +80,8 @@ export default function FormatMenu({ close }: { close: () => void }) {
 
       {sizes.length > 0 && (
         <section data-testid="my-sizes">
-          <h3 className="mb-2 text-xs font-bold text-ink">My sizes</h3>
-          <div className="grid grid-cols-2 gap-1.5">
+          <h3 className="mb-3 text-xs font-bold text-ink">My sizes</h3>
+          <div className="grid grid-cols-2 gap-2.5">
             {sizes.map((p) => {
               if (p.kind !== "size") return null;
               const f = CUSTOM_FORMAT(p.data.width, p.data.height);
@@ -101,13 +101,13 @@ export default function FormatMenu({ close }: { close: () => void }) {
       )}
 
       <section>
-        <h3 className="mb-2 text-xs font-bold text-ink">Custom size</h3>
+        <h3 className="mb-3 text-xs font-bold text-ink">Custom size</h3>
         <div className="flex items-center gap-2">
           <NumberField width={78} value={cw} min={64} max={12000} onChange={setCw} label="W" />
           <NumberField width={78} value={ch} min={64} max={8000} onChange={setCh} label="H" />
           <Button onClick={() => { set(CUSTOM_FORMAT(cw, ch)); close(); }} testId="apply-custom">Apply</Button>
         </div>
-        <div className="mt-2.5">
+        <div className="mt-4">
           <SavePreset label="Save this size" testId="save-size" placeholder="Size name" defaultName={() => defaultName(presets, "size")}
             onSave={(name) => { st().addPreset({ kind: "size", name, data: { width: Math.round(cw), height: Math.round(ch) } }); st().toast(`Saved size “${name}”`, "ok"); }} />
         </div>

@@ -1,7 +1,14 @@
 "use client";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
-/** A small anchored menu: closes on outside click or Escape. `trigger` gets the open state and a toggle. */
+type Pos = { left: number; top?: number; bottom?: number; maxH: number };
+
+/**
+ * An anchored menu. The panel is rendered in a portal with fixed positioning, so no scrolling or
+ * overflow-hidden ancestor (the canvas card, the slide strip) can ever clip it. Closes on outside
+ * click, Escape, or when the window changes size.
+ */
 export default function Popover({ trigger, children, placement = "bottom", align = "center", width = 320, className = "", testId }: {
   trigger: (open: boolean, toggle: () => void) => ReactNode;
   children: (close: () => void) => ReactNode;
@@ -12,23 +19,45 @@ export default function Popover({ trigger, children, placement = "bottom", align
   testId?: string;
 }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState<Pos | null>(null);
+  const anchor = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (!open || !anchor.current) { setPos(null); return; }
+    const r = anchor.current.getBoundingClientRect();
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const w = Math.min(width, vw - 32);
+    let left = align === "left" ? r.left : align === "right" ? r.right - w : r.left + r.width / 2 - w / 2;
+    left = Math.max(16, Math.min(left, vw - w - 16));
+    setPos(placement === "bottom"
+      ? { left, top: r.bottom + 12, maxH: Math.max(160, vh - r.bottom - 12 - 16) }
+      : { left, bottom: vh - r.top + 12, maxH: Math.max(160, r.top - 12 - 16) });
+  }, [open, width, align, placement]);
+
   useEffect(() => {
     if (!open) return;
-    const down = (e: MouseEvent) => { if (!ref.current?.contains(e.target as Node)) setOpen(false); };
+    const down = (e: MouseEvent) => {
+      const t = e.target as Node;
+      if (!anchor.current?.contains(t) && !panel.current?.contains(t)) setOpen(false);
+    };
     const key = (e: KeyboardEvent) => { if (e.key === "Escape") { e.stopPropagation(); setOpen(false); } };
+    const close = () => setOpen(false);
     window.addEventListener("mousedown", down);
     window.addEventListener("keydown", key, true);
-    return () => { window.removeEventListener("mousedown", down); window.removeEventListener("keydown", key, true); };
+    window.addEventListener("resize", close);
+    return () => { window.removeEventListener("mousedown", down); window.removeEventListener("keydown", key, true); window.removeEventListener("resize", close); };
   }, [open]);
-  const pos = `${placement === "bottom" ? "top-full mt-2" : "bottom-full mb-2"} ${align === "left" ? "left-0" : align === "right" ? "right-0" : "left-1/2 -translate-x-1/2"}`;
+
   return (
-    <div ref={ref} className="relative">
+    <div ref={anchor} className="relative">
       {trigger(open, () => setOpen((o) => !o))}
-      {open && (
-        <div data-testid={testId} style={{ width }} className={`pop card pointer-events-auto absolute z-50 max-h-[70vh] overflow-y-auto p-3 shadow-float ${pos} ${className}`}>
+      {open && pos && typeof document !== "undefined" && createPortal(
+        <div ref={panel} data-testid={testId} style={{ position: "fixed", left: pos.left, top: pos.top, bottom: pos.bottom, width: Math.min(width, window.innerWidth - 32), maxHeight: pos.maxH }}
+          className={`pop card z-[60] overflow-y-auto p-6 shadow-float ${className}`}>
           {children(() => setOpen(false))}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

@@ -6,7 +6,7 @@ import { useStore, getSlide } from "@/lib/store";
 import { getAsset, effectiveTrim } from "@/lib/media";
 import { ADJUSTMENT_META, FILTER_PRESETS, NEUTRAL, applyAdjustments, effectiveAdjustments } from "@/lib/filters";
 import { DEFAULT_FILTER, newFill } from "@/lib/media-math";
-import { Button, Field, IconButton, Section, Slider, Toggle } from "@/components/ui/controls";
+import { Button, Field, IconButton, Section, Slider, Toggle, type SliderTrack } from "@/components/ui/controls";
 import { formatTime } from "@/lib/util";
 import { PresetActions, RenameLabel, SavePreset } from "@/components/ui/SavePreset";
 import { captureLook, defaultName, sameLook } from "@/lib/user-presets";
@@ -51,9 +51,9 @@ function ThumbCanvas({ asset, adj, className }: { asset: Asset; adj: Adjustments
 
 function FilterThumb({ asset, presetId, active, onClick, name }: { asset: Asset; presetId: string; active: boolean; onClick: () => void; name: string }) {
   return (
-    <button type="button" onClick={onClick} title={name} data-testid={`filter-${presetId}`} className={`group flex flex-col items-center gap-1 rounded-md p-0.5 ${active ? "bg-accent/20 ring-1 ring-accent" : "hover:bg-ink/5"}`}>
+    <button type="button" onClick={onClick} title={name} data-testid={`filter-${presetId}`} className={`group flex flex-col items-center gap-1 rounded-md p-0.5 ${active ? "bg-ink/10 ring-1 ring-ink/60" : "hover:bg-ink/5"}`}>
       <ThumbCanvas asset={asset} adj={effectiveAdjustments({ ...NEUTRAL }, { id: presetId, intensity: 100 })} className="h-[60px] w-[48px] rounded-sm bg-panel2" />
-      <span className={`text-2xs ${active ? "text-accent" : "text-mute"}`}>{name}</span>
+      <span className={`text-2xs ${active ? "text-ink" : "text-mute"}`}>{name}</span>
     </button>
   );
 }
@@ -74,9 +74,9 @@ function MyLooks({ target, asset }: { target: FillTarget; asset: Asset | undefin
             return (
               <div key={p.id} className="group relative" data-testid="look-tile">
                 <button type="button" title={`Apply “${p.name}”`} onClick={() => target.update((f) => { f.filter = { ...p.data.filter }; f.adjustments = { ...p.data.adjustments }; })}
-                  className={`flex w-full flex-col items-center gap-1 rounded-md p-0.5 ${active ? "bg-accent/20 ring-1 ring-accent" : "hover:bg-ink/5"}`}>
+                  className={`flex w-full flex-col items-center gap-1 rounded-md p-0.5 ${active ? "bg-ink/10 ring-1 ring-ink/60" : "hover:bg-ink/5"}`}>
                   {asset ? <ThumbCanvas asset={asset} adj={effectiveAdjustments(p.data.adjustments, p.data.filter)} className="h-[60px] w-[48px] rounded-sm bg-panel2" /> : <span className="block h-[60px] w-[48px] rounded-sm bg-panel2" />}
-                  <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className={`w-full text-center text-2xs ${active ? "text-accent" : "text-mute"}`} />
+                  <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className={`w-full text-center text-2xs ${active ? "text-ink" : "text-mute"}`} />
                 </button>
                 <PresetActions id={p.id} name={p.name} onRename={() => setRenaming(p.id)} />
               </div>
@@ -152,13 +152,20 @@ export default function MediaProps({ target }: { target: FillTarget }) {
         </div>
         <Slider label="Zoom" value={Math.round(fill.zoom * 100)} min={100} max={800} unit="%" neutral={100} onChange={(v) => target.update((f) => { f.zoom = v / 100; }, "zoom")} onReset={() => target.update((f) => { f.zoom = 1; })} />
         {isEl && (
-          <Field label="Aspect">
-            <div className="flex flex-wrap gap-0.5">
-              {RATIOS.map((r) => (
-                <button key={r.label} type="button" disabled={r.r === null} onClick={() => setRatio(r.r)} className="h-5 rounded bg-panel2 px-1.5 text-2xs text-mute ring-1 ring-line hover:text-ink disabled:opacity-40">{r.label}</button>
-              ))}
+          <div data-testid="aspect-row">
+            <div className="mb-2.5 text-xs font-semibold text-ink/80">Aspect</div>
+            <div className="flex items-center justify-between rounded-full bg-field p-1">
+              {RATIOS.filter((r) => r.r !== null).map((r) => {
+                const k = 18 / Math.max(r.r!, 1 / r.r!);
+                return (
+                  <button key={r.label} type="button" title={r.label} aria-label={`Aspect ${r.label}`} onClick={() => setRatio(r.r)} className="grid h-9 w-9 place-items-center rounded-full text-mute transition-colors hover:bg-seg hover:text-ink">
+                    <span className="block rounded-[3px] border-[1.5px] border-current" style={{ width: Math.max(8, r.r! >= 1 ? 18 : 18 * r.r!), height: Math.max(8, r.r! >= 1 ? 18 / r.r! : 18) }} />
+                    <span className="sr-only">{k}</span>
+                  </button>
+                );
+              })}
             </div>
-          </Field>
+          </div>
         )}
         <div className="flex items-center gap-0.5">
           <IconButton icon={<RotateCcw size={15} />} label="Rotate left 90°" onClick={() => target.update((f) => { f.rotation90 = ((f.rotation90 + 270) % 360) as 0 | 90 | 180 | 270; })} />
@@ -197,6 +204,7 @@ export default function MediaProps({ target }: { target: FillTarget }) {
                 max={m.max}
                 onChange={(v) => target.update((f) => { f.adjustments[m.key] = v; }, "adj-" + m.key)}
                 onReset={() => target.update((f) => { f.adjustments[m.key] = 0; })}
+                track={({ temperature: "temp", tint: "tint", hue: "hue", saturation: "sat" } as Record<string, SliderTrack | undefined>)[m.key]}
               />
             ))}
           </div>
@@ -222,7 +230,7 @@ function VideoSection({ target, duration, playing }: { target: FillTarget; durat
       <Slider label="Cover frame" value={+Math.min(Math.max(v.coverTime, t.start), t.end).toFixed(2)} min={t.start} max={t.end} step={0.05} unit="s" neutral={t.start} onChange={(x) => target.update((f) => { f.video!.coverTime = x; }, "cover")} onReset={() => target.update((f) => { f.video!.coverTime = t.start; })} testId="cover-time" />
       <Slider label="Volume" value={Math.round(v.volume * 100)} min={0} max={100} unit="%" neutral={100} onChange={(x) => target.update((f) => { f.video!.volume = x / 100; if (x > 0) f.video!.muted = false; }, "volume")} onReset={() => target.update((f) => { f.video!.volume = 1; })} />
       <div className="flex items-center gap-3">
-        <button type="button" onClick={() => target.update((f) => { f.video!.muted = !f.video!.muted; })} className={`flex items-center gap-1 rounded-md px-2 py-1 text-xs ring-1 ring-line ${v.muted ? "bg-accent/20 text-accent" : "bg-panel2 text-ink/90"}`} data-testid="mute">
+        <button type="button" onClick={() => target.update((f) => { f.video!.muted = !f.video!.muted; })} className={`flex items-center gap-1 rounded-md px-2 py-1 text-xs ring-1 ring-line ${v.muted ? "bg-ink/10 text-ink" : "bg-panel2 text-ink/90"}`} data-testid="mute">
           {v.muted ? <VolumeX size={12} /> : <Volume2 size={12} />} {v.muted ? "Muted" : "Sound on"}
         </button>
         <Toggle label="Loop" value={v.loop} onChange={(x) => target.update((f) => { f.video!.loop = x; })} />

@@ -91,7 +91,7 @@ export function FontPicker({ family, onChange }: { family: string; onChange: (f:
 
   return (
     <>
-      <button ref={btn} type="button" data-testid="font-picker" onClick={() => { setRect(btn.current!.getBoundingClientRect()); setOpen(!open); }} className="flex h-7 w-full items-center justify-between rounded-md bg-panel2 px-2 text-sm ring-1 ring-line hover:ring-accent/50" style={{ fontFamily: fontStack(family) }}>
+      <button ref={btn} type="button" data-testid="font-picker" onClick={() => { setRect(btn.current!.getBoundingClientRect()); setOpen(!open); }} className="flex h-7 w-full items-center justify-between rounded-md bg-panel2 px-2 text-sm ring-1 ring-line hover:ring-ink/25" style={{ fontFamily: fontStack(family) }}>
         <span className="truncate">{family}</span><ChevronDown size={12} className="text-mute" />
       </button>
       {open && rect && createPortal(
@@ -99,12 +99,12 @@ export function FontPicker({ family, onChange }: { family: string; onChange: (f:
           <input autoFocus placeholder="Search fonts" value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.stopPropagation()} className="m-2 h-7 rounded-md bg-panel2 px-2 text-xs outline-none ring-1 ring-line focus:ring-accent/70" />
           <div className="flex flex-wrap gap-1 px-2 pb-2">
             {["All", ...FONT_CATEGORIES].map((c) => (
-              <button key={c} type="button" onClick={() => setCat(c)} className={`rounded px-1.5 py-0.5 text-2xs ${cat === c ? "bg-accent/20 text-accent" : "bg-panel2 text-mute hover:text-ink"}`}>{c}</button>
+              <button key={c} type="button" onClick={() => setCat(c)} className={`rounded px-1.5 py-0.5 text-2xs ${cat === c ? "bg-ink/10 text-ink" : "bg-panel2 text-mute hover:text-ink"}`}>{c}</button>
             ))}
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto px-1 pb-2">
             {list.map((f) => (
-              <button key={f.id} type="button" data-testid={`font-${f.id}`} onMouseEnter={() => void loadFont(f.family, 400, false)} onClick={() => { onChange(f.family); setOpen(false); }} className={`flex w-full items-baseline justify-between rounded px-2 py-1.5 text-left hover:bg-ink/5 ${f.family === family ? "bg-accent/15" : ""}`}>
+              <button key={f.id} type="button" data-testid={`font-${f.id}`} onMouseEnter={() => void loadFont(f.family, 400, false)} onClick={() => { onChange(f.family); setOpen(false); }} className={`flex w-full items-baseline justify-between rounded px-2 py-1.5 text-left hover:bg-ink/5 ${f.family === family ? "bg-ink/10" : ""}`}>
                 <span className="truncate text-[15px]" style={{ fontFamily: fontStack(f.family) }}>{f.family}</span>
                 <span className="ml-2 shrink-0 text-2xs text-faint">{f.category}</span>
               </button>

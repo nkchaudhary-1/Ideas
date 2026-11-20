@@ -3,7 +3,7 @@ import { AlignCenterHorizontal, AlignCenterVertical, AlignEndHorizontal, AlignEn
 import type { BlendMode, Element } from "@/lib/types";
 import { useStore } from "@/lib/store";
 import { boundsOf, unionRects } from "@/lib/geometry";
-import { Field, IconButton, NumberField, Section, Select, Slider } from "@/components/ui/controls";
+import { Field, IconButton, NumberField, Section, Select, Slider, TickSlider } from "@/components/ui/controls";
 
 const BLENDS: { value: BlendMode; label: string }[] = [
   { value: "source-over", label: "Normal" }, { value: "multiply", label: "Multiply" }, { value: "screen", label: "Screen" },
@@ -36,13 +36,13 @@ export default function ArrangeSection({ els }: { els: Element[] }) {
         </div>
         {single && (
           <>
-            <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
-              <Field label="X"><NumberField width={92} value={single.x} onChange={(v) => setAll((e) => { e.x = v; }, "x")} unit="px" /></Field>
-              <Field label="Y"><NumberField width={92} value={single.y} onChange={(v) => setAll((e) => { e.y = v; }, "y")} unit="px" /></Field>
-              <Field label="W"><NumberField width={92} value={single.width} min={1} onChange={(v) => setAll((e) => { e.width = Math.max(1, v); }, "w")} unit="px" /></Field>
-              <Field label="H"><NumberField width={92} value={single.height} min={1} onChange={(v) => setAll((e) => { e.height = Math.max(1, v); }, "h")} unit="px" /></Field>
-              <Field label="Rotate"><NumberField width={92} value={single.rotation} onChange={(v) => setAll((e) => { e.rotation = v; }, "rot")} unit="°" /></Field>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-3">
+              <NumberField label="X" width={130} value={single.x} onChange={(v) => setAll((e) => { e.x = v; }, "x")} unit="px" />
+              <NumberField label="Y" width={130} value={single.y} onChange={(v) => setAll((e) => { e.y = v; }, "y")} unit="px" />
+              <NumberField label="W" width={130} value={single.width} min={1} onChange={(v) => setAll((e) => { e.width = Math.max(1, v); }, "w")} unit="px" />
+              <NumberField label="H" width={130} value={single.height} min={1} onChange={(v) => setAll((e) => { e.height = Math.max(1, v); }, "h")} unit="px" />
             </div>
+            <TickSlider label="Rotate" testId="rotate-ruler" value={((single.rotation + 540) % 360) - 180} onChange={(v) => setAll((e) => { e.rotation = v; }, "rot")} />
           </>
         )}
         {!single && box && <div className="text-xs text-mute">{els.length} selected · {Math.round(box.w)} × {Math.round(box.h)} px</div>}

@@ -21,8 +21,8 @@ export default function PropertiesPanel() {
   const Icon = single ? ICON[single.type] : els.length > 1 ? Box : null;
 
   return (
-    <aside className="card pop flex w-[304px] shrink-0 flex-col overflow-hidden" data-testid="properties">
-      <div className="flex h-14 shrink-0 items-center gap-2 px-5">
+    <aside className="card pop flex w-[344px] shrink-0 flex-col overflow-hidden" data-testid="properties">
+      <div className="flex h-[72px] shrink-0 items-center gap-3 px-7">
         {Icon && <Icon size={16} className="text-mute" />}
         {single ? (
           <TextInput value={single.name} onCommit={(v) => st().updateElement(single.id, { name: v || single.name })} className="h-8 flex-1 !bg-transparent !px-1 text-base !font-extrabold hover:!bg-field" />
@@ -31,7 +31,7 @@ export default function PropertiesPanel() {
         )}
         {single && <span className="rounded-full bg-field px-2 py-0.5 text-2xs font-semibold capitalize text-mute">{single.type}</span>}
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto pb-3" data-testid="properties-scroll">
+      <div className="min-h-0 flex-1 overflow-y-auto pb-6" data-testid="properties-scroll">
         {els.length === 0 && <CanvasProps />}
         {single?.type === "text" && <TextProps el={single} />}
         {single?.type === "shape" && <ShapeProps el={single} />}
@@ -48,7 +48,7 @@ export default function PropertiesPanel() {
 function EmptyFrame({ el }: { el: MediaEl }) {
   const st = useStore.getState;
   return (
-    <div className="mx-3 mb-2.5 rounded-2xl bg-panel2 px-3.5 py-3 text-xs leading-5 text-mute">
+    <div className="mx-4 mb-4 rounded-3xl bg-panel2 px-5 py-5 text-xs leading-5 text-mute">
       <div className="mb-1 text-sm font-bold text-ink">Empty frame</div>
       Drop a photo or video onto it, or pick one in Media.
       <button type="button" className="mt-2.5 block rounded-full bg-pill px-3.5 py-1.5 font-semibold text-pillink" onClick={() => st().setUI({ leftPanel: "uploads" })}>Open media</button>

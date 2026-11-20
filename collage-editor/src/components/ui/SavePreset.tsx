@@ -54,6 +54,6 @@ export function RenameLabel({ id, name, editing, setEditing, className = "" }: {
     <input autoFocus defaultValue={name} aria-label="Preset name" onClick={(e) => e.stopPropagation()}
       onBlur={(e) => { rename(id, e.target.value); setEditing(false); }}
       onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter") (e.target as HTMLInputElement).blur(); if (e.key === "Escape") setEditing(false); }}
-      className="h-5 w-full min-w-0 rounded-full bg-field px-2 text-2xs font-semibold text-ink outline-none ring-1 ring-accent/50" />
+      className="h-5 w-full min-w-0 rounded-full bg-field px-2 text-2xs font-semibold text-ink outline-none ring-1 ring-ink/30" />
   );
 }

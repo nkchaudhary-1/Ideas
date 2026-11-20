@@ -14,6 +14,7 @@ export default {
         panel2: token("c-panel2"), // quiet surfaces inside cards
         raised: token("c-raised"), // hover / raised surfaces
         field: token("c-field"), //  pill inputs
+        seg: token("c-seg"), //      selected segment
         line: token("c-line"),
         ink: token("c-ink"),
         mute: token("c-mute"),
@@ -21,6 +22,7 @@ export default {
         pill: token("c-pill"), //    primary dark pill
         pillink: token("c-pillink"),
         accent: "rgb(var(--accent) / <alpha-value>)",
+        accent2: "rgb(var(--accent2) / <alpha-value>)",
       },
       fontFamily: { sans: ["Manrope", "Inter", "system-ui", "-apple-system", "Segoe UI", "sans-serif"] },
       fontSize: { "2xs": ["11px", "15px"], xs: ["12px", "17px"], sm: ["13px", "18px"], base: ["14px", "20px"] },

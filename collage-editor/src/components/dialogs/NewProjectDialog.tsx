@@ -78,12 +78,12 @@ export default function NewProjectDialog() {
   return (
     <Modal title="New project" onClose={() => set({ newProjectOpen: false })} width={640} testId="new-project-dialog"
       footer={<><Button onClick={() => set({ newProjectOpen: false })}>Cancel</Button><Button variant="primary" onClick={create} disabled={busy} testId="create-project">{busy ? "Creating…" : "Create"}</Button></>}>
-      <div className="space-y-6 p-6">
+      <div className="space-y-9 px-8 pb-4 pt-2">
         <section>
-          <div className="grid grid-cols-5 gap-2.5">
+          <div className="grid grid-cols-5 gap-3">
             {MODES.map((m) => (
               <button key={m.id} type="button" data-testid={`mode-${m.id}`} onClick={() => setMode(m.id)}
-                className={`flex flex-col items-start gap-3 rounded-2xl p-3.5 text-left transition-colors ${mode === m.id ? "bg-pill text-pillink" : "bg-field text-ink hover:bg-raised"}`}>
+                className={`flex flex-col items-start gap-4 rounded-3xl p-4 text-left transition-colors ${mode === m.id ? "bg-pill text-pillink" : "bg-field text-ink hover:bg-raised"}`}>
                 <span className={mode === m.id ? "" : "text-mute"}>{m.icon}</span>
                 <span><span className="block text-sm font-bold">{m.label}</span><span className={`block text-[11px] leading-4 ${mode === m.id ? "opacity-70" : "text-mute"}`}>{m.desc}</span></span>
               </button>
@@ -92,7 +92,7 @@ export default function NewProjectDialog() {
         </section>
 
         {pano ? (
-          <section className="space-y-3" data-testid="panorama-options">
+          <section className="space-y-4" data-testid="panorama-options">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-bold">{format.ratio} panorama · {slides} slides</h3>
@@ -112,8 +112,8 @@ export default function NewProjectDialog() {
             </div>
           </section>
         ) : (
-          <section className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
+          <section className="space-y-4">
+            <div className="flex flex-wrap items-center gap-2.5">
               {shown.map((f) => <RatioChip key={f.id} id={`fmt-${f.id}`} f={f} active={!custom && fmt.id === f.id} onClick={() => { setFmt(f); setCustom(false); }} />)}
               <button type="button" data-testid="fmt-more" onClick={() => setMore((m) => !m)} className="rounded-full px-3 py-1.5 text-xs font-semibold text-mute hover:text-ink">{more ? "Fewer sizes" : "More sizes"}</button>
               <button type="button" data-testid="fmt-custom" onClick={() => setCustom(true)} className={`rounded-full px-3.5 py-1.5 text-xs font-semibold ${custom ? "bg-pill text-pillink" : "bg-field text-mute hover:text-ink"}`}>Custom</button>
@@ -131,7 +131,7 @@ export default function NewProjectDialog() {
         {mode !== "blank" && (
           <section>
             <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="new-project-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; setFiles((l) => [...l, ...f]); }} />
-            <div className="flex items-center gap-3 rounded-2xl border border-dashed border-faint/60 p-3" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); setFiles((l) => [...l, ...e.dataTransfer.files]); }}>
+            <div className="flex items-center gap-4 rounded-3xl border border-dashed border-faint/60 p-5" onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); setFiles((l) => [...l, ...e.dataTransfer.files]); }}>
               <Button onClick={() => input.current?.click()}><Upload size={14} /> Add photos & videos</Button>
               <span className="text-xs text-mute">{files.length ? `${files.length} file${files.length > 1 ? "s" : ""} ready: ${mode === "carousel" ? "one slide each" : mode === "collage" ? "poured into a grid" : pano ? (files.length === 1 ? "stretched across the panorama" : "one per slide, side by side") : "the first is placed"}` : "Optional. You can add media later."}</span>
               {files.length > 0 && <button type="button" className="ml-auto text-xs font-semibold text-mute hover:text-ink" onClick={() => setFiles([])}>Clear</button>}

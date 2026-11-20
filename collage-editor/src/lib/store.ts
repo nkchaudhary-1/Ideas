@@ -140,7 +140,7 @@ export interface Store {
 // ───────────────────────── helpers ─────────────────────────
 
 const LS_KEY = "collage-studio:ui";
-export const ACCENTS = { light: "91 66 245", dark: "148 130 255" } as const;
+export const ACCENTS = { light: "255 106 26", dark: "255 122 48" } as const;
 function systemTheme(): "light" | "dark" {
   try { return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } catch { return "light"; }
 }

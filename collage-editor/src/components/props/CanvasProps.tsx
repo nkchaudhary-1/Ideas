@@ -16,9 +16,9 @@ import { effectiveTrim, getAsset } from "@/lib/media";
 export function RatioButton({ f, active, onClick }: { f: Format; active: boolean; onClick: () => void }) {
   const k = 26 / Math.max(f.width, f.height);
   return (
-    <button type="button" onClick={onClick} title={`${f.label} · ${f.width}×${f.height}`} data-testid={`format-${f.id}`} className={`flex flex-col items-center gap-1 rounded-md p-1.5 ${active ? "bg-accent/20 ring-1 ring-accent" : "hover:bg-ink/5"}`}>
+    <button type="button" onClick={onClick} title={`${f.label} · ${f.width}×${f.height}`} data-testid={`format-${f.id}`} className={`flex flex-col items-center gap-1 rounded-md p-1.5 ${active ? "bg-ink/10 ring-1 ring-ink/60" : "hover:bg-ink/5"}`}>
       <span className="grid h-7 w-7 place-items-center"><span className="rounded-[2px] border border-ink/70" style={{ width: Math.max(8, f.width * k), height: Math.max(8, f.height * k) }} /></span>
-      <span className={`text-2xs ${active ? "text-accent" : "text-mute"}`}>{f.ratio}</span>
+      <span className={`text-2xs ${active ? "text-ink" : "text-mute"}`}>{f.ratio}</span>
     </button>
   );
 }

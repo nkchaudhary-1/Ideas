@@ -18,7 +18,8 @@ Minimal, floating, light or dark. The canvas fills the middle; everything else i
 * **Bottom of the canvas:** select and hand tools, zoom, fit, and a **View** menu with rulers, layout grid, safe areas and snapping.
 * **Right:** one properties card that only shows what the current selection needs, in collapsible groups.
 * **Below:** the slide strip (compact for single designs, with seam marks on panoramas).
-* **Themes:** light (lilac-grey, white cards, deep navy pills) and dark (charcoal), one violet accent. The choice is remembered; the first visit follows your system setting.
+* **Palette:** black, white and one orange. Greys are neutral; orange marks only the active tool, slider fills, toggles and canvas selection, with a soft gradient on the primary button and the page ground. Light and dark themes; the choice is remembered and the first visit follows your system setting.
+* **Controls:** sliders are soft pills with a big white knob on a thin track (fill runs outward from the neutral point); colour adjustments (temperature, tint, hue, saturation) use a gradient pill with a ring knob; rotation uses a tick-mark ruler (drag, arrow keys, double-click to reset); segmented controls and aspect-ratio glyphs sit in the same pill style.
 
 ## Run it
 
@@ -163,9 +164,9 @@ animated text / transitions, in-browser audio tracks beyond the clips' own sound
 
 ## Design language (from the Figma audit)
 
-* Floating rounded cards on a soft ground, pill-shaped fields and segmented controls, bold small headings, one accent.
-  Light by default (lilac-grey ground, white cards, deep navy primary pill) with a dark charcoal theme; both are CSS-variable
-  tokens in `src/app/globals.css`, so every control follows the theme. UI type is Manrope.
+* Floating rounded cards with generous spacing (16 px page gutter, 20 px card padding), pill-shaped fields and segmented
+  controls, bold small headings, black / white / orange only. Light and dark themes are CSS-variable tokens in
+  `src/app/globals.css`, so every control follows the theme. UI type is Manrope.
 * Photo cards with large radii, equal gutters and a consistent outer margin; titles in a light soft serif over photos;
   tiny `@handle` / location tags; wide-tracked uppercase labels.
 

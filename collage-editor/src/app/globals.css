@@ -6,43 +6,52 @@
 @font-face { font-family: "Manrope"; font-weight: 600; src: url(/fonts/manrope-latin-600-normal.woff2) format("woff2"); font-display: swap; }
 @font-face { font-family: "Manrope"; font-weight: 800; src: url(/fonts/manrope-latin-800-normal.woff2) format("woff2"); font-display: swap; }
 
-/* Light is the default: soft lilac-grey ground, white cards, deep navy pills, one violet accent. */
+/* Black, white and one orange. Greys are neutral (no tint); orange is for the active tool, slider fills,
+   toggles and selection, with a soft gradient on the primary button and the page ground. */
 :root {
-  --c-bg: 220 220 233;
-  --c-stage: 230 230 239;
+  --c-bg: 234 234 234;
+  --c-stage: 241 241 241;
   --c-panel: 255 255 255;
-  --c-panel2: 246 246 251;
-  --c-raised: 236 236 244;
-  --c-field: 239 239 246;
-  --c-line: 231 231 239;
-  --c-ink: 31 29 51;
-  --c-mute: 111 109 134;
-  --c-faint: 162 161 182;
-  --c-pill: 38 35 63;
+  --c-panel2: 247 247 247;
+  --c-raised: 236 236 236;
+  --c-field: 238 238 238;
+  --c-seg: 255 255 255;
+  --c-line: 230 230 230;
+  --c-ink: 17 17 17;
+  --c-mute: 112 112 112;
+  --c-faint: 166 166 166;
+  --c-pill: 17 17 17;
   --c-pillink: 255 255 255;
-  --c-shadow: 38 30 90;
-  --accent: 91 66 245;
+  --c-shadow: 0 0 0;
+  --accent: 255 106 26;
+  --accent2: 255 156 92;
+  --glow: 0.10;
   color-scheme: light;
 }
-/* Dark: charcoal, glassy cards, the same violet lifted for contrast. */
 :root[data-theme="dark"] {
-  --c-bg: 14 14 16;
-  --c-stage: 20 20 23;
-  --c-panel: 28 28 32;
-  --c-panel2: 36 36 42;
-  --c-raised: 46 46 54;
-  --c-field: 40 40 47;
-  --c-line: 50 50 59;
-  --c-ink: 241 241 246;
-  --c-mute: 154 154 170;
-  --c-faint: 98 98 112;
-  --c-pill: 241 241 246;
-  --c-pillink: 22 22 26;
+  --c-bg: 8 8 8;
+  --c-stage: 13 13 13;
+  --c-panel: 21 21 21;
+  --c-panel2: 29 29 29;
+  --c-raised: 46 46 46;
+  --c-field: 37 37 37;
+  --c-seg: 62 62 62;
+  --c-line: 42 42 42;
+  --c-ink: 245 245 245;
+  --c-mute: 158 158 158;
+  --c-faint: 98 98 98;
+  --c-pill: 245 245 245;
+  --c-pillink: 10 10 10;
   --c-shadow: 0 0 0;
-  --accent: 148 130 255;
+  --accent: 255 122 48;
+  --accent2: 255 168 104;
+  --glow: 0.16;
   color-scheme: dark;
 }
-html, body { height: 100%; margin: 0; background: rgb(var(--c-bg)); color: rgb(var(--c-ink)); overflow: hidden; overscroll-behavior: none; }
+html, body { height: 100%; margin: 0; color: rgb(var(--c-ink)); overflow: hidden; overscroll-behavior: none; }
+html { background: rgb(var(--c-bg)); }
+/* a barely-there warm glow at two corners of the page ground */
+body { background: radial-gradient(900px 620px at 104% -12%, rgb(var(--accent) / var(--glow)), transparent 68%), radial-gradient(760px 520px at -6% 112%, rgb(var(--accent) / calc(var(--glow) * 0.5)), transparent 64%), rgb(var(--c-bg)); }
 body { font-family: Manrope, Inter, system-ui, sans-serif; font-size: 13px; -webkit-font-smoothing: antialiased; user-select: none; }
 input, textarea, select, button { font: inherit; color: inherit; }
 ::selection { background: rgb(var(--accent) / 0.28); }
@@ -53,13 +62,24 @@ input, textarea, select, button { font: inherit; color: inherit; }
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-thumb { background: rgb(var(--c-faint) / 0.45); border-radius: 8px; }
 
-input[type="range"] { -webkit-appearance: none; appearance: none; height: 14px; background: transparent; cursor: pointer; width: 100%; }
-input[type="range"]::-webkit-slider-runnable-track { height: 3px; background: linear-gradient(to right, rgb(var(--accent)) var(--p, 0%), rgb(var(--c-faint) / 0.35) var(--p, 0%)); border-radius: 2px; }
-input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: #fff; margin-top: -5.5px; box-shadow: 0 1px 3px rgb(0 0 0 / 0.35), 0 0 0 1px rgb(0 0 0 / 0.06); }
-input[type="range"]::-moz-range-track { height: 3px; background: rgb(var(--c-faint) / 0.35); }
-input[type="range"]::-moz-range-progress { height: 3px; background: rgb(var(--accent)); }
-input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: #fff; border: none; box-shadow: 0 1px 3px rgb(0 0 0 / 0.35); }
+/* sliders: a big white knob on a hairline track; the filled part is a soft orange gradient.
+   --a / --b are the filled span in %, set by the Slider component (from the neutral point to the value). */
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 28px; margin: 0; background: transparent; cursor: pointer; }
+input[type="range"]::-webkit-slider-runnable-track { height: 3px; border-radius: 999px; background: linear-gradient(to right, rgb(var(--c-faint) / 0.45) var(--a, 0%), rgb(var(--accent2)) var(--a, 0%), rgb(var(--accent)) var(--b, 0%), rgb(var(--c-faint) / 0.45) var(--b, 0%)); }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #fff; margin-top: -10.5px; box-shadow: 0 2px 8px rgb(0 0 0 / 0.28), 0 0 0 1px rgb(0 0 0 / 0.05); transition: transform .12s ease; }
+input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.07); }
+input[type="range"]::-moz-range-track { height: 3px; border-radius: 999px; background: linear-gradient(to right, rgb(var(--c-faint) / 0.45) var(--a, 0%), rgb(var(--accent2)) var(--a, 0%), rgb(var(--accent)) var(--b, 0%), rgb(var(--c-faint) / 0.45) var(--b, 0%)); }
+input[type="range"]::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 0; box-shadow: 0 2px 8px rgb(0 0 0 / 0.28); }
+/* colour sliders (temperature, tint, hue, saturation): a thick gradient pill with a ring knob */
+input[type="range"].rs-color::-webkit-slider-runnable-track { height: 28px; border-radius: 999px; background: var(--track); }
+input[type="range"].rs-color::-webkit-slider-thumb { width: 26px; height: 26px; margin-top: 1px; background: transparent; border: 3px solid #fff; box-shadow: 0 0 0 1px rgb(0 0 0 / 0.16), 0 2px 6px rgb(0 0 0 / 0.25), inset 0 0 0 1px rgb(0 0 0 / 0.12); }
+input[type="range"].rs-color::-moz-range-track { height: 28px; border-radius: 999px; background: var(--track); }
+input[type="range"].rs-color::-moz-range-thumb { width: 20px; height: 20px; background: transparent; border: 3px solid #fff; box-shadow: 0 0 0 1px rgb(0 0 0 / 0.16); }
 
+/* primary pill: solid black (white in dark) with a faint orange glow low on the right */
+.grad-pill { background: radial-gradient(130% 190% at 100% 125%, rgb(var(--accent) / 0.60), transparent 56%), rgb(var(--c-pill)); }
+:root[data-theme="dark"] .grad-pill { background: radial-gradient(130% 190% at 100% 125%, rgb(var(--accent) / 0.42), transparent 56%), rgb(var(--c-pill)); }
+.grad-accent { background-image: linear-gradient(135deg, rgb(var(--accent2)), rgb(var(--accent))); }
 
 .checker { background-image: linear-gradient(45deg, rgb(var(--c-faint) / .35) 25%, transparent 25%), linear-gradient(-45deg, rgb(var(--c-faint) / .35) 25%, transparent 25%), linear-gradient(45deg, transparent 75%, rgb(var(--c-faint) / .35) 75%), linear-gradient(-45deg, transparent 75%, rgb(var(--c-faint) / .35) 75%); background-size: 10px 10px; background-position: 0 0, 0 5px, 5px -5px, -5px 0; background-color: rgb(var(--c-field)); }
 

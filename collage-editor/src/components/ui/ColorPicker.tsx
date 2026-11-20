@@ -155,7 +155,7 @@ export function ColorField({ value, onChange, alpha, testId }: { value: string; 
         data-color-trigger
         data-testid={testId}
         onClick={() => { setRect(btn.current!.getBoundingClientRect()); setOpen((o) => !o); }}
-        className="flex h-6 min-w-0 items-center gap-1.5 rounded-md bg-panel2 pl-1 pr-2 text-xs ring-1 ring-line hover:ring-accent/50"
+        className="flex h-6 min-w-0 items-center gap-1.5 rounded-md bg-panel2 pl-1 pr-2 text-xs ring-1 ring-line hover:ring-ink/25"
       >
         <span className="checker h-4 w-4 shrink-0 overflow-hidden rounded-sm border border-ink/20"><span className="block h-full w-full" style={{ background: value }} /></span>
         <span className="truncate uppercase text-ink/90">{text}</span>

@@ -75,7 +75,7 @@ export default function ImportDialog() {
     >
       <input ref={input} type="file" multiple accept={ACCEPT} className="hidden" data-testid="import-input" onChange={(e) => { const f = [...(e.target.files ?? [])]; e.target.value = ""; if (f.length) void ingest(f); }} />
       <div
-        className="m-4 flex items-center justify-between gap-3 rounded-lg border border-dashed border-line px-4 py-3 text-sm text-mute"
+        className="mx-8 mb-6 mt-2 flex items-center justify-between gap-4 rounded-3xl border border-dashed border-faint/60 px-6 py-5 text-sm text-mute"
         onDragOver={(e) => { if (e.dataTransfer.types.includes("Files")) e.preventDefault(); }}
         onDrop={(e) => { e.preventDefault(); const f = [...e.dataTransfer.files]; if (f.length) void ingest(f); }}
       >
@@ -84,16 +84,16 @@ export default function ImportDialog() {
       </div>
 
       {items.length > 0 && (
-        <div className="px-4 pb-1">
+        <div className="px-8 pb-2">
           <div className="mb-2 flex items-center justify-between text-xs text-mute">
             <button type="button" className="hover:text-ink" onClick={() => setPicked(allSelected ? new Set() : new Set(ready.map((i) => i.key)))}>{allSelected ? "Select none" : "Select all"}</button>
             <span>Order here becomes slide / cell order. Drag to reorder.</span>
           </div>
-          <ul className="space-y-1.5 pb-3" data-testid="import-list">
+          <ul className="space-y-3 pb-4" data-testid="import-list">
             {items.map((it, idx) => (
               <li key={it.key} draggable={it.state === "ready"} onDragStart={() => setDragKey(it.key)} onDragOver={(e) => { if (dragKey) e.preventDefault(); }} onDrop={(e) => { e.preventDefault(); if (dragKey && dragKey !== it.key) { const from = items.findIndex((x) => x.key === dragKey); move(dragKey, idx - from); } setDragKey(null); }}
-                className={`flex items-center gap-3 rounded-lg border px-2.5 py-2 ${it.state === "failed" ? "border-red-500/30 bg-red-500/5" : picked.has(it.key) ? "border-accent/50 bg-accent/5" : "border-line bg-panel2"}`} data-testid="import-item">
-                <button type="button" aria-label={picked.has(it.key) ? "Deselect" : "Select"} disabled={it.state !== "ready"} onClick={() => toggle(it.key)} className={`grid h-5 w-5 shrink-0 place-items-center rounded border ${picked.has(it.key) ? "border-accent bg-accent text-white" : "border-line"} disabled:opacity-30`}>{picked.has(it.key) && <Check size={12} />}</button>
+                className={`flex items-center gap-4 rounded-2xl border px-4 py-3 ${it.state === "failed" ? "border-red-500/30 bg-red-500/5" : picked.has(it.key) ? "border-ink/40 bg-ink/5" : "border-line bg-panel2"}`} data-testid="import-item">
+                <button type="button" aria-label={picked.has(it.key) ? "Deselect" : "Select"} disabled={it.state !== "ready"} onClick={() => toggle(it.key)} className={`grid h-5 w-5 shrink-0 place-items-center rounded border ${picked.has(it.key) ? "border-ink grad-accent text-white" : "border-line"} disabled:opacity-30`}>{picked.has(it.key) && <Check size={12} />}</button>
                 <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded bg-black">
                   {it.asset ? <img src={it.asset.thumb} alt="" className="h-full w-full object-cover" /> : it.state === "working" ? <Loader2 size={16} className="absolute inset-0 m-auto animate-spin text-mute" /> : <AlertTriangle size={16} className="absolute inset-0 m-auto text-red-300" />}
                   {it.asset?.kind === "video" && <Film size={11} className="absolute bottom-0.5 left-0.5 text-white drop-shadow" />}
@@ -116,8 +116,8 @@ export default function ImportDialog() {
           </ul>
         </div>
       )}
-      {items.length === 0 && <p className="px-4 pb-6 text-sm text-faint">Nothing queued yet.</p>}
-      <p className="px-4 pb-4 text-xs leading-relaxed text-faint">
+      {items.length === 0 && <p className="px-8 pb-8 text-sm text-faint">Nothing queued yet.</p>}
+      <p className="px-8 pb-8 text-xs leading-relaxed text-faint">
         Supported: JPG, PNG, WebP, MP4, MOV, WebM. Videos must use a codec your browser can decode (H.264/AAC MP4 works everywhere; HEVC .mov works in Safari). If a clip is refused, convert it first, e.g. <code className="rounded bg-panel2 px-1">ffmpeg -i in.mov -c:v libx264 -c:a aac out.mp4</code>. Originals are never altered. Everything stays on this device.
       </p>
     </Modal>
