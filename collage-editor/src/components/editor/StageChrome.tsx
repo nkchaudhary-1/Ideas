@@ -91,13 +91,13 @@ function RecentProjects({ close }: { close: () => void }) {
       {list.map((p) => (
         <li key={p.id}>
           <button type="button" data-testid="recent-project" aria-current={p.id === currentId} onClick={() => { close(); if (p.id !== currentId) void useStore.getState().openProject(p.id); }}
-            className={`flex w-full items-center gap-3 rounded-in-16 px-2 py-2 text-left hover:bg-field ${p.id === currentId ? "bg-field" : ""}`}>
+            className={`flex w-full items-center gap-3 rounded px-2 py-2 text-left hover:bg-field ${p.id === currentId ? "bg-field" : ""}`}>
             <span className="grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded bg-stage">
               {p.thumb ? <img src={p.thumb} alt="" className="h-full w-full object-cover" /> : <Logo size={16} className="text-faint" />}
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm font-semibold" title={p.name}>{p.name}</span>
-              <span className="block truncate text-2xs text-mute">{projectKindLabel(p.kind, p.ratio)} · {p.ratio} · {ago(p.updatedAt)}</span>
+              <span className="block truncate text-2xs text-mute" title={`${projectKindLabel(p.kind, p.ratio)} · ${p.ratio} · ${ago(p.updatedAt)}`}>{projectKindLabel(p.kind, p.ratio)} · {p.ratio} · {ago(p.updatedAt)}</span>
             </span>
             {p.id === currentId && <span className="shrink-0 rounded-full bg-ink/10 px-2 py-1 text-2xs font-semibold text-ink">Open</span>}
           </button>
@@ -131,7 +131,7 @@ function AppMenu({ compact, dark }: { compact: boolean; dark: boolean }) {
           </div>
           <div className="space-y-1 px-2">
             {items.map((m) => (
-              <button key={m.id} type="button" data-testid={m.id} onClick={() => { close(); m.run(); }} className="flex h-10 w-full items-center gap-3 rounded-in-16 px-3 text-left text-sm font-medium hover:bg-field coarse:h-11">{m.icon}{m.label}</button>
+              <button key={m.id} type="button" data-testid={m.id} onClick={() => { close(); m.run(); }} className="flex h-10 w-full items-center gap-3 rounded px-3 text-left text-sm font-medium hover:bg-field coarse:h-11">{m.icon}{m.label}</button>
             ))}
           </div>
           <div className="mx-4 my-3 h-px bg-line" />

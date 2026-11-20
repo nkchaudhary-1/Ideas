@@ -136,7 +136,7 @@ export function GuideChip({ compact, lowered }: { compact: boolean; /** the top 
               {steps.map((s, i) => {
                 const current = i === next;
                 return (
-                  <li key={s.id} className={`flex items-start gap-3 rounded-in-16 px-2 py-3 ${current ? "bg-field" : ""}`} data-testid={`guide-step-${s.id}`} data-done={s.done} aria-current={current ? "step" : undefined}>
+                  <li key={s.id} className={`flex items-start gap-3 rounded px-2 py-3 ${current ? "bg-field" : ""}`} data-testid={`guide-step-${s.id}`} data-done={s.done} aria-current={current ? "step" : undefined}>
                     <span className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full text-2xs font-bold ${s.done ? "bg-accent text-white" : current ? "bg-pill text-pillink" : "bg-field text-mute"}`}>{s.done ? <Check size={12} strokeWidth={3} /> : i + 1}</span>
                     <div className="min-w-0 flex-1">
                       <div className={`text-sm font-semibold ${s.done ? "text-mute line-through decoration-faint" : ""}`}>{s.label}</div>
