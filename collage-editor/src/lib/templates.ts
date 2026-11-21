@@ -25,7 +25,7 @@ const tag = (text: string, x: number, y: number, align: "left" | "right" = "left
   makeText({ text, fontFamily: "Outfit", fontWeight: 300, fontSize: 24, letterSpacing: 2.4, fill: dim, width: w, align, name: align === "left" ? "Handle" : "Location" }, x, y);
 const handle = (y = H - 142) => tag("@yourname", 84, y);
 const location = (text = "Lisbon, Portugal", y = H - 142) => tag(text, W - 84 - 320, y, "right");
-const card = (over: Partial<MediaEl> = {}, x = 48, y = 48, w = W - 96, h = H - 96) => makeFrame(w, h, { radius: 64, bg: "#b8715c", name: "Photo card", ...over }, x, y);
+const card = (over: Partial<MediaEl> = {}, x = 48, y = 48, w = W - 96, h = H - 96) => makeFrame(w, h, { radius: 64, bg: "#33606e", name: "Photo card", ...over }, x, y);
 const slide = (name: string, bg: string, els: Element[], w = W, h = H): Slide => { const s = makeSlide(w, h, name, solidBg(bg)); s.elements = els; return s; };
 const grid = (id: string, w = W, h = H, over = {}) => makeGrid(presetById(id), w, h, { ...over });
 const preset = (id: string, w = W, h = H, ink = "#111111") => ELEMENT_PRESETS.find((p) => p.id === id)!.build(w, h, ink);
@@ -62,7 +62,7 @@ const BASE_TEMPLATES: Template[] = [
   },
   {
     id: "music-player", name: "Music player overlay", categories: ["Instagram portrait", "Personal"], description: "A photo with a glass music-player panel and a playlist title.", size: { w: W, h: H }, kind: "single",
-    build: () => [slide("Playlist", "#ffffff", [card({ bg: "#f6d96b" }), makeText({ text: "SUNDAY MIX\nVOL. 1", fontFamily: "Fraunces", fontWeight: 300, fontSize: 34, letterSpacing: 13.6, lineHeight: 1.5, align: "center", fill: white, width: 900, name: "Title" }, 90, 117), preset("player"), handle()])],
+    build: () => [slide("Playlist", "#ffffff", [card({ bg: "#2c3a4a" }), makeText({ text: "SUNDAY MIX\nVOL. 1", fontFamily: "Fraunces", fontWeight: 300, fontSize: 34, letterSpacing: 13.6, lineHeight: 1.5, align: "center", fill: white, width: 900, name: "Title" }, 90, 117), preset("player"), handle()])],
   },
   {
     id: "giant-word", name: "Giant word", categories: ["Typography", "Poster"], description: "A photo with one oversized word that fades out.", size: { w: W, h: H }, kind: "single",
@@ -111,7 +111,7 @@ const BASE_TEMPLATES: Template[] = [
   },
   {
     id: "panorama-2", name: "Panorama · 2 slides", categories: ["Carousel", "Instagram portrait"], description: "One wide photo that runs across two slides; export cuts it at the seam.", size: { w: 2160, h: 1350 }, kind: "carousel",
-    build: () => [slide("Panorama", "#ffffff", [makeFrame(2160 - 96, 1254, { radius: 64, bg: "#b8715c", name: "Panorama photo" }, 48, 48), makeText({ text: "wide open", fontFamily: "Mrs Saint Delafield", fontSize: 84, width: 400, fill: white, name: "Script 1" }, 220, 150), makeText({ text: "skies", fontFamily: "Mrs Saint Delafield", fontSize: 84, width: 400, fill: white, name: "Script 2" }, 1500, 200), handle()], 2160, 1350)],
+    build: () => [slide("Panorama", "#ffffff", [makeFrame(2160 - 96, 1254, { radius: 64, bg: "#33606e", name: "Panorama photo" }, 48, 48), makeText({ text: "wide open", fontFamily: "Mrs Saint Delafield", fontSize: 84, width: 400, fill: white, name: "Script 1" }, 220, 150), makeText({ text: "skies", fontFamily: "Mrs Saint Delafield", fontSize: 84, width: 400, fill: white, name: "Script 2" }, 1500, 200), handle()], 2160, 1350)],
   },
   {
     id: "carousel-mixed", name: "Mixed-media carousel · 7 slides", categories: ["Carousel", "Storytelling"], description: "Photo, collage, video, typography, photo + text, video + text, multi-image.", size: { w: W, h: H }, kind: "carousel",

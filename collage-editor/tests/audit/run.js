@@ -152,7 +152,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await page.evaluate(() => window.__store.getState().clearSelection());
   await run('dlg-import-items', async () => {
     await page.evaluate(() => window.__store.getState().setUI({ importOpen: true, importQueue: [] })); await wait(page, 600);
-    await page.setInputFiles('[data-testid=import-input]', [S + 'sample-5.jpg', S + 'sample-6.jpg', T + 'clip-portrait.mp4']); await wait(page, 2500);
+    await page.setInputFiles('[data-testid=import-input]', [T + 'photo-5.jpg', T + 'photo-6.jpg', T + 'clip-portrait.mp4']); await wait(page, 2500);
   });
   await page.evaluate(() => window.__store.getState().setUI({ importOpen: false }));
   await run('dlg-projects-confirm', async () => {

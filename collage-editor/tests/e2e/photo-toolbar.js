@@ -3,6 +3,7 @@
 const { chromium, devices } = require('playwright');
 const path = require('path');
 const S = path.resolve(__dirname, '../../public/samples') + '/';
+const T = path.resolve(__dirname, '../fixtures') + '/';
 let pass = 0, fail = 0;
 const ok = (c, m, extra) => { c ? pass++ : fail++; console.log((c ? 'PASS ' : 'FAIL ') + m + (c || extra === undefined ? '' : '  → ' + JSON.stringify(extra))); };
 const base = process.env.BASE_URL || 'http://localhost:3100';
@@ -27,7 +28,7 @@ const firstFill = (page) => page.evaluate(() => {
   await page.goto(base, { waitUntil: 'networkidle' });
   await page.waitForSelector('[data-testid=home]'); await page.click('[data-testid=home-create]'); await page.waitForSelector('[data-testid=new-project-dialog]');
   await page.click('[data-testid=mode-collage]');
-  await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg', S + 'sample-2.jpg', S + 'sample-3.jpg', S + 'sample-4.jpg']);
+  await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg', S + 'sample-2.jpg', S + 'sample-3.jpg', T + 'photo-4.jpg']);
   await page.click('[data-testid=create-project]'); await page.waitForTimeout(3500);
   ok(!(await page.locator('[data-testid=photo-toolbar]').count()), 'no photo wheel while nothing is selected');
   // pick one cell
