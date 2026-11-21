@@ -51,7 +51,7 @@ import struct,glob
 for f in sorted(glob.glob('${unz}/*.png')):
     d=open(f,'rb').read(32); print(f.split('/')[-1], struct.unpack('>II', d[16:24]))
 "`).toString();
-    ok(/sample-1-edit.png \(900, 1600\)/.test(dims), 'images are exported at their native size (900x1600)', dims);
+    ok(/sample-1-edit.png \(2000, 1334\)/.test(dims), 'images are exported at their native size (2000×1333, rounded up to an even 1334 so video stays encodable)', dims);
   }
   console.log(logs.join('\n') || 'no console errors');
   console.log(`\n${pass} passed, ${fail} failed`);

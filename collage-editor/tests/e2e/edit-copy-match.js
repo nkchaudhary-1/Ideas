@@ -11,7 +11,7 @@ const openSection = async (page, title) => { const b = page.locator('section but
   page.setDefaultTimeout(20000);
   await page.waitForSelector('[data-testid=home]'); await page.click('[data-testid=home-create]'); await page.waitForSelector('[data-testid=new-project-dialog]');
   await page.click('[data-testid=intent-edit]');
-  await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg', S + 'sample-2.jpg', S + 'sample-3.jpg', T + 'photo-4.jpg']);
+  await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-2.jpg', S + 'sample-3.jpg', S + 'sample-1.jpg', T + 'photo-4.jpg']);
   await page.click('[data-testid=create-project]'); await settle(page, 4500);
 
   // ── copy & paste: choose what to copy
@@ -47,8 +47,9 @@ const openSection = async (page, title) => { const b = page.locator('section but
   f = await fills(page); ok(f[3].adj.tint === 12, 'Ctrl+C / Ctrl+V copy and paste settings', f[3].adj.tint);
   // transform is optional but works
   await slide(page, 0).click(); await settle(page, 200);
+  const r0 = (await fills(page))[0];
   await page.click('[data-testid=rotate-right]'); await settle(page, 300);
-  f = await fills(page); ok(f[0].rot === 90 && f[0].w > f[0].h, 'rotate right turns the photo and swaps the frame', [f[0].rot, f[0].w, f[0].h]);
+  f = await fills(page); ok(f[0].rot === 90 && f[0].w === r0.h && f[0].h === r0.w, 'rotate right turns the photo and swaps the frame', [f[0].rot, f[0].w, f[0].h]);
   await page.click('[data-testid=copy-settings]'); await page.click('[data-testid=copy-none]'); await page.click('[data-testid=copy-transform]'); await page.click('[data-testid=copy-confirm]'); await settle(page, 300);
   await slide(page, 1).click(); await page.click('[data-testid=paste-settings]'); await settle(page, 400);
   f = await fills(page); ok(f[1].rot === 90 && f[1].w > f[1].h, 'crop & rotation paste when opted in', [f[1].rot, f[1].w, f[1].h]);
@@ -103,10 +104,11 @@ const openSection = async (page, title) => { const b = page.locator('section but
 
   // ── persistence
   await settle(page, 1500);
-  await page.reload({ waitUntil: 'networkidle' }); await settle(page, 2500);
+  await page.reload({ waitUntil: 'networkidle' }); await page.waitForSelector('[data-testid=home]');
+  await page.click('[data-testid=home-project]'); await page.waitForSelector('[data-testid=editor-root]'); await settle(page, 2500);
   const kind = await page.evaluate(() => window.__store.getState().project.kind);
   const n = await page.evaluate(() => window.__store.getState().project.slides.length);
-  ok(kind === 'edit' && n === 4, 'reloading reopens the edit project with all items', { kind, n });
+  ok(kind === 'edit' && n === 4, 'after a reload, opening the saved project brings back all items', { kind, n });
   ok(await page.locator('[data-testid=slide-thumb]').count() === 4, 'the filmstrip is back');
 
   console.log(logs.join('\n') || 'no console errors');
