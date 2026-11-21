@@ -40,8 +40,8 @@ export default function QuickAdjust({ compact }: { compact: boolean }) {
             ))}
           </div>
           <span className="flex-1" />
-          <button type="button" onClick={more} data-testid="quick-more" className="h-9 rounded-full px-3 text-xs font-semibold text-mute transition hover:bg-field hover:text-ink coarse:h-11"><SlidersHorizontal size={13} className="mr-1.5 inline" />More</button>
-          <button type="button" onClick={() => st().setUI({ quick: null })} aria-label="Done" title="Done" data-testid="quick-done" className="grid h-9 w-9 place-items-center rounded-full grad-pill text-pillink transition hover:opacity-90 active:scale-90 coarse:h-11 coarse:w-11"><Check size={16} strokeWidth={2.6} /></button>
+          <button type="button" onClick={more} data-testid="quick-more" aria-label="More" className="h-9 shrink-0 rounded-full px-3 text-xs font-semibold text-mute transition hover:bg-field hover:text-ink coarse:h-11 max-[359px]:w-9 max-[359px]:px-0 max-[359px]:coarse:w-11"><SlidersHorizontal size={13} className="mr-1 inline max-[359px]:mr-0" /><span className="max-[359px]:hidden">More</span></button>
+          <button type="button" onClick={() => st().setUI({ quick: null })} aria-label="Done" title="Done" data-testid="quick-done" className="grid h-9 w-9 shrink-0 place-items-center rounded-full grad-pill text-pillink transition hover:opacity-90 active:scale-90 coarse:h-11 coarse:w-11"><Check size={16} strokeWidth={2.6} /></button>
         </div>
 
         {quick === "adjust" ? (

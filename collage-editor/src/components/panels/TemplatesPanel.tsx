@@ -105,8 +105,8 @@ export default function TemplatesPanel() {
                   <TemplateThumb t={t} slide={slides[0]} />
                   {slides.length > 1 && <span className="absolute left-2 top-2 rounded-full bg-black/65 px-2 py-1 text-2xs font-semibold text-white">{slides.length} slides</span>}
                   {/* on a mouse the buttons slide up over the picture; on touch they sit under it, so nothing hides the design */}
-                  <div className="absolute inset-x-0 bottom-0 flex translate-y-full gap-1 bg-black/80 p-2 text-white transition-transform group-hover:translate-y-0 touch:static touch:translate-y-0 touch:bg-field touch:text-ink">
-                    <Button className="flex-1 !h-8 coarse:!h-11" variant="primary" onClick={() => applyTemplate(t, "replace")} testId={`apply-${t.id}`}>Apply</Button>
+                  <div className="absolute inset-x-0 bottom-0 flex translate-y-full gap-1 bg-black/80 p-2 text-white transition-transform group-hover:translate-y-0 touch:static touch:translate-y-0 touch:flex-wrap touch:bg-field touch:p-1 touch:text-ink">
+                    <Button className="flex-1 !h-8 !px-2 coarse:!h-11" variant="primary" onClick={() => applyTemplate(t, "replace")} testId={`apply-${t.id}`}>Apply</Button>
                     <Button className="!h-8 !px-3 coarse:!h-11 coarse:!w-11" title="Add as new slides" onClick={() => applyTemplate(t, "append")}><Plus size={14} /></Button>
                     {cat === "Saved" && <Button className="!h-8 !px-3 coarse:!h-11 coarse:!w-11" variant="danger" title="Delete template" onClick={() => persist(saved.filter((s) => s.id !== t.id))}><Trash2 size={14} /></Button>}
                   </div>
