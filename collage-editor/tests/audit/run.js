@@ -69,13 +69,18 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
 
   await page.evaluate(() => window.__store.getState().setUI({ rightOpen: true })); await wait(page, 400); // small windows start with it closed
   // ── left rail panels
-  for (const id of ['uploads', 'layouts', 'templates', 'text', 'elements', 'frames', 'backgrounds', 'palettes', 'layers']) {
+  for (const id of ['uploads', 'layouts', 'templates', 'text', 'elements', 'backgrounds', 'palettes', 'layers']) {
     await run(`panel-${id}`, async () => {
       const open = await page.evaluate(() => window.__store.getState().ui.leftPanel);
       if (PHONE) await openTool(id); else if (open !== id) await page.click(`[data-testid=rail-${id}]`);
       await wait(page, 500); await expandAll(page); await wait(page, 200);
     });
   }
+  // frames are a tab of the Elements panel
+  await run('panel-frames', async () => {
+    if (PHONE) await openTool('elements'); else if ((await page.evaluate(() => window.__store.getState().ui.leftPanel)) !== 'elements') await page.click('[data-testid=rail-elements]');
+    await wait(page, 400); await page.getByRole('tab', { name: 'Frames' }).click(); await wait(page, 400); await expandAll(page); await wait(page, 200);
+  });
   // ── properties: canvas, image, video
   await run('props-canvas', async () => { await page.evaluate(() => window.__store.getState().clearSelection()); await expandAll(page); });
   await run('props-canvas-bg-gradient', async () => { await page.getByRole('button', { name: 'Gradient', exact: true }).click(); await wait(page, 300); await expandAll(page); });
@@ -113,7 +118,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
     await page.mouse.click(b.x + v.x + 540 * v.scale * 0.5, b.y + v.y + 675 * v.scale * 0.5); await wait(page, 400); await sheet({ k: 'props', size: 'full' }); await wait(page, 300); await expandAll(page);
   });
   await run('props-multi', async () => { await page.evaluate(() => { const s = window.__store.getState(); s.setActiveSlide(s.project.slides[1].id); const sl = s.project.slides[1]; s.select(sl.elements.map((e) => e.id)); }); await wait(page, 400); await expandAll(page); });
-  await run('props-frame', async () => { await addVia('frames', async () => { await page.locator('[data-testid=left-panel] button').nth(2).click(); }); });
+  await run('props-frame', async () => { await addVia('elements', async () => { await page.getByRole('tab', { name: 'Frames' }).click(); await wait(page, 300); await page.click('[data-testid=frame-rounded]'); }); });
 
   // ── popovers
   await page.evaluate(() => { const s = window.__store.getState(); s.clearSelection(); s.setUI({ leftPanel: null, sheet: null }); });
