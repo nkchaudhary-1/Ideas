@@ -107,7 +107,7 @@ const firstFill = (page) => page.evaluate(() => {
   await page.screenshot({ path: process.env.SHOT || '/tmp/photo-toolbar-edit.png' });
   await ctx.close();
 
-  // ── phone: the toolbar sits above the view pill when no sheet is open
+  // ── phone: no wheel; the bottom bar carries the selected photo's tools
   ctx = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 390, height: 844 } });
   page = await ctx.newPage();
   page.on('pageerror', (e) => errs.push(e.message));
@@ -118,18 +118,30 @@ const firstFill = (page) => page.evaluate(() => {
   await page.tap('[data-testid=create-project]'); await page.waitForTimeout(3500);
   await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); s.select([sl.elements[0].id]); s.setUI({ sheet: null }); });
   await page.waitForTimeout(500);
-  ok(await page.locator('[data-testid=photo-wheel-toggle]').isVisible(), 'on a phone the wheel starts folded into a button');
-  await page.tap('[data-testid=photo-wheel-toggle]'); await page.waitForTimeout(300);
-  const tb = await page.locator('[data-testid=photo-toolbar]').boundingBox();
-  ok(!!tb && tb.x >= 0 && tb.x + tb.width <= 390, 'and opens within the screen', tb);
-  await page.tap('[data-testid=wheel-zoom]'); await page.waitForTimeout(150);
-  await page.tap('[data-testid=photo-zoom-in]'); await page.waitForTimeout(250);
-  ok((await firstFill(page)).zoom > 1.05, 'and zooming works by tap');
-  await page.tap('[data-testid=wheel-filters]'); await page.waitForTimeout(500);
+  ok((await page.locator('[data-testid=photo-wheel-toggle]').count()) === 0 && (await page.locator('[data-testid=photo-toolbar]').count()) === 0, 'on a phone there is no wheel over the picture');
+  const bar = await page.locator('[data-testid=context-bar]').boundingBox();
+  ok(!!bar && bar.x >= 0 && bar.x + bar.width <= 390, 'the photo tools sit in one bar along the bottom, inside the screen', bar);
+  await page.tap('[data-testid=ctx-turn]'); await page.waitForTimeout(250);
+  ok((await firstFill(page)).rot === 90, 'Turn rotates the photo');
+  await page.tap('[data-testid=ctx-flip]'); await page.waitForTimeout(250);
+  ok((await firstFill(page)).flip === true, 'Flip mirrors it');
+  await page.tap('[data-testid=ctx-reset]'); await page.waitForTimeout(250);
+  const r = await firstFill(page);
+  ok(r.rot === 0 && r.flip === false && r.zoom === 1, 'Reset puts it back', r);
+  await page.tap('[data-testid=ctx-crop]'); await page.waitForTimeout(250);
+  ok(await page.evaluate(() => !!window.__store.getState().ui.cropId) && (await page.locator('[data-testid=ctx-crop]').textContent()).includes('Done'), 'Crop enters crop mode and the button becomes Done');
+  await page.tap('[data-testid=ctx-crop]'); await page.waitForTimeout(250);
+  ok(await page.evaluate(() => !window.__store.getState().ui.cropId), 'Done leaves it');
+  await page.tap('[data-testid=ctx-replace]'); await page.waitForTimeout(350);
+  ok(await page.locator('[data-testid=media-picker]').isVisible(), 'Replace opens the photo picker');
+  await page.keyboard.press('Escape'); await page.waitForTimeout(250);
+  await page.tap('[data-testid=ctx-filters]'); await page.waitForTimeout(500);
   ok(await page.evaluate(() => window.__store.getState().ui.quick === 'filters') && await page.locator('[data-testid=quick-adjust]').isVisible(), 'Filters opens the quick bar on its filter row');
-  ok(!(await page.locator('[data-testid=photo-toolbar]').count()), 'and the wheel steps aside while it is open');
   await page.tap('[data-testid=quick-more]'); await page.waitForTimeout(500);
   ok(await page.evaluate(() => window.__store.getState().ui.sheet === 'props'), '"More" opens the properties sheet');
+  await page.tap('[data-testid=sheet-close]'); await page.waitForTimeout(300);
+  await page.tap('[data-testid=ctx-done]'); await page.waitForTimeout(300);
+  ok(await page.evaluate(() => window.__store.getState().selection.length === 0) && await page.locator('[data-testid=dock]').isVisible(), 'Done deselects and the tool rail comes back');
   await ctx.close();
 
   ok(errs.length === 0, 'no page errors', errs.slice(0, 2));

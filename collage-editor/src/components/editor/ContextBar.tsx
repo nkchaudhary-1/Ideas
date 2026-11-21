@@ -42,10 +42,10 @@ export default function ContextBar() {
         <DockButton icon={cropping ? <Check size={20} /> : <Move size={20} />} label={cropping ? "Done" : "Crop"} on={cropping} testId="ctx-crop" onClick={() => toggleCrop(target)} />
         <DockButton icon={<Palette size={20} />} label="Filters" testId="ctx-filters" onClick={() => st().setUI({ quick: "filters" })} />
         <DockButton icon={<Sun size={20} />} label="Light" testId="ctx-light" onClick={() => st().setUI({ quick: "adjust" })} />
+        {edit && <DockButton icon={<SplitSquareHorizontal size={20} />} label="Compare" on={compare} testId="compare" hold={{ down: () => st().setUI({ compare: true }), up: () => st().setUI({ compare: false }) }} />}
         <DockButton icon={<RotateCw size={20} />} label="Turn" testId="ctx-turn" onClick={() => turnPhoto(target)} />
         <DockButton icon={<FlipHorizontal2 size={20} />} label="Flip" testId="ctx-flip" onClick={() => flipPhoto(target)} />
         <DockButton icon={<RotateCcw size={20} />} label="Reset" testId="ctx-reset" onClick={() => resetFraming(target)} />
-        {edit && <DockButton icon={<SplitSquareHorizontal size={20} />} label="Compare" on={compare} testId="compare" hold={{ down: () => st().setUI({ compare: true }), up: () => st().setUI({ compare: false }) }} />}
         <DockButton icon={<SlidersHorizontal size={20} />} label="More" testId="ctx-more" onClick={props} />
       </DockBar>
     );

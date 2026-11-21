@@ -22,13 +22,17 @@ Minimal, floating, light or dark. The canvas fills the middle; everything else i
 * **Palette:** black, white and one orange. Greys are neutral; orange marks only the active tool, slider fills, toggles and canvas selection, with a soft gradient on the primary button and the page ground. Light and dark themes; the choice is remembered and the first visit follows your system setting.
 * **Controls:** sliders are capsules: a black fill ending in a thin white-bar knob (the fill runs outward from the neutral point; double-click to reset); colour adjustments (temperature, tint, hue, saturation) use a gradient pill with a ring knob; rotation uses a tick-mark ruler (drag, arrow keys, double-click to reset); segmented controls and aspect-ratio glyphs sit in the same pill style.
 
+## Start from your projects
+
+The app opens on a front page, not in the editor: **Create**, **Edit photos & videos**, and a grid of your saved projects, each with its kind and size ("Carousel · 4:5 · 5 slides"), when it was last edited, and Duplicate and Delete. A reload lands there again; "All projects" in the menu (or the back arrow on a phone) brings you back from the editor.
+
 ## Always know where you are
 
 New projects can be a single post, collage, carousel, panorama, story or a photo and video edit. The editor says which, all the time:
 
-* **Mode chip** under the top bar: `Carousel · Step 1 of 4 · Add photos`. Tap it for the guide: what this kind of project is, and four steps that tick themselves off as you work (add photos, add slides, style, export), each with a button that opens the right tool. The first time you make each kind it opens by itself; "Hide steps" folds it into a help button.
+* **Mode chip** under the top bar (on a phone, the line under the project name): `Carousel · Step 1 of 4 · Add photos`. Tap it for the guide: what this kind of project is, and four steps that tick themselves off as you work (add photos, add slides, style, export), each with a button that opens the right tool. The first time you make each kind it opens by itself; "Hide steps" folds it into a help button.
 * **Empty slides stay clear.** Nothing covers a blank canvas; the mode chip says what comes next and its button opens the right tool (Media, Layouts, Templates are always on the rail).
-* **Photo wheel.** Select a photo and a radial wheel appears: zoom, move and crop, turn, flip, replace, filters, light and reset, with the tool's name in the middle. Drag its middle to put it anywhere on the canvas. In Edit mode the adjustments card opens by itself on any window size.
+* **Photo wheel** (desktop; phones get a bottom bar with the same tools). Select a photo and a radial wheel appears: zoom, move and crop, turn, flip, replace, filters, light and reset, with the tool's name in the middle. Drag its middle to put it anywhere on the canvas. In Edit mode the adjustments card opens by itself on any window size.
 * **Quick bar** (the Snapseed / Lensa / Instagram way). Pick Filters or Light on the wheel and a bar rises from the bottom: a row of live-preview filters, or a row of adjustments with one slider for the one you chose, and a tick to finish. "More" opens the full card.
 * **Quiet top bar.** Menu (logo, new project, all projects, theme, shortcuts), project name, history pill (undo, redo, preview) and Export. Icon-only buttons show their name on hover, and menus open towards the side with more room, so they are never cut off.
 
@@ -36,9 +40,9 @@ New projects can be a single post, collage, carousel, panorama, story or a photo
 
 Under 900px wide (a phone, or a tablet held upright) the editor switches to an app layout. Nothing is removed; it is rearranged.
 
-* **Full-screen canvas** with a floating top bar (menu, name, undo / redo, export) and a view pill (size, fit, play, compare, preview).
-* **Tool dock** along the bottom instead of the left rail. Tap a tool and its panel rises as a **bottom sheet** that pushes the canvas up so you still see it; drag the handle for a taller sheet, down to close. Select something and an **Edit** chip opens its properties the same way. In Edit mode the sheet opens on the photo's adjustments.
-* **Dialogs** (new project, import, export, projects) dock to the bottom edge and slide up.
+* **One bar on top, one below, nothing over the picture.** The top bar sits above the canvas: back to your projects, the name with the kind of project and the next step under it, undo, redo, export, and a "⋯" menu (new project, all projects, preview, fit, canvas size, view options, duplicate and delete slide, theme).
+* **One bottom bar that follows your selection.** With nothing selected it is the **tool dock**: tap a tool and its panel rises as a **bottom sheet** that pushes the canvas up so you still see it; drag the handle for a taller sheet, down to close. Select a photo and it becomes that photo's tools (Replace, Crop, Filters, Light, Turn, Flip, Reset, More); select anything else and it offers Edit, Duplicate and Delete; while you type it offers Done. In Edit mode the photo's tools are there from the start, with Compare (hold to see the original).
+* **Dialogs** (new project, import, export) dock to the bottom edge and slide up.
 * **Gestures:** pinch to zoom (the picture itself, in crop mode), two fingers or one finger on empty canvas to pan, tap empty canvas to deselect, tap an empty tile to add a photo or video. A second finger cancels a drag in progress.
 * **Finger-sized:** controls grow to 44px on touch screens, hover-only actions are always visible, text fields are 16px so iOS does not zoom, and the layout respects notches and the home indicator.
 * **Installable:** add it to the home screen for a full-screen, app-like window (manifest, icons and theme colour are set).

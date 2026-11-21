@@ -15,7 +15,10 @@ const box = async (page, sel) => { const l = page.locator(sel).first(); return (
   // ── dock and sheets
   let u = await ui(page);
   ok(u.sheet === null, 'no sheet is open on a fresh project');
-  ok(!!(await box(page, '[data-testid=dock]')), 'the tool dock is on screen');
+  // a new project selects the photo you started it with, so the bottom bar shows that photo's tools; × puts the tool rail back
+  ok(!!(await box(page, '[data-testid=context-bar]')) && !(await box(page, '[data-testid=dock]')), 'a new photo is selected, so the bottom bar shows its tools');
+  await page.tap('[data-testid=ctx-done]'); await settle(page, 300);
+  ok(!!(await box(page, '[data-testid=dock]')) && !(await box(page, '[data-testid=context-bar]')), 'Done deselects it and the tool dock is on screen');
   await page.tap('[data-testid=rail-text]'); await settle(page, 400);
   u = await ui(page);
   ok(u.sheet === 'tools' && u.panel === 'text', 'tapping a tool opens its sheet');
@@ -35,7 +38,7 @@ const box = async (page, sel) => { const l = page.locator(sel).first(); return (
   ok(u.size === 'full', 'dragging the handle up makes the sheet taller');
   const tall = await box(page, '[data-testid=left-panel]');
   const st2 = await box(page, '[data-testid=workspace]');
-  ok(tall.height > half.height + 60 && st2.height > 200, 'a tall sheet still leaves room for the canvas', { sheet: tall.height, stage: st2.height });
+  ok(tall.height > half.height + 24 && st2.height > 200, 'a tall sheet is taller and still leaves room for the canvas', { sheet: tall.height, stage: st2.height });
   const h2 = await box(page, '[data-testid=sheet-handle]');
   await drag([h2.x + h2.width / 2, h2.y + h2.height / 2], [h2.x + h2.width / 2, h2.y + 140]); await settle(page, 400);
   u = await ui(page);
@@ -45,22 +48,22 @@ const box = async (page, sel) => { const l = page.locator(sel).first(); return (
   u = await ui(page);
   ok(u.sheet === null, 'dragging down again closes it');
 
-  // ── selecting a photo shows the wheel button (not the Edit chip, which would sit on top of it); the dock opens the properties sheet
+  // ── selecting a photo swaps the bottom bar to that photo's tools; More opens the properties sheet
   await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); s.select([sl.elements[0].id]); });
   await settle(page, 400);
-  ok(!!(await box(page, '[data-testid=photo-wheel-toggle]')), 'a selected photo shows the wheel button');
-  ok(!(await box(page, '[data-testid=edit-chip]')), 'and no Edit chip over it');
-  await page.tap('[data-testid=dock-props]'); await settle(page, 500);
+  ok(!!(await box(page, '[data-testid=ctx-filters]')) && !!(await box(page, '[data-testid=ctx-crop]')) && !(await box(page, '[data-testid=dock]')), 'a selected photo gets its own tools in the bottom bar');
+  ok(!(await box(page, '[data-testid=photo-wheel-toggle]')) && !(await box(page, '[data-testid=edit-chip]')), 'with no wheel button or Edit chip over the picture');
+  await page.tap('[data-testid=ctx-more]'); await settle(page, 500);
   u = await ui(page);
-  ok(u.sheet === 'props', 'the dock opens the properties sheet');
-  // anything that is not a photo still gets the Edit chip
-  await page.evaluate(() => window.__store.getState().setUI({ sheet: null })); await settle(page, 300);
+  ok(u.sheet === 'props', 'More opens the properties sheet');
+  // anything that is not a photo gets Edit, Duplicate and Delete
+  await page.evaluate(() => { const s = window.__store.getState(); s.setUI({ sheet: null }); s.clearSelection(); }); await settle(page, 300);
   await page.tap('[data-testid=rail-text]'); await settle(page, 500);
   await page.tap('[data-testid=add-heading]'); await settle(page, 500);
   await page.evaluate(() => window.__store.getState().setUI({ sheet: null, editingTextId: null })); await settle(page, 500);
   const sel = await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); return sl.elements.filter((e) => s.selection.includes(e.id)).map((e) => e.type); });
   ok(sel.length === 1 && sel[0] === 'text', 'adding a heading selects it', sel);
-  ok(!!(await box(page, '[data-testid=edit-chip]')), 'a selected text shows the Edit chip');
+  ok(!!(await box(page, '[data-testid=ctx-edit]')) && !!(await box(page, '[data-testid=ctx-duplicate]')) && !!(await box(page, '[data-testid=ctx-delete]')), 'a selected text shows Edit, Duplicate and Delete');
   await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); s.select([sl.elements.find((e) => e.type === 'image').id]); s.setUI({ sheet: 'props', editingTextId: null }); }); await settle(page, 500);
 
   // ── the capsule slider follows a finger
@@ -97,20 +100,24 @@ const box = async (page, sel) => { const l = page.locator(sel).first(); return (
   const sw = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   ok(sw <= 0, 'the page has no horizontal scroll', { over: sw });
 
-  // ── Edit mode opens its adjustments sheet and shows the strip
+  // ── Edit mode: the photo and its tools are in view from the start, with no sheet in the way; More opens the adjustments
   await page.evaluate(() => window.__store.getState().setUI({ newProjectOpen: true })); await settle(page, 500);
   await newProject(page, { intent: 'edit', files: [S + 'sample-1.jpg', S + 'sample-2.jpg', T + 'clip-portrait.mp4'] });
   u = await ui(page);
-  ok(u.sheet === 'props', 'Edit mode opens the adjustments sheet by itself');
+  ok(u.sheet === null && !!(await box(page, '[data-testid=ctx-filters]')), 'Edit mode starts with the photo and its tools in view, no sheet in the way');
+  ok(!!(await box(page, '[data-testid=select-bar]')), 'the photo strip and its select bar are on screen');
+  const kind = await state(page);
+  ok(kind.kind === 'edit' && kind.slides === 3, 'three photos and videos are open', { kind: kind.kind, slides: kind.slides });
+  await page.tap('[data-testid=ctx-more]'); await settle(page, 500);
+  u = await ui(page);
+  ok(u.sheet === 'props', 'More opens the adjustments sheet');
   // a short screen (this emulated iPhone is 664px tall, like Safari with its bars) gets a slim row of thumbnails while the sheet is open
   ok(!!(await box(page, '[data-testid=slide-strip]')), 'the photo strip stays on screen while the adjustments sheet is open');
   ok(!(await box(page, '[data-testid=select-bar]')) === (vp.height <= 720), 'the strip is slim on a short screen and full on a tall one');
-  const kind = await state(page);
-  ok(kind.kind === 'edit' && kind.slides === 3, 'three photos and videos are open', { kind: kind.kind, slides: kind.slides });
   await page.tap('[data-testid=thumb-open] >> nth=1'); await settle(page, 400);
   const a = await page.evaluate(() => window.__store.getState().project.activeSlideId === window.__store.getState().project.slides[1].id);
   ok(a, 'tapping a thumbnail makes it the one being edited');
-  await page.tap('[data-testid=dock-props]'); await settle(page, 500);
+  await page.tap('[data-testid=sheet-close]'); await settle(page, 500);
   ok(!!(await box(page, '[data-testid=select-bar]')), 'closing the sheet brings back the full strip with its select bar');
 
   const errs = logs.filter((l) => !/favicon|ResizeObserver/.test(l));

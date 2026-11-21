@@ -257,7 +257,7 @@ function CompactMenu({ c }: { c: Chrome }) {
             ) : (
               <>
                 <MenuRow icon={<RectangleVertical size={16} />} label="Canvas size" detail={pano > 1 ? `${ratio} · ${pano} slides` : ratio} testId="format-chip" onClick={() => setOpen(open === "size" ? null : "size")} />
-                {open === "size" && <div className="px-1 pb-2" data-testid="format-menu-inline"><FormatMenu close={close} /></div>}
+                {open === "size" && <div className="pb-2" data-testid="format-menu-inline"><FormatMenu close={close} /></div>}
               </>
             )}
             <MenuRow icon={<Grid3x3 size={16} />} label="View options" testId="view-menu" onClick={() => setOpen(open === "view" ? null : "view")} />

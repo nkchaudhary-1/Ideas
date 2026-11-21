@@ -67,7 +67,7 @@ export default function SlideStrip() {
               onDragEnd={() => { setDrag(null); setOver(null); }}
               data-testid="slide-thumb" data-slide-id={s.id}
             >
-              <button type="button" aria-label={`Open ${s.name}`} aria-current={active} onClick={() => st().setActiveSlide(s.id)}
+              <button type="button" aria-label={`Open ${s.name}`} aria-current={active} data-radius-free={phone || undefined} onClick={() => st().setActiveSlide(s.id)}
                 className={`relative overflow-hidden ring-2 transition ${phone ? "rounded" : compact ? "rounded-in-10" : "rounded-in-19"} ${active ? "ring-ink/60" : over === i ? "ring-ink/60" : "ring-transparent hover:ring-ink/25"}`}>
                 <div className="pointer-events-none"><SlideView slide={s} width={w} scope="strip" /></div>
                 {segs > 1 && Array.from({ length: segs - 1 }, (_, k) => <span key={k} className="pointer-events-none absolute inset-y-0 w-px border-l-2 border-dotted border-white/90 mix-blend-difference" style={{ left: `${((k + 1) / segs) * 100}%` }} />)}
@@ -91,7 +91,7 @@ export default function SlideStrip() {
         <button ref={addRef} type="button" aria-label="Add slide" title="Add slide" data-testid="add-slide" onClick={toggleMenu}
           onDragOver={(e) => { if (e.dataTransfer.types.includes("application/x-asset")) e.preventDefault(); }}
           onDrop={(e) => { e.preventDefault(); const a = getAsset(e.dataTransfer.getData("application/x-asset")); if (a) createCarouselFromAssets([a]); }}
-          className={`grid shrink-0 place-items-center border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink ${phone ? "h-[52px] w-[52px] rounded" : compact ? "h-[52px] w-[52px] rounded-in-11" : "h-[88px] w-[64px] rounded-in-19"}`}><Plus size={18} /></button>
+          className={`grid shrink-0 place-items-center border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink ${phone ? "h-[52px] w-[52px] rounded-full" : compact ? "h-[52px] w-[52px] rounded-in-11" : "h-[88px] w-[64px] rounded-in-19"}`}><Plus size={18} /></button>
         {!phone && <span className="text-2xs" aria-hidden>&nbsp;</span>}
         </div>
       </div>

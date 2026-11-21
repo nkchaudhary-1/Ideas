@@ -64,9 +64,14 @@ Check with `node tests/audit/run.js` at `--w=1600` and `--w=2200`; it must repor
 Everything above holds on a phone. These are the additions for screens under 900px wide (`useCompact()`) and for touch
 (`coarse:` = `pointer: coarse`, `touch:` = `hover: none`).
 
-- **App layout.** A full-screen stage with a floating top bar, a view pill, a tool dock along the bottom, and panels and
-  properties as bottom sheets that push the canvas up (never cover it). Dialogs dock to the bottom edge with an 8px margin,
-  32px corners and a slide-up entrance. Respect safe areas (`env(safe-area-inset-*)`, `viewport-fit=cover`) and use `dvh`, not `vh`.
+- **App layout: one bar on top, the work in the middle, one bar below.** A slim top bar above the canvas (back to projects, the name with the
+  kind of project and next step under it, undo, redo, export, and a "⋯" menu for size, fit, preview, view options and slide actions), the canvas,
+  a flat strip of slides or photos, and one bottom bar. The bottom bar is the tool dock when nothing is selected and becomes the selection's
+  tools when something is (a photo: replace, crop, filters, light, turn, flip, reset; anything else: edit, duplicate, delete; typing: done).
+  **Nothing floats over the picture** except the quick adjust bar and the selection handles: no pills, chips, wheel or toasts on the canvas.
+  Panels and properties are bottom sheets that push the canvas up (never cover it); keep at least 200px of canvas when a sheet is open.
+  Dialogs dock to the bottom edge with an 8px margin, 32px corners and a slide-up entrance. Respect safe areas (`env(safe-area-inset-*)`,
+  `viewport-fit=cover`) and use `dvh`, not `vh`.
 - **Dialog gutter is 24px on phones** (32 − 24 = the 8px radius floor, so inner radii stay `rounded`), 32px from 640px up.
 - **Hover is not available.** Anything revealed on hover (row actions, tick boxes) is always visible on touch, or moves
   into a sheet. Use pointer events, not mouse events, for outside-tap and drag handling (a touch gesture that calls
@@ -83,13 +88,19 @@ Everything above holds on a phone. These are the additions for screens under 900
 
 A new user must never have to guess what they are making or what to do next.
 
-- **Name the mode** wherever the project is shown: the mode chip under the top bar, project lists and the size chip all use the same words
+- **Name the mode** wherever the project is shown: the line under the project name (on a phone) or the chip under the top bar (on a desktop), project lists and the size chip all use the same words
   (single post, collage, carousel, panorama, story, photo & video edit). A panorama is described by its slides ("4:5 · 7 slides"), never by the ratio of the whole strip.
 - **Show the next step.** Every mode has a short list of steps that tick themselves off from what is in the project, each with a button that opens the right tool.
   Add steps to `useGuide` in `ModeGuide.tsx` when a mode gains a stage; never add a mode without them.
-- **An empty canvas stays clear.** No card or prompt sits over it; the mode chip and its next-step button are the guide, and the rail
+- **An empty canvas stays clear.** No card or prompt sits over it; the mode line and its next-step button are the guide, and the rail
   has Media, Layouts and Templates. (The owner removed the "Start your …" card because it covered the work.)
 - **Every tool is labelled.** An icon alone is never the only name of a tool: the rail and the phone dock show a short name under each icon, and groups carry a title.
 - **Controls that matter are visible without selecting anything.** Editing a photo is never behind a closed panel: Edit mode opens its card, and a photo
-  has its own wheel. If a panel can be shut, a chip brings it back.
+  has its own wheel on a desktop and its own bar on a phone. If a panel can be shut, a chip or button brings it back.
 
+## 7. The front page
+
+The app opens on a projects page, never straight into the editor: **Create**, **Edit photos & videos**, and your saved projects (open, duplicate,
+delete). A reload lands there again. The editor is somewhere you go to and can leave ("All projects" in the menu, the back arrow on a phone).
+Keyboard shortcuts and paste do nothing while the front page is showing. Project cards describe a project the same way everywhere
+("Carousel · 4:5 · 5 slides", "Panorama · 4:5 · 3 slides", "Photo & video edit · 6 items").

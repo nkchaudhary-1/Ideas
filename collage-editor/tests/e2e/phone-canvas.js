@@ -36,7 +36,7 @@ const ok = (c, m, extra) => { c ? pass++ : fail++; console.log((c ? 'PASS ' : 'F
   ok(s.view.scale === v2.scale, 'panning does not change the zoom');
 
   // ── drag an element
-  await page.tap('[data-testid=zoom-fit]'); await settle(page, 500);
+  await page.tap('[data-testid=app-menu]'); await settle(page, 300); await page.tap('[data-testid=zoom-fit]'); await settle(page, 500); // Fit to screen is in the menu
   s = await state(page);
   const tx = s.els.find((e) => e.type === 'text');
   const sc = s.view.scale;

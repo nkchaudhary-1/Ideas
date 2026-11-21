@@ -35,7 +35,7 @@ export default function BottomSheet() {
   };
 
   return (
-    <section className="card pop sheet-in relative flex shrink-0 flex-col overflow-hidden" style={{ height: full ? "max(38dvh, min(76dvh, 100dvh - 340px))" : "38dvh" }}
+    <section className="card pop sheet-in relative flex shrink-0 flex-col overflow-hidden" style={{ height: full ? "max(38dvh, min(76dvh, 100dvh - 384px))" : "38dvh" }}
       data-testid={sheet === "tools" ? "left-panel" : "sheet-props"} aria-label={title}>
       <div className="relative flex h-8 shrink-0 touch-none cursor-grab items-center justify-center" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={() => { start.current = null; }} data-testid="sheet-handle">
         <span className="h-1 w-10 rounded-full bg-faint/60" />

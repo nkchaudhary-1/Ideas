@@ -22,8 +22,8 @@ function ProjectCard({ p }: { p: ProjectMeta }) {
   return (
     <li className="flex flex-col rounded-card bg-panel p-3 ring-1 ring-line/70" data-testid="home-project-card">
       <button type="button" onClick={() => void st().openProject(p.id)} data-testid="home-project" aria-label={`Open ${p.name}`}
-        className="block w-full rounded-in-12 text-left transition active:scale-[0.99]">
-        <span className="flex h-40 items-center justify-center overflow-hidden rounded-in-12 bg-stage">
+        className="flex h-[232px] w-full flex-col rounded-in-12 text-left transition active:scale-[0.99]">
+        <span className="flex h-40 shrink-0 items-center justify-center overflow-hidden rounded-in-12 bg-stage">
           {p.thumb ? <img src={p.thumb} alt="" className="max-h-full max-w-full object-contain" /> : <span className="text-xs text-faint">{p.size}</span>}
         </span>
         <span className="mt-3 block space-y-1 px-1">

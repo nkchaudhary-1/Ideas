@@ -78,7 +78,7 @@ export default function EditStrip({ slim = false }: { slim?: boolean }) {
               onDragEnd={() => { setDrag(null); setOver(null); }}>
               {/* the picture, its tick and its hover actions belong together; its name sits under it, starting at the same left edge */}
               <div className="relative">
-                <button type="button" aria-label={`Select ${s.name}`} aria-pressed={picked} data-testid="thumb-open" title="Click to edit it. Hold to add it to the selection"
+                <button type="button" aria-label={`Select ${s.name}`} aria-pressed={picked} data-testid="thumb-open" data-radius-free={phone || undefined} title="Click to edit it. Hold to add it to the selection"
                   onPointerDown={(e) => { if (e.pointerType !== "touch") return; press.current.fired = false; clearTimeout(press.current.t); press.current.t = setTimeout(() => { press.current.fired = true; toggle(s.id); }, 420); }}
                   onPointerUp={() => clearTimeout(press.current.t)} onPointerLeave={() => clearTimeout(press.current.t)} onPointerCancel={() => clearTimeout(press.current.t)}
                   onClick={(e) => { if (press.current.fired) { press.current.fired = false; return; } click(e, s.id); }}
@@ -105,7 +105,7 @@ export default function EditStrip({ slim = false }: { slim?: boolean }) {
           <button type="button" aria-label="Add photos or videos" title="Add photos or videos" data-testid="add-slide" onClick={() => input.current?.click()}
           onDragOver={(e) => { if (e.dataTransfer.types.includes("Files") || e.dataTransfer.types.includes("application/x-asset")) e.preventDefault(); }}
           onDrop={(e) => { e.preventDefault(); const a = getAsset(e.dataTransfer.getData("application/x-asset")); if (a) addAssetsToEdit([a]); else void add([...e.dataTransfer.files]); }}
-          className={`grid shrink-0 place-items-center rounded border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink ${slim ? "h-11 w-11" : phone ? "h-[52px] w-[52px]" : "h-[76px] w-[64px]"}`}><Plus size={18} /></button>
+          className={`grid shrink-0 place-items-center border-2 border-dotted border-faint/60 text-mute hover:border-ink/50 hover:text-ink ${phone ? `rounded-full ${slim ? "h-11 w-11" : "h-[52px] w-[52px]"}` : `rounded ${slim ? "h-11 w-11" : "h-[76px] w-[64px]"}`}`}><Plus size={18} /></button>
           {!slim && <span className="text-2xs" aria-hidden>&nbsp;</span>}
         </div>
       </div>

@@ -21,8 +21,8 @@ function BottomBar() {
   const typing = useStore((s) => !!s.ui.editingTextId);
   const photo = usePhotoTarget();
   const context = typing || (edit ? !!photo : selected);
-  // an open tool panel keeps the tool rail in view, so you can switch panels or close it
-  return context && sheet !== "tools" ? <ContextBar /> : <Dock />;
+  // an open tool panel keeps the tool rail in view, so you can switch panels or close it; typing always gets its Done
+  return typing || (context && sheet !== "tools") ? <ContextBar /> : <Dock />;
 }
 
 /**

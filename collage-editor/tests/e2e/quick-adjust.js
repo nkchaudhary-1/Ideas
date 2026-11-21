@@ -20,9 +20,13 @@ async function run(label, ctxOpts, tap) {
   await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg', S + 'sample-2.jpg']);
   await click('[data-testid=create-project]'); await page.waitForTimeout(3500);
   await page.evaluate(() => window.__store.getState().setUI({ sheet: null })); await page.waitForTimeout(400);
-  // the wheel (folded on a narrow stage) opens, then Light & colour opens the bar
-  if (await page.locator('[data-testid=photo-wheel-toggle]').count()) { await click('[data-testid=photo-wheel-toggle]'); await page.waitForTimeout(350); }
-  await click('[data-testid=wheel-light]'); await page.waitForTimeout(400);
+  // on a desktop the wheel (folded on a narrow stage) opens, then Light & colour opens the bar; on a phone the bottom bar's Light button does
+  if (tap) await click('[data-testid=ctx-light]');
+  else {
+    if (await page.locator('[data-testid=photo-wheel-toggle]').count()) { await click('[data-testid=photo-wheel-toggle]'); await page.waitForTimeout(350); }
+    await click('[data-testid=wheel-light]');
+  }
+  await page.waitForTimeout(400);
   ok(await page.locator('[data-testid=quick-adjust]').isVisible(), `${label}: Light & colour opens the quick bar`);
   ok(!(await page.locator('[data-testid=photo-toolbar]').count()), `${label}: and the wheel steps aside`);
   await click('[data-testid=quick-contrast]'); await page.waitForTimeout(200);
@@ -45,7 +49,7 @@ async function run(label, ctxOpts, tap) {
   await click('[data-testid=quick-done]'); await page.waitForTimeout(300);
   ok(!(await page.locator('[data-testid=quick-adjust]').count()), `${label}: the tick puts it away`);
   ok((await fill(page)).adj.contrast === 30 && (await fill(page)).filter.id === 'vivid', `${label}: and keeps every edit`);
-  await click('[data-testid=wheel-filters]').catch(() => {}); await page.waitForTimeout(300);
+  await click(tap ? '[data-testid=ctx-filters]' : '[data-testid=wheel-filters]').catch(() => {}); await page.waitForTimeout(300);
   ok(errs.length === 0, `${label}: no page errors`, errs.slice(0, 2));
   await page.screenshot({ path: `${process.env.SHOTS || '/tmp'}/quick-${label}.png` });
   await browser.close();

@@ -49,6 +49,8 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
     if (ONLY && !ONLY.includes(name)) return;
     try { const sh = sheetFor(name); if (PHONE && sh && sh.k === 'props') await sheet(sh); await fn(); if (PHONE && !sh) await sheet(null); await record(name); } catch (e) { console.log(`  (skipped ${name}: ${e.message.split('\n').slice(0, 14).join(' | ').slice(0, 900)})`); }
   };
+  // on a phone size, view options and preview live in the "⋯" menu
+  const viaMenu = async (id) => { if (PHONE) { await page.click('[data-testid=app-menu]'); await wait(page, 300); } await page.click(`[data-testid=${id}]`); };
   const closeAny = async () => { await page.keyboard.press('Escape'); await wait(page, 150); await page.mouse.click(5, 5).catch(() => {}); await wait(page, 100); };
 
   // ── the front page (nothing saved yet), then the entry dialog it opens
@@ -115,9 +117,9 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
 
   // ── popovers
   await page.evaluate(() => { const s = window.__store.getState(); s.clearSelection(); s.setUI({ leftPanel: null, sheet: null }); });
-  await run('pop-format', async () => { await page.click('[data-testid=format-chip]'); await wait(page, 400); });
+  await run('pop-format', async () => { await viaMenu('format-chip'); await wait(page, 400); });
   await closeAny();
-  await run('pop-view', async () => { await page.click('[data-testid=view-menu]'); await wait(page, 400); });
+  await run('pop-view', async () => { await viaMenu('view-menu'); await wait(page, 400); });
   await closeAny();
   await run('pop-app', async () => { await page.click('[data-testid=app-menu]'); await wait(page, 400); });
   await closeAny();
@@ -167,10 +169,13 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await page.evaluate(() => window.__store.getState().setUI({ shortcutsOpen: false }));
   await run('dlg-export', async () => { await page.click('[data-testid=export]'); await wait(page, 900); });
   await page.evaluate(() => window.__store.getState().setUI({ exportOpen: false }));
-  await run('dlg-preview', async () => { await page.click('[data-testid=preview]'); await wait(page, 1200); });
+  await run('dlg-preview', async () => { await viaMenu('preview'); await wait(page, 1200); });
   await page.evaluate(() => window.__store.getState().setUI({ previewOpen: false }));
   await run('dlg-import', async () => { await page.evaluate(() => window.__store.getState().setUI({ importOpen: true, importQueue: [] })); await wait(page, 400); });
   await page.evaluate(() => window.__store.getState().setUI({ importOpen: false }));
+  await run('photo-selected', async () => { await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); const el = sl.elements.find((e) => e.type === 'image' || e.type === 'grid'); s.select([el.id]); s.setUI({ sheet: null }); }); await wait(page, 600); });
+  await run('quick-bar', async () => { await page.evaluate(() => window.__store.getState().setUI({ quick: 'filters' })); await wait(page, 1000); });
+  await page.evaluate(() => { const s = window.__store.getState(); s.setUI({ quick: null }); s.clearSelection(); });
   await run('editor-chrome', async () => { await page.evaluate(() => window.__store.getState().setUI({ leftPanel: 'uploads', sheet: window.__phone ? 'tools' : null })); await wait(page, 300); });
 
   // ── edit mode
