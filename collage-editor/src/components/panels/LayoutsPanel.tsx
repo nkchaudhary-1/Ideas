@@ -35,7 +35,7 @@ export default function LayoutsPanel() {
   const [rows, setRows] = useState(3);
   const [cols, setCols] = useState(2);
   const chosen = sel.map((id) => assets.find((a) => a.id === id)).filter(Boolean) as typeof assets;
-  const groups = ["From your posts", "Basic", "Asymmetric", "Dense", "Editorial"] as const;
+  const groups = ["Cards", "Basic", "Asymmetric", "Dense", "Editorial"] as const;
   const activeGrid = els.length === 1 && els[0].type === "grid" ? els[0] : null;
   const n = panoramaCount(slide.width);
   const free = firstEmptySegment(slide);

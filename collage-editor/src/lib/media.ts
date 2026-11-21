@@ -37,7 +37,9 @@ const bump = () => { version++; subs.forEach((f) => f()); };
 // ───────────────────────── asset registry ─────────────────────────
 
 const assets = new Map<string, Asset>();
-export const getAsset = (id: string | null | undefined) => (id ? assets.get(id) : undefined);
+/** pictures that exist only to make previews look real (template thumbnails): they can be drawn, but are never listed in the library or saved */
+const previewAssets = new Map<string, Asset>();
+export const getAsset = (id: string | null | undefined) => (id ? assets.get(id) ?? previewAssets.get(id) : undefined);
 export const allAssets = () => [...assets.values()].sort((a, b) => b.createdAt - a.createdAt);
 
 export async function loadAssets(): Promise<Asset[]> {
@@ -246,6 +248,12 @@ async function blobFor(id: string, tier: "original" | "preview"): Promise<Blob |
   const b = await dbGet<Blob>("blobs", `${id}:${tier}`);
   if (b) cache.set(id, b);
   return b ?? (tier === "preview" ? blobFor(id, "original") : undefined);
+}
+
+export function registerPreviewAsset(asset: Asset, blob: Blob) {
+  previewAssets.set(asset.id, asset);
+  originalBlobs.set(asset.id, blob);
+  previewBlobs.set(asset.id, blob);
 }
 
 export interface ImgSrc { img: ImageBitmap; w: number; h: number }

@@ -19,13 +19,20 @@ const ok = (c, m, extra) => { c ? pass++ : fail++; if (!c || process.env.VERBOSE
     await page.click('[data-testid=mode-blank]'); await page.click('[data-testid=create-project]'); await page.waitForTimeout(450);
     await page.evaluate(() => window.__store.getState().setUI({ leftPanel: 'templates' })); await page.waitForTimeout(250);
   };
-  await page.waitForSelector('[data-testid=new-project-dialog]');
+  await page.waitForSelector('[data-testid=home]'); await page.click('[data-testid=home-create]'); await page.waitForSelector('[data-testid=new-project-dialog]');
   await fresh();
 
   const cards = () => page.evaluate(() => [...document.querySelectorAll('[data-testid=template-card]')].map((c) => ({ id: c.querySelector('[data-testid^="apply-"]').getAttribute('data-testid').slice(6), name: c.textContent.trim().slice(0, 40) })));
   const all = await cards();
   ok(all.length >= 50 && all.length <= 60, `the Templates panel lists 50 to 60 templates (${all.length})`);
   ok(new Set(all.map((c) => c.id)).size === all.length, 'every card is unique');
+
+  // the cards show the real design, drawn by the renderer with sample photos in the empty frames, not a wireframe
+  await page.waitForFunction(() => document.querySelectorAll('[data-testid=template-thumb]').length >= 4, null, { timeout: 30000 }).catch(() => {});
+  const thumbs = await page.evaluate(() => [...document.querySelectorAll('[data-testid=template-thumb]')].map((i) => ({ w: i.naturalWidth, h: i.naturalHeight, ok: i.complete && i.naturalWidth > 100 })));
+  ok(thumbs.length >= 4 && thumbs.every((x) => x.ok), `the visible cards show rendered thumbnails (${thumbs.length})`, thumbs);
+  const first = await page.evaluate(() => { const i = document.querySelector('[data-testid=template-card] [data-testid=template-thumb]'); return i ? { r: +(i.naturalWidth / i.naturalHeight).toFixed(2) } : null; });
+  ok(first && Math.abs(first.r - 0.8) < 0.02, 'a 4:5 template has a 4:5 thumbnail', first);
 
   // category tabs filter the list
   const chip = (name) => page.locator('[data-testid=template-tabs]').getByRole('tab', { name, exact: true });

@@ -77,7 +77,7 @@ export default function PalettesPanel() {
         </Section>
       )}
       {PALETTES.map((p) => (
-        <Section key={p.name} title={p.name} defaultOpen={p.name === "From your posts"}>
+        <Section key={p.name} title={p.name} defaultOpen={p.name === "Studio"}>
           <div className="flex flex-wrap gap-3">{p.colors.map((c) => <button key={c} type="button" title={c} data-testid={`swatch-${c.slice(1)}`} onClick={() => apply(c)} className="h-8 w-8 rounded border border-ink/15" style={{ background: c }} />)}</div>
         </Section>
       ))}

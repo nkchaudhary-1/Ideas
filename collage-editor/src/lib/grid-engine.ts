@@ -173,7 +173,7 @@ function build(spec: Spec): GridNode {
 export interface GridPreset {
   id: string;
   name: string;
-  group: "Basic" | "Asymmetric" | "Dense" | "Editorial" | "From your posts";
+  group: "Basic" | "Asymmetric" | "Dense" | "Editorial" | "Cards";
   spec: Spec;
   gutter?: number;
   margin?: number;
@@ -211,11 +211,11 @@ export const GRID_PRESETS: GridPreset[] = [
   { id: "pinterest", name: "Pinterest", group: "Editorial", spec: H(V([3, C], [2, C], [3, C]), V([2, C], [3, C], [2, C]), V([3, C], [3, C])) },
   { id: "film", name: "Film strip", group: "Editorial", spec: V(C, C, C, C), gutter: 10, margin: 40, radius: 6 },
   { id: "story", name: "Storytelling", group: "Editorial", spec: V([5, C], [2, H(C, C, C)]) },
-  // Exact structures found in the Figma posts
-  { id: "fig-quad", name: "2×2 cards", group: "From your posts", spec: V(H(C, C), H(C, C)), gutter: 32, margin: 48, radius: 32 },
-  { id: "fig-stack3", name: "3 cards", group: "From your posts", spec: V(C, C, C), gutter: 30, margin: 48, radius: 64 },
-  { id: "fig-stack2", name: "2 cards", group: "From your posts", spec: V(C, C), gutter: 48, margin: 48, radius: 64 },
-  { id: "fig-card", name: "Single card", group: "From your posts", spec: C, gutter: 0, margin: 48, radius: 64 },
+  // Rounded photo cards on white: the frames behind most single-photo posts
+  { id: "cards-2x2", name: "2×2 cards", group: "Cards", spec: V(H(C, C), H(C, C)), gutter: 32, margin: 48, radius: 32 },
+  { id: "cards-3", name: "3 cards", group: "Cards", spec: V(C, C, C), gutter: 30, margin: 48, radius: 64 },
+  { id: "cards-2", name: "2 cards", group: "Cards", spec: V(C, C), gutter: 48, margin: 48, radius: 64 },
+  { id: "card-1", name: "Single card", group: "Cards", spec: C, gutter: 0, margin: 48, radius: 64 },
 ];
 
 export const presetById = (id: string) => GRID_PRESETS.find((p) => p.id === id);
@@ -233,7 +233,7 @@ export function treeFromPreset(p: GridPreset): GridNode {
 export function suggestPresets(count: number, aspect: number): GridPreset[] {
   return [...GRID_PRESETS]
     .map((p) => ({ p, n: presetCellCount(p) }))
-    .filter((x) => x.p.group !== "From your posts" || x.n === count)
+    .filter((x) => x.p.group !== "Cards" || x.n === count)
     .sort((a, b) => Math.abs(a.n - count) - Math.abs(b.n - count) || (a.p.group === "Basic" ? -1 : 1) - (b.p.group === "Basic" ? -1 : 1) || (aspect < 1 ? 0 : 0))
     .slice(0, 8)
     .map((x) => x.p);

@@ -8,7 +8,7 @@ const shot = async (page) => { const b = await page.locator('[data-testid=worksp
 (async () => {
   const { browser, page, logs } = await open();
   page.setDefaultTimeout(30000);
-  await page.waitForSelector('[data-testid=new-project-dialog]');
+  await page.waitForSelector('[data-testid=home]'); await page.click('[data-testid=home-create]'); await page.waitForSelector('[data-testid=new-project-dialog]');
   await page.click('[data-testid=intent-edit]');
   await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg', S + 'sample-2.jpg', T + 'clip-portrait.mp4']);
   await page.click('[data-testid=create-project]'); await settle(page, 4500);

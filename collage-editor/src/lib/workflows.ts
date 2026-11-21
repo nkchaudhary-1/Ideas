@@ -48,7 +48,7 @@ export function createCarouselFromAssets(assets: Asset[]) {
 export function createCollageFromAssets(assets: Asset[]) {
   if (!assets.length) return;
   const n = assets.length;
-  const candidates = GRID_PRESETS.filter((p) => p.group !== "From your posts");
+  const candidates = GRID_PRESETS.filter((p) => p.group !== "Cards");
   const exact = candidates.filter((p) => presetCellCount(p) === n);
   const bigger = candidates.filter((p) => presetCellCount(p) > n).sort((a, b) => presetCellCount(a) - presetCellCount(b));
   const smaller = candidates.filter((p) => presetCellCount(p) < n).sort((a, b) => presetCellCount(b) - presetCellCount(a));

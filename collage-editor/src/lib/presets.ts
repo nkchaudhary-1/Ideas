@@ -42,7 +42,7 @@ export const TEXT_PRESETS: TextPreset[] = [
     id: "poster", name: "Poster typography", sample: "SUMMER\nSESSIONS", family: "Bebas Neue", weight: 400,
     build: (w, h, ink) => [
       makeText({ text: "SUMMER\nSESSIONS", fontFamily: "Bebas Neue", fontWeight: 400, fontSize: 250, lineHeight: 0.88, width: w - 120, fill: solid(ink), name: "Poster title" }, 60, 90),
-      makeText({ text: "LIVE · 21 JUNE · GOA", fontFamily: "Outfit", fontWeight: 500, fontSize: 30, letterSpacing: 8, width: w - 120, fill: solid(ink), name: "Poster details" }, 64, h - 150),
+      makeText({ text: "LIVE · 21 JUNE · RIVERSIDE", fontFamily: "Outfit", fontWeight: 500, fontSize: 30, letterSpacing: 8, width: w - 120, fill: solid(ink), name: "Poster details" }, 64, h - 150),
     ],
   },
   {
@@ -68,30 +68,30 @@ export const TEXT_PRESETS: TextPreset[] = [
       makeText({ text: "A small study in restraint", fontFamily: "Inter", fontWeight: 400, fontSize: 26, letterSpacing: 3, textTransform: "uppercase", width: w - 160, fill: solid(ink), name: "Subtitle" }, 84, h * 0.5 + 180),
     ],
   },
-  // ───── straight from the Figma posts ─────
+  // ───── photo-card post styles ─────
   {
     id: "photo-title", name: "Photo title (soft serif)", sample: "Sunset", family: "Fraunces", weight: 300,
-    build: (w, h) => [makeText({ text: "wanna go on a long weekend getaway", fontFamily: "Fraunces", fontWeight: 300, fontSize: 72, lineHeight: 1.09, width: 620, fill: solid("rgba(255,255,255,0.92)"), name: "Photo title" }, 116, 190)],
+    build: (w, h) => [makeText({ text: "a long weekend somewhere warm", fontFamily: "Fraunces", fontWeight: 300, fontSize: 72, lineHeight: 1.09, width: 620, fill: solid("rgba(255,255,255,0.92)"), name: "Photo title" }, 116, 190)],
   },
   {
     id: "handle-tag", name: "Handle tag", sample: "@handle", family: "Outfit", weight: 300,
-    build: (w, h) => [makeText({ text: "yourhandle", fontFamily: "Outfit", fontWeight: 300, fontSize: 24, letterSpacing: 2.4, width: 300, fill: solid("rgba(255,255,255,0.7)"), name: "Handle" }, 84, h - 142)],
+    build: (w, h) => [makeText({ text: "@yourname", fontFamily: "Outfit", fontWeight: 300, fontSize: 24, letterSpacing: 2.4, width: 300, fill: solid("rgba(255,255,255,0.7)"), name: "Handle" }, 84, h - 142)],
   },
   {
-    id: "location-tag", name: "Location tag", sample: "Location : Goa", family: "Outfit", weight: 300,
-    build: (w, h) => [makeText({ text: "Location : Goa", fontFamily: "Outfit", fontWeight: 300, fontSize: 24, letterSpacing: 2.4, align: "right", width: 320, fill: solid("rgba(255,255,255,0.7)"), name: "Location" }, w - 84 - 320, h - 142)],
+    id: "location-tag", name: "Location tag", sample: "Lisbon, Portugal", family: "Outfit", weight: 300,
+    build: (w, h) => [makeText({ text: "Lisbon, Portugal", fontFamily: "Outfit", fontWeight: 300, fontSize: 24, letterSpacing: 2.4, align: "right", width: 320, fill: solid("rgba(255,255,255,0.7)"), name: "Location" }, w - 84 - 320, h - 142)],
   },
   {
-    id: "script-name", name: "Script name tag", sample: "Anupama", family: "Mrs Saint Delafield", weight: 400,
-    build: (w, h) => [makeText({ text: "hi it's me", fontFamily: "Mrs Saint Delafield", fontWeight: 400, fontSize: 84, width: 520, fill: solid("#ffffff"), name: "Script tag" }, 120, 140)],
+    id: "script-name", name: "Script name tag", sample: "Hello you", family: "Mrs Saint Delafield", weight: 400,
+    build: (w, h) => [makeText({ text: "hello, you", fontFamily: "Mrs Saint Delafield", fontWeight: 400, fontSize: 84, width: 520, fill: solid("#ffffff"), name: "Script tag" }, 120, 140)],
   },
   {
-    id: "spaced-title", name: "Spaced uppercase title", sample: "MY PLAYLIST", family: "Fraunces", weight: 300,
-    build: (w, h) => [makeText({ text: "MY SRK PLAYLIST\nPART I", fontFamily: "Fraunces", fontWeight: 300, fontSize: 34, letterSpacing: 13.6, lineHeight: 1.5, align: "center", width: w - 160, fill: solid("#ffffff"), name: "Spaced title" }, 80, 110)],
+    id: "spaced-title", name: "Spaced uppercase title", sample: "SUNDAY MIX", family: "Fraunces", weight: 300,
+    build: (w, h) => [makeText({ text: "SUNDAY MIX\nVOL. 1", fontFamily: "Fraunces", fontWeight: 300, fontSize: 34, letterSpacing: 13.6, lineHeight: 1.5, align: "center", width: w - 160, fill: solid("#ffffff"), name: "Spaced title" }, 80, 110)],
   },
   {
-    id: "giant-word", name: "Giant gradient word", sample: "CREW", family: "Outfit", weight: 800,
-    build: (w, h) => [makeText({ text: "CREW", fontFamily: "Outfit", fontWeight: 800, fontSize: 560, letterSpacing: -40, lineHeight: 1, align: "right", width: w, height: 560, autoHeight: false, fill: { type: "gradient", angle: 180, stops: [{ offset: 0, color: "rgba(255,255,255,0.95)" }, { offset: 1, color: "rgba(255,255,255,0)" }] }, name: "Giant word" }, 0, h - 640)],
+    id: "giant-word", name: "Giant gradient word", sample: "GLOW", family: "Outfit", weight: 800,
+    build: (w, h) => [makeText({ text: "GLOW", fontFamily: "Outfit", fontWeight: 800, fontSize: 560, letterSpacing: -40, lineHeight: 1, align: "right", width: w, height: 560, autoHeight: false, fill: { type: "gradient", angle: 180, stops: [{ offset: 0, color: "rgba(255,255,255,0.95)" }, { offset: 1, color: "rgba(255,255,255,0)" }] }, name: "Giant word" }, 0, h - 640)],
   },
 ];
 
@@ -140,8 +140,8 @@ function musicPlayer(w: number, h: number): GroupEl {
   const kids: Element[] = [];
   kids.push(makeShape("rect", pw, ph, { name: "Glass panel", radius: 50, fill: { type: "solid", color: "rgba(0,0,0,0.3)" }, stroke: { color: "#ffffff", width: 2 } }, 0, 0));
   kids.push(makeFrame(172, 172, { name: "Album art", radius: 42, bg: "#ffffff" }, 38, 38));
-  kids.push(makeText({ text: "Hawayein", fontFamily: "Outfit", fontWeight: 600, fontSize: 44, width: 520, fill: { type: "solid", color: "#ffffff" }, name: "Track" }, 242, 70));
-  kids.push(makeText({ text: "Jab Harry Met Sejal", fontFamily: "Outfit", fontWeight: 300, fontSize: 34, width: 520, fill: { type: "solid", color: "#ffffff" }, name: "Album" }, 242, 135));
+  kids.push(makeText({ text: "Slow light", fontFamily: "Outfit", fontWeight: 600, fontSize: 44, width: 520, fill: { type: "solid", color: "#ffffff" }, name: "Track" }, 242, 70));
+  kids.push(makeText({ text: "Sunday sessions", fontFamily: "Outfit", fontWeight: 300, fontSize: 34, width: 520, fill: { type: "solid", color: "#ffffff" }, name: "Album" }, 242, 135));
   kids.push(makeShape("rect", 592, 16, { name: "Track bar", radius: 8, fill: { type: "solid", color: "rgba(255,255,255,0.3)" } }, 116, 245));
   kids.push(makeShape("rect", 289, 16, { name: "Progress", radius: 8, fill: { type: "solid", color: "#ffffff" } }, 116, 245));
   kids.push(makeText({ text: "00:00", fontFamily: "Outfit", fontWeight: 400, fontSize: 24, width: 90, fill: { type: "solid", color: "rgba(255,255,255,0.8)" }, name: "Elapsed" }, 20, 238));
@@ -172,19 +172,19 @@ export const ELEMENT_PRESETS: ElementPreset[] = [
   { id: "heart", name: "Heart", group: "Decor", build: pathShape("heart", "Heart", { fill: { type: "solid", color: "#ff4d6d" } }) as never },
   { id: "sparkle", name: "Sparkle", group: "Decor", build: pathShape("sparkle", "Sparkle") as never },
   { id: "cloud", name: "Cloud", group: "Decor", build: pathShape("cloud", "Cloud") as never },
-  { id: "blob", name: "Blob", group: "Decor", build: pathShape("blob", "Blob", { fill: { type: "solid", color: "#ce6161" } }) as never },
+  { id: "blob", name: "Blob", group: "Decor", build: pathShape("blob", "Blob", { fill: { type: "solid", color: "#b8715c" } }) as never },
   { id: "bubble", name: "Bubble", group: "Decor", build: pathShape("bubble", "Speech bubble") as never },
-  { id: "ticket", name: "Ticket", group: "Decor", build: pathShape("ticket", "Ticket", { fill: { type: "solid", color: "#e5ff65" } }) as never },
+  { id: "ticket", name: "Ticket", group: "Decor", build: pathShape("ticket", "Ticket", { fill: { type: "solid", color: "#f6d96b" } }) as never },
   { id: "arch", name: "Arch", group: "Decor", build: pathShape("arch", "Arch") as never },
   { id: "wave", name: "Wave", group: "Decor", build: pathShape("wave", "Wave line", { height: 80 }) as never },
   { id: "swirl", name: "Swirl", group: "Decor", build: pathShape("swirl", "Swirl") as never },
   { id: "divider", name: "Divider", group: "Decor", build: (w) => makeShape("rect", w - 160, 2, { name: "Divider", fill: { type: "solid", color: "#ffffff" } }, 80, 200) },
   { id: "divider2", name: "Rule", group: "Decor", build: (w, h, ink) => { const a = makeShape("rect", w - 160, 2, { name: "Rule", fill: { type: "solid", color: ink } }, 0, 0); const b = makeShape("rect", w - 160, 6, { name: "Rule", fill: { type: "solid", color: ink } }, 0, 10); const g = makeGroup([a, b], 80, 200, w - 160, 16); g.name = "Double rule"; return g; } },
   { id: "photo-border", name: "Border", group: "Decor", build: (w, h) => makeShape("rect", w - 96, h - 96, { name: "Border frame", fill: null, stroke: { color: "#ffffff", width: 6 }, radius: 48 }, 48, 48) },
-  { id: "label-location", name: "Location", group: "Labels", build: (w, h) => pill("Location : Goa", w, h, "#ffffff", "#111111", "Location label") },
-  { id: "label-day", name: "Day", group: "Labels", build: (w, h) => pill("DAY 01", w, h, "#e5ff65", "#111111", "Day badge") },
+  { id: "label-location", name: "Location", group: "Labels", build: (w, h) => pill("Lisbon, Portugal", w, h, "#ffffff", "#111111", "Location label") },
+  { id: "label-day", name: "Day", group: "Labels", build: (w, h) => pill("DAY 01", w, h, "#f6d96b", "#111111", "Day badge") },
   { id: "label-swipe", name: "Swipe →", group: "Labels", build: (w, h) => pill("Swipe →", w, h, "rgba(0,0,0,0.55)", "#ffffff", "Swipe label") },
-  { id: "label-new", name: "New", group: "Labels", build: (w, h) => pill("NEW", w, h, "#ce6161", "#ffffff", "New badge") },
+  { id: "label-new", name: "New", group: "Labels", build: (w, h) => pill("NEW", w, h, "#b8715c", "#ffffff", "New badge") },
   { id: "icon-play", name: "Play", group: "Icons", build: pathShape("play", "Play icon") as never },
   { id: "icon-pin", name: "Pin", group: "Icons", build: pathShape("pin", "Pin icon") as never },
   { id: "icon-plus", name: "Plus", group: "Icons", build: pathShape("plus", "Plus icon") as never },
@@ -202,10 +202,10 @@ for (const p of ELEMENT_PRESETS) {
 // ───────────────────────── backgrounds ─────────────────────────
 
 export const GRADIENT_PRESETS: { name: string; angle: number; stops: [string, string] }[] = [
-  { name: "Peach", angle: 160, stops: ["#ffe0d1", "#ce6161"] },
+  { name: "Peach", angle: 160, stops: ["#ffe0d1", "#b8715c"] },
   { name: "Dusk", angle: 180, stops: ["#2b1b3d", "#ef5b5b"] },
   { name: "Sea glass", angle: 150, stops: ["#d9f2ee", "#2f80b7"] },
-  { name: "Lime", angle: 135, stops: ["#e5ff65", "#2c7a4b"] },
+  { name: "Meadow", angle: 135, stops: ["#f6d96b", "#2c7a4b"] },
   { name: "Night", angle: 180, stops: ["#0b1220", "#2d3b5b"] },
   { name: "Cream", angle: 180, stops: ["#fbf7ef", "#e9e0cf"] },
   { name: "Berry", angle: 140, stops: ["#6a0f2f", "#c22b4a"] },

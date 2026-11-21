@@ -15,7 +15,7 @@ async function run(label, ctxOpts, tap) {
   const errs = []; page.on('pageerror', (e) => errs.push(e.message));
   const click = (sel) => (tap ? page.tap(sel) : page.click(sel));
   await page.goto(base, { waitUntil: 'networkidle' });
-  await page.waitForSelector('[data-testid=new-project-dialog]');
+  await page.waitForSelector('[data-testid=home]'); await click('[data-testid=home-create]'); await page.waitForSelector('[data-testid=new-project-dialog]');
   await click('[data-testid=intent-edit]');
   await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg', S + 'sample-2.jpg']);
   await click('[data-testid=create-project]'); await page.waitForTimeout(3500);

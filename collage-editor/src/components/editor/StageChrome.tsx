@@ -12,7 +12,8 @@ import { cropTargetOf } from "@/components/canvas/Workspace";
 import { IconButton, Toggle } from "@/components/ui/controls";
 import Popover from "@/components/ui/Popover";
 import FormatMenu from "./FormatMenu";
-import { panoramaCount, projectKindLabel, ratioLabel } from "@/lib/formats";
+import { panoramaCount, projectSummary, ratioLabel } from "@/lib/formats";
+import { agoLabel } from "@/lib/util";
 import { tweenView, zoomAround } from "@/lib/view-math";
 import { slideHasVideo } from "@/lib/timeline";
 import { isEmptyEdit } from "@/lib/edit";
@@ -69,16 +70,6 @@ function SaveBadge({ status, words }: { status: Chrome["status"]; words?: boolea
   );
 }
 
-const ago = (t: number) => {
-  const m = Math.round((Date.now() - t) / 60000);
-  if (m < 1) return "just now";
-  if (m < 60) return `${m} min ago`;
-  const h = Math.round(m / 60);
-  if (h < 24) return `${h} h ago`;
-  const d = Math.round(h / 24);
-  return d < 8 ? `${d} d ago` : new Date(t).toLocaleDateString(undefined, { day: "numeric", month: "short" });
-};
-
 /** the last few projects, one tap away */
 function RecentProjects({ close }: { close: () => void }) {
   const projects = useStore((s) => s.projects);
@@ -97,7 +88,7 @@ function RecentProjects({ close }: { close: () => void }) {
             </span>
             <span className="min-w-0 flex-1">
               <span className="block truncate text-sm font-semibold" title={p.name}>{p.name}</span>
-              <span className="block truncate text-2xs text-mute" title={`${projectKindLabel(p.kind, p.ratio)} · ${p.ratio} · ${ago(p.updatedAt)}`}>{projectKindLabel(p.kind, p.ratio)} · {p.ratio} · {ago(p.updatedAt)}</span>
+              <span className="block truncate text-2xs text-mute" title={`${projectSummary(p)} · ${agoLabel(p.updatedAt)}`}>{projectSummary(p)} · {agoLabel(p.updatedAt)}</span>
             </span>
             {p.id === currentId && <span className="shrink-0 rounded-full bg-ink/10 px-2 py-1 text-2xs font-semibold text-ink">Open</span>}
           </button>
@@ -111,8 +102,8 @@ function RecentProjects({ close }: { close: () => void }) {
 function AppMenu({ compact, dark }: { compact: boolean; dark: boolean }) {
   const st = useStore.getState;
   const items = [
-    { icon: <FilePlus2 size={15} />, label: "New project", id: "new-project", run: () => st().setUI({ newProjectOpen: true }) },
-    { icon: <FolderOpen size={15} />, label: "All projects…", id: "open-projects", run: () => st().setUI({ projectsOpen: true }) },
+    { icon: <FilePlus2 size={15} />, label: "New project", id: "new-project", run: () => st().openNewProject() },
+    { icon: <FolderOpen size={15} />, label: "All projects", id: "open-projects", run: () => st().goHome() },
     ...(compact ? [] : [{ icon: <Keyboard size={15} />, label: "Keyboard shortcuts", id: "shortcuts", run: () => st().setUI({ shortcutsOpen: true }) }]),
     { icon: dark ? <Sun size={15} /> : <Moon size={15} />, label: dark ? "Light theme" : "Dark theme", id: "toggle-theme", run: () => st().setTheme(dark ? "light" : "dark") },
   ];

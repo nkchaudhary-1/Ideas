@@ -42,6 +42,15 @@ export function projectKindLabel(kind: string, ratio: string): string {
   return KIND_NAMES[kind] ?? kind;
 }
 
+/** one line about a saved project, the same everywhere it is listed: "Carousel · 4:5 · 5 slides", "Panorama · 4:5 · 3 slides", "Photo & video edit · 6 items" */
+export function projectSummary(p: { kind: string; ratio: string; size: string; slideCount: number }): string {
+  const kind = projectKindLabel(p.kind, p.ratio);
+  const n = p.slideCount;
+  if (p.kind === "edit") return `${kind} · ${n} ${n === 1 ? "item" : "items"}`;
+  const pano = p.size.includes("slides");
+  return `${kind} · ${p.size}${!pano && n > 1 ? ` · ${n} slides` : ""}`;
+}
+
 export const DEFAULT_FORMAT = FORMATS[1];
 
 /** Panorama = one wide canvas that is cut into N slides on export. 12:5 is three 4:5 slides side by side. */

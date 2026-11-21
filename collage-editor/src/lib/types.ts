@@ -253,7 +253,7 @@ export interface Project {
   updatedAt: number;
 }
 
-export interface ProjectMeta { id: Id; name: string; kind: ProjectKind; updatedAt: number; slideCount: number; thumb?: string; ratio: string }
+export interface ProjectMeta { id: Id; name: string; kind: ProjectKind; updatedAt: number; slideCount: number; thumb?: string; ratio: string; /** the size in the words the size chip uses: "4:5", or "4:5 · 3 slides" for a panorama */ size: string }
 
 // ───────────────────────────── user presets ─────────────────────────────
 

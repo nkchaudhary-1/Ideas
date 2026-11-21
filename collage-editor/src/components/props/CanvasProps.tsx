@@ -54,7 +54,7 @@ export default function CanvasProps() {
           options={[{ value: "solid", label: "Solid" }, { value: "gradient", label: "Gradient" }, { value: "pattern", label: "Pattern" }, { value: "image", label: "Photo" }]}
           onChange={(t) => {
             if (t === "solid") setBg({ type: "solid", color: bg.type === "solid" ? bg.color : "#ffffff" });
-            if (t === "gradient") setBg({ type: "gradient", angle: 160, stops: [{ offset: 0, color: "#f5efe6" }, { offset: 1, color: "#ce6161" }] });
+            if (t === "gradient") setBg({ type: "gradient", angle: 160, stops: [{ offset: 0, color: "#f5efe6" }, { offset: 1, color: "#b8715c" }] });
             if (t === "pattern") setBg({ type: "pattern", pattern: "dots", color: "#000000", bg: "#f5efe6", size: 28, opacity: 0.25 });
             if (t === "image") setBgPicker(true);
           }}

@@ -12,7 +12,7 @@ const chipText = async (page) => (await page.locator('[data-testid=guide-chip]')
 (async () => {
   const browser = await chromium.launch();
   const errs = [];
-  const fresh = async (opts) => { const ctx = await browser.newContext(opts); const page = await ctx.newPage(); page.on('pageerror', (e) => errs.push(e.message)); await page.goto(base, { waitUntil: 'networkidle' }); await page.waitForSelector('[data-testid=new-project-dialog]'); return { ctx, page }; };
+  const fresh = async (opts) => { const ctx = await browser.newContext(opts); const page = await ctx.newPage(); page.on('pageerror', (e) => errs.push(e.message)); await page.goto(base, { waitUntil: 'networkidle' }); await page.waitForSelector('[data-testid=home]'); await page.click('[data-testid=home-create]'); await page.waitForSelector('[data-testid=new-project-dialog]'); return { ctx, page }; };
 
   // ── a carousel, start to finish, on a desktop window
   let { ctx, page } = await fresh({ viewport: { width: 1360, height: 820 } });

@@ -25,7 +25,7 @@ const firstFill = (page) => page.evaluate(() => {
   const errs = [];
   page.on('pageerror', (e) => errs.push(e.message));
   await page.goto(base, { waitUntil: 'networkidle' });
-  await page.waitForSelector('[data-testid=new-project-dialog]');
+  await page.waitForSelector('[data-testid=home]'); await page.click('[data-testid=home-create]'); await page.waitForSelector('[data-testid=new-project-dialog]');
   await page.click('[data-testid=mode-collage]');
   await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg', S + 'sample-2.jpg', S + 'sample-3.jpg', S + 'sample-4.jpg']);
   await page.click('[data-testid=create-project]'); await page.waitForTimeout(3500);
@@ -90,7 +90,7 @@ const firstFill = (page) => page.evaluate(() => {
   page = await ctx.newPage();
   page.on('pageerror', (e) => errs.push(e.message));
   await page.goto(base, { waitUntil: 'networkidle' });
-  await page.waitForSelector('[data-testid=new-project-dialog]');
+  await page.waitForSelector('[data-testid=home]'); await page.click('[data-testid=home-create]'); await page.waitForSelector('[data-testid=new-project-dialog]');
   await page.click('[data-testid=intent-edit]');
   await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg', S + 'sample-2.jpg']);
   await page.click('[data-testid=create-project]'); await page.waitForTimeout(3500);
@@ -111,7 +111,7 @@ const firstFill = (page) => page.evaluate(() => {
   page = await ctx.newPage();
   page.on('pageerror', (e) => errs.push(e.message));
   await page.goto(base, { waitUntil: 'networkidle' });
-  await page.waitForSelector('[data-testid=new-project-dialog]');
+  await page.waitForSelector('[data-testid=home]'); await page.click('[data-testid=home-create]'); await page.waitForSelector('[data-testid=new-project-dialog]');
   await page.tap('[data-testid=mode-single]');
   await page.setInputFiles('[data-testid=new-project-input]', [S + 'sample-1.jpg']);
   await page.tap('[data-testid=create-project]'); await page.waitForTimeout(3500);

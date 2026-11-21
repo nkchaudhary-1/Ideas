@@ -124,7 +124,7 @@ export function dominantColors(source: CanvasImageSource, sw: number, sh: number
 }
 
 export const PALETTES: { name: string; colors: string[] }[] = [
-  { name: "From your posts", colors: ["#ffffff", "#000000", "#ce6161", "#e5ff65", "#f5efe6", "#1c1c1c"] },
+  { name: "Studio", colors: ["#ffffff", "#15151a", "#b8715c", "#f6d96b", "#efe6d8", "#8aa388"] },
   { name: "Editorial", colors: ["#111111", "#f3f0ea", "#e63b2e", "#2b4cff", "#d9d4c7", "#8a8578"] },
   { name: "Sunset", colors: ["#2b1b3d", "#8e2f5a", "#ef5b5b", "#ff9a56", "#ffd36e", "#fff3d6"] },
   { name: "Coast", colors: ["#0b2545", "#13497b", "#2f80b7", "#8ed1e8", "#e4f4f7", "#f2c14e"] },

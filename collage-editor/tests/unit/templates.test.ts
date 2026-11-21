@@ -45,5 +45,15 @@ for (const t of TEMPLATES) {
   }
 }
 
+// Only the layouts may come from the Figma file: no copy, names, handles or ids from it, and nothing that points back to it.
+const BANNED = /figma|samwaad|vanshita|garba|da nang|\bgoa\b|yourhandle|hawayein|harry met|\bsrk\b|anupama|from your posts|\bfig-|exactly as in|\d+ ?px/i;
+for (const t of TEMPLATES) {
+  ok(!BANNED.test(`${t.id} ${t.name} ${t.description}`), `${t.id}: name and description are our own words`, `${t.name} / ${t.description}`);
+  for (const s of t.build()) for (const e of flat(s.elements)) {
+    if (e.type === "text") ok(!BANNED.test(e.text), `${t.id}: "${e.text.slice(0, 24)}" is our own copy`);
+    if (e.type === "grid") ok(!/^fig-/.test(e.name), `${t.id}: layout name is our own`, e.name);
+  }
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

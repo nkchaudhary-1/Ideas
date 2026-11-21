@@ -12,7 +12,7 @@ const ok = (c, m, extra) => { c ? pass++ : fail++; console.log((c ? 'PASS ' : 'F
   const page = await ctx.newPage();
   page.on('pageerror', (e) => errs.push(e.message));
   await page.goto(base, { waitUntil: 'networkidle' });
-  await page.waitForSelector('[data-testid=new-project-dialog]');
+  await page.waitForSelector('[data-testid=home]'); await page.click('[data-testid=home-create]'); await page.waitForSelector('[data-testid=new-project-dialog]');
   await page.click('[data-testid=mode-carousel]'); await page.click('[data-testid=create-project]'); await page.waitForTimeout(1200);
 
   // the size menu opens down from the top bar and stays on screen, even in a short window

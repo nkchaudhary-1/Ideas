@@ -75,7 +75,7 @@ export default function TextProps({ el }: { el: TextEl }) {
         <PaintField label="Colour" paint={el.fill} onChange={(p) => p && set((e) => { e.fill = p; }, "fill")} />
         <StrokeField label="Outline" stroke={el.stroke} onChange={(s) => set((e) => { e.stroke = s; })} max={24} />
         <ShadowField shadow={el.shadow} onChange={(s) => set((e) => { e.shadow = s; })} />
-        <Toggle label="Highlight" value={!!el.background} onChange={(v) => set((e) => { e.background = v ? { color: "#e5ff65", radius: 8 } : null; if (v && e.padding < 8) e.padding = 12; })} />
+        <Toggle label="Highlight" value={!!el.background} onChange={(v) => set((e) => { e.background = v ? { color: "#f6d96b", radius: 8 } : null; if (v && e.padding < 8) e.padding = 12; })} />
         {el.background && (
           <>
             <Field label="Colour"><ColorField value={el.background.color} alpha onChange={(c) => set((e) => { if (e.background) e.background.color = c; }, "bgc")} /></Field>

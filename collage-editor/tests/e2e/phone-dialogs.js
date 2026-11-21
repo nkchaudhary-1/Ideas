@@ -36,9 +36,14 @@ const probe = (page, root) => page.evaluate((sel) => {
     await settle(page, 700);
     const tag = `${width}`;
 
-    // new project: intent cards, then the collage mode cards, then edit options
+    // the front page, then new project: intent cards, then the collage mode cards, then edit options
+    await page.waitForSelector('[data-testid=home]');
+    let p = await probe(page, '[data-testid=home]');
+    ok(p.fitsW && !p.docScroll && !p.offscreen.length && !p.wrapped.length, `${tag}: the front page fits ${JSON.stringify(p.offscreen.concat(p.wrapped))}`);
+    await page.screenshot({ path: `${OUT}/${tag}-home.png` });
+    await page.tap('[data-testid=home-create]');
     await page.waitForSelector('[data-testid=new-project-dialog]');
-    let p = await probe(page, '[data-testid=new-project-dialog] [role=dialog]');
+    p = await probe(page, '[data-testid=new-project-dialog] [role=dialog]');
     ok(p.fitsW && !p.docScroll && !p.offscreen.length && !p.overflowX.length, `${tag}: new project (intents) fits ${JSON.stringify(p.offscreen.concat(p.overflowX))}`);
     await page.screenshot({ path: `${OUT}/${tag}-new-intents.png` });
     await page.tap('[data-testid=intent-collage]');
@@ -66,7 +71,6 @@ const probe = (page, root) => page.evaluate((sel) => {
     const dialogs = [
       ['export', 'exportOpen', 'export-dialog'],
       ['import', 'importOpen', 'import-dialog'],
-      ['projects', 'projectsOpen', 'projects-dialog'],
       ['shortcuts', 'shortcutsOpen', 'shortcuts-dialog'],
     ];
     for (const [name, flag, id] of dialogs) {

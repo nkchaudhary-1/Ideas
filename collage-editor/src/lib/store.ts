@@ -9,7 +9,7 @@ import { loadFont } from "./fonts";
 import { boundsOf, findInTree, flatten, rotatePoint, unionRects } from "./geometry";
 import { uid, clamp, debounce } from "./util";
 import { dbAll, dbDelete, dbGet, dbPut } from "./db";
-import { DEFAULT_FORMAT, PANORAMA_MAX, PANORAMA_MIN, panoramaCount, panoramaFormat } from "./formats";
+import { DEFAULT_FORMAT, PANORAMA_MAX, PANORAMA_MIN, panoramaCount, panoramaFormat, ratioLabel } from "./formats";
 import { newFill } from "./media-math";
 import { slideFills } from "./timeline";
 import { allAssets, getAsset, loadAssets, importFiles, removeAsset } from "./media";
@@ -48,8 +48,11 @@ export interface UIState {
   exportedProject: string | null;
   importOpen: boolean;
   newProjectOpen: boolean;
+  /** which intent the New project dialog opens on */
+  newIntent: "collage" | "edit";
+  /** the projects page: shown instead of the editor until a project is made or opened */
+  home: boolean;
   shortcutsOpen: boolean;
-  projectsOpen: boolean;
   fitToken: number;
   theme: "light" | "dark";
   accent: string;
@@ -94,6 +97,9 @@ export interface Store {
   openProject(id: Id): Promise<void>;
   deleteProject(id: Id): Promise<void>;
   duplicateProject(id: Id): Promise<void>;
+  /** back to the projects page (the open project stays saved) */
+  goHome(): void;
+  openNewProject(intent?: "collage" | "edit"): void;
   renameProject(name: string): void;
   newEditProject(slides: Slide[], name: string): void;
   addEditSlides(slides: Slide[]): void;
@@ -230,7 +236,9 @@ let toastId = 0;
 const emptyHistory = (): History => ({ past: [], future: [], lastKey: null, lastTime: 0 });
 
 function meta(p: Project): ProjectMeta {
-  return { id: p.id, name: p.name, kind: p.kind, updatedAt: p.updatedAt, slideCount: p.slides.length, ratio: p.format.ratio };
+  const n = panoramaCount(p.format.width);
+  const size = n > 1 ? `${ratioLabel(p.format.width / n, p.format.height)} · ${n} slides` : p.format.ratio;
+  return { id: p.id, name: p.name, kind: p.kind, updatedAt: p.updatedAt, slideCount: p.slides.length, ratio: p.format.ratio, size };
 }
 
 const initialProject = () => makeProject("single", DEFAULT_FORMAT);
@@ -305,8 +313,9 @@ export const useStore = create<Store>()((set, get) => {
       exportedProject: null,
       importOpen: false,
       newProjectOpen: false,
+      newIntent: "collage",
+      home: true,
       shortcutsOpen: false,
-      projectsOpen: false,
       fitToken: 0,
       theme: "light",
       accent: ACCENTS.light,
@@ -335,13 +344,8 @@ export const useStore = create<Store>()((set, get) => {
         await loadAssets();
         set({ assets: allAssets() });
         await get().refreshProjects();
-        let last: string | null = null;
-        try { last = localStorage.getItem("collage-studio:last"); } catch { /* storage blocked */ }
-        if (last && (await dbGet<Project>("projects", last))) await get().openProject(last);
-        else set((s) => ({ ui: { ...s.ui, newProjectOpen: true } }));
       } catch {
         // IndexedDB can be unavailable (private windows, blocked site data): the editor still works, it just can't keep projects
-        set((s) => ({ ui: { ...s.ui, newProjectOpen: true } }));
         get().toast("Saving isn't available in this browser mode, so projects won't be kept after you close the tab.", "error");
       }
       set({ ready: true });
@@ -354,25 +358,20 @@ export const useStore = create<Store>()((set, get) => {
     },
     newProject({ kind, format, name }) {
       const p = makeProject(kind, format, name ?? (kind === "carousel" ? "Untitled carousel" : "Untitled design"));
-      set({ project: p, history: emptyHistory(), selection: [], saveStatus: "unsaved", ui: { ...get().ui, cropId: null, editingTextId: null, selectedCell: null, newProjectOpen: false, fitToken: get().ui.fitToken + 1 } });
-      try { localStorage.setItem("collage-studio:last", p.id); } catch {}
+      set({ project: p, history: emptyHistory(), selection: [], saveStatus: "unsaved", ui: { ...get().ui, cropId: null, editingTextId: null, selectedCell: null, newProjectOpen: false, home: false, fitToken: get().ui.fitToken + 1 } });
       return p;
     },
     async openProject(id) {
       const p = await dbGet<Project>("projects", id);
       if (!p) return;
-      set({ project: p, history: emptyHistory(), selection: [], saveStatus: "saved", ui: { ...get().ui, cropId: null, editingTextId: null, selectedCell: null, projectsOpen: false, newProjectOpen: false, mediaSel: [p.activeSlideId], refSlideId: null, leftPanel: p.kind === "edit" ? "uploads" : get().ui.leftPanel, fitToken: get().ui.fitToken + 1 } });
-      try { localStorage.setItem("collage-studio:last", id); } catch {}
+      set({ project: p, history: emptyHistory(), selection: [], saveStatus: "saved", ui: { ...get().ui, cropId: null, editingTextId: null, selectedCell: null, home: false, newProjectOpen: false, mediaSel: [p.activeSlideId], refSlideId: null, leftPanel: p.kind === "edit" ? "uploads" : get().ui.leftPanel, fitToken: get().ui.fitToken + 1 } });
     },
     async deleteProject(id) {
       await dbDelete("projects", id);
       await dbDelete("kv", `thumb:${id}`).catch(() => {});
       await get().refreshProjects();
-      if (get().project.id === id) {
-        const next = get().projects[0];
-        if (next) await get().openProject(next.id);
-        else get().setUI({ newProjectOpen: true });
-      }
+      // deleting happens on the projects page, so never throw the user into another project; if it was the one that is still loaded, swap in a blank one that is not saved
+      if (get().project.id === id) set({ project: initialProject(), history: emptyHistory(), selection: [], saveStatus: "saved" });
     },
     async duplicateProject(id) {
       const p = await dbGet<Project>("projects", id);
@@ -386,13 +385,17 @@ export const useStore = create<Store>()((set, get) => {
       await get().refreshProjects();
       get().toast("Project duplicated", "ok");
     },
+    goHome() {
+      set((s) => ({ selection: [], ui: { ...s.ui, home: true, cropId: null, editingTextId: null, selectedCell: null, mediaPicker: null, quick: null, sheet: null, playing: false, compare: false, newProjectOpen: false, importOpen: false, exportOpen: false, previewOpen: false, shortcutsOpen: false } }));
+      void get().refreshProjects();
+    },
+    openNewProject(intent = "collage") { set((s) => ({ ui: { ...s.ui, newProjectOpen: true, newIntent: intent } })); },
     newEditProject(slides, name) {
       const first = slides[0];
       const p = makeProject("edit", { id: "custom", label: "Original", ratio: "Original", width: first.width, height: first.height }, name);
       p.slides = slides;
       p.activeSlideId = first.id;
-      set({ project: p, history: emptyHistory(), selection: [], saveStatus: "unsaved", ui: { ...get().ui, cropId: null, editingTextId: null, selectedCell: null, newProjectOpen: false, mediaSel: [first.id], refSlideId: null, leftPanel: "uploads", fitToken: get().ui.fitToken + 1 } });
-      try { localStorage.setItem("collage-studio:last", p.id); } catch {}
+      set({ project: p, history: emptyHistory(), selection: [], saveStatus: "unsaved", ui: { ...get().ui, cropId: null, editingTextId: null, selectedCell: null, newProjectOpen: false, home: false, mediaSel: [first.id], refSlideId: null, leftPanel: "uploads", fitToken: get().ui.fitToken + 1 } });
     },
     addEditSlides(slides) {
       if (!slides.length) return;

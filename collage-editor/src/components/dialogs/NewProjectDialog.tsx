@@ -43,7 +43,7 @@ function RatioChip({ f, active, onClick, id }: { f: Format; active: boolean; onC
 export default function NewProjectDialog() {
   const st = useStore.getState;
   const set = useStore((s) => s.setUI);
-  const [intent, setIntent] = useState<Intent>("collage");
+  const [intent, setIntent] = useState<Intent>(() => useStore.getState().ui.newIntent);
   const [mode, setMode] = useState<Mode>("carousel");
   const [fmt, setFmt] = useState<Format>(FORMATS[1]);
   const [more, setMore] = useState(false);

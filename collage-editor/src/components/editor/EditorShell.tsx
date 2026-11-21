@@ -14,11 +14,11 @@ import ErrorBoundary from "@/components/ui/ErrorBoundary";
 import MediaPicker from "@/components/canvas/MediaPicker";
 import NewProjectDialog from "@/components/dialogs/NewProjectDialog";
 import CompactShell from "./CompactShell";
+import Home from "@/components/home/Home";
 import { useCompact } from "@/lib/use-media";
 
 // Dialogs the user opens on demand load as their own chunks, so the editor starts faster (the video encoder lives in Export).
 const ImportDialog = lazy(() => import("@/components/dialogs/ImportDialog"));
-const ProjectsDialog = lazy(() => import("@/components/dialogs/ProjectsDialog"));
 const ShortcutsDialog = lazy(() => import("@/components/dialogs/ShortcutsDialog"));
 const PreviewDialog = lazy(() => import("@/components/dialogs/PreviewDialog"));
 const ExportDialog = lazy(() => import("@/components/dialogs/ExportDialog"));
@@ -36,7 +36,7 @@ function Shell() {
   const rightOpen = useStore((s) => s.ui.rightOpen);
   const importOpen = useStore((s) => s.ui.importOpen);
   const newProjectOpen = useStore((s) => s.ui.newProjectOpen);
-  const projectsOpen = useStore((s) => s.ui.projectsOpen);
+  const home = useStore((s) => s.ui.home);
   const shortcutsOpen = useStore((s) => s.ui.shortcutsOpen);
   const previewOpen = useStore((s) => s.ui.previewOpen);
   const exportOpen = useStore((s) => s.ui.exportOpen);
@@ -72,6 +72,7 @@ function Shell() {
     const onPaste = (e: ClipboardEvent) => {
       const t = e.target as HTMLElement | null;
       if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA" || t.isContentEditable)) return;
+      if (useStore.getState().ui.home) return; // nothing is open to paste into
       const files = [...(e.clipboardData?.files ?? [])].filter((f) => f.type.startsWith("image/") || f.type.startsWith("video/"));
       if (!files.length) return;
       e.preventDefault();
@@ -93,11 +94,13 @@ function Shell() {
     return () => window.removeEventListener("beforeunload", onUnload);
   }, []);
 
-  if (!ready) return <div className="grid h-[100dvh] place-items-center bg-bg text-sm text-mute" data-testid="loading">Loading editor…</div>;
+  if (!ready) return <div className="grid h-[100dvh] place-items-center bg-bg text-sm text-mute" data-testid="loading">Loading…</div>;
 
   return (
     <>
-      {compact ? (
+      {home ? (
+        <Home />
+      ) : compact ? (
         <CompactShell />
       ) : (
         <div className="flex h-[100dvh] min-h-0 gap-4 bg-bg p-4 text-ink" data-testid="editor-root">
@@ -114,11 +117,10 @@ function Shell() {
           {rightOpen && <PropertiesPanel />}
         </div>
       )}
-      <MediaPicker />
+      {!home && <MediaPicker />}
       {newProjectOpen && <NewProjectDialog />}
       <Suspense fallback={null}>
         {importOpen && <ImportDialog />}
-        {projectsOpen && <ProjectsDialog />}
         {shortcutsOpen && <ShortcutsDialog />}
         {previewOpen && <PreviewDialog />}
         {exportOpen && <ExportDialog />}

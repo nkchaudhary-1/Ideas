@@ -33,6 +33,9 @@ exports.open = async (device = 'iPhone 13') => {
   return { browser, ctx, page, logs, touch, drag, pinch };
 };
 exports.newProject = async (page, { intent = 'collage', mode = 'collage', files = [] } = {}) => {
+  // first load lands on the front page; later calls come with the dialog already open over the editor
+  await page.waitForSelector('[data-testid=home], [data-testid=new-project-dialog]');
+  if (await page.locator('[data-testid=home]').count()) await page.tap(intent === 'edit' ? '[data-testid=home-edit]' : '[data-testid=home-create]');
   await page.waitForSelector('[data-testid=new-project-dialog]');
   if (intent === 'edit') await page.tap('[data-testid=intent-edit]'); else await page.tap(`[data-testid=mode-${mode}]`);
   if (files.length) await page.setInputFiles('[data-testid=new-project-input]', files);

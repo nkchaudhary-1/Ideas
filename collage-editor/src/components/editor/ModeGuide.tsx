@@ -145,7 +145,7 @@ export function GuideChip({ compact, lowered }: { compact: boolean; /** the top 
               })}
             </ol>
             <div className="mt-2 flex items-center justify-between gap-2 px-4">
-              <TextButton onClick={() => { close(); useStore.getState().setUI({ newProjectOpen: true }); }}>Start something different</TextButton>
+              <TextButton onClick={() => { close(); useStore.getState().openNewProject(); }}>Start something different</TextButton>
               <TextButton onClick={() => { close(); setMin(true); write(MIN, true); }} data-testid="guide-hide">Hide steps</TextButton>
             </div>
           </div>

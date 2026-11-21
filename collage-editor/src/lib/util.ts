@@ -85,3 +85,14 @@ export const keys = (s: string): string => {
 
 /** "1080 × 1350 px": the one way a size reads in a sentence or caption */
 export const dims = (w: number, h: number): string => `${Math.round(w)} × ${Math.round(h)} px`;
+
+/** "just now", "5 min ago", "2 h ago", "3 d ago", or a short date for anything older */
+export const agoLabel = (t: number): string => {
+  const m = Math.round((Date.now() - t) / 60000);
+  if (m < 1) return "just now";
+  if (m < 60) return `${m} min ago`;
+  const h = Math.round(m / 60);
+  if (h < 24) return `${h} h ago`;
+  const d = Math.round(h / 24);
+  return d < 8 ? `${d} d ago` : new Date(t).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+};

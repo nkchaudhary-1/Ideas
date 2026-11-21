@@ -30,7 +30,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   page.on('pageerror', (e) => errors.push('pageerror ' + e.message));
   page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text().slice(0, 160)); });
   await page.goto(process.env.BASE_URL || 'http://localhost:3100', { waitUntil: 'networkidle' });
-  await page.waitForSelector('[data-testid=new-project-dialog]');
+  await page.waitForSelector('[data-testid=home]');
   await page.evaluate((p) => { window.__phone = p; }, PHONE);
   if (THEME === 'dark') { await page.evaluate(() => window.__store.getState().setTheme('dark')); await wait(page); }
 
@@ -51,7 +51,9 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   };
   const closeAny = async () => { await page.keyboard.press('Escape'); await wait(page, 150); await page.mouse.click(5, 5).catch(() => {}); await wait(page, 100); };
 
-  // ── entry dialog
+  // ── the front page (nothing saved yet), then the entry dialog it opens
+  await run('home-empty', async () => {});
+  await page.click('[data-testid=home-create]'); await page.waitForSelector('[data-testid=new-project-dialog]');
   await run('dlg-new-collage', async () => {});
   await run('dlg-new-collage-pano', async () => { await page.click('[data-testid=mode-panorama]'); await wait(page, 300); });
   await run('dlg-new-collage-custom', async () => { await page.click('[data-testid=mode-carousel]'); await page.click('[data-testid=fmt-custom]'); await wait(page, 300); });
@@ -169,8 +171,6 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await page.evaluate(() => window.__store.getState().setUI({ previewOpen: false }));
   await run('dlg-import', async () => { await page.evaluate(() => window.__store.getState().setUI({ importOpen: true, importQueue: [] })); await wait(page, 400); });
   await page.evaluate(() => window.__store.getState().setUI({ importOpen: false }));
-  await run('dlg-projects', async () => { await page.evaluate(() => window.__store.getState().setUI({ projectsOpen: true })); await wait(page, 600); });
-  await page.evaluate(() => window.__store.getState().setUI({ projectsOpen: false }));
   await run('editor-chrome', async () => { await page.evaluate(() => window.__store.getState().setUI({ leftPanel: 'uploads', sheet: window.__phone ? 'tools' : null })); await wait(page, 300); });
 
   // ── edit mode
@@ -186,6 +186,11 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
   await run('edit-curves-open', async () => { await page.locator('[data-testid=curve-editor]').scrollIntoViewIfNeeded(); });
   await page.evaluate(() => { const s = window.__store.getState(); s.removeEditSlides(s.project.slides.map((x) => x.id)); });
   await run('edit-empty', async () => { await wait(page, 400); });
+
+  // ── the front page again, now with projects in it
+  await page.evaluate(() => window.__store.getState().goHome()); await wait(page, 3500);
+  await run('home-projects', async () => { await wait(page, 300); });
+  await run('home-confirm-delete', async () => { await page.click('[data-testid=home-delete] >> nth=0'); await wait(page, 300); });
 
   // ── summary
   const bucket = {};

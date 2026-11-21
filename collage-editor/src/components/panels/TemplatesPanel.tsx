@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Bookmark, Plus, Trash2 } from "lucide-react";
 import { useStore, getSlide } from "@/lib/store";
 import { TEMPLATES, type Template, type TemplateCategory } from "@/lib/templates";
@@ -8,6 +8,7 @@ import type { Slide } from "@/lib/types";
 import { applyTemplate } from "@/lib/workflows";
 import { Button, ChipRow } from "@/components/ui/controls";
 import { cloneSlide } from "@/lib/factory";
+import { cachedThumb, templateThumb } from "@/lib/template-thumbs";
 
 const CATS: (TemplateCategory | "All" | "Saved")[] = ["All", "Story", "Instagram portrait", "Instagram square", "Carousel", "Photo collage", "Quote", "Fashion", "Food", "Sale", "Event", "Travel", "Typography", "Editorial", "Magazine", "Minimal", "Storytelling", "Poster", "Saved"];
 const LS = "collage-studio:templates";
@@ -43,6 +44,34 @@ export function Schematic({ slide, width = 120 }: { slide: Slide; width?: number
   );
 }
 
+/** the template as it will look: drawn by the real renderer when the card scrolls into view, with a wireframe in its place until then */
+function TemplateThumb({ t, slide }: { t: Template; slide: Slide }) {
+  const box = useRef<HTMLDivElement>(null);
+  const [src, setSrc] = useState<string | null>(() => cachedThumb(t.id));
+  useEffect(() => {
+    if (src || !box.current) return;
+    let alive = true;
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      void templateThumb(t).then((url) => { if (alive && url) setSrc(url); });
+    }, { rootMargin: "240px" });
+    io.observe(box.current);
+    return () => { alive = false; io.disconnect(); };
+  }, [src, t]);
+  const wide = slide.width / slide.height;
+  return (
+    <div ref={box} className="flex aspect-[4/5] items-center justify-center bg-stage p-3">
+      {src ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={src} alt="" draggable={false} className="max-h-full max-w-full rounded shadow-card" style={{ aspectRatio: wide }} data-testid="template-thumb" />
+      ) : (
+        <div className="opacity-60"><Schematic slide={slide} width={wide > 1.3 ? 112 : 88} /></div>
+      )}
+    </div>
+  );
+}
+
 export default function TemplatesPanel() {
   const st = useStore.getState;
   const project = useStore((s) => s.project);
@@ -72,19 +101,18 @@ export default function TemplatesPanel() {
             const slides = t.build();
             return (
               <div key={t.id} className="group" data-testid="template-card">
-                <div className="relative overflow-hidden rounded ring-1 ring-line group-hover:ring-ink/25">
-                  <div className="flex min-h-[140px] items-center justify-center bg-stage p-4">
-                    <Schematic slide={slides[0]} width={slides[0].width / slides[0].height > 1.3 ? 120 : 96} />
-                  </div>
-                  {slides.length > 1 && <span className="absolute right-1 top-1 rounded bg-black/70 px-1 text-2xs text-white">{slides.length} slides</span>}
-                  <div className="absolute inset-x-0 bottom-0 flex translate-y-full gap-1 bg-black/80 p-2 transition-transform group-hover:translate-y-0 touch:translate-y-0 text-white">
-                    <Button className="flex-1 !h-7" variant="primary" onClick={() => applyTemplate(t, "replace")} testId={`apply-${t.id}`}>Apply</Button>
-                    <Button className="!h-7 !px-2" title="Add as new slides" onClick={() => applyTemplate(t, "append")}><Plus size={12} /></Button>
-                    {cat === "Saved" && <Button className="!h-7 !px-2" variant="danger" title="Delete template" onClick={() => persist(saved.filter((s) => s.id !== t.id))}><Trash2 size={12} /></Button>}
+                <div className="relative overflow-hidden rounded ring-1 ring-line transition group-hover:ring-ink/25">
+                  <TemplateThumb t={t} slide={slides[0]} />
+                  {slides.length > 1 && <span className="absolute left-2 top-2 rounded-full bg-black/65 px-2 py-1 text-2xs font-semibold text-white">{slides.length} slides</span>}
+                  {/* on a mouse the buttons slide up over the picture; on touch they sit under it, so nothing hides the design */}
+                  <div className="absolute inset-x-0 bottom-0 flex translate-y-full gap-1 bg-black/80 p-2 text-white transition-transform group-hover:translate-y-0 touch:static touch:translate-y-0 touch:bg-field touch:text-ink">
+                    <Button className="flex-1 !h-8 coarse:!h-11" variant="primary" onClick={() => applyTemplate(t, "replace")} testId={`apply-${t.id}`}>Apply</Button>
+                    <Button className="!h-8 !px-3 coarse:!h-11 coarse:!w-11" title="Add as new slides" onClick={() => applyTemplate(t, "append")}><Plus size={14} /></Button>
+                    {cat === "Saved" && <Button className="!h-8 !px-3 coarse:!h-11 coarse:!w-11" variant="danger" title="Delete template" onClick={() => persist(saved.filter((s) => s.id !== t.id))}><Trash2 size={14} /></Button>}
                   </div>
                 </div>
-                <div className="mt-1 truncate text-xs text-ink/90" title={t.name}>{t.name}</div>
-                <div className="line-clamp-2 text-2xs leading-3 text-faint" title={t.description}>{t.description}</div>
+                <div className="mt-2 truncate text-xs font-semibold text-ink" title={t.name}>{t.name}</div>
+                <div className="mt-0.5 line-clamp-2 text-2xs leading-4 text-faint" title={t.description}>{t.description}</div>
               </div>
             );
           })}

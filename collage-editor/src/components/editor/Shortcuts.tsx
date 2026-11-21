@@ -41,7 +41,7 @@ export default function useShortcuts() {
       const st = useStore.getState();
       const k = e.key.toLowerCase();
       const ui = st.ui;
-      if (ui.importOpen || ui.newProjectOpen || ui.exportOpen || ui.previewOpen || ui.projectsOpen) return;
+      if (ui.home || ui.importOpen || ui.newProjectOpen || ui.exportOpen || ui.previewOpen) return;
       const size = ui.canvasSize;
       const handled = () => { e.preventDefault(); e.stopPropagation(); };
 

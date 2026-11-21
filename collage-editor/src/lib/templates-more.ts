@@ -35,7 +35,7 @@ export const MORE_TEMPLATES: Template[] = [
     sl("Polaroid", "#efe8dc", [
       R(120, 130, 840, 1030, "#ffffff", { radius: 12, shadow: lift, name: "Polaroid" }),
       ph(160, 170, 760, 760, "#c9b79c", { radius: 8 }),
-      T("summer ’24", 160, 975, 760, { fontFamily: "Caveat", fontWeight: 700, fontSize: 110, align: "center", fill: ink("#2b2b2b"), name: "Caption" }),
+      T("summer ’26", 160, 975, 760, { fontFamily: "Caveat", fontWeight: 700, fontSize: 110, align: "center", fill: ink("#2b2b2b"), name: "Caption" }),
     ]),
   ]),
   tpl("arch-window", "Arch window", ["Instagram portrait", "Minimal", "Fashion"], "An arched photo on blush, with a soft serif title.", W, H, "single", () => [
@@ -48,8 +48,8 @@ export const MORE_TEMPLATES: Template[] = [
   tpl("circle-intro", "Round portrait", ["Instagram portrait", "Personal"], "A circular portrait over a soft gradient: name, handle, one line about you.", W, H, "single", () => [
     sl("Intro", { type: "gradient", angle: 160, stops: [{ offset: 0, color: "#ffd9cc" }, { offset: 1, color: "#f5a8bd" }] }, [
       ph(190, 150, 700, 700, "#c98a78", { shape: "circle" }),
-      T("Aanya Rao", 90, 920, 900, { fontFamily: "Playfair Display", fontWeight: 700, fontSize: 104, align: "center", fill: ink("#3b1f2b"), name: "Name" }),
-      T("@aanya.rao", 90, 1060, 900, { fontFamily: "Outfit", fontWeight: 500, fontSize: 38, letterSpacing: 2, align: "center", fill: ink("#7a3d56"), name: "Handle" }),
+      T("Your name", 90, 920, 900, { fontFamily: "Playfair Display", fontWeight: 700, fontSize: 104, align: "center", fill: ink("#3b1f2b"), name: "Name" }),
+      T("@yourname", 90, 1060, 900, { fontFamily: "Outfit", fontWeight: 500, fontSize: 38, letterSpacing: 2, align: "center", fill: ink("#7a3d56"), name: "Handle" }),
       T("photographer · storyteller · tea person", 90, 1130, 900, { fontFamily: "Outfit", fontWeight: 300, fontSize: 32, align: "center", fill: ink("#7a3d56"), name: "Bio" }),
     ]),
   ]),
@@ -80,7 +80,7 @@ export const MORE_TEMPLATES: Template[] = [
     sl("Diary", "#101010", [
       ph(60, 60, 960, 800, "#8c6a4f", { radius: 48 }),
       T("14.06", 50, 880, 980, { fontFamily: "Bebas Neue", fontSize: 380, lineHeight: 0.9, fill: ink("#ffffff"), name: "Date" }),
-      T("dear diary, today was perfect", 70, 1235, 940, { fontFamily: "Instrument Serif", italic: true, fontSize: 60, fill: ink("#e5ff65"), name: "Line" }),
+      T("dear diary, today was perfect", 70, 1235, 940, { fontFamily: "Instrument Serif", italic: true, fontSize: 60, fill: ink("#f6d96b"), name: "Line" }),
     ]),
   ]),
   tpl("magazine-cover-2", "Cover story", ["Instagram portrait", "Magazine", "Fashion"], "A tall cover with a Didone masthead and cover lines.", W, H, "single", () => [
@@ -97,7 +97,7 @@ export const MORE_TEMPLATES: Template[] = [
       T("Lookbook", 60, 50, 960, { fontFamily: "Bodoni Moda", fontWeight: 600, fontSize: 170, letterSpacing: -3, lineHeight: 1, name: "Title" }),
       ph(60, 330, 300, 780, "#cdbfae", { radius: 0 }), ph(390, 330, 300, 780, "#a99b8a", { radius: 0 }), ph(720, 330, 300, 780, "#8f8272", { radius: 0 }),
       mono("01 — Linen set", 60, 1140, 300, "#111111", { fontSize: 22 }), mono("02 — Wool coat", 390, 1140, 300, "#111111", { fontSize: 22 }), mono("03 — Silk slip", 720, 1140, 300, "#111111", { fontSize: 22 }),
-      mono("SS / 25", 60, 1250, 400, "#111111", { name: "Season" }),
+      mono("SS / 26", 60, 1250, 400, "#111111", { name: "Season" }),
     ]),
   ]),
   tpl("ootd", "Outfit of the day", ["Instagram portrait", "Fashion"], "A big photo with the outfit list beside it.", W, H, "single", () => [
@@ -105,11 +105,11 @@ export const MORE_TEMPLATES: Template[] = [
       ph(60, 60, 600, 1100, "#c7b8a3", { radius: 40 }),
       T("OOTD", 700, 60, 320, { fontFamily: "Anton", fontSize: 170, lineHeight: 1, name: "Title" }),
       R(700, 290, 320, 4, "#111111", { name: "Rule" }),
-      T("Jacket\nZara", 700, 330, 320, { fontFamily: "DM Sans", fontWeight: 500, fontSize: 34, lineHeight: 1.3, name: "Item 1" }),
-      T("Tee\nUniqlo", 700, 520, 320, { fontFamily: "DM Sans", fontWeight: 500, fontSize: 34, lineHeight: 1.3, name: "Item 2" }),
-      T("Denim\nLevi’s", 700, 710, 320, { fontFamily: "DM Sans", fontWeight: 500, fontSize: 34, lineHeight: 1.3, name: "Item 3" }),
-      T("Shoes\nNew Balance", 700, 900, 320, { fontFamily: "DM Sans", fontWeight: 500, fontSize: 34, lineHeight: 1.3, name: "Item 4" }),
-      mono("@yourhandle", 60, 1230, 600, "#111111", { name: "Handle" }),
+      T("Jacket\nCropped wool", 700, 330, 320, { fontFamily: "DM Sans", fontWeight: 500, fontSize: 34, lineHeight: 1.3, name: "Item 1" }),
+      T("Tee\nBoxy cotton", 700, 520, 320, { fontFamily: "DM Sans", fontWeight: 500, fontSize: 34, lineHeight: 1.3, name: "Item 2" }),
+      T("Denim\nStraight leg", 700, 710, 320, { fontFamily: "DM Sans", fontWeight: 500, fontSize: 34, lineHeight: 1.3, name: "Item 3" }),
+      T("Shoes\nWhite trainers", 700, 900, 320, { fontFamily: "DM Sans", fontWeight: 500, fontSize: 34, lineHeight: 1.3, name: "Item 4" }),
+      mono("@yourname", 60, 1230, 600, "#111111", { name: "Handle" }),
     ]),
   ]),
   tpl("recipe-card", "Recipe card", ["Instagram portrait", "Food"], "Photo, title, ingredients and method on cream.", W, H, "single", () => [
@@ -164,7 +164,7 @@ export const MORE_TEMPLATES: Template[] = [
       T("GIVEAWAY", 60, 80, 960, { fontFamily: "Archivo Black", fontSize: 148, fill: ink("#ffffff"), name: "Title" }),
       ph(60, 290, 960, 440, "#f6d27a", { radius: 48 }),
       O(60, 790, 90, 90, "#ffffff", { name: "Step 1" }), T("1", 60, 806, 90, { fontFamily: "Outfit", fontWeight: 700, fontSize: 54, align: "center", name: "1" }),
-      T("Follow @yourhandle", 180, 806, 840, { fontFamily: "Outfit", fontWeight: 500, fontSize: 52, fill: ink("#ffffff"), name: "Step 1 text" }),
+      T("Follow @yourname", 180, 806, 840, { fontFamily: "Outfit", fontWeight: 500, fontSize: 52, fill: ink("#ffffff"), name: "Step 1 text" }),
       O(60, 930, 90, 90, "#ffffff", { name: "Step 2" }), T("2", 60, 946, 90, { fontFamily: "Outfit", fontWeight: 700, fontSize: 54, align: "center", name: "2" }),
       T("Like this post", 180, 946, 840, { fontFamily: "Outfit", fontWeight: 500, fontSize: 52, fill: ink("#ffffff"), name: "Step 2 text" }),
       O(60, 1070, 90, 90, "#ffffff", { name: "Step 3" }), T("3", 60, 1086, 90, { fontFamily: "Outfit", fontWeight: 700, fontSize: 54, align: "center", name: "3" }),
@@ -176,17 +176,17 @@ export const MORE_TEMPLATES: Template[] = [
     sl("Invite", "#1b1b3a", [
       ph(290, 90, 500, 620, "#ad8bd0", { shape: "arch" }),
       T("you are invited", 60, 745, 960, { fontFamily: "Mrs Saint Delafield", fontSize: 170, align: "center", fill: ink("#ffd6f0"), name: "Headline" }),
-      mono("SATURDAY · 20 JULY · 7 PM", 60, 1030, 960, "#ffffff", { align: "center", fontSize: 34, letterSpacing: 4, name: "When" }),
+      mono("SATURDAY · 18 JULY · 7 PM", 60, 1030, 960, "#ffffff", { align: "center", fontSize: 34, letterSpacing: 4, name: "When" }),
       T("Rooftop at 21, Bandra", 60, 1100, 960, { fontFamily: "Outfit", fontWeight: 300, fontSize: 44, align: "center", fill: ink("#ffffff"), name: "Where" }),
-      T("RSVP @yourhandle", 60, 1230, 960, { fontFamily: "Outfit", fontWeight: 500, fontSize: 28, letterSpacing: 6, align: "center", fill: ink("#ffd6f0"), name: "RSVP" }),
+      T("RSVP @yourname", 60, 1230, 960, { fontFamily: "Outfit", fontWeight: 500, fontSize: 28, letterSpacing: 6, align: "center", fill: ink("#ffd6f0"), name: "RSVP" }),
     ]),
   ]),
   tpl("save-the-date", "Save the date", ["Instagram portrait", "Event"], "A soft wedding announcement in script and serif.", W, H, "single", () => [
     sl("Save the date", "#f7efe6", [
       T("save the date", 60, 150, 960, { fontFamily: "Great Vibes", fontSize: 150, align: "center", lineHeight: 1, fill: ink("#8a5a44"), name: "Headline" }),
       ph(190, 430, 700, 520, "#d8c3ae", { shape: "pill" }),
-      T("Riya & Kabir", 60, 1000, 960, { fontFamily: "Cormorant Garamond", fontWeight: 600, fontSize: 112, align: "center", fill: ink("#5a3a2b"), name: "Names" }),
-      mono("12 DECEMBER 2025 · UDAIPUR", 60, 1160, 960, "#8a5a44", { align: "center", fontSize: 30, letterSpacing: 5, name: "Date" }),
+      T("Sam & Jordan", 60, 1000, 960, { fontFamily: "Cormorant Garamond", fontWeight: 600, fontSize: 112, align: "center", fill: ink("#5a3a2b"), name: "Names" }),
+      mono("12 DECEMBER 2026 · UDAIPUR", 60, 1160, 960, "#8a5a44", { align: "center", fontSize: 30, letterSpacing: 5, name: "Date" }),
     ]),
   ]),
   tpl("postcard", "Postcard", ["Instagram portrait", "Travel"], "Greetings-from postcard on kraft paper, with a stamp.", W, H, "single", () => [
@@ -203,13 +203,13 @@ export const MORE_TEMPLATES: Template[] = [
       ph(0, 0, W, H, "#4a5a52", { radius: 0 }),
       R(0, 0, W, H, grad(180, "rgba(0,0,0,0.15)", "rgba(0,0,0,0.75)"), { name: "Shade" }),
       T("“Stay where the light is soft and the days are slow.”", 80, 760, 920, { fontFamily: "Instrument Serif", italic: true, fontSize: 104, lineHeight: 1.05, fill: ink("#ffffff"), name: "Quote" }),
-      mono("— FIELD NOTES", 80, 1230, 600, "#e5ff65", { name: "Credit" }),
+      mono("— FIELD NOTES", 80, 1230, 600, "#f6d96b", { name: "Credit" }),
     ]),
   ]),
   tpl("six-grid", "Six-up recap", ["Instagram portrait", "Photo collage"], "Six photos in a grid with a recap title underneath.", W, H, "collage", () => [
     sl("Six-up", "#ffffff", [
       grid("six", W, 1190, { cellBg: "#d9cfc2", margin: 40, gutter: 16, radius: 28 }),
-      T("summer recap ’25", 40, 1215, 1000, { fontFamily: "Outfit", fontWeight: 600, fontSize: 76, name: "Title" }),
+      T("summer recap ’26", 40, 1215, 1000, { fontFamily: "Outfit", fontWeight: 600, fontSize: 76, name: "Title" }),
     ]),
   ]),
   tpl("polaroid-trio", "Polaroid trio", ["Instagram portrait", "Photo collage", "Personal"], "Three instant photos, stacked across the post.", W, H, "single", () => [
@@ -240,14 +240,14 @@ export const MORE_TEMPLATES: Template[] = [
   tpl("intro-post", "Intro post", ["Instagram square", "Personal", "Typography"], "A round photo, a friendly headline and three tags.", 1080, 1080, "single", () => [
     sl("Intro", "#f4efe8", [
       ph(110, 100, 340, 340, "#c49a7a", { shape: "circle" }),
-      T("Hi, I’m Mira.", 110, 490, 860, { fontFamily: "Fraunces", fontWeight: 300, fontSize: 130, lineHeight: 1, fill: ink("#2b2118"), name: "Headline" }),
+      T("Hi, I’m Sam.", 110, 490, 860, { fontFamily: "Fraunces", fontWeight: 300, fontSize: 130, lineHeight: 1, fill: ink("#2b2118"), name: "Headline" }),
       T("I make small, honest things for the internet.", 110, 650, 780, { fontFamily: "DM Sans", fontWeight: 400, fontSize: 40, lineHeight: 1.3, fill: ink("#5a4a3c"), name: "Bio" }),
       pill("photographer", 110, 840, 260, "#2b2118", "#ffffff", { fontSize: 28 }), pill("illustrator", 400, 840, 230, "#2b2118", "#ffffff", { fontSize: 28 }), pill("writer", 660, 840, 180, "#2b2118", "#ffffff", { fontSize: 28 }),
-      mono("@mira.makes", 110, 980, 500, "#5a4a3c", { name: "Handle" }),
+      mono("@yourname", 110, 980, 500, "#5a4a3c", { name: "Handle" }),
     ], 1080, 1080),
   ]),
   tpl("quote-bold", "Bold quote", ["Instagram square", "Quote", "Typography"], "A big sans quote on lime.", 1080, 1080, "single", () => [
-    sl("Quote", "#e5ff65", [
+    sl("Quote", "#f6d96b", [
       T("“", 70, -20, 300, { fontFamily: "Archivo Black", fontSize: 420, lineHeight: 1, fill: ink("#111111"), name: "Mark" }),
       T("Make it\nsimple.\nMake it\nyours.", 70, 330, 940, { fontFamily: "Syne", fontWeight: 800, fontSize: 124, lineHeight: 1, fill: ink("#111111"), name: "Quote" }),
       mono("— FROM THE NOTEBOOK", 70, 990, 700, "#111111", { name: "Credit" }),
@@ -261,10 +261,10 @@ export const MORE_TEMPLATES: Template[] = [
   ]),
   tpl("special-of-the-day", "Today’s special", ["Instagram square", "Food", "Sale"], "A round dish photo, a price and a tag.", 1080, 1080, "single", () => [
     sl("Special", "#1d3a2f", [
-      pill("TODAY’S SPECIAL", 330, 70, 420, "#e5ff65", "#1d3a2f", { fontSize: 30, letterSpacing: 4 }),
+      pill("TODAY’S SPECIAL", 330, 70, 420, "#f6d96b", "#1d3a2f", { fontSize: 30, letterSpacing: 4 }),
       ph(190, 190, 700, 700, "#d9a35f", { shape: "circle" }),
       T("Charred corn risotto", 60, 905, 700, { fontFamily: "Fraunces", fontWeight: 300, fontSize: 70, fill: ink("#ffffff"), name: "Dish" }),
-      T("₹ 349", 780, 920, 240, { fontFamily: "Outfit", fontWeight: 600, fontSize: 64, align: "right", fill: ink("#e5ff65"), name: "Price" }),
+      T("₹ 349", 780, 920, 240, { fontFamily: "Outfit", fontWeight: 600, fontSize: 64, align: "right", fill: ink("#f6d96b"), name: "Price" }),
     ], 1080, 1080),
   ]),
   tpl("cafe-mornings", "Café mornings", ["Instagram square", "Food", "Minimal"], "A pill-shaped photo beside warm lowercase type.", 1080, 1080, "single", () => [
@@ -280,7 +280,7 @@ export const MORE_TEMPLATES: Template[] = [
       makeShape("star", 90, 90, { fill: ink("#ff3d81"), name: "Confetti 1" }, 900, 50), O(90, 50, 60, 60, "#3d7dff", { name: "Confetti 2" }),
       makeShape("triangle", 90, 80, { fill: ink("#3d7dff"), name: "Confetti 3" }, 900, 560), makeShape("star", 70, 70, { fill: ink("#ff3d81"), name: "Confetti 4" }, 140, 880), O(860, 880, 60, 60, "#ff3d81", { name: "Confetti 5" }),
       T("HAPPY\nBIRTHDAY", 80, 160, 920, { fontFamily: "Unbounded", fontWeight: 900, fontSize: 118, lineHeight: 0.98, fill: ink("#1b1b1b"), name: "Headline" }),
-      T("Tara", 80, 560, 920, { fontFamily: "Pacifico", fontSize: 260, lineHeight: 1, fill: ink("#ff3d81"), name: "Name" }),
+      T("Sam", 80, 560, 920, { fontFamily: "Pacifico", fontSize: 260, lineHeight: 1, fill: ink("#ff3d81"), name: "Name" }),
     ], 1080, 1080),
   ]),
 
@@ -306,7 +306,7 @@ export const MORE_TEMPLATES: Template[] = [
     sl("Quote", "#f1e4d3", [
       T("“", 70, 220, 400, { fontFamily: "Fraunces", fontWeight: 400, fontSize: 520, lineHeight: 1, fill: ink("#d98e73"), name: "Mark" }),
       T("Slow down.\nThe good things are not in a hurry.", 90, 760, 900, { fontFamily: "Instrument Serif", fontSize: 130, lineHeight: 1.04, fill: ink("#3a2a22"), name: "Quote" }),
-      mono("— @yourhandle", 90, 1560, 700, "#8a5a44", { name: "Credit" }),
+      mono("— @yourname", 90, 1560, 700, "#8a5a44", { name: "Credit" }),
     ], 1080, SH),
   ]),
   tpl("story-photo-dump", "Story · photo dump", ["Story", "Photo collage"], "Three stacked photos under a casual title.", 1080, SH, "story", () => [
@@ -323,7 +323,7 @@ export const MORE_TEMPLATES: Template[] = [
       T("Ask me anything", 150, 920, 780, { fontFamily: "Outfit", fontWeight: 700, fontSize: 88, lineHeight: 1.05, name: "Prompt" }),
       R(150, 1150, 780, 120, "#f1f1f1", { radius: 60, name: "Field" }),
       T("Type something…", 200, 1184, 700, { fontFamily: "Outfit", fontWeight: 300, fontSize: 44, fill: ink("#9a9a9a"), name: "Hint" }),
-      mono("REPLIES GO TO @YOURHANDLE", 90, 1600, 900, "#ffffff", { align: "center", name: "Handle" }),
+      mono("REPLIES GO TO @YOURNAME", 90, 1600, 900, "#ffffff", { align: "center", name: "Handle" }),
     ], 1080, SH),
   ]),
   tpl("story-this-or-that", "Story · this or that", ["Story", "Personal"], "Two photos split by an OR.", 1080, SH, "story", () => [
@@ -339,18 +339,18 @@ export const MORE_TEMPLATES: Template[] = [
     sl("New post", "#111111", [
       T("NEW POST", 40, 130, 1000, { fontFamily: "Outfit", fontWeight: 800, fontSize: 130, letterSpacing: 4, align: "center", fill: ink("#ffffff"), name: "Title" }),
       ph(120, 380, 840, 1050, "#7aa2c9", { radius: 64 }),
-      O(450, 1530, 180, 180, "#e5ff65", { name: "Button" }),
+      O(450, 1530, 180, 180, "#f6d96b", { name: "Button" }),
       T("↓", 450, 1555, 180, { fontFamily: "Inter", fontWeight: 600, fontSize: 130, align: "center", lineHeight: 1, name: "Arrow" }),
     ], 1080, SH),
   ]),
 
   // ───────────────────────────── Carousels ─────────────────────────────
   tpl("carousel-photo-dump", "Photo dump carousel · 5 slides", ["Carousel", "Photo collage"], "Cover, a pair, a full-bleed, a grid and a sign-off.", W, H, "carousel", () => [
-    sl("1 · Cover", "#ffffff", [ph(48, 48, W - 96, H - 96, "#ce6161", { radius: 64 }), T("photo\ndump", 110, 860, 700, { fontFamily: "Fraunces", fontWeight: 300, italic: true, fontSize: 190, lineHeight: 0.92, fill: ink("#ffffff"), shadow: { color: "#000000", blur: 30, x: 0, y: 6, opacity: 0.3 }, name: "Title" }), mono("SWIPE →", 760, 1240, 260, "#ffffff", { align: "right" })]),
+    sl("1 · Cover", "#ffffff", [ph(48, 48, W - 96, H - 96, "#b8715c", { radius: 64 }), T("photo\ndump", 110, 860, 700, { fontFamily: "Fraunces", fontWeight: 300, italic: true, fontSize: 190, lineHeight: 0.92, fill: ink("#ffffff"), shadow: { color: "#000000", blur: 30, x: 0, y: 6, opacity: 0.3 }, name: "Title" }), mono("SWIPE →", 760, 1240, 260, "#ffffff", { align: "right" })]),
     sl("2 · Pair", "#f1ede6", [grid("two-v", W, H, { cellBg: "#cdbfae", margin: 48, gutter: 24, radius: 48 })]),
     sl("3 · Full bleed", "#111111", [ph(0, 0, W, H, "#5d7b6f", { radius: 0 }), T("the quiet part", 60, 1180, 900, { fontFamily: "Instrument Serif", italic: true, fontSize: 96, fill: ink("#ffffff"), name: "Caption" })]),
     sl("4 · Grid", "#ffffff", [grid("four", W, H, { cellBg: "#d9cfc2", margin: 48, gutter: 24, radius: 40 })]),
-    sl("5 · Sign-off", "#e5ff65", [T("thanks for\nscrolling", 60, 380, 960, { fontFamily: "Outfit", fontWeight: 800, fontSize: 160, lineHeight: 0.98, fill: ink("#111111"), name: "Thanks" }), mono("@yourhandle", 60, 1200, 700, "#111111")]),
+    sl("5 · Sign-off", "#f6d96b", [T("thanks for\nscrolling", 60, 380, 960, { fontFamily: "Outfit", fontWeight: 800, fontSize: 160, lineHeight: 0.98, fill: ink("#111111"), name: "Thanks" }), mono("@yourname", 60, 1200, 700, "#111111")]),
   ]),
   tpl("carousel-tutorial", "Tutorial carousel · 5 slides", ["Carousel", "Typography", "Editorial"], "A cover and four numbered steps.", W, H, "carousel", () => {
     const step = (n: string, title: string, body: string, bg: string, fg: string): Slide => sl(`${n} · ${title}`, bg, [
@@ -362,7 +362,7 @@ export const MORE_TEMPLATES: Template[] = [
     return [
       sl("Cover", "#1f3a33", [T("How to edit a photo in 4 steps", 60, 330, 960, { fontFamily: "Fraunces", fontWeight: 300, fontSize: 150, lineHeight: 1.0, fill: ink("#ffffff"), name: "Title" }), mono("A QUICK GUIDE · SWIPE →", 60, 1200, 960, "#c9e4d6")]),
       step("01", "Straighten", "Level the horizon first. Everything else gets easier.", "#f4efe8", "#1f3a33"),
-      step("02", "Set the light", "Lift the shadows, calm the highlights, then fix exposure.", "#e5ff65", "#111111"),
+      step("02", "Set the light", "Lift the shadows, calm the highlights, then fix exposure.", "#f6d96b", "#111111"),
       step("03", "Tune colour", "Warm or cool it a touch. Keep skin tones honest.", "#ffd9c9", "#4a2418"),
       step("04", "Finish", "Crop to 4:5, add a little grain, export.", "#111111", "#ffffff"),
     ];
@@ -375,8 +375,8 @@ export const MORE_TEMPLATES: Template[] = [
     return [
       sl("Cover", "#ff5b2e", [T("4 habits for better photos", 60, 280, 960, { fontFamily: "Archivo Black", fontSize: 150, lineHeight: 0.98, fill: ink("#ffffff"), name: "Title" }), pill("Swipe  →", 60, 1150, 300, "#111111", "#ffffff", { fontSize: 36 })]),
       tip("1", "Shoot in the first and last hour of light.", "#ffffff", "#111111"),
-      tip("2", "Move your feet before you zoom.", "#111111", "#e5ff65"),
-      tip("3", "Look for one clean background.", "#e5ff65", "#111111"),
+      tip("2", "Move your feet before you zoom.", "#111111", "#f6d96b"),
+      tip("3", "Look for one clean background.", "#f6d96b", "#111111"),
       tip("4", "Edit less than you want to.", "#ffd9c9", "#4a2418"),
     ];
   }),
@@ -385,7 +385,7 @@ export const MORE_TEMPLATES: Template[] = [
     sl("2 · Text", "#f4efe8", [T("We almost\nmissed the\nlast bus.", 60, 260, 960, { fontFamily: "Instrument Serif", italic: true, fontSize: 170, lineHeight: 1.0, fill: ink("#2b2118"), name: "Line" })]),
     sl("3 · Scene", "#111111", [ph(0, 0, W, H, "#8c6a4f", { radius: 0 }), R(0, 800, W, 550, grad(180, "rgba(0,0,0,0)", "rgba(0,0,0,0.7)"), { name: "Shade" }), T("Then the sky opened up.", 60, 1120, 960, { fontFamily: "Outfit", fontWeight: 600, fontSize: 76, fill: ink("#ffffff"), name: "Caption" })]),
     sl("4 · Detail", "#ffffff", [grid("two-uneven", W, H, { cellBg: "#cdbfae", margin: 48, gutter: 24, radius: 48 })]),
-    sl("5 · End", "#1f3a33", [T("Worth it.", 60, 460, 960, { fontFamily: "Fraunces", fontWeight: 300, fontSize: 220, fill: ink("#ffffff"), name: "End" }), mono("@yourhandle", 60, 1200, 700, "#c9e4d6")]),
+    sl("5 · End", "#1f3a33", [T("Worth it.", 60, 460, 960, { fontFamily: "Fraunces", fontWeight: 300, fontSize: 220, fill: ink("#ffffff"), name: "End" }), mono("@yourname", 60, 1200, 700, "#c9e4d6")]),
   ]),
   tpl("panorama-3", "Panorama · 3 slides", ["Carousel", "Instagram portrait", "Travel"], "One wide photo across three slides, with type that crosses the seams.", 3240, H, "carousel", () => [
     sl("Panorama", "#f4efe8", [
