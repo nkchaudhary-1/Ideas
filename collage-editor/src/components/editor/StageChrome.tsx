@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import {
-  Check, ChevronDown, CircleAlert, Copy, Download, Eye, FilePlus2, FolderOpen, Hand, Keyboard, Grid3x3, Loader2, Maximize, MoreHorizontal, Minus, Moon, MousePointer2, Pause, PanelRight, Pencil, Play, Plus, RectangleVertical, Redo2, SlidersHorizontal, SplitSquareHorizontal, Sun, Trash2, Undo2,
+  Check, ChevronDown, CircleAlert, Copy, Download, Eye, FilePlus2, FolderOpen, Keyboard, Grid3x3, Loader2, Maximize, MoreHorizontal, Moon, Pause, PanelRight, Pencil, Play, RectangleVertical, Redo2, SlidersHorizontal, SplitSquareHorizontal, Sun, Trash2, Undo2,
 } from "lucide-react";
 import { useStore, getSlide, useSelectedElements } from "@/lib/store";
 import Logo from "@/components/ui/Logo";
@@ -14,7 +14,6 @@ import Popover from "@/components/ui/Popover";
 import FormatMenu from "./FormatMenu";
 import { panoramaCount, projectSummary, ratioLabel } from "@/lib/formats";
 import { agoLabel } from "@/lib/util";
-import { tweenView, zoomAround } from "@/lib/view-math";
 import { slideHasVideo } from "@/lib/timeline";
 import { isEmptyEdit } from "@/lib/edit";
 import { isCoarse } from "@/lib/use-media";
@@ -99,11 +98,12 @@ function RecentProjects({ close }: { close: () => void }) {
 }
 
 /** the logo button and its menu: the app, what you can do, and your recent projects; on phones it also holds the theme switch */
-function AppMenu({ dark }: { dark: boolean }) {
+function AppMenu({ dark, c }: { dark: boolean; c: Chrome }) {
   const st = useStore.getState;
   const items = [
     { icon: <FilePlus2 size={15} />, label: "New project", id: "new-project", run: () => st().openNewProject() },
     { icon: <FolderOpen size={15} />, label: "All projects", id: "open-projects", run: () => st().goHome() },
+    { icon: <Maximize size={15} />, label: "Fit to screen", id: "zoom-fit", run: () => st().requestFit() },
     { icon: <Keyboard size={15} />, label: "Keyboard shortcuts", id: "shortcuts", run: () => st().setUI({ shortcutsOpen: true }) },
     { icon: dark ? <Sun size={15} /> : <Moon size={15} />, label: dark ? "Light theme" : "Dark theme", id: "toggle-theme", run: () => st().setTheme(dark ? "light" : "dark") },
   ];
@@ -130,6 +130,7 @@ function AppMenu({ dark }: { dark: boolean }) {
             {items.map((m) => (
               <button key={m.id} type="button" data-testid={m.id} onClick={() => { close(); m.run(); }} className="flex h-10 w-full items-center gap-3 rounded px-3 text-left text-sm font-medium hover:bg-field coarse:h-11">{m.icon}{m.label}</button>
             ))}
+            <DesktopViewRow c={c} />
           </div>
           <div className="mx-4 my-3 h-px bg-line" />
           <div className="px-4 pb-2 text-xs font-bold text-ink">Recent projects</div>
@@ -191,21 +192,29 @@ function CompareButton({ c, narrow }: { c: Chrome; narrow: boolean }) {
   );
 }
 
-function ViewMenu({ c }: { c: Chrome }) {
+/** the view switches: layout grid, safe areas and snapping. One list, used by the desktop menu and the phone's "⋯" menu. */
+function ViewToggles({ c }: { c: Chrome }) {
   const st = useStore.getState;
   return (
-    <Popover placement="top" width={250} trigger={(open, toggle) => <IconButton icon={<SlidersHorizontal size={16} />} label="View options" active={open} onClick={toggle} testId="view-menu" />}>
-      {() => (
-        <div className="space-y-4 p-1" data-testid="view-options">
-          <Toggle label="Layout grid" value={c.slide.grid.visible} onChange={(v) => st().commit((p) => { const s = p.slides.find((x) => x.id === p.activeSlideId)!; s.grid.visible = v; if (v && s.grid.kind === "none") s.grid.kind = "columns"; })} />
-          <Toggle label="Safe areas" value={c.ui.safeAreas} onChange={(v) => st().setUI({ safeAreas: v })} />
-          <div className="h-px bg-line" />
-          <Toggle label="Snap to canvas" value={c.ui.snapCanvas} onChange={(v) => st().setUI({ snapCanvas: v })} />
-          <Toggle label="Snap to objects" value={c.ui.snapObjects} onChange={(v) => st().setUI({ snapObjects: v })} />
-          <Toggle label="Snap to layout grid" value={c.ui.snapGrid} onChange={(v) => st().setUI({ snapGrid: v })} />
-        </div>
-      )}
-    </Popover>
+    <div className="space-y-4" data-testid="view-options">
+      <Toggle label="Layout grid" value={c.slide.grid.visible} onChange={(v) => st().commit((p) => { const s = p.slides.find((x) => x.id === p.activeSlideId)!; s.grid.visible = v; if (v && s.grid.kind === "none") s.grid.kind = "columns"; })} />
+      <Toggle label="Safe areas" value={c.ui.safeAreas} onChange={(v) => st().setUI({ safeAreas: v })} />
+      <div className="h-px bg-line" />
+      <Toggle label="Snap to canvas" value={c.ui.snapCanvas} onChange={(v) => st().setUI({ snapCanvas: v })} />
+      <Toggle label="Snap to objects" value={c.ui.snapObjects} onChange={(v) => st().setUI({ snapObjects: v })} />
+      <Toggle label="Snap to layout grid" value={c.ui.snapGrid} onChange={(v) => st().setUI({ snapGrid: v })} />
+    </div>
+  );
+}
+
+/** "View options" as a row of the desktop menu that opens its switches in place */
+function DesktopViewRow({ c }: { c: Chrome }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button type="button" data-testid="view-menu" aria-expanded={open} onClick={() => setOpen(!open)} className="flex h-10 w-full items-center gap-3 rounded px-3 text-left text-sm font-medium hover:bg-field coarse:h-11"><SlidersHorizontal size={15} />View options</button>
+      {open && <div className="px-3 pb-3 pt-1"><ViewToggles c={c} /></div>}
+    </>
   );
 }
 
@@ -267,14 +276,7 @@ function CompactMenu({ c }: { c: Chrome }) {
               </>
             )}
             <MenuRow icon={<Grid3x3 size={16} />} label="View options" testId="view-menu" onClick={() => setOpen(open === "view" ? null : "view")} />
-            {open === "view" && (
-              <div className="space-y-4 px-3 pb-3 pt-1" data-testid="view-options">
-                <Toggle label="Layout grid" value={c.slide.grid.visible} onChange={(v) => st().commit((p) => { const sl = p.slides.find((x) => x.id === p.activeSlideId)!; sl.grid.visible = v; if (v && sl.grid.kind === "none") sl.grid.kind = "columns"; })} />
-                <Toggle label="Safe areas" value={c.ui.safeAreas} onChange={(v) => st().setUI({ safeAreas: v })} />
-                <Toggle label="Snap to canvas" value={c.ui.snapCanvas} onChange={(v) => st().setUI({ snapCanvas: v })} />
-                <Toggle label="Snap to objects" value={c.ui.snapObjects} onChange={(v) => st().setUI({ snapObjects: v })} />
-              </div>
-            )}
+            {open === "view" && <div className="px-3 pb-3 pt-1"><ViewToggles c={c} /></div>}
             {!c.isEdit && (
               <>
                 <div className="mx-3 my-2 h-px bg-line" />
@@ -345,7 +347,6 @@ function DesktopChrome({ c }: { c: Chrome }) {
   const hasVideo = slideHasVideo(c.slide);
   const size = ui.canvasSize;
   const narrow = size.w < 980; // the stage shrinks when both side panels are open
-  const zoom = (f: number) => { const v = st().ui.view; tweenView(v, zoomAround(v, f, size.w / 2, size.h / 2), (n) => st().setView(n)); };
   const dark = ui.theme === "dark";
   // the Properties card starts closed on smaller windows: open it the first time something is selected, and keep an Edit chip while it is shut
   const autoOpened = useRef(false);
@@ -366,7 +367,7 @@ function DesktopChrome({ c }: { c: Chrome }) {
       <div className="absolute inset-x-5 top-5 flex flex-wrap items-start justify-between gap-x-3 gap-y-3">
         <div className="flex min-w-0 items-center gap-3">
           <Pill className="h-[52px] min-w-0 pr-4">
-            <AppMenu dark={dark} />
+            <AppMenu dark={dark} c={c} />
             <ProjectName name={c.name} maxWidth={narrow ? 110 : 200} />
             <SaveBadge status={c.status} words={!narrow} />
           </Pill>
@@ -378,6 +379,7 @@ function DesktopChrome({ c }: { c: Chrome }) {
             <IconButton icon={<Undo2 size={17} />} label="Undo" shortcut="⌘Z" onClick={() => st().undo()} disabled={!c.canUndo} testId="undo" />
             <IconButton icon={<Redo2 size={17} />} label="Redo" shortcut="⇧⌘Z" onClick={() => st().redo()} disabled={!c.canRedo} testId="redo" />
             {hasVideo && <IconButton icon={ui.playing ? <Pause size={17} /> : <Play size={17} />} label={ui.playing ? "Stop playback" : "Play slide"} active={ui.playing} onClick={() => st().setUI({ playing: !ui.playing })} testId="play-slide" />}
+            {c.isEdit && <CompareButton c={c} narrow={narrow} />}
             <span className="mx-1 h-5 w-px bg-line" />
             <IconButton icon={<Eye size={17} />} label="Preview" onClick={() => st().setUI({ previewOpen: true, playing: false })} disabled={c.nothingToShow} testId="preview" />
             <IconButton icon={<PanelRight size={17} />} label={ui.rightOpen ? "Hide the edit panel" : "Show the edit panel"} active={ui.rightOpen} onClick={() => st().setUI({ rightOpen: !ui.rightOpen })} testId="toggle-properties" />
@@ -389,26 +391,6 @@ function DesktopChrome({ c }: { c: Chrome }) {
       <GuideChip compact={false} lowered={size.w < 820} />
       <PhotoWheel />
       <QuickAdjust compact={false} />
-      {/* bottom centre: view */}
-      <div className="absolute bottom-5 left-1/2 -translate-x-1/2">
-        <Pill className="h-[52px] px-2">
-          <IconButton icon={<MousePointer2 size={16} />} label="Select" shortcut="V" active={ui.tool === "select"} onClick={() => st().setUI({ tool: "select" })} />
-          <IconButton icon={<Hand size={16} />} label="Hand (pan)" shortcut="H / Space" active={ui.tool === "hand"} onClick={() => st().setUI({ tool: "hand" })} />
-          <span className="mx-2 h-5 w-px bg-line" />
-          <IconButton icon={<Minus size={16} />} label="Zoom out" shortcut="−" onClick={() => zoom(1 / 1.25)} testId="zoom-out" />
-          <button type="button" title="Reset to 100%" data-testid="zoom-pct" onClick={() => { const v = st().ui.view; tweenView(v, zoomAround(v, 1 / v.scale, size.w / 2, size.h / 2), (n) => st().setView(n)); }} className="h-9 w-14 rounded-full text-center text-xs font-semibold tabular-nums hover:bg-field">{Math.round(ui.zoom)}%</button>
-          <IconButton icon={<Plus size={16} />} label="Zoom in" shortcut="+" onClick={() => zoom(1.25)} testId="zoom-in" />
-          <IconButton icon={<Maximize size={15} />} label="Fit to screen" shortcut="⇧1" onClick={() => st().requestFit()} testId="zoom-fit" />
-          {c.isEdit && (
-            <>
-              <span className="mx-2 h-5 w-px bg-line" />
-              <CompareButton c={c} narrow={narrow} />
-            </>
-          )}
-          <span className="mx-2 h-5 w-px bg-line" />
-          <ViewMenu c={c} />
-        </Pill>
-      </div>
     </div>
   );
 }

@@ -36,17 +36,17 @@ const ok = (c, m, extra) => { c ? pass++ : fail++; console.log((c ? 'PASS ' : 'F
   // a quiet tooltip, after a short pause, with the shortcut
   await page.keyboard.press('Escape');
   await page.addInitScript(() => {});
-  await page.hover('[data-testid=zoom-in]'); await page.waitForTimeout(150);
-  const early = await page.locator('[data-testid=zoom-in]').evaluate((el) => getComputedStyle(el, '::after').opacity);
+  await page.hover('[data-testid=toggle-properties]'); await page.waitForTimeout(150);
+  const early = await page.locator('[data-testid=toggle-properties]').evaluate((el) => getComputedStyle(el, '::after').opacity);
   await page.waitForTimeout(600);
-  const late = await page.locator('[data-testid=zoom-in]').evaluate((el) => ({ o: getComputedStyle(el, '::after').opacity, t: getComputedStyle(el, '::after').content }));
+  const late = await page.locator('[data-testid=toggle-properties]').evaluate((el) => ({ o: getComputedStyle(el, '::after').opacity, t: getComputedStyle(el, '::after').content }));
   ok(Number(early) < 0.5, 'a tooltip does not flash up the moment you pass', early);
-  ok(Number(late.o) === 1 && /Zoom in/.test(late.t), 'and arrives after a beat, naming the control', late);
+  ok(Number(late.o) === 1 && /edit panel/.test(late.t), 'and arrives after a beat, naming the control', late);
 
-  // zoom glides: partway after a few frames, exactly there when done
+  // zoom glides (the + key): partway after a few frames, exactly there when done
   await page.mouse.move(5, 5);
   const v0 = await page.evaluate(() => window.__store.getState().ui.view.scale);
-  await page.click('[data-testid=zoom-in]');
+  await page.keyboard.press('+');
   await page.waitForTimeout(40);
   const mid = await page.evaluate(() => window.__store.getState().ui.view.scale);
   await page.waitForTimeout(400);
@@ -58,6 +58,21 @@ const ok = (c, m, extra) => { c ? pass++ : fail++; console.log((c ? 'PASS ' : 'F
   await page.focus('[data-testid=undo]'); await page.keyboard.press('Tab');
   const ring = await page.evaluate(() => { const el = document.activeElement; const cs = getComputedStyle(el); return { w: cs.outlineWidth, s: cs.outlineStyle }; });
   ok(ring.s === 'solid' && parseFloat(ring.w) >= 2, 'the keyboard focus ring is drawn', ring);
+
+  // nothing floats at the bottom of the canvas: zoom is the wheel and keys, Fit and View options are in the menu
+  await page.keyboard.press('Escape'); await page.mouse.move(5, 5);
+  const bottom = await page.evaluate(() => ['zoom-in', 'zoom-out', 'zoom-pct'].filter((id) => document.querySelector(`[data-testid=${id}]`)).length + [...document.querySelectorAll('[data-testid=stage-chrome] button')].filter((b) => /^(Select|Hand)/.test(b.getAttribute('aria-label') || '')).length);
+  ok(bottom === 0, 'there is no select, hand or zoom bar over the canvas', bottom);
+  await page.evaluate(() => window.__store.getState().setView({ scale: 0.6 })); await page.waitForTimeout(200);
+  await page.click('[data-testid=app-menu]'); await page.waitForTimeout(300);
+  ok(await page.locator('[data-testid=zoom-fit]').isVisible() && await page.locator('[data-testid=view-menu]').isVisible(), 'Fit to screen and View options are in the menu');
+  await page.click('[data-testid=zoom-fit]'); await page.waitForTimeout(700);
+  const fitted = await page.evaluate(() => window.__store.getState().ui.view.scale);
+  ok(fitted < 0.5, 'Fit to screen brings a zoomed-in canvas back to fit', fitted);
+  await page.click('[data-testid=app-menu]'); await page.waitForTimeout(300); await page.click('[data-testid=view-menu]'); await page.waitForTimeout(250);
+  const toggles = await page.locator('[data-testid=view-options] [role=switch]').count();
+  ok(toggles === 5, 'View options holds the five switches (layout grid, safe areas, three snaps)', toggles);
+  await page.keyboard.press('Escape');
 
   ok(errs.length === 0, 'no page errors', errs.slice(0, 2));
   console.log(`\n${pass} passed, ${fail} failed`);

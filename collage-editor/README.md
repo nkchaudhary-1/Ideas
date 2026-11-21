@@ -14,9 +14,9 @@ elements, so the editor starts where your own posts do.
 
 Minimal, floating, light or dark. The canvas fills the middle; everything else is a rounded card around it.
 
-* **Left:** a labelled rail, in three titled groups: **Add** (Media, Layouts, Templates), **Design** (Text, Elements, Frames, Backdrop, Colours) and **Manage** (Layers). Click one and its panel opens beside it; click again to close. Elements is one searchable grid with tabs (Shapes, Graphics, Labels, Icons, Interface).
+* **Left:** one card holding a labelled rail, in three titled groups: **Add** (Media, Layouts, Templates), **Design** (Text, Elements, Backdrop, Colours) and **Manage** (Layers). Click a tool and its panel opens inside the same card, beside the rail, behind a hairline; click again to close. Elements & frames is one searchable grid with tabs (Shapes, Frames, Graphics, Labels, Icons, Interface).
 * **Top of the canvas:** the Collage Studio mark, which opens the menu (new project, all projects, shortcuts and your five most recent projects), the project name (click to rename) with its save status, the **size chip** ("Size 4:5 · 1080×1350"; a panorama reads "4:5 · 7 slides"; ratio and panorama controls), undo / redo, theme switch, Preview, Export. Under it, the **mode chip**: which kind of project this is and which step you are on (see below).
-* **Bottom of the canvas:** select and hand tools, zoom, fit, and a **View** menu with layout grid, safe areas and snapping.
+* **Nothing floats at the bottom of the canvas.** Zoom with the wheel, pinch or the + and − keys (0 for 100%, ⇧1 to fit); pan with Space, H or the middle mouse. **Fit to screen** and **View options** (layout grid, safe areas, snapping) are in the menu next to the logo, and Edit mode's **Compare** sits with undo and redo.
 * **Right:** one properties card that only shows what the current selection needs, in collapsible groups.
 * **Below:** the slide strip (compact for single designs, with seam marks on panoramas).
 * **Palette:** black, white and one orange. Greys are neutral; orange marks only the active tool, slider fills, toggles and canvas selection, with a soft gradient on the primary button and the page ground. Light and dark themes; the choice is remembered and the first visit follows your system setting.
@@ -86,7 +86,7 @@ Photo editing and image export work in any modern browser.
 
 | Area | Details |
 | --- | --- |
-| Canvas | Zoom (wheel, ⌘/Ctrl-wheel, +/−), pan (space-drag, hand tool, middle mouse), fit, zoom to selection, layout grids (columns, modular, baseline), safe areas, snapping to canvas / objects / guides / grid lines |
+| Canvas | Zoom (wheel, ⌘/Ctrl-wheel, +/−), pan (space-drag, H, middle mouse), fit, zoom to selection, layout grids (columns, modular, baseline), safe areas, snapping to canvas / objects / guides / grid lines |
 | Formats | 1:1, 4:5, 3:4, 2:3, 5:4, 4:3, 3:2, 16:9, 1.91:1, 9:16 Story/Reel and custom sizes, chosen from the size chip at the top of the canvas. Changing the ratio keeps content (stretch / fit / keep). A carousel has one ratio for every slide |
 | **Panorama (12:5)** | One wide canvas that is cut into slides on export. **12:5 = three 4:5 slides side by side** (3240×1350). Extend it any time with the **+** on the canvas edge (16:5, 20:5, … up to 10 slides) or shorten it with **−**; content stays where it is. Slide numbers and dotted seams show the cuts. Slide shape can be 4:5, 1:1 or 3:4. Preview pages through the slices exactly as they will be published; export writes one image per slice (`name-01.png`, `name-02.png`, …) |
 | Media library | JPG, PNG, WebP, MP4, MOV, WebM; drag & drop, paste, multi-file. Search, sort, filter photos/videos, reuse, replace, delete. Library is stored per device and shared across projects |

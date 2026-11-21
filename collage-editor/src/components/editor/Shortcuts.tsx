@@ -3,7 +3,7 @@ import { DEFAULT_COPY, captureEdit, mediaOf, pasteToSlides, selectSlides, select
 import { useEffect } from "react";
 import { useStore, getSlide } from "@/lib/store";
 import { isTypingTarget } from "@/lib/util";
-import { zoomAround, viewForRect } from "@/lib/view-math";
+import { tweenView, zoomAround, viewForRect } from "@/lib/view-math";
 import { boundsOf, flatten, unionRects } from "@/lib/geometry";
 import { makeText } from "@/lib/factory";
 import { inkFor } from "@/lib/presets";
@@ -101,8 +101,8 @@ export default function useShortcuts() {
         st.nudge(k === "arrowleft" ? -d : k === "arrowright" ? d : 0, k === "arrowup" ? -d : k === "arrowdown" ? d : 0);
         return;
       }
-      if (e.key === "+" || e.key === "=") { handled(); st.setView(zoomAround(ui.view, 1.25, size.w / 2, size.h / 2)); return; }
-      if (e.key === "-" || e.key === "_") { handled(); st.setView(zoomAround(ui.view, 1 / 1.25, size.w / 2, size.h / 2)); return; }
+      if (e.key === "+" || e.key === "=") { handled(); tweenView(ui.view, zoomAround(ui.view, 1.25, size.w / 2, size.h / 2), (n) => st.setView(n)); return; }
+      if (e.key === "-" || e.key === "_") { handled(); tweenView(ui.view, zoomAround(ui.view, 1 / 1.25, size.w / 2, size.h / 2), (n) => st.setView(n)); return; }
       if (e.key === "!" || (e.shiftKey && e.code === "Digit1")) { handled(); st.requestFit(); return; }
       if (e.key === "@" || (e.shiftKey && e.code === "Digit2")) {
         handled();

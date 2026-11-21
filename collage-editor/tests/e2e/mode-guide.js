@@ -54,6 +54,8 @@ const chipText = async (page) => (await page.locator('[data-testid=guide-chip]')
   ok(!rail.includes('Frames'), 'Frames is not a tool of its own: it is a tab in Elements');
   for (const w of ['Add', 'Design', 'Manage']) ok(rail.includes(w), `and titles the "${w}" group`);
   await page.click('[data-testid=rail-elements]'); await page.waitForTimeout(400);
+  const one = await page.evaluate(() => { const r = document.querySelector('[data-testid=left-rail]'), p = document.querySelector('[data-testid=left-panel]'); const c = r.closest('.card'); return { same: !!c && c === p.closest('.card'), railIsCard: r.classList.contains('card'), panelIsCard: p.classList.contains('card'), divider: getComputedStyle(p).borderLeftWidth }; });
+  ok(one.same && !one.railIsCard && !one.panelIsCard && one.divider !== '0px', 'the rail and the open panel are one card, split by a hairline', one);
   const panel = (await page.locator('[data-testid=elements-panel]').textContent()) || '';
   ok(!/Graphics & decor|Interface pieces/.test(panel), 'Elements is one grid, not stacked cards');
   const all = await page.locator('[data-testid^=el-]:not([data-testid=el-search])').count();

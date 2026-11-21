@@ -101,8 +101,10 @@ A new user must never have to guess what they are making or what to do next.
   (single post, collage, carousel, panorama, story, photo & video edit). A panorama is described by its slides ("4:5 · 7 slides"), never by the ratio of the whole strip.
 - **Show the next step.** Every mode has a short list of steps that tick themselves off from what is in the project, each with a button that opens the right tool.
   Add steps to `useGuide` in `ModeGuide.tsx` when a mode gains a stage; never add a mode without them.
+- **Nothing floats over the canvas but the top row.** No zoom or tool bar sits at the bottom: zoom and pan are gestures and keys, and Fit and View options live in the menu.
 - **An empty canvas stays clear.** No card or prompt sits over it; the mode line and its next-step button are the guide, and the rail
   has Media, Layouts and Templates. (The owner removed the "Start your …" card because it covered the work.)
+- **The tools and the open tool are one card.** On a desktop the rail and the panel it opens share a single card, split by a hairline, never two cards side by side. (Edit mode's single round button is the one exception.)
 - **Every tool is labelled.** An icon alone is never the only name of a tool: the rail and the phone dock show a short name under each icon, and groups carry a title.
 - **Controls that matter are visible without selecting anything.** Editing a photo is never behind a closed panel: Edit mode opens its card, and a photo
   has its own wheel on a desktop and its own bar on a phone. If a panel can be shut, a chip or button brings it back.

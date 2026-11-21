@@ -50,7 +50,7 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
     try { const sh = sheetFor(name); if (PHONE && sh && sh.k === 'props') await sheet(sh); await fn(); if (PHONE && !sh) await sheet(null); await record(name); } catch (e) { console.log(`  (skipped ${name}: ${e.message.split('\n').slice(0, 14).join(' | ').slice(0, 900)})`); }
   };
   // on a phone size, view options and preview live in the "⋯" menu
-  const viaMenu = async (id) => { if (PHONE) { await page.click('[data-testid=app-menu]'); await wait(page, 300); } await page.click(`[data-testid=${id}]`); };
+  const viaMenu = async (id) => { if (PHONE || id === 'view-menu') { await page.click('[data-testid=app-menu]'); await wait(page, 300); } await page.click(`[data-testid=${id}]`); };
   const closeAny = async () => { await page.keyboard.press('Escape'); await wait(page, 150); await page.mouse.click(5, 5).catch(() => {}); await wait(page, 100); };
 
   // ── the front page (nothing saved yet), then the entry dialog it opens
