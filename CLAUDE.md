@@ -68,8 +68,11 @@ Everything above holds on a phone. These are the additions for screens under 900
   kind of project and next step under it, undo, redo, export, and a "⋯" menu for size, fit, preview, view options and slide actions), the canvas,
   a flat strip of slides or photos, and one bottom bar. The bottom bar is the tool dock when nothing is selected and becomes the selection's
   tools when something is (a photo: replace, crop, filters, light, turn, flip, reset; anything else: edit, duplicate, delete; typing: done).
-  **Nothing floats over the picture** except the quick adjust bar and the selection handles: no pills, chips, wheel or toasts on the canvas.
-  Panels and properties are bottom sheets that push the canvas up (never cover it); keep at least 200px of canvas when a sheet is open.
+  **Nothing floats over the picture** but the selection handles: no pills, chips, wheel, toasts or quick bar on the canvas. Anything that
+  opens (a tool sheet, the properties sheet, the quick adjust bar) is a panel in the layout, so the canvas gets smaller and refits above it.
+  The strip of slides or photos steps aside while one is open on a short screen. Test at 390×650, which is what a phone leaves once its browser
+  bars are in: the canvas keeps at least 38% of the screen with a tool sheet or the quick bar open (the default sheet is 32% of the screen, never
+  under 232px; drag its handle for a taller one).
   Dialogs dock to the bottom edge with an 8px margin, 32px corners and a slide-up entrance. Respect safe areas (`env(safe-area-inset-*)`,
   `viewport-fit=cover`) and use `dvh`, not `vh`.
 - **Dialog gutter is 24px on phones** (32 − 24 = the 8px radius floor, so inner radii stay `rounded`), 32px from 640px up.

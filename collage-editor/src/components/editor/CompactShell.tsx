@@ -4,12 +4,13 @@ import { useStore } from "@/lib/store";
 import { useMediaQuery } from "@/lib/use-media";
 import Workspace from "@/components/canvas/Workspace";
 import Toast from "@/components/ui/Toast";
-import StageChrome, { CompactTopBar } from "./StageChrome";
+import { CompactTopBar } from "./StageChrome";
 import SlideStrip from "./SlideStrip";
 import EditStrip from "./EditStrip";
 import EditEmpty from "./EditEmpty";
 import Dock from "./Dock";
 import ContextBar from "./ContextBar";
+import QuickAdjust from "./QuickAdjust";
 import BottomSheet from "./BottomSheet";
 import { usePhotoTarget } from "./photo-actions";
 
@@ -34,28 +35,28 @@ export default function CompactShell() {
   const kind = useStore((s) => s.project.kind);
   const sheet = useStore((s) => s.ui.sheet);
   const size = useStore((s) => s.ui.sheetSize);
+  const quick = useStore((s) => !!s.ui.quick);
   const requestFit = useStore((s) => s.requestFit);
 
-  // the canvas changes size when a sheet opens or grows: refit it
-  useEffect(() => { const t = setTimeout(requestFit, 60); return () => clearTimeout(t); }, [sheet, size, requestFit]);
+  // the canvas changes size when a sheet or the quick bar opens or grows: refit it
+  useEffect(() => { const t = setTimeout(requestFit, 60); return () => clearTimeout(t); }, [sheet, size, quick, requestFit]);
 
   const edit = kind === "edit";
-  // a tall sheet leaves no room for the strip. On a short screen (a phone with its browser bars) an open sheet leaves room for
-  // a slim row of photo thumbnails in Edit mode, so you can still switch photos while adjusting; collage slides wait for the sheet to close.
+  // the picture comes first: while a sheet or the quick bar is open the strip steps aside on a short screen (a phone with its browser bars)
+  // and shrinks to a row of thumbnails on a tall one; closing the sheet brings it back
   const short = useMediaQuery("(max-height: 720px)");
-  const slim = edit && !!sheet && short;
-  const showStrip = !sheet || size === "half";
+  const showStrip = !quick && (!sheet || (size === "half" && !short));
   return (
     <div className="flex h-[100dvh] min-h-0 flex-col gap-2 bg-bg px-2 pb-[max(8px,env(safe-area-inset-bottom))] pt-[max(4px,env(safe-area-inset-top))] text-ink" data-testid="editor-root" data-compact>
       <CompactTopBar />
       <div className="relative min-h-0 flex-1 overflow-hidden rounded-big bg-stage ring-1 ring-line/70">
         <Workspace />
         <EditEmpty />
-        <StageChrome />
         <Toast />
       </div>
-      {showStrip && (edit ? (!sheet || !short || slim) && <EditStrip slim={slim} /> : !(sheet && short) && <SlideStrip />)}
+      {showStrip && (edit ? <EditStrip slim={!!sheet} /> : <SlideStrip />)}
       <BottomSheet />
+      <QuickAdjust compact />
       <BottomBar />
     </div>
   );

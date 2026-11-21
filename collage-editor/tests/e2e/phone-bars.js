@@ -111,6 +111,31 @@ const errs = [];
   ok(edStrip.h <= 130, 'the photo strip is flat and short', edStrip.h);
   await e.close();
 
+  // ── sheets and the quick bar never cover the picture (a phone with its browser bars leaves about 390×650)
+  const e2 = await browser.newContext({ ...devices['iPhone 13'], viewport: { width: 390, height: 650 } });
+  const sp = await e2.newPage(); sp.on('pageerror', (x) => errs.push(x.message));
+  await sp.goto(base, { waitUntil: 'networkidle' }); await sp.waitForSelector('[data-testid=home]');
+  await sp.tap('[data-testid=home-edit]'); await sp.waitForSelector('[data-testid=new-project-dialog]');
+  await sp.setInputFiles('[data-testid=new-project-input]', [S + 'sample-2.jpg']);
+  await sp.tap('[data-testid=create-project]'); await sp.waitForTimeout(4000);
+  await sp.tap('[data-testid=ctx-filters]'); await sp.waitForTimeout(1500);
+  const geo = await store(sp, () => { const s = window.__store.getState(); const v = s.ui.view; const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); const wb = document.querySelector('[data-testid=workspace]').getBoundingClientRect(); const q = document.querySelector('[data-testid=quick-adjust]').getBoundingClientRect(); return { photoBottom: wb.top + v.y + sl.height * v.scale, photoTop: wb.top + v.y, barTop: q.top, stageH: wb.height }; });
+  ok(geo.photoBottom <= geo.barTop + 1 && geo.photoTop >= 0, 'the quick bar sits below the photo, never over it', geo);
+  ok(geo.stageH >= 650 * 0.38, 'and the photo keeps at least 38% of the screen', Math.round(geo.stageH / 6.5) + '%');
+  const drawn = await store(sp, () => [...document.querySelectorAll('[data-testid^=filter-] canvas')].filter((c) => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] + d[i + 1] + d[i + 2] > 30) n++; return n > 50; }).length);
+  const total = await store(sp, () => document.querySelectorAll('[data-testid^=filter-] canvas').length);
+  ok(total >= 15 && drawn === total, 'every filter preview is drawn, none left blank', { drawn, total });
+  await sp.tap('[data-testid=quick-done]'); await sp.waitForTimeout(500);
+  await sp.tap('[data-testid=ctx-more]'); await sp.waitForTimeout(700);
+  const sheetGeo = await store(sp, () => { const w = document.querySelector('[data-testid=workspace]').getBoundingClientRect(); const h = document.querySelector('[data-testid=sheet-props]').getBoundingClientRect(); return { stageBottom: w.bottom, sheetTop: h.top, stageH: w.height }; });
+  ok(sheetGeo.stageBottom <= sheetGeo.sheetTop + 1 && sheetGeo.stageH >= 650 * 0.3, 'a sheet starts where the canvas ends and leaves it at least 30% of the screen', sheetGeo);
+  await store(sp, () => window.__store.getState().setUI({ sheet: null })); await sp.waitForTimeout(300);
+  await sp.tap('[data-testid=ctx-done]').catch(() => {});
+  await store(sp, () => window.__store.getState().setUI({ leftPanel: 'frames', sheet: 'tools', sheetSize: 'half' })); await sp.waitForTimeout(700);
+  const fr = await store(sp, () => { const w = document.querySelector('[data-testid=workspace]').getBoundingClientRect(); const h = document.querySelector('[data-testid=left-panel]').getBoundingClientRect(); const first = document.querySelector('[data-testid=frames-panel] section button, [data-testid=frames-panel] [data-testid^=frame-]'); return { stageH: w.height, sheetH: h.height, firstTop: first ? first.getBoundingClientRect().top - h.top : null }; });
+  ok(fr.stageH >= 650 * 0.38, 'a tool sheet leaves the canvas at least 38% of the screen', fr);
+  await e2.close();
+
   // ── the smallest phone
   ({ ctx, page } = await start(browser, { width: 320, height: 568 }));
   const sw = await store(page, () => document.documentElement.scrollWidth - innerWidth);

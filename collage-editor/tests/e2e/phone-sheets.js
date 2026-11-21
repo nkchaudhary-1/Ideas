@@ -23,7 +23,7 @@ const box = async (page, sel) => { const l = page.locator(sel).first(); return (
   u = await ui(page);
   ok(u.sheet === 'tools' && u.panel === 'text', 'tapping a tool opens its sheet');
   const half = await box(page, '[data-testid=left-panel]');
-  ok(Math.abs(half.height - vp.height * 0.38) < 6, 'the sheet opens at 38% of the screen', { h: half.height });
+  ok(Math.abs(half.height - Math.max(232, vp.height * 0.32)) < 6, 'the sheet opens short: 32% of the screen, never under 232px', { h: half.height });
   ok(half.y + half.height <= vp.height, 'the sheet is fully on screen');
   const stage = await box(page, '[data-testid=workspace]');
   ok(stage.height > 150, 'the canvas stays visible above the sheet', { h: stage.height });
@@ -111,14 +111,15 @@ const box = async (page, sel) => { const l = page.locator(sel).first(); return (
   await page.tap('[data-testid=ctx-more]'); await settle(page, 500);
   u = await ui(page);
   ok(u.sheet === 'props', 'More opens the adjustments sheet');
-  // a short screen (this emulated iPhone is 664px tall, like Safari with its bars) gets a slim row of thumbnails while the sheet is open
-  ok(!!(await box(page, '[data-testid=slide-strip]')), 'the photo strip stays on screen while the adjustments sheet is open');
-  ok(!(await box(page, '[data-testid=select-bar]')) === (vp.height <= 720), 'the strip is slim on a short screen and full on a tall one');
+  // the picture comes first: with a sheet open the photo strip steps aside on a short screen (this emulated iPhone is 664px tall, like Safari with its bars)
+  // and is a row of thumbnails on a tall one
+  ok(!!(await box(page, '[data-testid=slide-strip]')) === (vp.height > 720), 'with the adjustments sheet open the strip steps aside on a short screen and stays on a tall one');
+  ok(!(await box(page, '[data-testid=select-bar]')), 'and never shows its select bar there');
+  await page.tap('[data-testid=sheet-close]'); await settle(page, 500);
+  ok(!!(await box(page, '[data-testid=select-bar]')), 'closing the sheet brings back the full strip with its select bar');
   await page.tap('[data-testid=thumb-open] >> nth=1'); await settle(page, 400);
   const a = await page.evaluate(() => window.__store.getState().project.activeSlideId === window.__store.getState().project.slides[1].id);
   ok(a, 'tapping a thumbnail makes it the one being edited');
-  await page.tap('[data-testid=sheet-close]'); await settle(page, 500);
-  ok(!!(await box(page, '[data-testid=select-bar]')), 'closing the sheet brings back the full strip with its select bar');
 
   const errs = logs.filter((l) => !/favicon|ResizeObserver/.test(l));
   ok(errs.length === 0, 'no console errors', errs);

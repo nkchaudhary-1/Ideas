@@ -35,18 +35,16 @@ export default function BottomSheet() {
   };
 
   return (
-    <section className="card pop sheet-in relative flex shrink-0 flex-col overflow-hidden" style={{ height: full ? "max(38dvh, min(76dvh, 100dvh - 384px))" : "38dvh" }}
+    <section className="card pop sheet-in relative flex shrink-0 flex-col overflow-hidden" style={{ height: full ? "max(38dvh, min(76dvh, 100dvh - 384px))" : "max(232px, 32dvh)" }}
       data-testid={sheet === "tools" ? "left-panel" : "sheet-props"} aria-label={title}>
-      <div className="relative flex h-8 shrink-0 touch-none cursor-grab items-center justify-center" onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={() => { start.current = null; }} data-testid="sheet-handle">
-        <span className="h-1 w-10 rounded-full bg-faint/60" />
+      <div className={`relative flex shrink-0 touch-none cursor-grab items-center ${sheet === "tools" ? "h-12 px-8" : "h-8 justify-center"}`} onPointerDown={down} onPointerMove={move} onPointerUp={up} onPointerCancel={() => { start.current = null; }} data-testid="sheet-handle">
+        <span className="absolute left-1/2 top-2 h-1 w-10 -translate-x-1/2 rounded-full bg-faint/60" />
+        {sheet === "tools" && <h2 className="pt-2 text-base font-extrabold tracking-tight">{title}</h2>}
       </div>
       <div className="absolute right-2 top-1 z-10 flex items-center gap-1">
         <IconButton icon={full ? <ChevronDown size={16} /> : <ChevronUp size={16} />} label={full ? "Make the panel shorter" : "Make the panel taller"} onClick={grow} testId="sheet-grow" />
         <IconButton icon={<X size={16} />} label="Close panel" onClick={close} testId="sheet-close" />
       </div>
-      {sheet === "tools" && (
-        <h2 className="flex h-12 shrink-0 items-center px-8 text-base font-extrabold tracking-tight">{title}</h2>
-      )}
       <div className="flex min-h-0 flex-1 flex-col">
         {sheet === "tools" ? <div className="min-h-0 flex-1"><PanelBody panel={panel} /></div> : <PropertiesPanel sheet />}
       </div>

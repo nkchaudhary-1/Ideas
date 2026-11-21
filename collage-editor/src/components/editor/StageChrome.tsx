@@ -17,7 +17,7 @@ import { agoLabel } from "@/lib/util";
 import { tweenView, zoomAround } from "@/lib/view-math";
 import { slideHasVideo } from "@/lib/timeline";
 import { isEmptyEdit } from "@/lib/edit";
-import { useCompact, isCoarse } from "@/lib/use-media";
+import { isCoarse } from "@/lib/use-media";
 
 const Pill = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
   <div className={`pointer-events-auto flex items-center gap-1 rounded-full bg-panel p-2 shadow-float ${className}`}>{children}</div>
@@ -99,12 +99,12 @@ function RecentProjects({ close }: { close: () => void }) {
 }
 
 /** the logo button and its menu: the app, what you can do, and your recent projects; on phones it also holds the theme switch */
-function AppMenu({ compact, dark }: { compact: boolean; dark: boolean }) {
+function AppMenu({ dark }: { dark: boolean }) {
   const st = useStore.getState;
   const items = [
     { icon: <FilePlus2 size={15} />, label: "New project", id: "new-project", run: () => st().openNewProject() },
     { icon: <FolderOpen size={15} />, label: "All projects", id: "open-projects", run: () => st().goHome() },
-    ...(compact ? [] : [{ icon: <Keyboard size={15} />, label: "Keyboard shortcuts", id: "shortcuts", run: () => st().setUI({ shortcutsOpen: true }) }]),
+    { icon: <Keyboard size={15} />, label: "Keyboard shortcuts", id: "shortcuts", run: () => st().setUI({ shortcutsOpen: true }) },
     { icon: dark ? <Sun size={15} /> : <Moon size={15} />, label: dark ? "Light theme" : "Dark theme", id: "toggle-theme", run: () => st().setTheme(dark ? "light" : "dark") },
   ];
   return (
@@ -315,29 +315,19 @@ export function CompactTopBar() {
 let hintedZoom = false;
 export default function StageChrome() {
   const c = useChrome();
-  const compact = useCompact();
   // tell people once how to zoom and move a photo inside its frame: it is a double-click (double-tap), which nothing on screen shows
   const els = useSelectedElements();
   const cell = useStore((s) => s.ui.selectedCell);
   useEffect(() => {
-    if (compact || hintedZoom || els.length !== 1) return;
+    if (hintedZoom || els.length !== 1) return;
     const e = els[0];
     const photo = (e.type === "image" || e.type === "video") ? !!e.fill?.assetId : cropTargetOf(getSlide(useStore.getState().project), e.id, cell) !== null;
     if (!photo) return;
     hintedZoom = true;
     useStore.getState().toast(`${isCoarse() ? "Double-tap" : "Double-click"} the photo to zoom and move it inside its frame`, "info");
-  }, [els, cell, compact]);
+  }, [els, cell]);
   useEffect(() => { document.documentElement.dataset.theme = c.ui.theme; }, [c.ui.theme]);
-  return compact ? <CompactOverlays /> : <DesktopChrome c={c} />;
-}
-
-/** phones and portrait tablets: the bars live outside the canvas (see CompactTopBar and ContextBar); only the quick adjust bar floats over it */
-function CompactOverlays() {
-  return (
-    <div className="pointer-events-none absolute inset-0 z-20" data-testid="stage-chrome">
-      <QuickAdjust compact />
-    </div>
-  );
+  return <DesktopChrome c={c} />;
 }
 
 function DesktopChrome({ c }: { c: Chrome }) {
@@ -367,7 +357,7 @@ function DesktopChrome({ c }: { c: Chrome }) {
       <div className="absolute inset-x-5 top-5 flex flex-wrap items-start justify-between gap-x-3 gap-y-3">
         <div className="flex min-w-0 items-center gap-3">
           <Pill className="h-[52px] min-w-0 pr-4">
-            <AppMenu compact={false} dark={dark} />
+            <AppMenu dark={dark} />
             <ProjectName name={c.name} maxWidth={narrow ? 110 : 200} />
             <SaveBadge status={c.status} words={!narrow} />
           </Pill>

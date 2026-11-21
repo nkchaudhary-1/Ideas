@@ -23,7 +23,7 @@ export default function FramesPanel() {
   const sl = useStore((s) => getSlide(s.project));
   return (
     <div className="h-full overflow-y-auto" data-testid="frames-panel">
-      <div className="px-8 pb-5 text-xs leading-5 text-mute">Frames are windows for photos and videos. Drop media onto one, then double-click to move or zoom the picture inside it.</div>
+      <div className="px-8 pb-5 text-xs leading-5 text-mute max-[899px]:pb-2"><span className="max-[899px]:hidden">Frames are windows for photos and videos. Drop media onto one, then double-click to move or zoom the picture inside it.</span><span className="hidden max-[899px]:inline">Windows for your photos and videos.</span></div>
       <Section title="Choose a frame">
         <div className="grid grid-cols-3 gap-3">
           {FRAMES.map((f) => {

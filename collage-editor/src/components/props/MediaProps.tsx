@@ -20,14 +20,28 @@ const RATIOS: { label: string; r: number | null }[] = [
   { label: "9:16", r: 9 / 16 }, { label: "4:3", r: 4 / 3 }, { label: "3:2", r: 3 / 2 }, { label: "16:9", r: 16 / 9 },
 ];
 
-const thumbImgs = new Map<string, HTMLImageElement>();
+/** one shared, decoded copy of an asset's small preview picture: every filter thumbnail waits on the same promise, so none is left blank */
+const thumbImgs = new Map<string, Promise<HTMLImageElement>>();
+const thumbImage = (asset: Asset): Promise<HTMLImageElement> => {
+  let p = thumbImgs.get(asset.id);
+  if (!p) {
+    p = new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => { thumbImgs.delete(asset.id); reject(new Error("thumbnail failed to load")); };
+      img.src = asset.thumb;
+    });
+    thumbImgs.set(asset.id, p);
+  }
+  return p;
+};
 /** a small preview of `asset` with `adj` applied */
 function ThumbCanvas({ asset, adj, className }: { asset: Asset; adj: Adjustments; className?: string }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const key = JSON.stringify(adj);
   useEffect(() => {
     let dead = false;
-    const draw = (img: HTMLImageElement) => {
+    void thumbImage(asset).then((img) => {
       const cv = ref.current;
       if (!cv || dead) return;
       const w = 64, h = 80;
@@ -36,15 +50,7 @@ function ThumbCanvas({ asset, adj, className }: { asset: Asset; adj: Adjustments
       const s = Math.max(w / img.width, h / img.height);
       ctx.drawImage(img, (w - img.width * s) / 2, (h - img.height * s) / 2, img.width * s, img.height * s);
       applyAdjustments(ctx, w, h, adj, 3);
-    };
-    let img = thumbImgs.get(asset.id);
-    if (img?.complete) draw(img);
-    else {
-      img = img ?? new Image();
-      thumbImgs.set(asset.id, img);
-      img.onload = () => draw(img!);
-      if (!img.src) img.src = asset.thumb;
-    }
+    }).catch(() => { /* a preview is a nicety */ });
     return () => { dead = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [asset, key]);

@@ -30,8 +30,9 @@ export default function QuickAdjust({ compact }: { compact: boolean }) {
   const more = () => { st().setUI({ quick: null, ...(compact ? { sheet: "props", sheetSize: "half" as const } : { rightOpen: true }) }); };
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 z-20 flex justify-center px-3" style={{ bottom: compact ? 12 : 92 }}>
-      <div className="pop pointer-events-auto flex w-full max-w-[560px] flex-col gap-3 rounded-card bg-panel p-4 shadow-float ring-1 ring-line/70" data-testid="quick-adjust" role="group" aria-label="Quick edit">
+    // on a phone it is a panel in the layout, like a sheet: the canvas gets smaller and refits above it, so it never covers the picture
+    <div className={compact ? "shrink-0" : "pointer-events-none absolute inset-x-0 z-20 flex justify-center px-3"} style={compact ? undefined : { bottom: 92 }}>
+      <div className={`pop flex w-full flex-col gap-3 rounded-card bg-panel ring-1 ring-line/70 ${compact ? "p-3" : "pointer-events-auto max-w-[560px] p-4 shadow-float"}`} data-testid="quick-adjust" role="group" aria-label="Quick edit">
         <div className="flex items-center gap-2">
           <div className="flex gap-1 rounded-full bg-field p-1" role="tablist">
             {([["adjust", "Adjust"], ["filters", "Filters"]] as const).map(([id, label]) => (
