@@ -22,6 +22,8 @@ import { makeMedia } from "@/lib/factory";
 import { GRID_PRESETS } from "@/lib/grid-engine";
 import { panoramaCount } from "@/lib/formats";
 import { newFill } from "@/lib/media-math";
+import { draggedItem, endDrag, placeElements, segmentAt } from "@/lib/drop";
+import { applyTemplate } from "@/lib/workflows";
 
 const accentOf = (a: string) => `rgb(${a.split(" ").join(",")})`;
 const useFontsTick = () => {
@@ -467,6 +469,15 @@ export default function Workspace() {
     const rect = containerRef.current!.getBoundingClientRect();
     const p = toDoc(st.ui.view, e.clientX - rect.left, e.clientY - rect.top);
     const sl = getSlide(st.project);
+    // a template, element, frame or text dragged from a panel: it lands on the slide under the cursor, and a template fills only that slide
+    const item = e.dataTransfer.types.includes("application/x-item") ? draggedItem() : null;
+    if (item) {
+      endDrag();
+      const segment = segmentAt(sl, p.x);
+      if (item.kind === "template") applyTemplate(item.template, "replace", { segment: segment ?? undefined });
+      else placeElements(item, { segment, at: p });
+      return;
+    }
     const place = (assetId: string) => {
       const asset = getAsset(assetId);
       if (!asset) return;

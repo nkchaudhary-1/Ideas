@@ -9,6 +9,8 @@ import { applyTemplate } from "@/lib/workflows";
 import { Button, ChipRow } from "@/components/ui/controls";
 import { cloneSlide } from "@/lib/factory";
 import { cachedThumb, templateThumb } from "@/lib/template-thumbs";
+import { panoramaCount } from "@/lib/formats";
+import { endDrag, startDrag } from "@/lib/drop";
 
 const CATS: (TemplateCategory | "All" | "Saved")[] = ["All", "Story", "Instagram portrait", "Instagram square", "Carousel", "Photo collage", "Quote", "Fashion", "Food", "Sale", "Event", "Travel", "Typography", "Editorial", "Magazine", "Minimal", "Storytelling", "Poster", "Saved"];
 const LS = "collage-studio:templates";
@@ -94,13 +96,14 @@ export default function TemplatesPanel() {
 
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="templates-panel">
+      {panoramaCount(getSlide(project).width) >= 2 && <p className="shrink-0 px-8 pb-3 text-2xs leading-4 text-faint max-[899px]:hidden" data-testid="template-pano-hint">A template fills one slide: the one you picked, or the next empty one. Drag it onto a slide to choose.</p>}
       <ChipRow testId="template-tabs" items={CATS.map((c) => ({ id: c, label: c }))} value={cat} onChange={setCat} />
       <div className="min-h-0 flex-1 overflow-y-auto px-8 pb-6 pt-2">
         <div className="grid grid-cols-2 gap-x-4 gap-y-6">
           {list.map((t) => {
             const slides = t.build();
             return (
-              <div key={t.id} className="group" data-testid="template-card">
+              <div key={t.id} className="group" data-testid="template-card" draggable onDragStart={(e) => startDrag(e, { kind: "template", template: t })} onDragEnd={endDrag}>
                 <div className="relative overflow-hidden rounded ring-1 ring-line transition group-hover:ring-ink/25">
                   <TemplateThumb t={t} slide={slides[0]} />
                   {slides.length > 1 && <span className="absolute left-2 top-2 rounded-full bg-black/65 px-2 py-1 text-2xs font-semibold text-white">{slides.length} slides</span>}

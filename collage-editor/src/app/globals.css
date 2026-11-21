@@ -83,7 +83,7 @@ input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24p
 input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.07); }
 input[type="range"]::-moz-range-track { height: 3px; border-radius: 999px; background: linear-gradient(to right, rgb(var(--c-faint) / 0.45) var(--a, 0%), rgb(var(--accent2)) var(--a, 0%), rgb(var(--accent)) var(--b, 0%), rgb(var(--c-faint) / 0.45) var(--b, 0%)); }
 input[type="range"]::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #fff; border: 0; box-shadow: 0 2px 8px rgb(0 0 0 / 0.28); }
-/* capsule slider: a transparent native range on top of a black fill. The knob is a 44px black circle with a thin white bar,
+/* capsule slider: a transparent native range on top of a gradient fill. The knob is a 44px black circle with a thin white bar,
    so it also rounds off the end of the fill. Its centre travels from 22px to (width - 22px); the fill is sized to match. */
 input[type="range"].rs-cap {
   position: absolute; inset: 0; width: 100%; height: 100%;
@@ -98,6 +98,8 @@ input[type="range"].rs-cap::-moz-range-track { height: 100%; background: transpa
 input[type="range"].rs-cap::-moz-range-thumb { width: 44px; height: 44px; border: 0; border-radius: 50%; box-shadow: none; background: var(--knob); }
 input[type="range"].rs-cap:active::-webkit-slider-thumb { transform: scale(1.06); }
 .cap:focus-within { box-shadow: 0 0 0 2px rgb(var(--accent) / 0.45); }
+/* the filled part of a capsule slider: the ink colour, warming to the accent where the knob is (from the neutral point outward) */
+.cap-fill { background-image: linear-gradient(var(--dir, 90deg), rgb(var(--c-pill)) 8%, rgb(var(--accent))); }
 /* colour sliders (temperature, tint, hue, saturation): a thick gradient pill with a ring knob */
 input[type="range"].rs-color::-webkit-slider-runnable-track { height: 28px; border-radius: 999px; background: var(--track); }
 input[type="range"].rs-color::-webkit-slider-thumb { width: 26px; height: 26px; margin-top: 1px; background: transparent; border: 3px solid #fff; box-shadow: 0 0 0 1px rgb(0 0 0 / 0.16), 0 2px 6px rgb(0 0 0 / 0.25), inset 0 0 0 1px rgb(0 0 0 / 0.12); }

@@ -1,6 +1,6 @@
 "use client";
-import { useStore, getSlide } from "@/lib/store";
-import { ELEMENT_PRESETS, inkFor, type ElementPreset } from "@/lib/presets";
+import { placeElements, startDrag, endDrag, type ElementsItem } from "@/lib/drop";
+import { ELEMENT_PRESETS, type ElementPreset } from "@/lib/presets";
 import type { Element, ShapeEl } from "@/lib/types";
 import { useState } from "react";
 import { Search } from "lucide-react";
@@ -34,20 +34,21 @@ type Cat = "all" | ElementPreset["group"];
 // shapes and graphics are the same kind of thing to the person using them, so they share one grid; the tabs just narrow it down
 const TABS: { id: Cat; label: string }[] = [{ id: "all", label: "All" }, { id: "Basic", label: "Shapes" }, { id: "Decor", label: "Graphics" }, { id: "Labels", label: "Labels" }, { id: "Icons", label: "Icons" }, { id: "UI", label: "Interface" }];
 
-export default function ElementsPanel() {
-  const st = useStore.getState;
-  const sl = useStore((s) => getSlide(s.project));
-  const [cat, setCat] = useState<Cat>("all");
-  const [q, setQ] = useState("");
-  const add = (p: ElementPreset) => {
-    const ink = inkFor(sl);
-    const el = p.build(sl.width, sl.height, ink);
-    const cx = (sl.width - el.width) / 2, cy = (sl.height - el.height) / 2;
-    if (p.group === "Basic" || p.group === "Icons" || (p.group === "Decor" && p.id !== "divider" && p.id !== "divider2" && p.id !== "photo-border")) { el.x = cx; el.y = cy; }
+/** one element, built for the area it lands in: centred for shapes and icons, and in the ink that reads on the slide */
+const item = (p: ElementPreset): ElementsItem => ({
+  kind: "elements",
+  build: (w, h, ink) => {
+    const el = p.build(w, h, ink);
+    if (p.group === "Basic" || p.group === "Icons" || (p.group === "Decor" && p.id !== "divider" && p.id !== "divider2" && p.id !== "photo-border")) { el.x = (w - el.width) / 2; el.y = (h - el.height) / 2; }
     if (el.type === "shape" && el.fill?.type === "solid" && el.fill.color === "#ffffff" && ink !== "#ffffff" && p.group !== "UI") el.fill = { type: "solid", color: ink };
     if (el.type === "shape" && el.stroke?.color === "#ffffff" && ink !== "#ffffff" && p.group !== "UI") el.stroke = { ...el.stroke, color: ink };
-    st().addElement(el);
-  };
+    return [el];
+  },
+});
+
+export default function ElementsPanel() {
+  const [cat, setCat] = useState<Cat>("all");
+  const [q, setQ] = useState("");
   const needle = q.trim().toLowerCase();
   const list = ELEMENT_PRESETS.filter((p) => (cat === "all" || p.group === cat) && (!needle || p.name.toLowerCase().includes(needle)));
   return (
@@ -63,7 +64,7 @@ export default function ElementsPanel() {
         ) : (
           <div className="grid grid-cols-4 gap-x-2 gap-y-4" role="tabpanel">
             {list.map((p) => (
-              <button key={p.id} type="button" title={p.name} data-testid={`el-${p.id}`} onClick={() => add(p)} className="group flex h-20 flex-col items-center justify-center gap-2 rounded p-1 hover:bg-ink/5">
+              <button key={p.id} type="button" title={p.name} data-testid={`el-${p.id}`} draggable onDragStart={(e) => startDrag(e, item(p))} onDragEnd={endDrag} onClick={() => placeElements(item(p))} className="group flex h-20 flex-col items-center justify-center gap-2 rounded p-1 hover:bg-ink/5">
                 <span className="grid h-11 w-11 place-items-center rounded bg-panel2 text-ink"><Preview el={p.build(1080, 1350, "#ffffff")} /></span>
                 <span className="w-full truncate text-center text-2xs text-mute group-hover:text-ink">{p.name}</span>
               </button>

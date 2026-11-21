@@ -1,5 +1,5 @@
 "use client";
-import { Columns2, Eraser, Rows2, Trash2, Unlink2, LayoutGrid } from "lucide-react";
+import { Columns2, Eraser, Lock, LockOpen, Rows2, Trash2, Unlink2, LayoutGrid } from "lucide-react";
 import type { GridEl } from "@/lib/types";
 import { useStore, getSlide } from "@/lib/store";
 import { SavePreset } from "@/components/ui/SavePreset";
@@ -13,6 +13,7 @@ import { StrokeField, ShadowField } from "./StyleControls";
 export default function GridProps({ el }: { el: GridEl }) {
   const st = useStore.getState;
   const selectedCell = useStore((s) => s.ui.selectedCell);
+  const unlocked = useStore((s) => s.ui.gridUnlocked === el.id);
   const set = (fn: (g: GridEl) => void, key?: string) => st().gridOp(el.id, (g) => fn(g as GridEl), { key });
   const cellId = selectedCell?.gridId === el.id ? selectedCell.cellId : null;
   const cell = cellId ? findCell(el.tree, cellId) : null;
@@ -41,9 +42,23 @@ export default function GridProps({ el }: { el: GridEl }) {
         </div>
         <SavePreset label="Save layout" testId="save-layout" placeholder="Layout name" defaultName={() => defaultName(useStore.getState().presets, "layout")}
           onSave={(name) => { st().addPreset({ kind: "layout", name, data: captureLayout(el, getSlide(st().project)) }); st().toast(`Saved layout “${name}”`, "ok"); }} />
-        <Slider label="Outer margin" value={Math.round(el.margin)} min={0} max={200} unit="px" onChange={(v) => set((g) => { g.margin = v; }, "margin")} testId="grid-margin" />
-        <Slider label="Gutter" value={Math.round(el.gutter)} min={0} max={120} unit="px" onChange={(v) => set((g) => { g.gutter = v; }, "gutter")} testId="grid-gutter" />
-        <Slider label="Corner" value={Math.round(el.radius)} min={0} max={200} unit="px" onChange={(v) => set((g) => { g.radius = v; }, "gradius")} testId="grid-radius" />
+        {/* a layout's border (outer margin and gutter) and corners come with it and stay as designed until you unlock them */}
+        <div className="flex items-center justify-between gap-3" data-testid="grid-lock-row">
+          <div className="min-w-0">
+            <div className="whitespace-nowrap text-xs font-medium text-ink">Border & corners</div>
+            <div className="truncate text-2xs text-faint" title={`${Math.round(el.margin)}px margin · ${Math.round(el.gutter)}px gutter · ${Math.round(el.radius)}px corner`}>{unlocked ? "Unlocked" : "Locked to the layout"}</div>
+          </div>
+          <Button onClick={() => st().setUI({ gridUnlocked: unlocked ? null : el.id })} testId="grid-lock" className="shrink-0 whitespace-nowrap" title={unlocked ? "Lock the border and corners" : "Unlock the border and corners to edit them"}>
+            {unlocked ? <><Lock size={12} /> Lock</> : <><LockOpen size={12} /> Unlock</>}
+          </Button>
+        </div>
+        {unlocked && (
+          <>
+            <Slider label="Outer margin" value={Math.round(el.margin)} min={0} max={200} unit="px" onChange={(v) => set((g) => { g.margin = v; }, "margin")} testId="grid-margin" />
+            <Slider label="Gutter" value={Math.round(el.gutter)} min={0} max={120} unit="px" onChange={(v) => set((g) => { g.gutter = v; }, "gutter")} testId="grid-gutter" />
+            <Slider label="Corner" value={Math.round(el.radius)} min={0} max={200} unit="px" onChange={(v) => set((g) => { g.radius = v; }, "gradius")} testId="grid-radius" />
+          </>
+        )}
         <Field label="Cell colour"><ColorField value={el.cellBg} onChange={(c) => set((g) => { g.cellBg = c; }, "cellbg")} /></Field>
         <StrokeField label="Cell border" stroke={el.cellStroke} onChange={(s) => set((g) => { g.cellStroke = s; })} />
         <ShadowField shadow={el.shadow} onChange={(s) => st().updateElement(el.id, { shadow: s })} />
@@ -64,7 +79,7 @@ export default function GridProps({ el }: { el: GridEl }) {
               <ColorField value={cell.bg ?? el.cellBg} onChange={(c) => set((g) => { g.tree = updateCell(g.tree, cellId, { bg: c }) as GridEl["tree"]; }, "cellbg-" + cellId)} />
               {cell.bg && <TextButton onClick={() => set((g) => { g.tree = updateCell(g.tree, cellId, { bg: null }) as GridEl["tree"]; })}>Reset</TextButton>}
             </Field>
-            <Slider label="Cell corner" value={Math.round(cell.radius ?? el.radius)} min={0} max={200} unit="px" neutral={el.radius} onChange={(v) => set((g) => { g.tree = updateCell(g.tree, cellId, { radius: v }) as GridEl["tree"]; }, "cr-" + cellId)} onReset={() => set((g) => { g.tree = updateCell(g.tree, cellId, { radius: null }) as GridEl["tree"]; })} />
+            {unlocked && <Slider label="Cell corner" value={Math.round(cell.radius ?? el.radius)} min={0} max={200} unit="px" neutral={el.radius} onChange={(v) => set((g) => { g.tree = updateCell(g.tree, cellId, { radius: v }) as GridEl["tree"]; }, "cr-" + cellId)} onReset={() => set((g) => { g.tree = updateCell(g.tree, cellId, { radius: null }) as GridEl["tree"]; })} />}
             {!cell.fill && <p className="text-xs text-mute">Empty cell. Drag a photo or video here, or pick one from the Media panel.</p>}
           </>
         )}

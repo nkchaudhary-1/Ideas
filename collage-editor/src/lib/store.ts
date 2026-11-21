@@ -33,6 +33,8 @@ export interface UIState {
   cropId: Id | null;
   editingTextId: Id | null;
   selectedCell: { gridId: Id; cellId: Id } | null;
+  /** the layout whose border and corners are unlocked for editing; every layout starts locked */
+  gridUnlocked: Id | null;
   /** what clicking a layout does when a grid is selected: auto picks Add (a free panorama slide exists) or Replace */
   layoutMode: "auto" | "add" | "replace";
   /** panorama: the slide (0-based) the next added layout should go to; null = the next empty one */
@@ -303,6 +305,7 @@ export const useStore = create<Store>()((set, get) => {
       cropId: null,
       editingTextId: null,
       selectedCell: null,
+      gridUnlocked: null,
       layoutMode: "auto",
       pinSegment: null,
       mediaPicker: null,
@@ -618,7 +621,7 @@ export const useStore = create<Store>()((set, get) => {
           g.name = pr.name; g.margin = d.margin * k; g.gutter = d.gutter * k; g.radius = d.radius * k;
           g.cellBg = d.cellBg; g.cellStroke = d.cellStroke ? { ...d.cellStroke } : null;
         });
-        set((s) => ({ ui: { ...s.ui, selectedCell: null } }));
+        set((s) => ({ ui: { ...s.ui, selectedCell: null, gridUnlocked: null } }));
         get().toast(`Applied “${pr.name}”`, "ok");
         return;
       }
@@ -899,7 +902,7 @@ export const useStore = create<Store>()((set, get) => {
           if (preset.margin !== undefined) g.margin = preset.margin;
           if (preset.radius !== undefined) g.radius = preset.radius;
         });
-        set((s) => ({ ui: { ...s.ui, selectedCell: null } }));
+        set((s) => ({ ui: { ...s.ui, selectedCell: null, gridUnlocked: null } }));
         return;
       }
       const t = layoutTarget(sl, get().ui.pinSegment, opts?.segment);

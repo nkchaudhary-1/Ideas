@@ -142,7 +142,7 @@ const TRACKS: Record<SliderTrack, string> = {
 };
 
 /**
- * The capsule slider: label and value above, then a light track whose fill is a black capsule. The knob is a thin white bar
+ * The capsule slider: label and value above, then a light track whose fill is a gradient capsule. The knob is a thin white bar
  * at the end of that capsule (so it is also its round end). The value can be typed; double-click the track to reset.
  * Sliders that edit a colour (`track`) keep a thick gradient pill and a ring knob.
  */
@@ -183,13 +183,18 @@ export function Slider({ label, value, min, max, step = 1, onChange, onReset, ne
 
   // the knob is a 44px circle, so its centre travels from 22px to (width - 22px)
   const X = (pc: number) => `(22px + (100% - 44px) * ${(pc / 100).toFixed(4)})`;
+  // the fill runs to the knob's centre, where the knob's circle meets the track edge, so no corner of it shows beside the knob;
+  // the track and the knob are the same 44px tall on every pointer, which is what keeps that true
+  const run = `(100% - 44px) * ${(Math.abs(pct - nPct) / 100).toFixed(4)}`;
   const fill: React.CSSProperties = !bipolar
     ? { left: 0, width: `calc${X(pct)}` }
-    : { left: `calc${X(Math.min(pct, nPct))}`, width: `calc((100% - 44px) * ${(Math.abs(pct - nPct) / 100).toFixed(4)})` };
+    : pct >= nPct
+      ? { left: `calc${X(nPct)}`, width: `calc(${run})` }
+      : { left: `calc${X(pct)}`, width: `calc(${run})`, ["--dir" as string]: "270deg" };
   const capsule = (
-    <div className="cap relative h-11 min-w-0 flex-1 overflow-hidden rounded-full bg-field coarse:h-12">
+    <div className="cap relative h-11 min-w-0 flex-1 overflow-hidden rounded-full bg-field">
       {bipolar && <span className="absolute top-1/2 h-3 w-0.5 -translate-y-1/2 rounded-full bg-faint/60" style={{ left: `calc${X(nPct)}`, marginLeft: -1 }} />}
-      <span className="absolute inset-y-0 bg-pill" style={fill} />
+      <span className="cap-fill absolute inset-y-0" style={fill} />
       <input type="range" className="rs-cap" min={min} max={max} step={step} value={value} title={onReset ? "Double-click to reset" : undefined}
         onChange={(e) => onChange(parseFloat(e.target.value))} onDoubleClick={onReset}
         onKeyDown={(e) => { if (onReset && (e.key === "Backspace" || e.key === "Delete")) { e.preventDefault(); onReset(); } }} aria-label={label || undefined} />

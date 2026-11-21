@@ -77,7 +77,7 @@ const box = async (page, sel) => { const l = page.locator(sel).first(); return (
   await drag([ob.x + ob.width - 22, y], [ob.x + 22 + (ob.width - 44) * 0.3, y], 10); await settle(page, 400);
   const o1 = await page.evaluate(() => { const s = window.__store.getState(); const sl = s.project.slides.find((x) => x.id === s.project.activeSlideId); return sl.elements[0].opacity; });
   ok(o1 > 0.2 && o1 < 0.4, 'dragging the knob sets the value (about 30%)', { opacity: o1 });
-  const fillW = await page.evaluate(() => { const c = document.querySelector('input[type=range][aria-label=Opacity]').parentElement; const f = c.querySelector('span.bg-pill'); return f ? f.getBoundingClientRect().width / c.getBoundingClientRect().width : -1; });
+  const fillW = await page.evaluate(() => { const c = document.querySelector('input[type=range][aria-label=Opacity]').parentElement; const f = c.querySelector('span.cap-fill'); return f ? f.getBoundingClientRect().width / c.getBoundingClientRect().width : -1; });
   ok(fillW > 0.2 && fillW < 0.45, 'the black fill follows the knob', { fill: fillW });
 
   // ── the media picker fits the screen and closes on a tap outside

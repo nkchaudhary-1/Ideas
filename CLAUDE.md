@@ -37,10 +37,16 @@ Check with `node tests/audit/run.js` at `--w=1600` and `--w=2200`; it must repor
   Truncated text gets a `title` with the full text.
 - One pattern per kind of row: stacked slider (label + value above a capsule), inline row (80px label + control), toggle
   row (switch, then label), button row. Don't mix them in one card for the same kind of control.
-- **Sliders are capsules.** A light track whose fill is a black capsule; the knob is a thin white bar on a 44px black
-  circle that also rounds off the end of the fill (white bar on a light circle in dark mode). A slider with a neutral point
+- **Sliders are capsules.** A light track whose fill is a gradient (ink warming to the orange accent at the knob); the knob is a thin
+  white bar on a 44px black circle that also rounds off the end of the fill (white bar on a light circle in dark mode). The track is
+  44px tall on every pointer, the same as the knob, and the fill stops at the knob's centre, so no corner of it shows beside the knob. A slider with a neutral point
   inside its range fills outward from that point. The value sits beside the label and can be typed; double-click the track,
   or press Delete, to reset. Colour sliders (`track`) keep the thick gradient pill with a ring knob.
+- **A layout's border and corners are locked.** The outer margin, gutter and corner radius come with the layout and stay as designed; an
+  "Unlock" button in the layout's properties reveals the sliders, and "Lock" (or choosing another layout) puts them back.
+- **Drag or click, same result.** Templates, elements, frames and text can be dragged onto the canvas or clicked. On a panorama both land on one
+  slide: the one under the drop point, or for a click the one you picked (numbered badge), else the next empty one. A template fills that
+  slide only, never the whole strip.
 
 ## 3. Copy
 

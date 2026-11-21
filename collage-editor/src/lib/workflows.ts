@@ -1,6 +1,7 @@
-import type { Asset, Slide } from "./types";
-import { useStore, getSlide } from "./store";
-import { makeGrid, makeMedia, makeSlide } from "./factory";
+import type { Asset, Element, Slide } from "./types";
+import { useStore, getSlide, firstEmptySegment } from "./store";
+import { makeGrid, makeMedia, makeShape, makeSlide } from "./factory";
+import { SEGMENT, panoramaCount } from "./formats";
 import { GRID_PRESETS, mapCells, presetCellCount, treeFromPreset, cellsOf } from "./grid-engine";
 import { newFill } from "./media-math";
 import { fitSlide, type Template } from "./templates";
@@ -61,11 +62,55 @@ export function createCollageFromAssets(assets: Asset[]) {
   st().toast(`${preset.name} · ${Math.min(n, cellsOf(g.tree).length)} of ${n} added`, "ok");
 }
 
-/** put a template on the canvas (single slide) or add it as new slides (carousel templates) */
-export function applyTemplate(t: Template, mode: "replace" | "append" = "replace") {
+/**
+ * On a panorama a template fills one slide of it (a slide is 1080 px wide) instead of being stretched across the whole strip: the slide
+ * you picked (or the one under a drop), otherwise the first empty one. Only what sits wholly inside that slide is replaced, and a template
+ * with several slides fills the following slides in order unless you picked one, which gets just the first.
+ */
+function applyTemplateToSlides(slides: Slide[], segment?: number) {
+  const s = st();
+  const cur = getSlide(s.project);
+  const n = panoramaCount(cur.width);
+  const picked = segment ?? s.ui.pinSegment ?? undefined;
+  const start = Math.max(0, Math.min(n - 1, picked ?? firstEmptySegment(cur) ?? 0));
+  const used = picked !== undefined ? slides.slice(0, 1) : slides;
+  const sameBg = (a: Slide["background"], b: Slide["background"]) => JSON.stringify(a) === JSON.stringify(b);
+  const placed: { from: number; to: number; els: Element[] }[] = [];
+  let at = start;
+  for (const sl of used) {
+    const m = Math.min(n, Math.max(1, panoramaCount(sl.width)));
+    if (at + m > n) at = Math.max(0, n - m);
+    if (placed.length && at < placed[placed.length - 1].to) break; // out of room
+    const fitted = fitSlide(sl, m * SEGMENT, cur.height);
+    const els = fitted.elements;
+    // the slide's own background becomes a block behind its content, since a panorama has one background for all of its slides
+    const bg = fitted.background;
+    if (!sameBg(bg, cur.background) && (bg.type === "solid" || bg.type === "gradient")) {
+      els.unshift(makeShape("rect", m * SEGMENT, cur.height, { fill: bg.type === "solid" ? { type: "solid", color: bg.color } : { type: "gradient", angle: bg.angle, stops: bg.stops }, name: "Slide background" }, 0, 0));
+    }
+    els.forEach((e) => { e.x += at * SEGMENT; });
+    placed.push({ from: at, to: at + m, els });
+    at += m;
+  }
+  const lo = placed[0].from * SEGMENT, hi = placed[placed.length - 1].to * SEGMENT;
+  st().commit((p) => {
+    const target = p.slides.find((x) => x.id === p.activeSlideId)!;
+    target.elements = target.elements.filter((e) => !(e.x >= lo - 2 && e.x + e.width <= hi + 2)) as typeof target.elements;
+    placed.forEach((pl) => target.elements.push(...(pl.els as typeof target.elements)));
+  });
+  st().clearSelection();
+  st().setUI({ pinSegment: null });
+  const first = placed[0].from + 1, last = placed[placed.length - 1].to;
+  st().toast(first === last ? `Applied to slide ${first}` : `Applied to slides ${first} to ${last}`, "ok");
+  void preloadFonts(used.flatMap((sl) => flatten(sl.elements)).filter((e) => e.type === "text").map((e) => ({ family: (e as { fontFamily: string }).fontFamily, weight: (e as { fontWeight: number }).fontWeight })));
+}
+
+/** put a template on the canvas (single slide), on one slide of a panorama, or add it as new slides (carousel templates) */
+export function applyTemplate(t: Template, mode: "replace" | "append" = "replace", opts?: { segment?: number }) {
   const s = st();
   const slides = t.build();
   const cur = getSlide(s.project);
+  if (mode === "replace" && panoramaCount(cur.width) >= 2) { applyTemplateToSlides(slides, opts?.segment); return; }
   const ratioDiffers = Math.abs(t.size.w / t.size.h - cur.width / cur.height) > 0.02;
   const lone = s.project.slides.length === 1 && isEmptySlide(cur);
 

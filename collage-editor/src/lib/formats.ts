@@ -68,6 +68,9 @@ export function panoramaFormat(slides: number, segH = 1350): Format {
   return { id: `pano-${n}`, label: `Panorama · ${n} slides`, ratio: ratioLabel(w, segH), width: w, height: segH };
 }
 
+/** the width of one slide in a panorama: slides sit side by side, 1080 px each */
+export const SEGMENT = 1080;
+
 /** how many 1080-wide slides a canvas is made of (1 = not a panorama) */
 export const panoramaCount = (width: number) => (width >= 2160 && Math.abs(width / 1080 - Math.round(width / 1080)) < 0.001 ? Math.round(width / 1080) : 1);
 
