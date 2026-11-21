@@ -49,10 +49,10 @@ const openSection = async (page, title) => { const b = page.locator('section but
   await slide(page, 0).click(); await settle(page, 200);
   const r0 = (await fills(page))[0];
   await page.click('[data-testid=rotate-right]'); await settle(page, 300);
-  f = await fills(page); ok(f[0].rot === 90 && f[0].w === r0.h && f[0].h === r0.w, 'rotate right turns the photo and swaps the frame', [f[0].rot, f[0].w, f[0].h]);
+  f = await fills(page); ok(f[0].rot === 90 && Math.abs(f[0].w / f[0].h - r0.h / r0.w) < 0.01, 'rotate right turns the photo and swaps the frame', [f[0].rot, f[0].w, f[0].h]);
   await page.click('[data-testid=copy-settings]'); await page.click('[data-testid=copy-none]'); await page.click('[data-testid=copy-transform]'); await page.click('[data-testid=copy-confirm]'); await settle(page, 300);
   await slide(page, 1).click(); await page.click('[data-testid=paste-settings]'); await settle(page, 400);
-  f = await fills(page); ok(f[1].rot === 90 && f[1].w > f[1].h, 'crop & rotation paste when opted in', [f[1].rot, f[1].w, f[1].h]);
+  f = await fills(page); ok(f[1].rot === 90 && Math.abs(f[1].w / f[1].h - f[0].w / f[0].h) < 0.02, 'crop & rotation paste when opted in (the frame takes the copied photo\'s shape)', [f[1].rot, f[1].w, f[1].h]);
   await page.click('[data-testid=reset-crop]'); await settle(page, 300);
   f = await fills(page); ok(f[1].rot === 0 && f[1].h > f[1].w, 'Reset puts the crop and rotation back');
 

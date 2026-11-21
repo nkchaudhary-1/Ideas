@@ -53,8 +53,8 @@ export default function EditStrip({ slim = false }: { slim?: boolean }) {
   };
 
   return (
-    <div className={`card relative flex shrink-0 flex-col ${slim ? "h-[84px]" : phone ? "h-[148px]" : "h-[184px]"}`} data-testid="slide-strip" data-edit-strip>
-      {!slim && <div className={`no-scrollbar flex shrink-0 items-center gap-2 overflow-x-auto pt-4 ${phone ? "px-4" : "px-8"}`} data-testid="select-bar">
+    <div className={`relative flex shrink-0 flex-col ${phone ? (slim ? "h-[72px]" : "h-[124px]") : `card ${slim ? "h-[84px]" : "h-[184px]"}`}`} data-testid="slide-strip" data-edit-strip>
+      {!slim && <div className={`no-scrollbar flex shrink-0 items-center gap-2 overflow-x-auto ${phone ? "px-1" : "px-8 pt-4"}`} data-testid="select-bar">
         <span className="mr-1 shrink-0 whitespace-nowrap text-xs font-bold text-ink" data-testid="selection-count">{chosen.size > 1 ? `${chosen.size} selected` : `${items.length} item${items.length === 1 ? "" : "s"}`}</span>
         <Chip sm data-testid="select-all" onClick={() => selectWhere("all")}>All</Chip>
         <Chip sm data-testid="select-photos" disabled={!photos} onClick={() => selectWhere("image")}>Photos{photos ? ` · ${photos}` : ""}</Chip>
@@ -62,7 +62,7 @@ export default function EditStrip({ slim = false }: { slim?: boolean }) {
         <Chip sm data-testid="select-none" disabled={chosen.size < 2} onClick={() => selectWhere("none")}>None</Chip>
         <span className="ml-auto hidden min-w-0 truncate text-2xs text-faint lg:block" title={`Shift-click for a range, ${keys("⌘")}-click to add`}>Shift-click for a range, {keys("⌘")}-click to add</span>
       </div>}
-      <div className={`flex min-h-0 flex-1 items-center gap-4 overflow-x-auto ${slim ? "px-4" : phone ? "px-4 pb-4" : "px-8 pb-5"}`}>
+      <div className={`flex min-h-0 flex-1 items-center gap-4 overflow-x-auto ${phone ? "px-1 pt-2" : slim ? "px-4" : "px-8 pb-5"}`}>
         {slides.map((s, i) => {
           if (isEmptyEdit(s)) return null;
           const w = Math.max(phone ? 24 : 40, Math.min(150, Math.round(TH * (s.width / s.height))));

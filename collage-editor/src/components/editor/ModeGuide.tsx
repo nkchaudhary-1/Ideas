@@ -93,7 +93,7 @@ const read = (k: string) => { try { return JSON.parse(localStorage.getItem(k) ||
 const write = (k: string, v: unknown) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode */ } };
 
 /** under the top bar: which kind of project this is, which step you are on, and a list of all the steps */
-export function GuideChip({ compact, lowered }: { compact: boolean; /** the top bar has wrapped onto a second row: sit below it */ lowered?: boolean }) {
+export function GuideChip({ compact, lowered, bare }: { compact: boolean; /** the top bar has wrapped onto a second row: sit below it */ lowered?: boolean; /** a line of text for the phone top bar instead of a floating pill */ bare?: boolean }) {
   const { mode, steps, next } = useGuide();
   const info = MODES[mode];
   const [min, setMin] = useState(false);
@@ -102,9 +102,20 @@ export function GuideChip({ compact, lowered }: { compact: boolean; /** the top 
   const here = doneAll ? "Ready to export" : `Step ${next + 1} of ${steps.length} · ${steps[next].label}`;
   const short = doneAll ? "Ready" : `${next + 1}/${steps.length}`;
 
-  return (
-    <div className="pointer-events-none absolute inset-x-0 z-20 flex justify-center px-3" style={{ top: lowered ? 148 : 84 }}>
-      <Popover placement="bottom" align="center" width={360} trigger={(open, toggle) => {
+  const popover = (
+      <Popover placement="bottom" align={bare ? "left" : "center"} width={bare ? 320 : 360} trigger={(open, toggle) => {
+        if (bare) {
+          return (
+            <button type="button" onClick={toggle} aria-expanded={open} data-testid="guide-chip" title="What to do next"
+              className="flex h-7 min-w-0 max-w-full items-center gap-1 whitespace-nowrap rounded-full text-2xs font-semibold text-mute">
+              <info.Icon size={12} className="shrink-0" />
+              <span className="shrink-0 text-ink">{info.label}</span>
+              <span className="text-faint">·</span>
+              <span className="min-w-0 truncate">{short}</span>
+              {!doneAll && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />}
+            </button>
+          );
+        }
         return min && !open ? (
           <button type="button" onClick={toggle} aria-label={`${info.label}: what to do next`} title="What to do next" data-testid="guide-chip"
             className="pointer-events-auto grid h-9 w-9 place-items-center rounded-full bg-panel text-mute shadow-float hover:text-ink coarse:h-11 coarse:w-11"><CircleHelp size={16} /></button>
@@ -151,6 +162,8 @@ export function GuideChip({ compact, lowered }: { compact: boolean; /** the top 
           </div>
         )}
       </Popover>
-    </div>
+  );
+  return bare ? popover : (
+    <div className="pointer-events-none absolute inset-x-0 z-20 flex justify-center px-3" style={{ top: lowered ? 148 : 84 }}>{popover}</div>
   );
 }

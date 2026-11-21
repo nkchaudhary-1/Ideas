@@ -2,16 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, FlipHorizontal2, Minus, Move, Palette, Plus, RefreshCw, RotateCcw, RotateCw, SlidersHorizontal, Sun, ZoomIn, type LucideIcon } from "lucide-react";
 import { useStore } from "@/lib/store";
-import { useEditTarget, useFillTarget, type FillTarget } from "@/components/props/fill-target";
+import { flipPhoto, replacePhoto, resetFraming, toggleCrop, turnPhoto, usePhotoTarget } from "./photo-actions";
 import { clamp } from "@/lib/util";
-
-/** show a section of the properties card or sheet (opening it first if it is shut) */
-function reveal(title: string) {
-  requestAnimationFrame(() => requestAnimationFrame(() => {
-    const sec = [...document.querySelectorAll("[data-testid=properties] section, [data-testid=sheet-props] section")].find((s) => s.textContent?.trimStart().startsWith(title));
-    sec?.scrollIntoView({ block: "start", behavior: "smooth" });
-  }));
-}
 
 const C = 110, R = 106, r = 50; // the wheel is drawn in a 220 × 220 box
 const polar = (rad: number, deg: number): [number, number] => [+(C + rad * Math.sin((deg * Math.PI) / 180)).toFixed(2), +(C - rad * Math.cos((deg * Math.PI) / 180)).toFixed(2)];
@@ -31,18 +23,16 @@ const HINTS: Record<string, string> = { zoom: "Use + and −", move: "Drag the p
  * The photo's own controls as a wheel, always in reach while a photo is selected (or, in Edit mode, open): zoom it, move and crop it inside its
  * frame, turn, flip or reset it, replace it, and jump to its filters and light. The name of the tool under your finger sits in the middle.
  */
-export default function PhotoWheel({ compact }: { compact: boolean }) {
+export default function PhotoWheel() {
   const st = useStore.getState;
   const edit = useStore((s) => s.project.kind === "edit");
-  const ft = useFillTarget();
-  const et = useEditTarget();
+  const target = usePhotoTarget();
   const cropId = useStore((s) => s.ui.cropId);
-  const sheet = useStore((s) => s.ui.sheet);
   const quickOpen = useStore((s) => s.ui.quick);
   const stage = useStore((s) => s.ui.canvasSize);
   // on a narrow stage the open wheel would sit on top of the photo, so it starts folded there (unless you chose otherwise)
   const [choice, setChoice] = useState<boolean | null>(remembered);
-  const open = choice ?? (!compact && stage.w >= 720);
+  const open = choice ?? stage.w >= 720;
   const [pos, setPosState] = useState(wheelPos);
   const [dragging, setDragging] = useState(false);
   const [active, setActive] = useState<string | null>(null);
@@ -50,37 +40,36 @@ export default function PhotoWheel({ compact }: { compact: boolean }) {
   const flash = useRef<ReturnType<typeof setTimeout>>();
   const drag = useRef<{ sx: number; sy: number; ox: number; oy: number; moved: boolean } | null>(null);
   const setOpen = (v: boolean) => { remembered = v; setChoice(v); };
-  const target: FillTarget | null = edit ? et : ft;
   const key = target?.elKey;
   useEffect(() => { setActive(null); }, [key]);
   useEffect(() => () => clearTimeout(flash.current), []);
-  if (!target || (compact && sheet) || quickOpen) return null;
+  if (!target || quickOpen) return null;
   const f = target.fill;
   const cropping = cropId === target.elementId;
   const zoomBy = (d: number) => target.update((x) => { x.zoom = clamp(Math.round((x.zoom + d) * 100) / 100, 1, 8); }, "zoom");
-  const openCard = () => { if (compact) st().setUI({ sheet: "props", sheetSize: "half" }); else st().setUI({ rightOpen: true }); };
+  const openCard = () => st().setUI({ rightOpen: true });
   const tell = (id: string) => { setActive(id); clearTimeout(flash.current); };
   const quick = (id: string) => { setHover(id); clearTimeout(flash.current); flash.current = setTimeout(() => setHover(null), 1200); };
 
   const tools: Tool[] = [
     { id: "zoom", label: "Zoom", Icon: ZoomIn, on: active === "zoom", run: () => tell(active === "zoom" ? "" : "zoom") },
-    { id: "move", label: cropping ? "Done" : "Move & crop", Icon: cropping ? Check : Move, on: cropping, run: () => { st().setUI({ cropId: cropping ? null : target.elementId }); tell("move"); } },
-    { id: "turn", label: "Turn", Icon: RotateCw, run: () => { target.update((x) => { x.rotation90 = ((x.rotation90 + 90) % 360) as 0 | 90 | 180 | 270; }); quick("turn"); } },
-    { id: "flip", label: "Flip", Icon: FlipHorizontal2, run: () => { target.update((x) => { x.flipX = !x.flipX; }); quick("flip"); } },
-    ...(edit ? [] : [{ id: "replace", label: "Replace", Icon: RefreshCw, run: (p: { x: number; y: number }) => st().setUI({ mediaPicker: { x: p.x, y: p.y, ...(target.kind === "cell" ? { gridId: target.elementId, cellId: target.cellId } : { elementId: target.elementId }) } }) } as Tool]),
+    { id: "move", label: cropping ? "Done" : "Move & crop", Icon: cropping ? Check : Move, on: cropping, run: () => { toggleCrop(target); tell("move"); } },
+    { id: "turn", label: "Turn", Icon: RotateCw, run: () => { turnPhoto(target); quick("turn"); } },
+    { id: "flip", label: "Flip", Icon: FlipHorizontal2, run: () => { flipPhoto(target); quick("flip"); } },
+    ...(edit ? [] : [{ id: "replace", label: "Replace", Icon: RefreshCw, run: (p: { x: number; y: number }) => replacePhoto(target, p) } as Tool]),
     { id: "filters", label: "Filters", Icon: Palette, run: () => st().setUI({ quick: "filters" }) },
     { id: "light", label: "Light & colour", Icon: Sun, run: () => st().setUI({ quick: "adjust" }) },
-    { id: "reset", label: "Reset", Icon: RotateCcw, run: () => { target.update((x) => { x.zoom = 1; x.fx = 0.5; x.fy = 0.5; x.flipX = false; x.flipY = false; x.rotation90 = 0; }); st().setUI({ cropId: null }); quick("reset"); } },
+    { id: "reset", label: "Reset", Icon: RotateCcw, run: () => { resetFraming(target); quick("reset"); } },
   ];
   const n = tools.length, step = 360 / n;
   const shown = hover ?? (active || null) ?? (cropping ? "move" : null);
   const label = tools.find((t) => t.id === shown)?.label ?? "Photo";
-  const size = compact ? 184 : 220;
+  const size = 220;
 
   // anchored at the bottom centre of the stage until you move it; kept inside the stage wherever you drop it
   const dim = open ? size : 56;
   const fit = (p: { x: number; y: number }) => ({ x: clamp(p.x, 8, Math.max(8, stage.w - dim - 8)), y: clamp(p.y, 8, Math.max(8, stage.h - dim - 8)) });
-  const home = { x: (stage.w - dim) / 2, y: stage.h - (compact ? 84 : 92) - dim };
+  const home = { x: (stage.w - dim) / 2, y: stage.h - 92 - dim };
   const at = fit(pos ?? home);
   const grab = (onTap: () => void) => ({
     onPointerDown: (e: React.PointerEvent<HTMLElement>) => {

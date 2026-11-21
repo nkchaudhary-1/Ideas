@@ -30,7 +30,7 @@ export default function QuickAdjust({ compact }: { compact: boolean }) {
   const more = () => { st().setUI({ quick: null, ...(compact ? { sheet: "props", sheetSize: "half" as const } : { rightOpen: true }) }); };
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 z-20 flex justify-center px-3" style={{ bottom: compact ? 84 : 92 }}>
+    <div className="pointer-events-none absolute inset-x-0 z-20 flex justify-center px-3" style={{ bottom: compact ? 12 : 92 }}>
       <div className="pop pointer-events-auto flex w-full max-w-[560px] flex-col gap-3 rounded-card bg-panel p-4 shadow-float ring-1 ring-line/70" data-testid="quick-adjust" role="group" aria-label="Quick edit">
         <div className="flex items-center gap-2">
           <div className="flex gap-1 rounded-full bg-field p-1" role="tablist">

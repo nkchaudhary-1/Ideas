@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import {
-  Check, ChevronDown, CircleAlert, Download, Eye, FilePlus2, FolderOpen, Hand, Keyboard, Loader2, Maximize, Minus, Moon, MousePointer2, Pause, PanelRight, Pencil, Play, Plus, Redo2, SlidersHorizontal, SplitSquareHorizontal, Sun, Undo2,
+  Check, ChevronDown, ChevronLeft, CircleAlert, Copy, Download, Eye, FilePlus2, FolderOpen, Hand, Keyboard, Grid3x3, Loader2, Maximize, MoreHorizontal, Minus, Moon, MousePointer2, Pause, PanelRight, Pencil, Play, Plus, RectangleVertical, Redo2, SlidersHorizontal, SplitSquareHorizontal, Sun, Trash2, Undo2,
 } from "lucide-react";
 import { useStore, getSlide, useSelectedElements } from "@/lib/store";
 import Logo from "@/components/ui/Logo";
@@ -203,6 +203,114 @@ function ViewMenu({ c }: { c: Chrome }) {
   );
 }
 
+function ProjectTitle({ name }: { name: string }) {
+  const st = useStore.getState;
+  const [editing, setEditing] = useState(false);
+  return editing ? (
+    <input autoFocus defaultValue={name} aria-label="Project name"
+      onBlur={(e) => { st().renameProject(e.target.value); setEditing(false); }}
+      onKeyDown={(e) => { e.stopPropagation(); if (e.key === "Enter") (e.target as HTMLInputElement).blur(); if (e.key === "Escape") setEditing(false); }}
+      className="h-8 w-full min-w-0 rounded-full bg-field px-3 text-sm font-bold outline-none ring-2 ring-ink/30" />
+  ) : (
+    <button type="button" onClick={() => setEditing(true)} title="Rename project" aria-label={`Project name: ${name}. Tap to rename`} data-testid="project-name"
+      className="flex h-7 min-w-0 max-w-full items-center rounded-full text-sm font-bold"><span className="truncate">{name}</span></button>
+  );
+}
+
+function MenuRow({ icon, label, detail, onClick, testId, disabled, danger }: { icon: React.ReactNode; label: string; detail?: string; onClick: () => void; testId?: string; disabled?: boolean; danger?: boolean }) {
+  return (
+    <button type="button" role="menuitem" data-testid={testId} disabled={disabled} onClick={onClick}
+      className={`flex h-11 w-full items-center gap-3 rounded px-3 text-left text-sm font-medium hover:bg-field disabled:opacity-40 ${danger ? "text-red-500" : ""}`}>
+      <span className="shrink-0 text-mute">{icon}</span>
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+      {detail && <span className="shrink-0 text-xs text-mute">{detail}</span>}
+    </button>
+  );
+}
+
+/** the phone's "⋯" menu: everything that used to float as a pill (size, fit, play, preview, view options), plus the app and slide actions */
+function CompactMenu({ c }: { c: Chrome }) {
+  const st = useStore.getState;
+  const slides = useStore((s) => s.project.slides.length);
+  const activeId = useStore((s) => s.project.activeSlideId);
+  const [open, setOpen] = useState<"size" | "view" | null>(null);
+  const hasVideo = slideHasVideo(c.slide);
+  const pano = panoramaCount(c.slide.width);
+  const ratio = pano > 1 ? ratioLabel(c.slide.width / pano, c.slide.height) : c.format.ratio;
+  const dark = c.ui.theme === "dark";
+  return (
+    <Popover align="right" width={320} trigger={(isOpen, toggle) => (
+      <IconButton icon={<MoreHorizontal size={20} />} label="Menu" active={isOpen} onClick={toggle} testId="app-menu" />
+    )}>
+      {(close) => {
+        const go = (fn: () => void) => () => { close(); fn(); };
+        return (
+          <div className="space-y-1" role="menu" data-testid="app-menu-panel">
+            <MenuRow icon={<FilePlus2 size={16} />} label="New project" testId="new-project" onClick={go(() => st().openNewProject())} />
+            <MenuRow icon={<FolderOpen size={16} />} label="All projects" testId="open-projects" onClick={go(() => st().goHome())} />
+            <div className="mx-3 my-2 h-px bg-line" />
+            <MenuRow icon={<Eye size={16} />} label="Preview" testId="preview" disabled={c.nothingToShow} onClick={go(() => st().setUI({ previewOpen: true, playing: false, sheet: null }))} />
+            {hasVideo && <MenuRow icon={c.ui.playing ? <Pause size={16} /> : <Play size={16} />} label={c.ui.playing ? "Stop playback" : "Play slide"} testId="play-slide" onClick={go(() => st().setUI({ playing: !c.ui.playing }))} />}
+            <MenuRow icon={<Maximize size={16} />} label="Fit to screen" testId="zoom-fit" onClick={go(() => st().requestFit())} />
+            {c.isEdit ? (
+              <MenuRow icon={<RectangleVertical size={16} />} label="Size" detail={`${c.slide.width}×${c.slide.height}`} onClick={() => {}} disabled />
+            ) : (
+              <>
+                <MenuRow icon={<RectangleVertical size={16} />} label="Canvas size" detail={pano > 1 ? `${ratio} · ${pano} slides` : ratio} testId="format-chip" onClick={() => setOpen(open === "size" ? null : "size")} />
+                {open === "size" && <div className="px-1 pb-2" data-testid="format-menu-inline"><FormatMenu close={close} /></div>}
+              </>
+            )}
+            <MenuRow icon={<Grid3x3 size={16} />} label="View options" testId="view-menu" onClick={() => setOpen(open === "view" ? null : "view")} />
+            {open === "view" && (
+              <div className="space-y-4 px-3 pb-3 pt-1" data-testid="view-options">
+                <Toggle label="Layout grid" value={c.slide.grid.visible} onChange={(v) => st().commit((p) => { const sl = p.slides.find((x) => x.id === p.activeSlideId)!; sl.grid.visible = v; if (v && sl.grid.kind === "none") sl.grid.kind = "columns"; })} />
+                <Toggle label="Safe areas" value={c.ui.safeAreas} onChange={(v) => st().setUI({ safeAreas: v })} />
+                <Toggle label="Snap to canvas" value={c.ui.snapCanvas} onChange={(v) => st().setUI({ snapCanvas: v })} />
+                <Toggle label="Snap to objects" value={c.ui.snapObjects} onChange={(v) => st().setUI({ snapObjects: v })} />
+              </div>
+            )}
+            {!c.isEdit && (
+              <>
+                <div className="mx-3 my-2 h-px bg-line" />
+                <MenuRow icon={<Copy size={16} />} label="Duplicate slide" testId="menu-duplicate-slide" onClick={go(() => st().duplicateSlide(activeId))} />
+                {slides > 1 && <MenuRow icon={<Trash2 size={16} />} label="Delete slide" danger testId="menu-delete-slide" onClick={go(() => st().deleteSlide(activeId))} />}
+              </>
+            )}
+            <div className="mx-3 my-2 h-px bg-line" />
+            <MenuRow icon={dark ? <Sun size={16} /> : <Moon size={16} />} label={dark ? "Light theme" : "Dark theme"} testId="toggle-theme" onClick={go(() => st().setTheme(dark ? "light" : "dark"))} />
+          </div>
+        );
+      }}
+    </Popover>
+  );
+}
+
+/**
+ * Phones and portrait tablets: one slim row above the canvas, so nothing covers the picture. Back to your projects, the name with the kind
+ * of project and next step under it, undo and redo, export, and a menu for everything else.
+ */
+export function CompactTopBar() {
+  const c = useChrome();
+  const st = useStore.getState;
+  return (
+    <header className="flex h-14 shrink-0 items-center gap-1" data-testid="compact-bar">
+      <IconButton icon={<ChevronLeft size={22} />} label="All projects" onClick={() => st().goHome()} testId="back-home" />
+      <div className="flex min-w-0 flex-1 flex-col justify-center pl-1">
+        <div className="flex min-w-0 items-center gap-2">
+          <ProjectTitle name={c.name} />
+          {c.status === "error" && <SaveBadge status={c.status} words />}
+        </div>
+        <GuideChip compact bare />
+      </div>
+      <IconButton icon={<Undo2 size={18} />} label="Undo" onClick={() => st().undo()} disabled={!c.canUndo} testId="undo" />
+      <IconButton icon={<Redo2 size={18} />} label="Redo" onClick={() => st().redo()} disabled={!c.canRedo} testId="redo" />
+      <button type="button" onClick={() => st().setUI({ exportOpen: true, playing: false, sheet: null })} data-testid="export" aria-label="Export" disabled={c.nothingToShow}
+        className="grid h-9 w-9 shrink-0 place-items-center rounded-full grad-pill text-pillink transition hover:opacity-90 active:scale-90 disabled:pointer-events-none disabled:opacity-40 coarse:h-11 coarse:w-11"><Download size={17} /></button>
+      <CompactMenu c={c} />
+    </header>
+  );
+}
+
 /** Everything that floats over the canvas: project, size, history, view, preview and export. */
 let hintedZoom = false;
 export default function StageChrome() {
@@ -212,51 +320,22 @@ export default function StageChrome() {
   const els = useSelectedElements();
   const cell = useStore((s) => s.ui.selectedCell);
   useEffect(() => {
-    if (hintedZoom || els.length !== 1) return;
+    if (compact || hintedZoom || els.length !== 1) return;
     const e = els[0];
     const photo = (e.type === "image" || e.type === "video") ? !!e.fill?.assetId : cropTargetOf(getSlide(useStore.getState().project), e.id, cell) !== null;
     if (!photo) return;
     hintedZoom = true;
     useStore.getState().toast(`${isCoarse() ? "Double-tap" : "Double-click"} the photo to zoom and move it inside its frame`, "info");
-  }, [els, cell]);
+  }, [els, cell, compact]);
   useEffect(() => { document.documentElement.dataset.theme = c.ui.theme; }, [c.ui.theme]);
-  return compact ? <CompactChrome c={c} /> : <DesktopChrome c={c} />;
+  return compact ? <CompactOverlays /> : <DesktopChrome c={c} />;
 }
 
-/** phones and portrait tablets: a slim bar on top, one pill of view controls at the bottom */
-function CompactChrome({ c }: { c: Chrome }) {
-  const st = useStore.getState;
-  const { ui } = c;
-  const hasVideo = slideHasVideo(c.slide);
+/** phones and portrait tablets: the bars live outside the canvas (see CompactTopBar and ContextBar); only the quick adjust bar floats over it */
+function CompactOverlays() {
   return (
     <div className="pointer-events-none absolute inset-0 z-20" data-testid="stage-chrome">
-      <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
-        <Pill className="h-[52px] min-w-0 flex-1 pr-4 coarse:h-[60px]">
-          <AppMenu compact dark={ui.theme === "dark"} />
-          <ProjectName name={c.name} maxWidth={160} />
-          <SaveBadge status={c.status} />
-        </Pill>
-        <Pill className="h-[52px] shrink-0 px-2 coarse:h-[60px]">
-          <IconButton icon={<Undo2 size={17} />} label="Undo" onClick={() => st().undo()} disabled={!c.canUndo} testId="undo" />
-          <IconButton icon={<Redo2 size={17} />} label="Redo" onClick={() => st().redo()} disabled={!c.canRedo} testId="redo" />
-        </Pill>
-        <button type="button" onClick={() => st().setUI({ exportOpen: true, playing: false, sheet: null })} data-testid="export" aria-label="Export" disabled={c.nothingToShow}
-          className="pointer-events-auto grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full grad-pill text-pillink shadow-float hover:opacity-90 disabled:pointer-events-none disabled:opacity-40 coarse:h-[60px] coarse:w-[60px] touch:active:scale-95"><Download size={18} /></button>
-      </div>
-
-      <GuideChip compact />
-      <PhotoWheel compact />
       <QuickAdjust compact />
-      <div className="absolute inset-x-3 bottom-3 flex justify-center">
-        <Pill className="h-[52px] max-w-full coarse:h-[60px]">
-          <SizeChip c={c} narrow flat />
-          <IconButton icon={<Maximize size={15} />} label="Fit to screen" onClick={() => st().requestFit()} testId="zoom-fit" />
-          {hasVideo && <IconButton icon={ui.playing ? <Pause size={17} /> : <Play size={17} />} label={ui.playing ? "Stop playback" : "Play slide"} active={ui.playing} onClick={() => st().setUI({ playing: !ui.playing })} testId="play-slide" />}
-          {c.isEdit && <CompareButton c={c} narrow />}
-          <ViewMenu c={c} />
-          <IconButton icon={<Eye size={16} />} label="Preview" onClick={() => st().setUI({ previewOpen: true, playing: false, sheet: null })} disabled={c.nothingToShow} testId="preview" />
-        </Pill>
-      </div>
     </div>
   );
 }
@@ -309,7 +388,7 @@ function DesktopChrome({ c }: { c: Chrome }) {
       </div>
 
       <GuideChip compact={false} lowered={size.w < 820} />
-      <PhotoWheel compact={false} />
+      <PhotoWheel />
       <QuickAdjust compact={false} />
       {/* bottom centre: view */}
       <div className="absolute bottom-5 left-1/2 -translate-x-1/2">

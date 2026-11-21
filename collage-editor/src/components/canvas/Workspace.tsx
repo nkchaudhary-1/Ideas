@@ -87,8 +87,8 @@ export default function Workspace() {
     return () => ro.disconnect();
   }, []);
   useEffect(() => {
-    // when the stage is narrow the top pills wrap to two rows, so leave more room above the artboard
-    useStore.getState().setView(fitView(size, { w: slide.width, h: slide.height }, size.w < 560 && window.innerWidth < 900 ? { x: 16, top: 128, bottom: 84 } : size.w < 860 ? { x: 96, top: 176, bottom: 112 } : undefined));
+    // on a phone the bars sit outside the stage; on a narrow desktop stage the top pills wrap to two rows, so leave more room above the artboard
+    useStore.getState().setView(fitView(size, { w: slide.width, h: slide.height }, window.innerWidth < 900 ? { x: 12, top: 12, bottom: 12 } : size.w < 860 ? { x: 96, top: 176, bottom: 112 } : undefined));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fitToken, size.w, size.h, slide.id, slide.width, slide.height]);
 
