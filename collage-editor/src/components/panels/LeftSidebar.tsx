@@ -1,5 +1,5 @@
 "use client";
-import { Frame, Image as ImageIcon, LayoutGrid, LayoutTemplate, Layers, Palette, Shapes, Type, Upload, X } from "lucide-react";
+import { Image as ImageIcon, LayoutGrid, LayoutTemplate, Layers, Palette, Shapes, Type, Upload, X } from "lucide-react";
 import { useStore, type PanelId } from "@/lib/store";
 import UploadsPanel from "./UploadsPanel";
 import TemplatesPanel from "./TemplatesPanel";
@@ -7,7 +7,6 @@ import LayoutsPanel from "./LayoutsPanel";
 import TextPanel from "./TextPanel";
 import ElementsPanel from "./ElementsPanel";
 import BackgroundsPanel from "./BackgroundsPanel";
-import FramesPanel from "./FramesPanel";
 import LayersPanel from "./LayersPanel";
 import PalettesPanel from "./PalettesPanel";
 
@@ -21,8 +20,7 @@ export const GROUPS: { id: PanelId; label: string; short: string; icon: React.Re
   ],
   [
     { id: "text", label: "Text", short: "Text", icon: <Type size={19} /> },
-    { id: "elements", label: "Elements", short: "Elements", icon: <Shapes size={19} /> },
-    { id: "frames", label: "Frames", short: "Frames", icon: <Frame size={19} /> },
+    { id: "elements", label: "Elements & frames", short: "Elements", icon: <Shapes size={19} /> },
     { id: "backgrounds", label: "Backgrounds", short: "Backdrop", icon: <ImageIcon size={19} /> },
     { id: "palettes", label: "Colours", short: "Colours", icon: <Palette size={19} /> },
   ],
@@ -41,7 +39,6 @@ export function PanelBody({ panel }: { panel: PanelId | null }) {
       {panel === "text" && <TextPanel />}
       {panel === "elements" && <ElementsPanel />}
       {panel === "backgrounds" && <BackgroundsPanel />}
-      {panel === "frames" && <FramesPanel />}
       {panel === "layers" && <LayersPanel />}
       {panel === "palettes" && <PalettesPanel />}
     </>

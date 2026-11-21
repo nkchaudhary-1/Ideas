@@ -132,8 +132,9 @@ const errs = [];
   ok(sheetGeo.stageBottom <= sheetGeo.sheetTop + 1 && sheetGeo.stageH >= 650 * 0.3, 'a sheet starts where the canvas ends and leaves it at least 30% of the screen', sheetGeo);
   await store(sp, () => window.__store.getState().setUI({ sheet: null })); await sp.waitForTimeout(300);
   await sp.tap('[data-testid=ctx-done]').catch(() => {});
-  await store(sp, () => window.__store.getState().setUI({ leftPanel: 'frames', sheet: 'tools', sheetSize: 'half' })); await sp.waitForTimeout(700);
-  const fr = await store(sp, () => { const w = document.querySelector('[data-testid=workspace]').getBoundingClientRect(); const h = document.querySelector('[data-testid=left-panel]').getBoundingClientRect(); const first = document.querySelector('[data-testid=frames-panel] section button, [data-testid=frames-panel] [data-testid^=frame-]'); return { stageH: w.height, sheetH: h.height, firstTop: first ? first.getBoundingClientRect().top - h.top : null }; });
+  await store(sp, () => window.__store.getState().setUI({ leftPanel: 'elements', sheet: 'tools', sheetSize: 'half' })); await sp.waitForTimeout(700);
+  await sp.getByRole('tab', { name: 'Frames' }).click(); await sp.waitForTimeout(300);
+  const fr = await store(sp, () => { const w = document.querySelector('[data-testid=workspace]').getBoundingClientRect(); const h = document.querySelector('[data-testid=left-panel]').getBoundingClientRect(); const first = document.querySelector('[data-testid=elements-panel] [data-testid^=frame-]'); return { stageH: w.height, sheetH: h.height, firstTop: first ? first.getBoundingClientRect().top - h.top : null }; });
   ok(fr.stageH >= 650 * 0.38, 'a tool sheet leaves the canvas at least 38% of the screen', fr);
   await e2.close();
 

@@ -57,7 +57,7 @@ const ok = (c, m, extra) => { c ? pass++ : fail++; console.log((c ? 'PASS ' : 'F
   ok(el2.x >= -1 && el2.x + el2.w <= 1081, 'a click adds to the picked slide (slide 1)', el2);
 
   // a frame and a heading dropped on slide 1 and 3
-  await page.evaluate(() => window.__store.getState().setUI({ leftPanel: 'frames' })); await settle(page, 600);
+  await page.getByRole('tab', { name: 'Frames' }).click(); await settle(page, 400);
   t = await target(0);
   await page.dragAndDrop('[data-testid=frame-circle]', '[data-testid=workspace]', { targetPosition: { x: t.x, y: t.y } }); await settle(page, 600);
   s2 = await slide(); const fr = s2.els[s2.els.length - 1];

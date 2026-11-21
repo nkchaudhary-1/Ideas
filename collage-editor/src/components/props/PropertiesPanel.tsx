@@ -36,7 +36,7 @@ function CollagePanel({ sheet }: { sheet: boolean }) {
         ) : (
           <h2 className="text-base font-extrabold tracking-tight">{els.length > 1 ? `${els.length} selected` : "Canvas"}</h2>
         )}
-        {single && <span className="rounded-full bg-field px-2 py-0.5 text-2xs font-semibold capitalize text-mute">{single.type}</span>}
+        {single && <span className="ml-auto rounded-full bg-field px-2 py-0.5 text-2xs font-semibold capitalize text-mute">{single.type}</span>}
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto pb-6" data-testid="properties-scroll">
         {els.length === 0 && <CanvasProps />}

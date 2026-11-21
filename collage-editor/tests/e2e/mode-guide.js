@@ -50,7 +50,8 @@ const chipText = async (page) => (await page.locator('[data-testid=guide-chip]')
   ({ ctx, page } = await fresh({ viewport: { width: 1360, height: 820 } }));
   await page.click('[data-testid=mode-single]'); await page.click('[data-testid=create-project]'); await page.waitForTimeout(1000);
   const rail = (await page.locator('[data-testid=left-rail]').textContent()) || '';
-  for (const w of ['Media', 'Layouts', 'Templates', 'Text', 'Elements', 'Frames', 'Backdrop', 'Colours', 'Layers']) ok(rail.includes(w), `the rail labels "${w}"`);
+  for (const w of ['Media', 'Layouts', 'Templates', 'Text', 'Elements', 'Backdrop', 'Colours', 'Layers']) ok(rail.includes(w), `the rail labels "${w}"`);
+  ok(!rail.includes('Frames'), 'Frames is not a tool of its own: it is a tab in Elements');
   for (const w of ['Add', 'Design', 'Manage']) ok(rail.includes(w), `and titles the "${w}" group`);
   await page.click('[data-testid=rail-elements]'); await page.waitForTimeout(400);
   const panel = (await page.locator('[data-testid=elements-panel]').textContent()) || '';
@@ -60,6 +61,14 @@ const chipText = async (page) => (await page.locator('[data-testid=guide-chip]')
   await page.getByRole('tab', { name: 'Graphics' }).click(); await page.waitForTimeout(200);
   const gfx = await page.locator('[data-testid^=el-]:not([data-testid=el-search])').count();
   ok(gfx > 5 && gfx < all, 'a tab narrows it down', { gfx, all });
+  await page.getByRole('tab', { name: 'Frames' }).click(); await page.waitForTimeout(200);
+  const frames = await page.locator('[data-testid^=frame-]').count();
+  ok(frames >= 8 && (await page.locator('[data-testid=frames-hint]').isVisible()), 'the Frames tab holds the frames, with a line on what they are', { frames });
+  await page.getByRole('tab', { name: 'All' }).click(); await page.waitForTimeout(200);
+  ok((await page.locator('[data-testid^=frame-]').count()) === frames, 'and All includes them too');
+  await page.fill('[data-testid=el-search]', 'circle'); await page.waitForTimeout(200);
+  ok((await page.locator('[data-testid=frame-circle]').count()) === 1 && (await page.locator('[data-testid=el-circle], [data-testid=el-ellipse]').count()) >= 0, 'search finds frames as well as shapes');
+  await page.fill('[data-testid=el-search]', ''); await page.waitForTimeout(150);
   await page.getByRole('tab', { name: 'All' }).click();
   await page.fill('[data-testid=el-search]', 'heart'); await page.waitForTimeout(200);
   ok((await page.locator('[data-testid=el-heart]').count()) === 1 && (await page.locator('[data-testid^=el-]:not([data-testid=el-search])').count()) === 1, 'search finds a heart');

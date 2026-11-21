@@ -18,7 +18,7 @@ import { addAssetsToEdit } from "./edit";
 import { DEFAULT_MATCH, type MatchOpts } from "./match";
 import { findCell, mapCells, updateCell, cellsOf, cloneTree, swapFills, removeCell, splitCell, dragDivider, setWeights, type GridPreset, treeFromPreset } from "./grid-engine";
 
-export type PanelId = "templates" | "layouts" | "uploads" | "text" | "elements" | "backgrounds" | "frames" | "layers" | "palettes" | "projects";
+export type PanelId = "templates" | "layouts" | "uploads" | "text" | "elements" | "backgrounds" | "layers" | "palettes" | "projects";
 export type SaveStatus = "saved" | "saving" | "unsaved" | "error";
 
 export interface UIState {
