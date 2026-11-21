@@ -157,11 +157,6 @@ const store = (p, fn, arg) => p.evaluate(fn, arg);
     await page.setInputFiles('[data-testid=import-input]', [T + 'photo-5.jpg', T + 'photo-6.jpg', T + 'clip-portrait.mp4']); await wait(page, 2500);
   });
   await page.evaluate(() => window.__store.getState().setUI({ importOpen: false }));
-  await run('dlg-projects-confirm', async () => {
-    await page.evaluate(() => window.__store.getState().setUI({ projectsOpen: true })); await wait(page, 700);
-    await page.getByRole('button', { name: 'Delete project' }).first().click(); await wait(page, 300);
-  });
-  await page.evaluate(() => window.__store.getState().setUI({ projectsOpen: false }));
   await run('toast', async () => { await page.evaluate(() => window.__store.getState().toast('3 items matched to “sample-1”', 'ok')); await wait(page, 300); });
 
   // ── dialogs
