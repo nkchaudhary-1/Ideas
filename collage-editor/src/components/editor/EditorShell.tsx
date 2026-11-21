@@ -55,8 +55,6 @@ function Shell() {
 
   useEffect(() => {
     void useStore.getState().init();
-    // on small windows the properties card starts closed so the canvas keeps room; the top-bar toggle opens it
-    if (window.innerWidth < 1500) useStore.getState().setUI({ rightOpen: false });
   }, []);
 
   // theme + accent are CSS variables, so every control follows them

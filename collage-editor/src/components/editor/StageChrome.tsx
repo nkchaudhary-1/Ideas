@@ -213,7 +213,7 @@ function DesktopViewRow({ c }: { c: Chrome }) {
   return (
     <>
       <button type="button" data-testid="view-menu" aria-expanded={open} onClick={() => setOpen(!open)} className="flex h-10 w-full items-center gap-3 rounded px-3 text-left text-sm font-medium hover:bg-field coarse:h-11"><SlidersHorizontal size={15} />View options</button>
-      {open && <div className="px-3 pb-3 pt-1"><ViewToggles c={c} /></div>}
+      {open && <div className="px-2 pb-3 pt-1"><ViewToggles c={c} /></div>}
     </>
   );
 }
@@ -348,11 +348,18 @@ function DesktopChrome({ c }: { c: Chrome }) {
   const size = ui.canvasSize;
   const narrow = size.w < 980; // the stage shrinks when both side panels are open
   const dark = ui.theme === "dark";
-  // the Properties card starts closed on smaller windows: open it the first time something is selected, and keep an Edit chip while it is shut
+  // the Properties card takes room, so it opens only when something is selected and closes again when nothing is (unless you opened or
+  // closed it yourself); an Edit chip brings it back while it is shut. Edit mode keeps its card open: that card is the editor.
   const autoOpened = useRef(false);
+  const wasSelected = useRef(false);
   useEffect(() => {
-    if (c.hasSelection && !ui.rightOpen && !autoOpened.current) { autoOpened.current = true; useStore.getState().setUI({ rightOpen: true }); }
-  }, [c.hasSelection, ui.rightOpen]);
+    const was = wasSelected.current; wasSelected.current = c.hasSelection;
+    const s = useStore.getState();
+    if (c.isEdit) return;
+    if (c.hasSelection && !was && !s.ui.rightOpen) { autoOpened.current = true; s.setUI({ rightOpen: true }); }
+    else if (!c.hasSelection && was && autoOpened.current) { autoOpened.current = false; s.setUI({ rightOpen: false }); }
+  }, [c.hasSelection, c.isEdit]);
+  useEffect(() => { if (!ui.rightOpen) autoOpened.current = false; }, [ui.rightOpen]);
 
   return (
     <div className="pointer-events-none absolute inset-0 z-20" data-testid="stage-chrome">
@@ -382,7 +389,7 @@ function DesktopChrome({ c }: { c: Chrome }) {
             {c.isEdit && <CompareButton c={c} narrow={narrow} />}
             <span className="mx-1 h-5 w-px bg-line" />
             <IconButton icon={<Eye size={17} />} label="Preview" onClick={() => st().setUI({ previewOpen: true, playing: false })} disabled={c.nothingToShow} testId="preview" />
-            <IconButton icon={<PanelRight size={17} />} label={ui.rightOpen ? "Hide the edit panel" : "Show the edit panel"} active={ui.rightOpen} onClick={() => st().setUI({ rightOpen: !ui.rightOpen })} testId="toggle-properties" />
+            <IconButton icon={<PanelRight size={17} />} label={ui.rightOpen ? "Hide the edit panel" : "Show the edit panel"} active={ui.rightOpen} onClick={() => { autoOpened.current = false; st().setUI({ rightOpen: !ui.rightOpen }); }} testId="toggle-properties" />
           </Pill>
           <button type="button" onClick={() => st().setUI({ exportOpen: true, playing: false })} data-testid="export" aria-label="Export" disabled={c.nothingToShow} className="pointer-events-auto flex h-[52px] items-center gap-2 rounded-full grad-pill px-6 text-sm font-bold text-pillink shadow-float hover:opacity-90 disabled:pointer-events-none disabled:opacity-40"><Download size={16} /> Export</button>
         </div>

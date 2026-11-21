@@ -106,6 +106,7 @@ A new user must never have to guess what they are making or what to do next.
   has Media, Layouts and Templates. (The owner removed the "Start your …" card because it covered the work.)
 - **The tools and the open tool are one card.** On a desktop the rail and the panel it opens share a single card, split by a hairline, never two cards side by side. (Edit mode's single round button is the one exception.)
 - **Every tool is labelled.** An icon alone is never the only name of a tool: the rail and the phone dock show a short name under each icon, and groups carry a title.
+- **The properties card opens when needed.** It is closed by default and on a desktop opens when something is selected and closes when nothing is, never leaving a half-empty card beside the canvas. A card you open or close yourself stays as you left it, and a chip or the top-bar toggle brings it back. Opening or closing it keeps the zoom and pan. (Edit mode's card is the editor, so it stays open.)
 - **Controls that matter are visible without selecting anything.** Editing a photo is never behind a closed panel: Edit mode opens its card, and a photo
   has its own wheel on a desktop and its own bar on a phone. If a panel can be shut, a chip or button brings it back.
 

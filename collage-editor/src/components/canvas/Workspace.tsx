@@ -88,9 +88,22 @@ export default function Workspace() {
     ro.observe(el);
     return () => ro.disconnect();
   }, []);
+  const lastFit = useRef<{ key: string; view: { x: number; y: number; scale: number }; w: number; h: number } | null>(null);
   useEffect(() => {
+    const st = useStore.getState();
+    const key = `${fitToken}|${slide.id}|${slide.width}|${slide.height}`;
+    const prev = lastFit.current, v = st.ui.view;
+    // only the stage changed size (a side card opened or closed) and you have zoomed or panned since the last fit: leave the zoom alone and
+    // keep what you were looking at in the middle, instead of snapping back to fit
+    if (prev && prev.key === key && (v.scale !== prev.view.scale || v.x !== prev.view.x || v.y !== prev.view.y)) {
+      st.setView({ x: v.x + (size.w - prev.w) / 2, y: v.y + (size.h - prev.h) / 2 });
+      lastFit.current = { ...prev, w: size.w, h: size.h };
+      return;
+    }
     // on a phone the bars sit outside the stage; on a narrow desktop stage the top pills wrap to two rows, so leave more room above the artboard
-    useStore.getState().setView(fitView(size, { w: slide.width, h: slide.height }, window.innerWidth < 900 ? { x: 12, top: 12, bottom: 12 } : size.w < 860 ? { x: 96, top: 176, bottom: 112 } : undefined));
+    const fit = fitView(size, { w: slide.width, h: slide.height }, window.innerWidth < 900 ? { x: 12, top: 12, bottom: 12 } : size.w < 860 ? { x: 96, top: 176, bottom: 112 } : undefined);
+    st.setView(fit);
+    lastFit.current = { key, view: { x: fit.x, y: fit.y, scale: fit.scale }, w: size.w, h: size.h };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fitToken, size.w, size.h, slide.id, slide.width, slide.height]);
 

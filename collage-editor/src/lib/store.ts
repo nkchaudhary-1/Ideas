@@ -295,7 +295,7 @@ export const useStore = create<Store>()((set, get) => {
     editClip: null,
     ui: {
       leftPanel: "uploads",
-      rightOpen: true,
+      rightOpen: false, // the properties card opens when something is selected (or from the top-bar toggle)
       view: { scale: 0.5, x: 0, y: 0 },
       tool: "select",
       snapObjects: true,
