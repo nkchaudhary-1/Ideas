@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import {
-  Check, ChevronDown, ChevronLeft, CircleAlert, Copy, Download, Eye, FilePlus2, FolderOpen, Hand, Keyboard, Grid3x3, Loader2, Maximize, MoreHorizontal, Minus, Moon, MousePointer2, Pause, PanelRight, Pencil, Play, Plus, RectangleVertical, Redo2, SlidersHorizontal, SplitSquareHorizontal, Sun, Trash2, Undo2,
+  Check, ChevronDown, CircleAlert, Copy, Download, Eye, FilePlus2, FolderOpen, Hand, Keyboard, Grid3x3, Loader2, Maximize, MoreHorizontal, Minus, Moon, MousePointer2, Pause, PanelRight, Pencil, Play, Plus, RectangleVertical, Redo2, SlidersHorizontal, SplitSquareHorizontal, Sun, Trash2, Undo2,
 } from "lucide-react";
 import { useStore, getSlide, useSelectedElements } from "@/lib/store";
 import Logo from "@/components/ui/Logo";
@@ -109,10 +109,16 @@ function AppMenu({ dark }: { dark: boolean }) {
   ];
   return (
     <Popover align="left" width={320} trigger={(open, toggle) => (
-      <button type="button" onClick={toggle} aria-label="Collage Studio menu" title="Menu: new project, your projects" data-testid="app-menu" className={`flex h-10 items-center gap-1 rounded-full pl-1 pr-2 coarse:h-11 ${open ? "bg-field" : "hover:bg-field"}`}>
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-pill text-pillink"><Logo size={18} /></span>
-        <ChevronDown size={13} className="text-mute" />
-      </button>
+      <div className={`flex items-center rounded-full ${open ? "bg-field" : ""}`}>
+        <button type="button" onClick={() => st().goHome()} aria-label="Collage Studio: all projects" title="All projects" data-testid="logo-home"
+          className="grid h-10 w-10 place-items-center rounded-full transition hover:bg-field active:scale-95 coarse:h-11 coarse:w-11">
+          <span className="grid h-8 w-8 place-items-center rounded-full bg-pill text-pillink"><Logo size={18} /></span>
+        </button>
+        <button type="button" onClick={toggle} aria-label="Menu" aria-expanded={open} title="Menu: new project, your projects" data-testid="app-menu"
+          className="grid h-10 w-7 place-items-center rounded-full text-mute transition hover:bg-field hover:text-ink coarse:h-11 coarse:w-9">
+          <ChevronDown size={13} />
+        </button>
+      </div>
     )}>
       {(close) => (
         <div className="-m-2 pb-1" data-testid="app-menu-panel">
@@ -294,7 +300,10 @@ export function CompactTopBar() {
   const st = useStore.getState;
   return (
     <header className="flex h-14 shrink-0 items-center gap-1" data-testid="compact-bar">
-      <IconButton icon={<ChevronLeft size={22} />} label="All projects" onClick={() => st().goHome()} testId="back-home" />
+      <button type="button" onClick={() => st().goHome()} aria-label="All projects" title="All projects" data-testid="back-home"
+        className="grid h-10 w-10 shrink-0 place-items-center rounded-full transition active:scale-90 coarse:h-11 coarse:w-11">
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-pill text-pillink"><Logo size={18} /></span>
+      </button>
       <div className="flex min-w-0 flex-1 flex-col justify-center pl-1">
         <div className="flex min-w-0 items-center gap-2">
           <ProjectTitle name={c.name} />

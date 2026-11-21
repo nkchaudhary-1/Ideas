@@ -87,8 +87,9 @@ const errs = [];
   await page.tap('[data-testid=project-name]'); await page.waitForTimeout(200);
   await page.fill('input[aria-label="Project name"]', 'Spring trip'); await page.keyboard.press('Enter'); await page.waitForTimeout(300);
   ok((await store(page, () => window.__store.getState().project.name)) === 'Spring trip', 'tapping the name renames the project');
+  ok((await page.locator('[data-testid=back-home] svg').count()) === 1, 'the logo is the home button');
   await page.tap('[data-testid=back-home]'); await page.waitForSelector('[data-testid=home]');
-  ok((await page.locator('[data-testid=home]').count()) === 1, 'the back arrow goes to your projects');
+  ok((await page.locator('[data-testid=home]').count()) === 1, 'tapping the logo goes to your projects');
   await ctx.close();
 
   // ── Edit mode: the tools are the bar, and Compare is hold-to-show

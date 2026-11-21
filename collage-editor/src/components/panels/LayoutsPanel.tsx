@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useStore, getSlide, useSelectedElements } from "@/lib/store";
 import { GRID_PRESETS, layoutGrid, presetCellCount, suggestPresets, treeFromPreset, type GridPreset } from "@/lib/grid-engine";
-import { Button, Field, NumberField, Section, Segmented } from "@/components/ui/controls";
+import { Button, ChipRow, Field, NumberField, Section, Segmented } from "@/components/ui/controls";
 import { firstEmptySegment } from "@/lib/store";
 import { panoramaCount } from "@/lib/formats";
 import { createCollageFromAssets } from "@/lib/workflows";
@@ -21,6 +21,11 @@ export function GridThumb({ preset, tree, w = 54, h = 68, active }: { preset?: G
   );
 }
 
+const TABS = ["All", "My layouts", "Cards", "Basic", "Asymmetric", "Dense", "Editorial"] as const;
+/** a layout's name: a pill over the tile on hover or keyboard focus, or under it on a touch screen where nothing can hover */
+const NAME = "pointer-events-none absolute inset-x-1 bottom-1 truncate rounded-full bg-pill px-2 py-1 text-center text-2xs font-semibold text-pillink opacity-0 transition group-hover:opacity-100 group-focus-within:opacity-100 touch:static touch:w-full touch:bg-transparent touch:p-0 touch:font-medium touch:text-mute touch:opacity-100";
+const TILE = "relative flex h-[104px] w-full items-center justify-center rounded p-2 hover:bg-ink/5 touch:h-32 touch:flex-col touch:gap-2";
+
 export default function LayoutsPanel() {
   const st = useStore.getState;
   const assets = useStore((s) => s.assets);
@@ -35,7 +40,8 @@ export default function LayoutsPanel() {
   const [rows, setRows] = useState(3);
   const [cols, setCols] = useState(2);
   const chosen = sel.map((id) => assets.find((a) => a.id === id)).filter(Boolean) as typeof assets;
-  const groups = ["Cards", "Basic", "Asymmetric", "Dense", "Editorial"] as const;
+  const [tab, setTab] = useState<(typeof TABS)[number]>("All");
+  const groups = TABS.slice(2) as readonly GridPreset["group"][];
   const activeGrid = els.length === 1 && els[0].type === "grid" ? els[0] : null;
   const n = panoramaCount(slide.width);
   const free = firstEmptySegment(slide);
@@ -53,7 +59,7 @@ export default function LayoutsPanel() {
 
   return (
     <div className="h-full overflow-y-auto" data-testid="layouts-panel">
-      <div className="space-y-4 px-8 pb-5" data-testid="layout-target">
+      <div className={`space-y-4 px-8 pb-5 ${activeGrid || n >= 2 ? "" : "max-[899px]:pb-0"}`} data-testid="layout-target">
         {n >= 2 ? (
           <>
             <p className="text-xs leading-5 text-mute">
@@ -67,7 +73,7 @@ export default function LayoutsPanel() {
             </div>
           </>
         ) : (
-          <p className="text-xs leading-5 text-mute">
+          <p className={`text-xs leading-5 text-mute ${activeGrid ? "" : "max-[899px]:hidden"}`}>
             Every layout makes real, editable cells. {activeGrid ? (resolved === "replace" ? "A grid is selected: clicking a layout re-arranges it and keeps your photos." : "Clicking a layout adds it as a new grid.") : "Pick one to add it to the slide, or drag it onto the canvas."}
           </p>
         )}
@@ -83,37 +89,35 @@ export default function LayoutsPanel() {
           <Button variant="primary" onClick={() => createCollageFromAssets(chosen)} testId="make-collage">Make a collage from them</Button>
         </Section>
       )}
-      <Section title="My layouts" defaultOpen>
-        {myLayouts.length > 0 ? (
-          <div className="grid grid-cols-3 gap-3" data-testid="my-layouts">
-            {myLayouts.map((p) => (
-              p.kind === "layout" ? (
-                <div key={p.id} className="group relative" data-testid="layout-tile">
-                  <button type="button" title={`Apply “${p.name}”`} {...drag(p.id)} onClick={() => st().applyLayoutPreset(p.id)} className="flex w-full flex-col items-center gap-1 rounded-in-20 p-1 hover:bg-ink/5">
-                    <GridThumb tree={p.data.tree} w={72} h={88} />
-                    <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className="w-full text-center text-2xs text-mute" />
-                  </button>
-                  <PresetActions id={p.id} name={p.name} onRename={() => setRenaming(p.id)} />
-                </div>
-              ) : null
-            ))}
-          </div>
-        ) : (
-          <p className="text-2xs leading-4 text-faint">Shape a collage, then choose “Save layout” in its properties. Your layouts appear here.</p>
+      {/* every layout in one grid: pick a tab to narrow it down. Names appear on hover. */}
+      <ChipRow testId="layout-tabs" items={TABS.map((t) => ({ id: t, label: t }))} value={tab} onChange={setTab} />
+      <div className="px-8 pb-6" data-testid="layout-grid">
+        {tab === "My layouts" && myLayouts.length === 0 && (
+          <p className="pb-2 text-xs leading-5 text-mute">Shape a collage, then choose “Save layout” in its properties. Your layouts appear here.</p>
         )}
-      </Section>
-      {groups.map((g) => (
-        <Section key={g} title={g} defaultOpen={g !== "Dense"}>
-          <div className="grid grid-cols-3 gap-3">
-            {GRID_PRESETS.filter((p) => p.group === g).map((p) => (
-              <button key={p.id} type="button" title={`${p.name} · ${presetCellCount(p)} cell${presetCellCount(p) > 1 ? "s" : ""}`} data-testid={`grid-${p.id}`} {...drag(p.id)} onClick={() => st().applyGridPreset(p)} className="group flex h-32 flex-col items-center gap-2 rounded p-2 hover:bg-ink/5">
+        <div className="grid grid-cols-3 gap-3" data-testid={tab === "My layouts" || tab === "All" ? "my-layouts" : undefined}>
+          {(tab === "All" || tab === "My layouts") && myLayouts.map((p) => (
+            p.kind === "layout" ? (
+              <div key={p.id} className="group relative" data-testid="layout-tile">
+                <button type="button" title={`Apply “${p.name}”`} {...drag(p.id)} onClick={() => st().applyLayoutPreset(p.id)} className={TILE}>
+                  <GridThumb tree={p.data.tree} w={72} h={88} />
+                  <RenameLabel id={p.id} name={p.name} editing={renaming === p.id} setEditing={(v) => setRenaming(v ? p.id : null)} className={NAME} />
+                </button>
+                <PresetActions id={p.id} name={p.name} onRename={() => setRenaming(p.id)} />
+              </div>
+            ) : null
+          ))}
+          {GRID_PRESETS.filter((p) => tab === "All" ? groups.includes(p.group) : p.group === tab).sort((a, b) => groups.indexOf(a.group) - groups.indexOf(b.group)).map((p) => {
+            const cells = presetCellCount(p);
+            return (
+              <button key={p.id} type="button" title={`${p.name} · ${cells} cell${cells > 1 ? "s" : ""}`} aria-label={`${p.name}, ${cells} cell${cells > 1 ? "s" : ""}`} data-testid={`grid-${p.id}`} {...drag(p.id)} onClick={() => st().applyGridPreset(p)} className={`group ${TILE}`}>
                 <GridThumb preset={p} w={72} h={88} />
-                <span className="w-full truncate text-center text-2xs text-mute group-hover:text-ink">{p.name}</span>
+                <span className={NAME}>{p.name}</span>
               </button>
-            ))}
-          </div>
-        </Section>
-      ))}
+            );
+          })}
+        </div>
+      </div>
       <Section title="Custom grid">
         <Field label="Columns"><NumberField width={64} value={cols} min={1} max={8} step={1} precision={0} onChange={(v) => setCols(Math.round(v))} /></Field>
         <Field label="Rows"><NumberField width={64} value={rows} min={1} max={10} step={1} precision={0} onChange={(v) => setRows(Math.round(v))} /></Field>

@@ -65,6 +65,22 @@ const chipText = async (page) => (await page.locator('[data-testid=guide-chip]')
   ok((await page.locator('[data-testid=el-heart]').count()) === 1 && (await page.locator('[data-testid^=el-]:not([data-testid=el-search])').count()) === 1, 'search finds a heart');
   await page.fill('[data-testid=el-search]', 'zzz'); await page.waitForTimeout(200);
   ok((await page.locator('[data-testid=elements-panel]').textContent()).includes('Nothing called'), 'and says so when nothing matches');
+
+  // ── Layouts is one grid with tabs, not a stack of blocks; each name shows on hover
+  await page.click('[data-testid=rail-layouts]'); await page.waitForTimeout(500);
+  const tabNames = await page.locator('[data-testid=layout-tabs] [role=tab]').allTextContents();
+  ok(['All', 'My layouts', 'Cards', 'Basic', 'Asymmetric', 'Dense', 'Editorial'].every((t) => tabNames.includes(t)), 'Layouts has one row of tabs', tabNames);
+  const tiles = await page.locator('[data-testid^=grid-]').count();
+  ok(tiles >= 25, 'with every layout in the one grid', tiles);
+  ok(!/Choose a layout|^Cards$/m.test((await page.locator('[data-testid=layouts-panel] section').allTextContents()).join('\n')) || (await page.locator('[data-testid=layouts-panel] section').count()) <= 1, 'and no stack of blocks above it');
+  const op = (sel) => page.evaluate((q) => getComputedStyle(document.querySelector(q)).opacity, sel);
+  ok((await op('[data-testid=grid-four] span')) === '0', 'a name is hidden until you point at the layout');
+  await page.hover('[data-testid=grid-four]'); await page.waitForTimeout(350);
+  ok((await op('[data-testid=grid-four] span')) === '1' && (await page.locator('[data-testid=grid-four] span').textContent()).length > 0, 'and shows while you do');
+  await page.getByRole('tab', { name: 'Cards' }).click(); await page.waitForTimeout(250);
+  ok((await page.locator('[data-testid^=grid-]').count()) === 4, 'a tab narrows the grid (Cards has four)');
+  await page.getByRole('tab', { name: 'My layouts' }).click(); await page.waitForTimeout(250);
+  ok((await page.locator('[data-testid=layout-grid]').textContent()).includes('Save layout'), 'My layouts says how to save one when there are none');
   await ctx.close();
 
   // ── a panorama and an Edit project name themselves too
@@ -92,6 +108,9 @@ const chipText = async (page) => (await page.locator('[data-testid=guide-chip]')
   ok(!(await page.locator('[data-testid=empty-canvas]').count()), 'and no card covers the canvas');
   const sw = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
   ok(sw <= 0, 'no sideways scroll', sw);
+  await page.tap('[data-testid=rail-layouts]'); await page.waitForTimeout(600);
+  const nm = await page.evaluate(() => { const e = document.querySelector('[data-testid=grid-four] span'); const c = getComputedStyle(e); return { opacity: c.opacity, position: c.position }; });
+  ok(nm.opacity === '1' && nm.position === 'static', 'on a phone, where nothing hovers, layout names are always shown', nm);
   await ctx.close();
 
   ok(errs.length === 0, 'no page errors', errs.slice(0, 2));

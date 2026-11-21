@@ -54,6 +54,9 @@ const cards = (page) => page.evaluate(() => [...document.querySelectorAll('[data
   // ── open, duplicate, delete
   await page.click('[data-testid=home-project]'); await page.waitForSelector('[data-testid=editor-root]');
   ok((await page.evaluate(() => window.__store.getState().project.name)) === 'Untitled carousel', 'tapping a project opens it');
+  await page.click('[data-testid=logo-home]'); await page.waitForSelector('[data-testid=home]');
+  ok((await count(page, '[data-testid=editor-root]')) === 0, 'clicking the logo goes to the front page');
+  await page.click('[data-testid=home-project]'); await page.waitForSelector('[data-testid=editor-root]');
   await page.evaluate(() => window.__store.getState().addSlide({}));
   await page.waitForTimeout(1200);
   await goHome(page);
