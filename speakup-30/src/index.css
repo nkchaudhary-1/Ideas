@@ -1,0 +1,85 @@
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dark is the default. Colours are "r g b" triplets so Tailwind can add opacity. */
+:root,
+:root[data-theme="dark"] {
+  --c-bg: 12 13 16; /* #0C0D10 */
+  --c-panel: 21 23 27; /* #15171B */
+  --c-panel2: 28 30 36;
+  --c-raised: 36 39 46;
+  --c-line: 40 42 49; /* #282A31 */
+  --c-ink: 244 244 245; /* #F4F4F5 */
+  --c-mute: 151 153 163; /* #9799A3 */
+  --c-faint: 107 110 121;
+  --c-accent: 197 242 107; /* #C5F26B */
+  --c-onaccent: 12 13 16;
+  --c-accentfg: 197 242 107;
+  --c-blue: 125 178 255;
+  --c-rec: 255 92 98;
+  --r: 24px;
+  --r-big: 32px;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --c-bg: 246 246 243;
+  --c-panel: 255 255 255;
+  --c-panel2: 241 241 237;
+  --c-raised: 233 233 228;
+  --c-line: 224 224 218;
+  --c-ink: 16 17 20;
+  --c-mute: 94 97 108;
+  --c-faint: 140 143 152;
+  --c-accent: 197 242 107;
+  --c-onaccent: 12 13 16;
+  --c-accentfg: 70 112 0;
+  --c-blue: 32 94 200;
+  --c-rec: 214 40 48;
+  color-scheme: light;
+}
+@media (min-width: 1920px) {
+  :root { --r: 32px; }
+}
+
+html { -webkit-text-size-adjust: 100%; }
+html, body, #root { min-height: 100%; }
+body {
+  margin: 0;
+  background: rgb(var(--c-bg));
+  color: rgb(var(--c-ink));
+  font-family: "Geist Variable", Geist, Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+::selection { background: rgb(var(--c-accent) / 0.35); }
+* { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid rgb(var(--c-accentfg)); outline-offset: 2px; }
+button, [role="button"], a, label, summary { touch-action: manipulation; }
+button { font: inherit; color: inherit; }
+/* Text is selectable only inside fields and the transcript. */
+.ui-nosel { user-select: none; -webkit-user-select: none; }
+input, textarea, select { font: inherit; color: inherit; }
+/* Inputs are 16px on touch so iOS does not zoom the page. */
+@media (pointer: coarse) { input, textarea, select { font-size: 16px; } }
+.tnum { font-variant-numeric: tabular-nums; }
+.hairline { border-color: rgb(var(--c-line)); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
+/* Thin scrollbars that stay out of the way. */
+* { scrollbar-width: thin; scrollbar-color: rgb(var(--c-line)) transparent; }
+.safe-b { padding-bottom: max(env(safe-area-inset-bottom), 0px); }
+.safe-t { padding-top: max(env(safe-area-inset-top), 0px); }
+
+/* Teleprompter */
+.prompter-scroll { scroll-behavior: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.prompter-scroll::-webkit-scrollbar { display: none; }
+.prompter-scroll { scrollbar-width: none; }

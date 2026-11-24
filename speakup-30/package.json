@@ -1,0 +1,37 @@
+{
+  "name": "speakup-30",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SpeakUp 30: a personal 30-day interview speaking coach for a Senior Product Designer.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "node scripts/run-unit.mjs",
+    "audit": "node tests/audit/lint.mjs && node tests/audit/run.cjs",
+    "icons": "node scripts/make-icons.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.12.0",
+    "@fontsource-variable/geist": "^5.3.0",
+    "@fontsource-variable/geist-mono": "^5.3.0",
+    "lucide-react": "0.451.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "zustand": "4.5.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.12.0",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "^6.3.0",
+    "autoprefixer": "10.4.20",
+    "esbuild": "^0.27.0",
+    "postcss": "8.4.47",
+    "tailwindcss": "3.4.14",
+    "typescript": "5.6.3",
+    "vite": "^8.3.8"
+  }
+}
