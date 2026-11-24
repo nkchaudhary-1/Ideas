@@ -11,6 +11,7 @@ import { DEFAULT_MODEL, testKey, AIError } from "../lib/ai";
 import { dateKey } from "../lib/time";
 import { DEFAULT_PROMPTER } from "../lib/types";
 import { IN_ARTIFACT } from "../lib/env";
+import { saveTextFile } from "../lib/download";
 
 function Group({ title, intro, children }: { title: string; intro?: string; children: ReactNode }) {
   return (
@@ -61,14 +62,9 @@ export function SettingsScreen() {
   const [importErr, setImportErr] = useState<string | null>(null);
   const [keyState, setKeyState] = useState<"idle" | "testing" | "ok" | string>("idle");
 
-  const download = () => {
-    const blob = new Blob([exportJSON(data)], { type: "application/json" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = `speakup30-backup-${dateKey(new Date())}.json`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-    say("Backup downloaded");
+  const download = async () => {
+    const r = await saveTextFile(`speakup30-backup-${dateKey(new Date())}.json`, exportJSON(data));
+    say(r === "saved" ? (IN_ARTIFACT ? "Backup saved" : "Backup downloaded") : r === "declined" ? "Backup not saved" : "Saving files is not available here");
   };
   const pick = async (f?: File) => {
     if (!f) return;
