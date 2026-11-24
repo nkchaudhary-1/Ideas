@@ -27,9 +27,11 @@ interface Props {
   doneLabel?: string;
   /** Tailwind height classes for the inline (not full screen) prompter. */
   heightClass?: string;
+  /** Move on by itself this many seconds after the script ends. The reader can stay. */
+  autoAdvanceSec?: number;
 }
 
-export function Prompter({ day, onDone, doneLabel = "Continue", heightClass = "h-[calc(100dvh-14rem)] min-h-[26rem]" }: Props) {
+export function Prompter({ day, onDone, doneLabel = "Continue", heightClass = "h-[calc(100dvh-14rem)] min-h-[26rem]", autoAdvanceSec }: Props) {
   const content = dayContent(day);
   const level = levelFor(day);
   const prefs = useStore((s) => s.data.prompter);
@@ -52,12 +54,31 @@ export function Prompter({ day, onDone, doneLabel = "Continue", heightClass = "h
   const [panel, setPanel] = useState<"settings" | "fill" | null>(null);
   const [idle, setIdle] = useState(false);
   const [readingId, setReadingId] = useState<string | null>(null);
+  const [leaveIn, setLeaveIn] = useState<number | null>(null);
   const wrap = useRef<HTMLDivElement>(null);
   const scroller = useRef<HTMLDivElement>(null);
   const unitEls = useRef<(HTMLElement | null)[]>([]);
   const idleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cap = useCapture();
   const reading = useStore((s) => (readingId ? s.data.attempts.find((a) => a.id === readingId) ?? null : null));
+
+  // When the script ends, count down and move on to the next step unless the reader chooses to stay. The parent
+  // re-renders every half second, so the callback goes through a ref and does not restart the countdown.
+  const doneRef = useRef(onDone);
+  doneRef.current = onDone;
+  const autoOn = !!onDone && !!autoAdvanceSec;
+  useEffect(() => {
+    setLeaveIn(view.finished && autoOn ? autoAdvanceSec! : null);
+  }, [view.finished, autoOn, autoAdvanceSec]);
+  useEffect(() => {
+    if (leaveIn === null) return;
+    if (leaveIn <= 0) {
+      doneRef.current?.();
+      return;
+    }
+    const t = setTimeout(() => setLeaveIn((n) => (n === null ? null : n - 1)), 1000);
+    return () => clearTimeout(t);
+  }, [leaveIn]);
 
   // ── Full screen
   const toggleFs = useCallback(async () => {
@@ -134,7 +155,7 @@ export function Prompter({ day, onDone, doneLabel = "Continue", heightClass = "h
       });
       setReadingId(id);
     } else if (cap.status === "idle") {
-      if (await cap.start()) say("Recording while you read");
+      if (await cap.start()) say("Recording started");
     }
   }, [cap, addAttempt, content.topic, day, say, settings.keepRecordings]);
 
@@ -229,6 +250,7 @@ export function Prompter({ day, onDone, doneLabel = "Continue", heightClass = "h
           <p className="truncate text-sm text-ink">Day {day} · {content.topic}</p>
         </div>
         <p className="text-sm tnum text-mute whitespace-nowrap" aria-label={`Session timer ${fmtClock(view.elapsed)}`} data-testid="prompter-timer">
+          <span className="hidden sm:inline">{Math.min(view.index + 1, total)} of {total} · </span>
           {fmtClock(view.elapsed)} <span>/ about {fmtClock(estimate)}</span>
         </p>
         {doc.unfilled > 0 && (
@@ -281,14 +303,19 @@ export function Prompter({ day, onDone, doneLabel = "Continue", heightClass = "h
           <div className="mt-10 rounded-card border border-line bg-panel p-8" style={{ fontSize: 16, lineHeight: "24px" }} hidden={!view.finished}>
             <p className="text-lg font-medium text-ink">That is the whole script.</p>
             <p className="mt-2 text-base text-mute">Read it once more, looking up at the cues, or move on. The next step has no script.</p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button onClick={eng.play}>Read it again</Button>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Button onClick={() => (setLeaveIn(null), eng.play())}>Read it again</Button>
               {onDone && (
                 <Button variant="primary" onClick={onDone} data-testid="prompter-done">
                   {doneLabel}
                 </Button>
               )}
             </div>
+            {leaveIn !== null && leaveIn > 0 && (
+              <p className="mt-4 text-sm text-mute" role="status" data-testid="auto-advance">
+                Moving on automatically in {leaveIn}. <button type="button" className="underline" onClick={() => setLeaveIn(null)}>Stay here</button>
+              </p>
+            )}
           </div>
         </div>
       </div>

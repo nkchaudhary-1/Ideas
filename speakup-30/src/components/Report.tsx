@@ -171,7 +171,7 @@ export function Report({ attempt }: { attempt: Attempt }) {
           </div>
           {aiReady ? (
             <Button onClick={runAI} disabled={busy || !a.scored} data-testid="ai-review">
-              {busy ? "Reviewing…" : attempt.ai ? "Review again" : "Get an AI review"}
+              {busy ? "Reviewing" : attempt.ai ? "Review again" : "Get an AI review"}
             </Button>
           ) : (
             <a href={href("/settings")} className="inline-flex h-9 coarse:h-11 items-center rounded-full border border-line px-4 text-sm text-ink hover:bg-raised">

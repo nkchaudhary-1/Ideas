@@ -133,7 +133,7 @@ function Runner({ day }: { day: number }) {
   };
   const leave = () => {
     setRunning(false);
-    say("Saved. Continue from the dashboard");
+    say("Session saved");
     go("/");
   };
 
@@ -142,7 +142,7 @@ function Runner({ day }: { day: number }) {
       case "warmup":
         return <WarmUp day={day} paused={!running} onDone={() => advance("done")} />;
       case "teleprompter":
-        return <Prompter day={day} heightClass="h-[calc(100dvh-15rem)] min-h-[26rem]" onDone={() => advance("done")} doneLabel={levelFor(day).support === "bullets" ? "Continue to bullet prompts" : "Continue to guided speaking"} />;
+        return <Prompter day={day} heightClass="h-[calc(100dvh-15rem)] min-h-[26rem]" autoAdvanceSec={8} onDone={() => advance("done")} doneLabel={levelFor(day).support === "bullets" ? "Continue to bullet prompts" : "Continue to guided speaking"} />;
       case "guided":
         return <GuidedPhase day={day} onDone={() => advance("done")} />;
       case "challenge":

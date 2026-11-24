@@ -132,7 +132,7 @@ export function SettingsScreen() {
             </div>
           </div>
           <div className="mt-6 flex flex-wrap items-center gap-3">
-            <Button onClick={test} disabled={!settings.ai.apiKey.trim() || keyState === "testing"}>{keyState === "testing" ? "Testing…" : "Test the key"}</Button>
+            <Button onClick={test} disabled={!settings.ai.apiKey.trim() || keyState === "testing"}>{keyState === "testing" ? "Testing" : "Test the key"}</Button>
             <Button variant="ghost" disabled={!settings.ai.apiKey} onClick={() => (setAi({ apiKey: "", enabled: false }), setKeyState("idle"))}>Remove the key</Button>
             {keyState === "ok" && <span role="status" className="text-sm text-accentfg">The key works.</span>}
             {keyState !== "idle" && keyState !== "ok" && keyState !== "testing" && <span role="alert" className="text-sm text-rec">{keyState}</span>}

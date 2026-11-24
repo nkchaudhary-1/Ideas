@@ -1,3 +1,4 @@
+import { ChevronDown } from "lucide-react";
 import { forwardRef, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type TextareaHTMLAttributes } from "react";
 
 export const cx = (...xs: (string | false | null | undefined)[]) => xs.filter(Boolean).join(" ");
@@ -152,11 +153,14 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextareaHTMLAttributes<H
 
 export function Select({ className, children, ...p }: React.SelectHTMLAttributes<HTMLSelectElement>) {
   return (
-    <select
-      className={cx("h-9 coarse:h-11 w-full rounded-full bg-panel2 border border-line px-4 text-sm text-ink focus:border-accentfg focus:outline-none appearance-none bg-no-repeat", className)}
-      {...p}
-    >
-      {children}
-    </select>
+    <div className="relative w-full">
+      <select
+        className={cx("h-9 coarse:h-11 w-full appearance-none rounded-full bg-panel2 border border-line pl-4 pr-10 text-sm text-ink focus:border-accentfg focus:outline-none", className)}
+        {...p}
+      >
+        {children}
+      </select>
+      <ChevronDown size={16} aria-hidden className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-mute" />
+    </div>
   );
 }

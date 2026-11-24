@@ -83,7 +83,7 @@ export function Recorder({ targetSec, onResult, onType, startLabel = "Start reco
     <div>
       <div className="flex flex-wrap items-center gap-3">
         <Button variant="primary" icon={<Mic size={18} />} onClick={begin} disabled={cap.status === "starting"} data-testid="start-recording">
-          {cap.status === "starting" ? "Starting microphone…" : startLabel}
+          {cap.status === "starting" ? "Starting the microphone" : startLabel}
         </Button>
         <Button variant="ghost" icon={<Keyboard size={18} />} onClick={onType} data-testid="type-instead">
           Type instead
