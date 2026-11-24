@@ -35,7 +35,7 @@ export default {
       },
       fontFamily: {
         sans: ['"Geist Variable"', "Geist", "Inter", "system-ui", "-apple-system", "Segoe UI", "sans-serif"],
-        mono: ['"Geist Mono Variable"', "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+        mono: ['"Geist Mono Variable"', '"Geist Mono"', "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       // Every size and line height is a multiple of 4px.
       fontSize: {

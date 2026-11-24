@@ -4,6 +4,7 @@ import { Button, Badge, cx } from "./ui/controls";
 import { Disclosure } from "./ui/layout";
 import { useStore } from "../lib/store";
 import { reviewAnswer, AIError } from "../lib/ai";
+import { IN_ARTIFACT } from "../lib/env";
 import { fmtClock } from "../lib/analysis/text";
 import { fmtDateTime } from "../lib/time";
 import { href } from "../lib/router";
@@ -158,7 +159,8 @@ export function Report({ attempt }: { attempt: Attempt }) {
         </div>
       )}
 
-      {/* Optional AI review */}
+      {/* Optional AI review (not offered in the artifact, whose page cannot reach Anthropic) */}
+      {!IN_ARTIFACT && (
       <div className="mb-8 rounded bg-panel2 p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -213,6 +215,7 @@ export function Report({ attempt }: { attempt: Attempt }) {
           </div>
         )}
       </div>
+      )}
 
       <div className="-mx-0">
         <Disclosure title="Filler words" meta={<span className="tnum">{m.fillerCount} counted</span>}>

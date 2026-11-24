@@ -4,6 +4,7 @@ import { Button, IconButton, cx } from "./ui/controls";
 import { RecDot } from "./ui/layout";
 import { useCapture } from "../lib/hooks";
 import { useStore } from "../lib/store";
+import { IN_ARTIFACT } from "../lib/env";
 import { fmtClock } from "../lib/analysis/text";
 import type { CaptureResult } from "../lib/speech/capture";
 
@@ -32,7 +33,8 @@ export function Recorder({ targetSec, onResult, onType, startLabel = "Start reco
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ready]);
 
-  const begin = () => (settings.countdown ? setReady(3) : void cap.start());
+  // In the artifact the speech tool must be started straight from the click, so there is no countdown there.
+  const begin = () => (settings.countdown && !IN_ARTIFACT ? setReady(3) : void cap.start());
   const finish = async () => {
     const r = await cap.stop();
     if (r) onResult(r);
@@ -59,7 +61,7 @@ export function Recorder({ targetSec, onResult, onType, startLabel = "Start reco
       <div>
         <div role="status" className="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-full border border-rec/50 bg-rec/5 p-2 pl-5">
           <span className="flex items-center gap-2 text-sm font-medium text-rec">
-            <RecDot /> Recording
+            <RecDot /> {IN_ARTIFACT ? "Listening" : "Recording"}
           </span>
           <span className="text-sm tnum text-ink" aria-label={`Elapsed ${fmtClock(cap.elapsed)}`}>
             {fmtClock(cap.elapsed)}
@@ -90,9 +92,12 @@ export function Recorder({ targetSec, onResult, onType, startLabel = "Start reco
         </Button>
       </div>
       <p className="mt-3 text-sm text-mute">
-        Aim for {fmtClock(targetSec[0])} to {fmtClock(targetSec[1])}. Recordings stay on this device.
-        {settings.liveTranscript && cap.canRecognise && " Live transcription uses your browser's own speech service. You can turn it off in Settings."}
-        {!cap.canRecognise && " Live transcription is not available in this browser, so you will add the transcript yourself after recording."}
+        Aim for {fmtClock(targetSec[0])} to {fmtClock(targetSec[1])}.
+        {IN_ARTIFACT
+          ? " In this artifact your words are turned into text by the viewer's dictation tool, with no audio kept. Press stop here when you have finished."
+          : " Recordings stay on this device."}
+        {!IN_ARTIFACT && settings.liveTranscript && cap.canRecognise && " Live transcription uses your browser's own speech service. You can turn it off in Settings."}
+        {!IN_ARTIFACT && !cap.canRecognise && " Live transcription is not available in this browser, so you will add the transcript yourself after recording."}
       </p>
       {cap.error && (
         <p role="alert" className="mt-4 rounded bg-rec/10 p-4 text-sm text-ink">

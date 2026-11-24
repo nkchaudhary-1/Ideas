@@ -56,7 +56,8 @@ export interface CaptureResult {
   durationSec: number;
   segments: string[];
   transcript: string;
-  vad: VadStats;
+  /** What the microphone level showed. Null when there was no audio signal (dictation in the artifact). */
+  vad: VadStats | null;
   /** True if speech recognition ran and produced text. */
   recognised: boolean;
   /** Why live transcription did not work, if it did not. */

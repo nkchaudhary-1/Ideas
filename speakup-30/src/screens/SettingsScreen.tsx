@@ -10,6 +10,7 @@ import { supportsRecognition, supportsRecording } from "../lib/speech/capture";
 import { DEFAULT_MODEL, testKey, AIError } from "../lib/ai";
 import { dateKey } from "../lib/time";
 import { DEFAULT_PROMPTER } from "../lib/types";
+import { IN_ARTIFACT } from "../lib/env";
 
 function Group({ title, intro, children }: { title: string; intro?: string; children: ReactNode }) {
   return (
@@ -27,7 +28,7 @@ function MicTest() {
   return (
     <div>
       <Button icon={<Mic size={16} />} onClick={() => (on ? void cap.stop() : void cap.start())} disabled={cap.status === "starting" || cap.status === "stopping"} data-testid="mic-test">
-        {on ? "Stop the test" : "Test the microphone"}
+        {on ? "Stop the test" : IN_ARTIFACT ? "Test speech input" : "Test the microphone"}
       </Button>
       {on && (
         <div role="status" className="mt-3 flex items-center gap-3 text-sm text-mute">
@@ -37,7 +38,7 @@ function MicTest() {
       )}
       {on && cap.live.finals.length + (cap.live.interim ? 1 : 0) > 0 && <p className="mt-2 text-sm text-ink select-text">{cap.live.finals.join(" ")} {cap.live.interim}</p>}
       {cap.error && <p role="alert" className="mt-3 text-sm text-rec">{cap.error}</p>}
-      <p className="mt-2 text-sm text-mute">The test records nothing to disk.</p>
+      <p className="mt-2 text-sm text-mute">{IN_ARTIFACT ? "The test keeps nothing." : "The test records nothing to disk."}</p>
     </div>
   );
 }
@@ -98,6 +99,19 @@ export function SettingsScreen() {
         </div>
       </Group>
 
+      {IN_ARTIFACT ? (
+        <Group title="Speaking and recording" intro="This is the artifact version of SpeakUp 30. The page sandbox cannot use your microphone, so your voice goes through the viewer's dictation tool instead.">
+          <Card>
+            <ul className="list-disc space-y-2 pl-5 text-base text-mute">
+              <li>You get a transcript, pace from the clock, and the full report.</li>
+              <li>There is no audio replay and no pause measurement, because only words reach the page.</li>
+              <li>Dictation needs a Chromium browser or the Claude desktop app, and asks for permission the first time.</li>
+              <li>Run the app itself for recording, replay, pause measurement and the optional AI review.</li>
+            </ul>
+          </Card>
+          <MicTest />
+        </Group>
+      ) : (
       <Group title="Speaking and recording" intro="Recording and the level meter work in most browsers. Live transcription depends on the browser's own speech service.">
         <div className="max-w-md">
           <label htmlFor="lang" className="mb-2 block text-sm text-mute">Speech recognition language</label>
@@ -117,7 +131,13 @@ export function SettingsScreen() {
         </div>
         <MicTest />
       </Group>
+      )}
 
+      {IN_ARTIFACT ? (
+        <Group title="AI review (optional)" intro="Not available in the artifact, which cannot reach Anthropic. Run the app itself and add your own API key to turn it on." >
+          <span />
+        </Group>
+      ) : (
       <Group title="AI review (optional)" intro="The scores and reports work without any account. This adds a written review from Claude. It needs your own Anthropic API key, and it is off until you add one.">
         <Card>
           <Switch id="ai" checked={settings.ai.enabled} onChange={(v) => setAi({ enabled: v })} label="Offer an AI review on each report" hint="Only when you press “Get an AI review” is the transcript text, never the audio, sent from this browser directly to Anthropic." />
@@ -140,6 +160,7 @@ export function SettingsScreen() {
           <p className="mt-6 text-sm text-mute">The key is saved in this browser on this device and is never included in backups. Anyone who can open this browser profile could read it, so use a key with a spending limit.</p>
         </Card>
       </Group>
+      )}
 
       <Group title="Teleprompter">
         <Button onClick={() => (setPrompter({ ...DEFAULT_PROMPTER }), say("Teleprompter preferences reset"))}>Reset teleprompter preferences</Button>

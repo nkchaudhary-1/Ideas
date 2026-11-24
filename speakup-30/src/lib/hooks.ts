@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { SpeechCapture, supportsRecognition, supportsRecording, type CaptureResult } from "./speech/capture";
+import { SpeechCapture, supportsRecognition, supportsRecording, type CaptureOptions, type CaptureResult } from "./speech/capture";
+import { DictationCapture } from "./speech/dictation";
+import { IN_ARTIFACT } from "./env";
 import { create } from "zustand";
 import { useStore } from "./store";
 
@@ -51,7 +53,7 @@ export function useCapture() {
   const [elapsed, setElapsed] = useState(0);
   const [live, setLive] = useState<{ finals: string[]; interim: string }>({ finals: [], interim: "" });
   const [error, setError] = useState<string | null>(null);
-  const cap = useRef<SpeechCapture | null>(null);
+  const cap = useRef<{ start(): Promise<void>; stop(): Promise<CaptureResult>; cancel(): void } | null>(null);
   const t0 = useRef(0);
 
   useWakeLock(status === "recording");
@@ -73,12 +75,13 @@ export function useCapture() {
     setLive({ finals: [], interim: "" });
     setElapsed(0);
     setStatus("starting");
-    const c = new SpeechCapture({
+    const opts: CaptureOptions = {
       lang: settings.lang,
       liveTranscript: settings.liveTranscript,
       onLevel: setLevel,
       onTranscript: (finals, interim) => setLive({ finals, interim }),
-    });
+    };
+    const c = IN_ARTIFACT ? new DictationCapture(opts) : new SpeechCapture(opts);
     try {
       await c.start();
       cap.current = c;
@@ -110,5 +113,5 @@ export function useCapture() {
     setLevel(0);
   }, []);
 
-  return { status, level, elapsed, live, error, start, stop, cancel, canRecord: supportsRecording(), canRecognise: supportsRecognition() };
+  return { status, level, elapsed, live, error, start, stop, cancel, canRecord: IN_ARTIFACT || supportsRecording(), canRecognise: IN_ARTIFACT || supportsRecognition() };
 }

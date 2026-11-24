@@ -2,6 +2,7 @@
 // Settings. When you press "Get an AI review" the transcript text (never the audio) is sent straight from this
 // browser to api.anthropic.com. The key is stored on this device only.
 import type { AIReview } from "./types";
+import { IN_ARTIFACT } from "./env";
 
 export const DEFAULT_MODEL = "claude-opus-5-5";
 
@@ -55,6 +56,7 @@ interface Input {
 }
 
 async function client(apiKey: string) {
+  if (IN_ARTIFACT) throw new AIError("The AI review is not available in the artifact. Run the app itself to use it.");
   const { default: Anthropic } = await import("@anthropic-ai/sdk");
   // The key belongs to the person using this app and never leaves their device except to reach Anthropic.
   return { Anthropic, c: new Anthropic({ apiKey: apiKey.trim(), dangerouslyAllowBrowser: true, maxRetries: 1 }) };
