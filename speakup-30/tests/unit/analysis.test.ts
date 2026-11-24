@@ -72,6 +72,13 @@ test("short transcripts are not scored", () => {
   eq(a.scores.clarity.value, null);
 });
 
+test("an impossible pace is never reported", () => {
+  const a = analyse({ transcript: GOOD, durationSec: 4 });
+  eq(a.metrics.wpm, null);
+  eq(a.scores.pace.value, null);
+  ok(a.limitations.some((l) => /faster than anyone can speak/.test(l)));
+});
+
 test("pace score shape", () => {
   eq(paceScoreFor(130), 10);
   ok(paceScoreFor(90) < 8);

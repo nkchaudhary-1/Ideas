@@ -6,6 +6,7 @@ import { findFillers, findHedges, findVocabulary, tightenSentence } from "./rule
 
 export const MIN_WORDS_TO_SCORE = 15;
 const LONG_SENTENCE = 35;
+export const MAX_PLAUSIBLE_WPM = 300;
 
 export interface AnalysisInput {
   transcript: string;
@@ -18,6 +19,12 @@ export interface AnalysisInput {
 
 const na = (note: string): Score => ({ value: null, note });
 const sc = (value: number, note: string): Score => ({ value: Math.round(clamp(value, 0, 10)), note });
+/**
+ * Judgement-style scores (clarity, structure, relevance, phrasing, readiness) come from rules that can only say "no problem
+ * found", never "perfect", so they top out at 9. Pace, fluency and filler control are direct measurements and can reach 10.
+ */
+const MAX_JUDGED = 9;
+const judged = (value: number, note: string): Score => sc(Math.min(value, MAX_JUDGED), note);
 
 // ── Structure: signal phrases for the five parts of a spoken answer ────────────────────────────────────────────
 
@@ -134,6 +141,13 @@ export function analyse(input: AnalysisInput): Analysis {
     const trimmed = vad ? Math.max(duration - vad.leadSilenceSec - vad.tailSilenceSec, 1) : duration;
     wpm = Math.round((words / trimmed) * 60);
     if (vad && vad.speakingSec > 3) articulation = Math.round((words / vad.speakingSec) * 60);
+    // Nobody speaks faster than about 300 words a minute. If the numbers say so, the transcript and the recording do not
+    // belong together (pasted text, or a recording that was cut short), so say that instead of reporting nonsense.
+    if (wpm > MAX_PLAUSIBLE_WPM) {
+      limitations.push(`The transcript has ${words} words but the recording is only ${fmtClock(duration)} long, which is faster than anyone can speak. Pace was not measured. Check that the transcript matches the recording.`);
+      wpm = null;
+      articulation = null;
+    }
   }
   if (vad) {
     pauses = vad.pauses;
@@ -201,22 +215,22 @@ export function analyse(input: AnalysisInput): Analysis {
       c -= 1;
       notes.push('vague words ("thing", "stuff")');
     }
-    scores.clarity = sc(Math.max(3, c), notes.length ? `Based on: ${notes.join("; ")}.` : "Short sentences and a direct opening.");
+    scores.clarity = judged(Math.max(3, c), notes.length ? `Based on: ${notes.join("; ")}.` : "Short sentences and a direct opening.");
 
     // Structure
     if (!readAloud) {
       const got = structure.filter((s) => s.found);
       const total = got.reduce((a, s) => a + STRUCTURE_WEIGHT[s.id], 0);
-      scores.structure = sc(total, `Found ${got.map((s) => s.label.toLowerCase()).join(", ") || "none of the five parts"} using signal phrases.`);
+      scores.structure = judged(total, `Found ${got.map((s) => s.label.toLowerCase()).join(", ") || "none of the five parts"} using signal phrases.`);
     }
 
     // Phrasing (not a measure of how confident your voice sounds)
     const p = 10 - Math.min(7, hedgePer100 * 1.0 + hd.apologies * 1.5);
-    scores.phrasing = sc(p, `${hd.count} hedging phrases and ${hd.apologies} apologies, from the words you used. This does not measure how confident your voice sounds.`);
+    scores.phrasing = judged(p, `${hd.count} hedging phrases and ${hd.apologies} apologies, from the words you used. This does not measure how confident your voice sounds.`);
 
     if (relevance && input.keyPoints) {
       const cov = relevance.covered.length / input.keyPoints.length;
-      scores.relevance = sc(10 * Math.min(1, cov / 0.7), `Touched ${relevance.covered.length} of ${input.keyPoints.length} key ideas for this question. Covering about 70% is a strong answer.`);
+      scores.relevance = judged(10 * Math.min(1, cov / 0.7), `Touched ${relevance.covered.length} of ${input.keyPoints.length} key ideas for this question. Covering about 70% is a strong answer.`);
     }
 
     // Interview readiness: a weighted mean over what could be measured.
@@ -228,13 +242,13 @@ export function analyse(input: AnalysisInput): Analysis {
     for (const [s, w] of weights) if (s.value !== null) { sum += s.value * w; wsum += w; }
     if (wsum > 0) {
       let r = sum / wsum;
-      const notes2 = [`Weighted from ${weights.filter(([s]) => s.value !== null).length} measured scores.`];
+      const notes2 = [`Weighted from ${weights.filter(([s]) => s.value !== null).length} measured scores. Rule-based scores top out at 9, because rules can only say that no problem was found.`];
       if (input.targetSec && duration) {
         const [lo, hi] = input.targetSec;
         if (duration < lo * 0.5) { r *= 0.9; notes2.push(`The answer was short (${fmtClock(duration)}); aim for ${fmtClock(lo)} to ${fmtClock(hi)}.`); }
         else if (duration > hi * 1.6) { r *= 0.92; notes2.push(`The answer ran long (${fmtClock(duration)}); aim for ${fmtClock(lo)} to ${fmtClock(hi)}.`); }
       }
-      scores.readiness = sc(r, notes2.join(" "));
+      scores.readiness = judged(r, notes2.join(" "));
     }
   } else if (words > 0) {
     limitations.push(`Only ${words} words, so scores are not shown. Speak for at least 20 seconds to get a report.`);

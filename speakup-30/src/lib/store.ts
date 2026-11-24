@@ -67,6 +67,7 @@ interface State {
   // session
   startSession: (day: number) => void;
   toggleClock: () => void;
+  setRunning: (run: boolean) => void;
   foldClock: () => void;
   completePhase: (status: "done" | "skipped") => void;
   gotoPhase: (index: number) => void;
@@ -143,6 +144,8 @@ export const useStore = create<State>()((set, get) => {
 
     addAttempt: (n) => {
       const a = build(n);
+      const act = get().data.active;
+      if (act && act.day === a.day) a.sessionId = act.id;
       patch((d) => ({
         ...d,
         attempts: [...d.attempts, a],
@@ -212,6 +215,18 @@ export const useStore = create<State>()((set, get) => {
           clocks: a.clocks.map((c, i) => {
             if (i !== a.phaseIndex) return c;
             return c.runningSince ? { accMs: c.accMs + (now - c.runningSince), runningSince: null } : { ...c, runningSince: now };
+          }),
+        };
+      }),
+    setRunning: (run) =>
+      patchActive((a) => {
+        const now = Date.now();
+        return {
+          ...a,
+          clocks: a.clocks.map((c, i) => {
+            if (i !== a.phaseIndex) return c;
+            if (run) return c.runningSince ? c : { ...c, runningSince: now };
+            return c.runningSince ? { accMs: c.accMs + (now - c.runningSince), runningSince: null } : c;
           }),
         };
       }),

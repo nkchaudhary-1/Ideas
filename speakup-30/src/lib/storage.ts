@@ -101,3 +101,9 @@ export const clearMemoryAudio = () => memory.clear();
 export async function loadAudio(id: string): Promise<Blob | undefined> {
   return memory.get(id) ?? (await getAudio(id));
 }
+
+/** Keep a recording for replay: always in memory for this visit, and on disk only if the user chose to keep recordings. */
+export function keepAudio(id: string, blob: Blob, onDisk: boolean) {
+  rememberAudio(id, blob);
+  if (onDisk) void putAudio(id, blob);
+}

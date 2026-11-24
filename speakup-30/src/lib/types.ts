@@ -250,7 +250,7 @@ export const DEFAULT_SETTINGS: Settings = {
   ai: { enabled: false, apiKey: "", model: "claude-opus-5-5" },
 };
 
-export const DEFAULT_PROMPTER: PrompterPrefs = { wpm: null, fontSize: 36, lineHeight: 1.6, cueMode: null, support: null };
+export const DEFAULT_PROMPTER: PrompterPrefs = { wpm: null, fontSize: 32, lineHeight: 1.6, cueMode: null, support: null };
 
 export function emptyData(): AppData {
   return {
