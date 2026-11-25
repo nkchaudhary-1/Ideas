@@ -42,7 +42,7 @@ function buildNote(def, opts = {}) {
     let coverage = null;
     try {
       const roles = Object.keys(def.palette), plates = {};
-      roles.forEach((r) => { plates[r] = plateSvg(def, ctx, r); });
+      [...roles, ...(Object.keys(ctx.blends || {}).length ? ['overlap'] : [])].forEach((r) => { plates[r] = plateSvg(def, ctx, r); });
       coverage = await require('./tests/coverage').coverage(plates);
     } catch (e) { console.warn('coverage skipped:', e.message); }
     const lite = buildNote(def, { density: 0.25 });

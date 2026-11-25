@@ -29,7 +29,7 @@ function stripes({ x0, x1, cy, t, G, N = 8, stages = STAGES, wob = { A: 16, k: 0
     let y = cy - H / 2;
     const fade = 1 - smoothstep(0, wob.end, u);
     for (let i = 0; i < N; i++) {
-      const w = wob.A * fade * Math.sin(wob.k * (x - x0) + 0.9 * i);
+      const w = wob.A * fade * Math.sin(wob.k * (x - x0) + (wob.dphi || 0.9) * i);
       tops[i].push([x, y + w]); bots[i].push([x, y + w + t + over]);
       y += t + (i < N - 1 ? gaps[i] : 0);
     }

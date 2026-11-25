@@ -11,6 +11,7 @@ const N = require('../lib/note');
 const RP = require('../symbols/ripple');
 const EN = require('../lib/engrave');
 const R = require('../lib/realism');
+const CL = require('../lib/clean');
 const B = require('../lib/bpcolors');
 const { f, f1, g, rect, circle, path, line, poly, comment, P } = S;
 const { gx, gy, FIELD, W, H } = N;
@@ -19,19 +20,20 @@ const palette = {
   primary: '#E9C928', secondary: '#D9F06A', accent: '#F29C38', pattern: '#685B16',
   paper: '#FFF6D8', ink: '#282817', highlight: '#F5E66C',
 };
-const NUM = { x: 1540, y: 680, size: 520 };
+const NUM = { x: 1530, y: 690, size: 470 };
 const E = [NUM.x - 0.275 * NUM.size, NUM.y - 0.395 * NUM.size];   // centre of the zero
-const WAVE = { d: 30, r0: 3.2, R: 10.5, lambda: 120, tau: 520, shift: 5 };
+const WAVE = { d: 30, r0: 3.4, R: 11, lambda: 120, tau: 520, shift: 5 };
 const L = {
-  head: { x: 26, y: 26, w: 1548, h: 110 },
-  logo: { x: 62, y: 44, h: 40 },
-  title: { x: 300, y: 112, size: 74 },
-  phrase: { x: 590, y: 92, size: 26 },
-  tab: { x: 1380, w: 220, h: 136 },
-  win: { x: 62, y: 190, s: 300 },
-  halo: { r: 250 }, disc: { r: 140 },
-  thread: { x: 872, w: 18 },
-  card: { x: 62, y: 500, w: 300, h: 156 },
+  logo: { x: 70, y: 52, h: 34 },
+  title: { x: 70, y: 150, size: 46 },
+  phrase: { x: 70, y: 182, size: 16 },
+  halo: { r: 250 }, disc: { r: 150 },
+  win: { x: 70, y: 232, s: 300 },
+  words: { x: 70, y: 620, size: 22 },
+  seal: { cx: 1530, cy: 62, r: 26 },
+  reg: { x: 1330, y: 52, s: 30 },
+  thread: { x: 872, w: 14 },
+  sig: { x: 410, y: 636, w: 290 },
 };
 const markCenter = [L.win.x + L.win.s / 2, L.win.y + L.win.s / 2];
 const markDots = () => RP.dots({ E: markCenter, x0: markCenter[0] - 120, y0: markCenter[1] - 120, x1: markCenter[0] + 120, y1: markCenter[1] + 120, d: 30, r0: 2, R: 12.5, lambda: 90, tau: 260 });
@@ -39,91 +41,73 @@ const markDots = () => RP.dots({ E: markCenter, x0: markCenter[0] - 120, y0: mar
 function build(ctx) {
   const C = ctx.C;
   const gp = (v) => ctx.gap(v);
-  const fieldTop = L.head.y + L.head.h;
-  const fieldClip = ctx.clip('clip-field', rect(FIELD.x, FIELD.y, FIELD.w, FIELD.h));
+  const IN = 24;
+  const clipPrint = ctx.clip('clip-print', rect(IN, IN, W - IN * 2, H - IN * 2));
+  const hole = ctx.clip('clip-no-window', path(`${S.rectD(IN, IN, W - IN * 2, H - IN * 2)}${S.rectD(L.win.x, L.win.y, L.win.s, L.win.s)}`, { clip_rule: 'evenodd' }));
 
-  R.paper(ctx, { paper: C.paper, fibres: [C.highlight, C.secondary, C.pattern, C.accent], seed: 50 });
-  R.border(ctx, { c1: C.pattern, c2: C.accent, ink: C.ink });
+  CL.ground(ctx, { paper: C.paper, field: C.paper, fibres: [C.highlight, C.secondary], seed: 50 });
+  CL.frame(ctx, { line: C.pattern, ink: C.ink });
 
-  /* ===== L03 ground ===== */
-  const area = `${S.rectD(FIELD.x, fieldTop, FIELD.w, FIELD.y + FIELD.h - fieldTop)}${S.rectD(L.win.x, L.win.y, L.win.s, L.win.s)}${S.rectD(L.card.x, L.card.y, L.card.w, L.card.h)}`;
-  const dotClip = ctx.clip('clip-dots', path(area, { clip_rule: 'evenodd' }));
-  const haloClip = ctx.clip('clip-halo', rect(FIELD.x, fieldTop, FIELD.w, FIELD.y + FIELD.h - fieldTop));
-  const ruled = (x, y, w, h, color, gap, sw, angle = 0) => path(PT.hatchRectD(x, y, w, h, angle, gp(gap)), { fill: 'none', stroke: color, stroke_width: sw });
-  ctx.add(3, comment('Ground: ruled yellow moiré; lime halo and orange disc ruled on paper; ruled ink masthead'),
-    EN.moire({ pts: EN.rectPts(FIELD.x, fieldTop, FIELD.w, FIELD.y + FIELD.h - fieldTop), angle: 5, spread: 3, gap: gp(1.6), sw: 1.25, c1: C.primary, c2: C.highlight, id: 'GROUND_MOIRE_FIELD' }),
-    g({ id: 'HALO_SECONDARY', clip_path: haloClip }, circle(E[0], E[1], L.halo.r, { fill: C.paper }), path(PT.hatchCircleD(E[0], E[1], L.halo.r, 0, gp(1.4)), { fill: 'none', stroke: C.secondary, stroke_width: 1.1 })),
-    g({ id: 'IMPACT_DISC_ACCENT' }, circle(E[0], E[1], L.disc.r, { fill: C.paper }), path(PT.hatchCircleD(E[0], E[1], L.disc.r, 0, gp(1.3)), { fill: 'none', stroke: C.accent, stroke_width: 1.1 }), circle(E[0], E[1], L.disc.r, { fill: 'none', stroke: C.ink, stroke_width: 0.8 })),
-    g({ id: 'MASTHEAD_INK' }, rect(L.head.x, L.head.y, L.head.w, L.head.h, { fill: C.paper }), ruled(L.head.x, L.head.y, L.head.w, L.head.h, C.ink, 1.25, 1.05), ruled(L.head.x, L.head.y, L.head.w, L.head.h, C.pattern, 3.2, 0.3, 90), rect(L.head.x, L.head.y, L.head.w, L.head.h, { fill: 'none', stroke: C.ink, stroke_width: 1 })),
-    rect(L.win.x, L.win.y, L.win.s, L.win.s, { fill: C.paper, stroke: C.ink, stroke_width: 1.5, id: 'SPECIMEN_WINDOW_PAPER' }),
-    rect(L.card.x, L.card.y, L.card.w, L.card.h, { fill: C.paper, stroke: C.ink, stroke_width: 1.5, id: 'CAPTION_CARD_PAPER' }));
+  /* ===== L03: ripple rings as overlapping translucent discs ===== */
+  const discs = [[420, C.primary], [330, C.secondary], [240, C.highlight], [150, C.accent]];
+  const ringsG = [];
+  discs.forEach(([r, c], i) => ringsG.push(circle(E[0], E[1], r, { fill: c, id: `RIPPLE_DISC_${r}` })));
+  // where discs overlap (every ring beyond the first lies inside the next): lens ink between neighbours
+  ctx.add(3, comment('Concentric ripple discs, each a pale tint; each ring where two discs meet is a flat multiply ink'),
+    g({ id: 'RIPPLE_DISCS', clip_path: hole }, ringsG,
+      g({ id: 'RIPPLE_OVERLAP_RINGS' }, [[420, 330], [330, 240], [240, 150]].map(([ro, ri]) => path(`${S.circleD(E[0], E[1], ro)}${S.circleD(E[0], E[1], ri)}`, { fill: ctx.blend(discs.find((d) => d[0] === ro)[1], discs.find((d) => d[0] === ri)[1]), fill_rule: 'evenodd', id: `overlap_ring_${ro}_${ri}`, opacity: undefined })))));
 
   /* ===== L04 ===== */
+  const area = `${S.rectD(IN, IN, W - IN * 2, H - IN * 2)}${S.rectD(L.win.x, L.win.y, L.win.s, L.win.s)}`;
+  const dotClip = ctx.clip('clip-dots', path(area, { clip_rule: 'evenodd' }));
   const eng = [];
-  const A = RP.dots({ E, x0: FIELD.x, y0: fieldTop, x1: FIELD.x + FIELD.w, y1: FIELD.y + FIELD.h, ...WAVE, d: ctx.gap(WAVE.d), off: [8, 14] });
-  const Bd = RP.dots({ E, x0: FIELD.x, y0: fieldTop, x1: FIELD.x + FIELD.w, y1: FIELD.y + FIELD.h, ...WAVE, d: ctx.gap(WAVE.d), R: 5, r0: 1.4, off: [23, 29], shift: 3 });
-  eng.push(comment('P05 Dot system A: the lattice, resized and pushed by the wave'));
+  const REACH = 640;
+  const A = RP.dots({ E, x0: IN, y0: IN, x1: W - IN, y1: H - IN, ...WAVE, d: ctx.gap(WAVE.d), off: [8, 14] })
+    .filter((p) => p.dist < REACH).map((p) => ({ ...p, r: p.r * (1 - S.smoothstep(REACH * 0.62, REACH, p.dist)) }));
+  eng.push(comment('P05 Dot system: the lattice, resized and pushed by the wave. The epicentre is the zero of the numeral'));
   eng.push(path(RP.dotsD(A), { fill: C.pattern, clip_path: dotClip, id: 'P05_LATTICE_A' }));
-  eng.push(comment('P05 Dot system B: a half-cell offset lattice, same wave, smaller'));
-  eng.push(path(RP.dotsD(Bd), { fill: C.ink, clip_path: dotClip, id: 'P05_LATTICE_B' }));
   eng.push(comment('P02 Contour: rings at every crest, D = n · 120'));
-  eng.push(g({ id: 'P02_CREST_RINGS', fill: 'none', stroke: C.ink, stroke_width: 0.8, clip_path: dotClip }, S.range(12, 1).map((n) => circle(E[0], E[1], n * WAVE.lambda, { id: `crest_${n}` }))));
-  eng.push(rect(L.win.x + 8, L.win.y + 8, L.win.s - 16, L.win.s - 16, { fill: ctx.pat('pat-microgrid-15', PT.patMicroGrid('pat-microgrid-15', { size: 15, color: C.highlight, sw: 0.6, dot: 0 })), id: 'P03_WINDOW_MICROGRID' }));
-  const wv = PT.waveFieldD({ x0: 420, x1: 1150, y0: 692, y1: 712, lines: 4, step: gp(2.5), ampFn: (u) => 1 + 7 * u * u, freqFn: (u) => 0.05 + 0.2 * u * u, phaseFn: (t) => t * 2 });
-  eng.push(comment('P08 Wave system: the rail speeds up and swells toward the impact'));
-  eng.push(path(wv, { fill: 'none', stroke: C.pattern, stroke_width: 0.9, id: 'P08_WAVES_RAIL' }));
+  eng.push(g({ id: 'P02_CREST_RINGS', fill: 'none', stroke: C.ink, stroke_width: 0.5, clip_path: dotClip }, S.range(5, 1).map((n) => circle(E[0], E[1], n * WAVE.lambda, { id: `crest_${n}` }))));
+  eng.push(rect(L.win.x, L.win.y, L.win.s, L.win.s, { fill: C.paper, stroke: C.ink, stroke_width: 1, id: 'SPECIMEN_WINDOW_PAPER' }));
   ctx.add(4, eng);
 
   /* ===== L05 ===== */
   const m = markDots();
-  const sym = [];
-  sym.push(comment('RIPPLE specimen: 11 × 11 lattice, λ = 3 cells'));
-  sym.push(g({ id: 'RIPPLE_SPECIMEN' }, m.filter((p) => p.dist > 1).map((p) => circle(p.x, p.y, p.r, { fill: C.ink })),
-    g({ id: 'RIPPLE_IMPACT_POINT' }, circle(markCenter[0], markCenter[1], m[60].r, { fill: C.paper }), path(PT.hatchCircleD(markCenter[0], markCenter[1], m[60].r, 0, 1.2), { fill: 'none', stroke: C.accent, stroke_width: 1 }), circle(markCenter[0], markCenter[1], m[60].r, { fill: 'none', stroke: C.ink, stroke_width: 1.5 }))));
-  ctx.add(5, sym);
+  ctx.add(5, comment('RIPPLE specimen: 11 × 11 lattice, λ = 3 cells'),
+    g({ id: 'RIPPLE_SPECIMEN' }, m.filter((p) => p.dist > 1).map((p) => circle(p.x, p.y, p.r, { fill: C.ink })),
+      circle(markCenter[0], markCenter[1], m[60].r, { fill: C.accent, stroke: C.ink, stroke_width: 1.2, id: 'RIPPLE_IMPACT_POINT' })));
 
   /* ===== L06 ===== */
-  const wm = [];
-  wm.push(R.corners(ctx, { paper: C.paper, c1: C.pattern, c2: C.accent, c3: C.primary, ink: C.ink }));
-  wm.push(comment('Watermark rings around the specimen, at the crests (λ = 90)'));
-  const winClip = ctx.clip('clip-window', rect(L.win.x, L.win.y, L.win.s, L.win.s));
-  wm.push(g({ id: 'WATERMARK_CREST_RINGS', fill: 'none', stroke: C.primary, stroke_width: 1, clip_path: winClip }, [1, 2, 3].map((n) => circle(markCenter[0], markCenter[1], n * 90))));
-  const tile = ctx.pat('pat-ripple-tile', PT.patSymbol('pat-ripple-tile', g({ fill: C.pattern }, circle(5, 5, 1.6), circle(15, 5, 2.6), circle(25, 5, 1.6), circle(5, 15, 2.6), circle(15, 15, 4.6, { fill: C.accent }), circle(25, 15, 2.6), circle(5, 25, 1.6), circle(15, 25, 2.6), circle(25, 25, 1.6)), 30));
-  wm.push(rect(gx(15) - 20, 686, 360, 30, { fill: tile, id: 'P06_SYMBOL_REPEAT_STRIP' }));
-  wm.push(g({ id: 'NUMERAL_TAB_TOP_RIGHT' }, rect(L.tab.x, 0, L.tab.w, L.tab.h, { fill: C.paper }), ruled(L.tab.x, 0, L.tab.w, L.tab.h, C.accent, 1.4, 1.05), rect(L.tab.x, 0, L.tab.w, L.tab.h, { fill: 'none', stroke: C.ink, stroke_width: 0.9 }),
-    rect(1410, 30, 150, 76, { fill: C.paper }), EN.cartouche({ x: 1410, y: 30, w: 150, h: 76, notch: 9, color: C.ink, sw: 1.1, id: 'cartouche_numeral' })));
-  wm.push(g({ id: 'SERIAL_CHIP' }, rect(1352, 696, 196, 26, { fill: C.paper, stroke: C.ink, stroke_width: 0.9 })));
-  ctx.add(6, wm);
+  ctx.add(6,
+    CL.seal(ctx, L.seal.cx, L.seal.cy, L.seal.r, { c1: C.pattern, c2: C.accent, c3: C.primary, ink: C.ink, paper: C.paper }),
+    CL.reg(L.reg.x, L.reg.y, L.reg.s, C.pattern, C.accent),
+    CL.braille(780, 644, 2, C.ink),
+    comment('Watermark rings around the specimen at the crests (λ = 90)'),
+    g({ id: 'WATERMARK_CREST_RINGS', fill: 'none', stroke: C.pattern, stroke_width: 0.8, clip_path: ctx.clip('clip-window', rect(L.win.x, L.win.y, L.win.s, L.win.s)) }, [1, 2, 3].map((n) => circle(markCenter[0], markCenter[1], n * 90))));
 
   /* ===== L07 ===== */
   const T = [];
-  T.push(N.gridLogo(L.logo.x, L.logo.y, L.logo.h, C.paper, {}));
-  T.push(N.impact('IMPACT', L.title.x, L.title.y, L.title.size, C.paper, { id: 'T03_TITLE', letter_spacing: '0.04em' }));
-  T.push(N.inter('Create meaningful change', L.phrase.x, L.phrase.y, L.phrase.size, C.paper, { weight: 700, id: 'T04_PHRASE' }));
-  T.push(N.inter('VALUE 05 / 05  ·  PRINCIPLE IMPACT  ·  SERIES A 2026', L.phrase.x, 118, 9, C.paper, { weight: 700, ls: '0.18em' }));
-  T.push(R.issuer(1040, 56, { fill: C.paper, accent: C.paper, words: 'THE VALUE OF FIFTY GRID', size: 9 }));
-  T.push(R.numerals(ctx, '50', NUM.x, NUM.y, NUM.size, { lines: C.ink, outline: C.ink, gap: 3, sw: 1.5, osw: 2, anchor: 'end', under: C.paper, id: 'T01_DENOMINATION' }));
-  T.push(N.impact('50', 1485, 80, 56, C.ink, { text_anchor: 'middle', id: 'T01_CORNER_NUMERAL', letter_spacing: '0.03em' }));
-  T.push(N.serial('M 50  0731 4408 K', 1485, 100, 7.5, C.ink, { text_anchor: 'middle', id: 'T05_SERIAL_SMALL' }));
-  T.push(N.serial('M 50  0731 4408 K', 1450, 714, 12, C.ink, { text_anchor: 'middle', id: 'T05_SERIAL_PRIMARY' }));
-  T.push(S.text('M 50  0731 4408 K', { transform: `translate(${FIELD.x + 12} 460) rotate(-90)`, font_family: N.INTER, font_size: 10, font_weight: 600, letter_spacing: '0.2em', fill: C.ink, id: 'T05_SERIAL_VERTICAL' }));
-  T.push(N.inter('RIPPLE  ·  11 × 11  ·  λ = 3 CELLS', L.card.x + 16, L.card.y + 24, 9.5, C.ink, { weight: 700, ls: '0.14em', id: 'T05_SPECIMEN_LABEL' }));
-  T.push(N.inter('r = r0 + R · e^(−D/τ) · ½(1 + cos 2πD/λ)', L.card.x + 16, L.card.y + 42, 10, C.pattern, { weight: 600, id: 'T05_FORMULA' }));
-  T.push(N.inter('The zero is the stone.', L.card.x + 16, L.card.y + 70, 13, C.ink, { weight: 700, id: 'T05_STATEMENT_1' }));
-  T.push(N.inter('The lattice is everything it reaches.', L.card.x + 16, L.card.y + 88, 11.5, C.ink, { weight: 600, id: 'T05_STATEMENT_2' }));
-  T.push(R.signatures(L.card.x + 16, L.card.y + 100, L.card.w - 32, { color: C.ink, label: C.pattern, seed: 50, h: 20 }));
-  T.push(N.micro('CREATE MEANINGFUL CHANGE', 470, 160, 360, 4.6, C.pattern, { id: 'T05_MICROTEXT_1' }));
-  T.push(R.frameMicro('GRID CREATIVE RESERVE · 50 GRID · CREATE MEANINGFUL CHANGE ·', C.ink));
+  T.push(N.gridLogo(L.logo.x, L.logo.y, L.logo.h, C.ink, {}));
+  T.push(N.impact('IMPACT', L.title.x, L.title.y, L.title.size, C.accent, { id: 'T03_TITLE', letter_spacing: '0.04em' }));
+  T.push(N.inter('Create meaningful change', L.phrase.x, L.phrase.y, L.phrase.size, C.ink, { weight: 700, id: 'T04_PHRASE' }));
+  T.push(N.impact('50', NUM.x, NUM.y, NUM.size, C.ink, { text_anchor: 'end', id: 'T01_DENOMINATION' }));
+  T.push(CL.words(L.words.x, L.words.y, 'FIFTY GRID', 'Creative Reserve · Series A 2026', { fill: C.ink, size: L.words.size }));
+  T.push(N.inter('RIPPLE  ·  11 × 11  ·  λ = 3 CELLS', L.win.x, L.win.y + L.win.s + 20, 9, C.ink, { weight: 700, ls: '0.14em', id: 'T05_SPECIMEN_LABEL' }));
+  T.push(N.inter('r = r0 + R · e^(−D/τ) · ½(1 + cos 2πD/λ)', L.win.x, L.win.y + L.win.s + 38, 10, C.pattern, { weight: 600, id: 'T05_FORMULA' }));
+  T.push(R.issuer(430, 560, { fill: C.ink, accent: C.pattern, words: 'THE VALUE OF FIFTY GRID', size: 10 }));
+  T.push(R.signatures(L.sig.x, L.sig.y, L.sig.w, { color: C.ink, label: C.pattern, seed: 50, h: 22 }));
+  T.push(N.impact('50', 1476, 80, 30, C.ink, { text_anchor: 'end', id: 'T01_CORNER_NUMERAL' }));
+  T.push(N.serial('M 50  0731 4408 K', 1476, 100, 8.5, C.ink, { text_anchor: 'end', id: 'T05_SERIAL_SMALL' }));
+  T.push(N.serial('M 50  0731 4408 K', 430, 704, 14, C.pattern, { id: 'T05_SERIAL_PRIMARY' }));
+  T.push(N.impact('50', 70, 712, 22, C.accent, { id: 'T01_CORNER_NUMERAL_BL' }));
+  T.push(N.micro('CREATE MEANINGFUL CHANGE · CURRENCY FOR THE CREATIVE WORLD', 40, 18, 1520, 3.8, C.pattern, { id: 'T05_MICROPRINT_TOP' }));
+  T.push(N.micro('GRID CREATIVE RESERVE · 50 GRID · RIPPLE · 50 GRID', 40, 738, 1520, 3.8, C.pattern, { id: 'T05_MICROPRINT_BOTTOM' }));
   ctx.add(7, T);
 
   /* ===== L08 ===== */
   const sec = [];
-  sec.push(N.thread(L.thread.x, L.head.y + L.head.h, FIELD.y + FIELD.h, L.thread.w, { a: C.paper, b: C.accent, ink: C.ink, label: 'GRID 50 · IMPACT · GRID 50 · IMPACT' }));
-  const fs = [C.accent, C.highlight, C.secondary, C.paper, C.highlight, C.accent].map((color, k, a) => ({ at: k / (a.length - 1), color }));
-  sec.push(g({ id: 'FOIL_STRIPE' }, EN.iris({ x: L.thread.x - 28, y: fieldTop, w: 24, h: FIELD.y + FIELD.h - fieldTop, vertical: false, gap: gp(1.3), sw: 0.9, stops: [...fs, ...fs].map((q, i, a) => ({ at: i / (a.length - 1), color: q.color })), id: 'foil_iris' }),
-    rect(L.thread.x - 28, fieldTop, 24, FIELD.y + FIELD.h - fieldTop, { fill: 'none', stroke: C.ink, stroke_width: 0.8 })));
-  sec.push(N.tactile(1, 62, 686, C.ink, { bar: 4, h: 20, gap: 6 }));
-  sec.push(g({ id: 'REGISTRATION_MARKS' }, PT.regMark(gx(5) + 20, 175, 7, C.ink), PT.regMark(gx(12), 650, 7, C.ink)));
+  sec.push(N.thread(L.thread.x, IN, H - IN, L.thread.w, { a: C.paper, b: C.accent, ink: C.ink, label: 'GRID 50 · IMPACT · GRID 50 · IMPACT' }));
+  sec.push(N.tactile(1, 140, 692, C.ink, { bar: 4, h: 18, gap: 6 }));
   ctx.add(8, sec);
 }
 
@@ -153,36 +137,36 @@ const bp = {
     keywords: ['TRANSFORMATION', 'PROPAGATION', 'INFLUENCE'],
   },
   elements: [
-    { t: 'RIPPLE lattice', d: 'Dot radius follows a damped cosine of distance from the impact point E.', layer: 'L05 · L04' },
-    { t: 'Crest rings', d: 'Contour rings at D = n · 120 pass through every crest: the wave made visible.', layer: 'L04' },
+    { t: 'RIPPLE lattice', d: 'Dot radius follows a damped cosine of distance from the impact point E.', layer: 'L04 · L05' },
+    { t: 'Ripple discs', d: 'Four pale discs centred on E; each ring where two discs meet is a flat multiply ink.', layer: 'L03' },
     { t: 'The zero is the epicentre', d: 'E sits in the counter of the zero. The numeral is the stone, the lattice the water.', layer: 'L03 · L07' },
-    { t: 'Two lattices', d: 'A half-cell offset lattice follows the same wave at lower amplitude: a second order effect.', layer: 'L04' },
-    { t: 'Speeding rail', d: 'Bottom rail waves gain amplitude and frequency toward the impact.', layer: 'L04' },
+    { t: 'Crest rings', d: 'Contour rings at D = n · 120 pass through every crest: the wave made visible.', layer: 'L04' },
+    { t: 'Dots fade with distance', d: 'Beyond 640 px the lattice has shrunk to nothing: consequences thin out.', layer: 'L04' },
   ],
   callouts: [
-    { code: 'T02', label: 'GRID LOCKUP', pt: [236, 52], side: 'L' },
-    { code: 'T03', label: 'THEME TITLE', pt: [415, 40], side: 'L' },
-    { code: 'L05', label: 'RIPPLE SPECIMEN', pt: [212, 340], side: 'L' },
-    { code: 'L04', label: 'DOT LATTICE', pt: [520, 520], side: 'L' },
-    { code: 'L08', label: 'TACTILE CODE', pt: [70, 696], side: 'L' },
-    { code: 'T04', label: 'SUPPORTING PHRASE', pt: [960, 84], side: 'R' },
-    { code: 'L08', label: 'SECURITY THREAD', pt: [880, 330], side: 'R' },
-    { code: 'T01', label: 'DENOMINATION', pt: [1130, 470], side: 'R' },
-    { code: 'L03', label: 'IMPACT DISC E', pt: [E[0], E[1]], side: 'R' },
+    { code: 'T02', label: 'GRID LOCKUP', pt: [150, 70], side: 'L' },
+    { code: 'T03', label: 'THEME TITLE', pt: [190, 124], side: 'L' },
+    { code: 'L05', label: 'RIPPLE SPECIMEN', pt: [220, 380], side: 'L' },
+    { code: 'T02', label: 'VALUE IN WORDS', pt: [150, 626], side: 'L' },
+    { code: 'T05', label: 'SIGNATURES', pt: [540, 650], side: 'L' },
+    { code: 'L06', label: 'ROUNDEL SEAL', pt: [L.seal.cx, L.seal.cy], side: 'R' },
+    { code: 'L03', label: 'RIPPLE DISCS', pt: [1060, 380], side: 'R' },
+    { code: 'T01', label: 'DENOMINATION', pt: [1260, 470], side: 'R' },
+    { code: 'L08', label: 'SECURITY THREAD', pt: [880, 300], side: 'R' },
   ],
   zones: [
     { code: 'T01', rect: [NUM.x - N.impactWidth('50', NUM.size), NUM.y - 0.79 * NUM.size, N.impactWidth('50', NUM.size), 0.79 * NUM.size] },
     { code: 'T02', rect: [L.logo.x, L.logo.y, N.gridLogoWidth(L.logo.h), L.logo.h * 1.45] },
     { code: 'T03', rect: [L.title.x, L.title.y - 0.79 * L.title.size, N.impactWidth('IMPACT', L.title.size), 0.79 * L.title.size] },
-    { code: 'T04', rect: [L.phrase.x, L.phrase.y - 20, 340, 26] },
+    { code: 'T04', rect: [L.phrase.x, L.phrase.y - 14, 230, 20] },
     { code: 'L05', rect: [L.win.x, L.win.y, L.win.s, L.win.s] },
-    { code: 'L03', circle: [E[0], E[1], L.halo.r] },
-    { code: 'L08', rect: [L.thread.x, L.head.y + L.head.h, L.thread.w, FIELD.h - L.head.h] },
-    { code: 'L03', rect: [L.head.x, L.head.y, L.head.w, L.head.h] },
+    { code: 'L03', rect: [E[0] - 420, 24, W - 24 - (E[0] - 420), 702] },
+    { code: 'L08', rect: [L.thread.x, 24, L.thread.w, 702] },
+    { code: 'T05', rect: [430, 692, 150, 16] },
   ],
   steps,
   facts: [['LATTICE', 'd = 30 px'], ['WAVELENGTH', 'λ = 120 px (note)'], ['DECAY', 'τ = 520 px'], ['EPICENTRE', 'centre of the zero']],
-  patterns: { P02: 'Crest rings', P03: 'Window micro-grid', P05: 'Twin lattices', P06: 'Ripple tile strip', P08: 'Speeding rail' },
+  patterns: { P01: 'Roundel seal', P02: 'Crest rings', P05: 'Dot lattice' },
   samples: {
     P05: (w, h, c) => g({}, miniDots(RP.dots({ E: [w / 2, h / 2], x0: 14, y0: 10, x1: w - 14, y1: h - 8, d: 12, r0: 1, R: 4.5, lambda: 36, tau: 80 }), 0, 0, () => ({ fill: c }))),
     P02: (w, h, c) => g({ fill: 'none', stroke: c, stroke_width: 0.9 }, [1, 2, 3, 4].map((n) => circle(w / 2, h / 2, n * 14))),

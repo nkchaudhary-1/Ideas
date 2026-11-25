@@ -124,13 +124,13 @@ function suffixIds(markup, suffix) {
 
 /* ---------- pretty printer (controlled input only) ---------- */
 function pretty(src) {
-  const toks = src.match(/<!--[\s\S]*?-->|<text\b[\s\S]*?<\/text>|<title>[\s\S]*?<\/title>|<style>[\s\S]*?<\/style>|<desc>[\s\S]*?<\/desc>|<\?xml[\s\S]*?\?>|<[^>]+>/g) || [];
+  const toks = src.match(/<!--[\s\S]*?-->|<text\b[\s\S]*?<\/text>|<title>[\s\S]*?<\/title>|<style>[\s\S]*?<\/style>|<desc>[\s\S]*?<\/desc>|<\?xml[\s\S]*?\?>|<metadata\b[\s\S]*?<\/metadata>|<[^>]+>/g) || [];
   let depth = 0;
   const out = [];
   for (const t of toks) {
     if (t.startsWith('</')) { depth = Math.max(0, depth - 1); out.push('  '.repeat(depth) + t); continue; }
     out.push('  '.repeat(depth) + t);
-    const open = /^<[A-Za-z]/.test(t) && !t.endsWith('/>') && !/^<(text|title|desc|style)\b/.test(t);
+    const open = /^<[A-Za-z]/.test(t) && !t.endsWith('/>') && !/^<(text|title|desc|style|metadata)\b/.test(t);
     if (open) depth++;
   }
   return out.join('\n') + '\n';

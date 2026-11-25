@@ -38,7 +38,17 @@ class Ctx {
     this.ids = new Set();
     this.L = LAYERS.map(() => []);
     this.opts = opts;
+    this.blends = {};                   // overlap ink -> the palette roles it is made of
     this.density = opts.density || 1;   // 1 for the real note, lower for the lightweight blueprint plates
+  }
+  /* Overlap ink: multiply of two inks, so overlaps look translucent while every layer stays flat and explicit. */
+  blend(a, b) {
+    const hx = (c) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
+    const A = hx(a), B = hx(b);
+    const out = '#' + A.map((v, i) => Math.round(v * B[i] / 255).toString(16).padStart(2, '0')).join('').toUpperCase();
+    const roles = (c) => this.blends[c] || Object.keys(this.C).filter((k) => this.C[k].toLowerCase() === c.toLowerCase());
+    if (!Object.values(this.C).some((v) => v.toLowerCase() === out.toLowerCase())) this.blends[out] = [...new Set([...roles(a), ...roles(b)])];
+    return out;
   }
   gap(g) { return g / this.density; }
   n(k) { return Math.max(4, Math.round(k * this.density)); }
@@ -147,6 +157,7 @@ function assemble(ctx, { title, desc, id }) {
   const svg = el('svg', { xmlns: 'http://www.w3.org/2000/svg', viewBox: `0 0 ${W} ${H}`, width: W, height: H, id, role: 'img', 'aria-label': title },
     el('title', {}, S.esc(title)),
     el('desc', {}, S.esc(desc)),
+    Object.keys(ctx.blends).length ? el('metadata', { id: 'OVERLAP_INKS' }, S.esc('Overlap inks (multiply of palette roles): ' + Object.entries(ctx.blends).map(([h, r]) => `${h}=${r.join('+')}`).join(' '))) : '',
     el('defs', { id: 'DEFS_PATTERNS_CLIPS' }, ctx.defs, fontFallbackStyle()),
     layers);
   return S.pretty(`<?xml version="1.0" encoding="UTF-8"?>\n${svg}`);

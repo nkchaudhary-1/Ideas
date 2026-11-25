@@ -251,17 +251,28 @@ function p06(def, ex) {
       rect(x, 170, sw, 44, { fill: '#0B121C', stroke: GD, stroke_width: 1 }),
       g({ transform: `translate(${x} 170) scale(${f(sw / 1600)})` }, g({ clip_path: 'url(#bp-clip-note)' }, ex.plates[k]))));
   });
-  // coverage bar
-  const by = 250, bw = 7 * sw + 6 * gp;
+  // coverage bar (seven roles + overlap inks)
+  const by = 244, bw = 7 * sw + 6 * gp;
   o.push(bt('INK COVERAGE PER PLATE', x0, by - 8, { size: 9.5, weight: 800, ls: '0.16em', fill: PK }));
-  let cx = x0;
+  const blendHex = Object.keys(ex.blends);
   const covTotal = ex.coverage ? Object.values(ex.coverage).reduce((a, b) => a + b, 0) : 1;
-  ROLES.forEach(([k]) => {
-    const pct = ex.coverage ? ex.coverage[k] / covTotal : 1 / 7, w = bw * pct;
-    o.push(rect(cx, by, w, 16, { fill: C[k], stroke: BG, stroke_width: 0.6 }));
+  let cx = x0;
+  [...ROLES.map(([k]) => [k, C[k]]), ...(blendHex.length ? [['overlap', blendHex[0]]] : [])].forEach(([k, hex]) => {
+    const pct = ex.coverage ? (ex.coverage[k] || 0) / covTotal : 1 / 7, w = bw * pct;
+    o.push(rect(cx, by, w, 16, { fill: hex, stroke: BG, stroke_width: 0.6 }));
     cx += w;
   });
-  o.push(...para(['Seven flat fills, no gradients, no transparency, no effects. Every overprint is an', 'explicit colour layer; every pattern uses a colour from this palette only.'], x0, 292, 15, { size: 11.5, op: 0.72 }));
+  if (blendHex.length) {
+    o.push(bt(`OVERLAP INKS  ·  ${ex.coverage ? (ex.coverage.overlap / covTotal * 100).toFixed(1) + '% of ink' : ''}  ·  A FLAT MULTIPLY OF TWO ROLES`, x0, 282, { size: 9.5, weight: 800, ls: '0.16em', fill: PK }));
+    blendHex.slice(0, 5).forEach((hex, i) => {
+      const x = x0 + i * 140;
+      o.push(g({ id: `BP_OVERLAP_INK_${i + 1}` }, rect(x, 292, 22, 16, { fill: hex, stroke: TX, stroke_width: 0.6 }),
+        bt(hex, x + 30, 302, { size: 10.5, weight: 600, fill: GR }),
+        bt(ex.blends[hex].join(' × ').toUpperCase(), x + 30, 314, { size: 8, weight: 700, ls: '0.06em', op: 0.7 })));
+    });
+  } else {
+    o.push(...para(['Seven flat inks, no gradients, no transparency, no effects. Every pattern uses a colour from this palette only.'], x0, 288, 15, { size: 11.5, op: 0.72 }));
+  }
   return panel('PANEL_06_COLOUR_SYSTEM', COL.C, ROW[2], '06', 'COLOUR  —  ROLES, HEX & SEPARATION', 'SECTIONS D + G  ·  C01 – C07', o);
 }
 
@@ -390,14 +401,12 @@ function p09(def, ex) {
 }
 
 /* ---------------- plates: palette substitution on the note markup ---------------- */
-function plate(def, role, markup, keepWidths = false) {
+function plate(def, role, markup, keepWidths = false, blends = []) {
   const C = def.palette;
-  let out = markup.replace(/<rect[^>]*id="PAPER"[^>]*\/>/, '');
-  Object.entries(C).forEach(([k, hex]) => {
-    if (k === role) return;
-    out = out.split(`fill="${hex}"`).join('fill="none"').split(`stroke="${hex}"`).join('stroke="none"');
-    out = out.split(`fill="url(#pat-engrave-`).join(`fill="url(#pat-engrave-`);
-  });
+  let out = markup.replace(/<rect[^>]*id="PAPER"[^>]*\/>/, '').replace(/<rect[^>]*id="PRINT_FIELD"[^>]*\/>/, '');
+  const none = (hex) => { out = out.split(`fill="${hex}"`).join('fill="none"').split(`stroke="${hex}"`).join('stroke="none"'); };
+  Object.entries(C).forEach(([k, hex]) => { if (k !== role) none(hex); });
+  blends.forEach((hex) => { if (role !== 'overlap') none(hex); });
   // drop shapes that no longer paint anything: a plate only keeps its own ink
   out = out.replace(/<(?:path|rect|circle|ellipse|polygon|polyline|line)\b(?![^>]*\bstroke="(?!none))[^>]*\bfill="none"[^>]*\/>/g, '')
     .replace(/<(?:path|rect|circle|ellipse|polygon|polyline|line)\b(?=[^>]*\bstroke="none")(?=[^>]*\bfill="none")[^>]*\/>/g, '');
@@ -407,7 +416,7 @@ function plate(def, role, markup, keepWidths = false) {
 /* A standalone 1600 x 750 SVG of one ink, for measuring coverage */
 function plateSvg(def, ctx, role) {
   const layers = N.LAYERS.map(([id], i) => g({ id }, ctx.L[i])).join('\n');
-  const body = plate(def, role, `<defs>${ctx.defs.join('\n')}</defs>${layers}`, true);
+  const body = plate(def, role, `<defs>${ctx.defs.join('\n')}</defs>${layers}`, true, Object.keys(ctx.blends || {}));
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 750" width="1600" height="750">${body}</svg>`;
 }
 
@@ -421,9 +430,9 @@ function buildBlueprint(def, ctx, { frameNo, notesMeta, coverage, noteSvgBytes, 
   const plateLayers = N.LAYERS.map(([id], i) => g({ id }, pc.L[i])).join('\n');
   const plates = {};
   ROLES.forEach(([k]) => {
-    plates[k] = plate(def, k, `<defs>${pc.defs.join('\n')}</defs>${plateLayers}`);
+    plates[k] = plate(def, k, `<defs>${pc.defs.join('\n')}</defs>${plateLayers}`, false, Object.keys(pc.blends || {}));
   });
-  const ex = { coverage, plates, layerCounts, sizeKb: Math.round(noteSvgBytes / 1024) };
+  const ex = { coverage, plates, layerCounts, sizeKb: Math.round(noteSvgBytes / 1024), blends: ctx.blends || {} };
   const defs = el('defs', { id: 'BP_DEFS' },
     bpDefs(),
     def.bp.extraDefs || '',

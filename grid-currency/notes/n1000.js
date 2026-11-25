@@ -10,6 +10,7 @@ const PT = require('../lib/patterns');
 const N = require('../lib/note');
 const E = require('../lib/engrave');
 const R = require('../lib/realism');
+const CL = require('../lib/clean');
 const U = require('../symbols/unfold');
 const { f, f1, g, rect, circle, path, line, poly, comment, P } = S;
 const B = require('../lib/bpcolors');
@@ -22,158 +23,101 @@ const palette = {
 
 /* ---- symbol geometry shared by note + blueprint ---- */
 const SYM = {
-  o: [gx(15), gy(4)],          // grid vertex (col 15, row 4)
-  u: 75 / Math.SQRT2,          // first square's diagonal = one 75 px module
+  o: [800, 452],               // the shared corner
+  u: (75 / Math.SQRT2) * 1.3,  // first square's diagonal = 1.3 modules at this scale
   a0: -45, dir: 1,
 };
 const hero = () => U.squares({ ...SYM, n: 6 });
 const big = () => U.squares({ ...SYM, n: 5, from: 6 });
+const chain = () => U.squares({ ...SYM, n: 10 });
 
-/* layout constants (also used for the blueprint wireframe) */
 const L = {
-  block: { x: FIELD.x, y: FIELD.y, w: gx(5) - FIELD.x, h: FIELD.h },          // type column
-  medallion: { cx: 650, cy: 238, r: 138, win: 72 },
-  numerals: { x: 62, y: 640, size: 280 },
-  title: { x: 62, y: 176, size: 58 },
-  phrase: { x: 62, y: 208, size: 20 },
-  logo: { x: 62, y: 46, h: 40 },
-  thread: { x: gx(17) + 6, w: 18 },
-  foil: { x: gx(17) - 28, w: 24 },
+  logo: { x: 70, y: 52, h: 34 },
+  title: { x: 70, y: 196, size: 46 },
+  phrase: { x: 70, y: 228, size: 16 },
+  issuer: { x: 70, y: 296 },
+  seal: { cx: 160, cy: 438, r: 58 },
+  sig: { x: 70, y: 566, w: 290 },
+  numerals: { x: 960, y: 500, size: 250 },
+  words: { x: 962, y: 552, size: 26 },
+  reg: { x: 1404, y: 50, s: 34 },
+  thread: { x: 916, w: 14 },
 };
 
 function build(ctx) {
   const C = ctx.C;
   const o = SYM.o;
-  const bigSq = big();
+  const sq = chain();
   const heroSq = hero();
   const gp = (v) => ctx.gap(v);
-  const fieldClip = ctx.clip('clip-field', rect(FIELD.x, FIELD.y, FIELD.w, FIELD.h));
-  const blockClip = ctx.clip('clip-block-secondary', rect(L.block.x, L.block.y, L.block.w, L.block.h));
-  const violetClip = ctx.clip('clip-block-primary', rect(gx(5), FIELD.y, FIELD.x + FIELD.w - gx(5), FIELD.h));
-  const NOTE = [0, 0, W, H];
-  const violetPts = E.rectPts(gx(5), FIELD.y, FIELD.x + FIELD.w - gx(5), FIELD.h);
+  const IN = 24;
+  const vis = (pts) => E.clipToRect(pts, IN, IN, W - IN, H - IN);
+  const col = [C.accent, C.secondary, C.primary, C.highlight, C.primary, C.secondary, C.highlight, C.primary, C.secondary, C.primary];
 
-  /* ===== L01 paper ===== */
-  R.paper(ctx, { paper: C.paper, fibres: [C.highlight, C.secondary, C.primary, C.accent], seed: 1000 });
+  /* ===== L01 / L02 ===== */
+  CL.ground(ctx, { paper: C.paper, fibres: [C.highlight, C.secondary], seed: 1000 });
+  CL.frame(ctx, { line: C.primary, ink: C.ink });
 
-  /* ===== L02 border ===== */
-  R.border(ctx, { c1: C.primary, c2: C.highlight, ink: C.ink });
-
-  /* ===== L03 ground: tone is made of lines ===== */
-  ctx.add(3, comment('Ground tints. Fine ruled fields on paper: an iris blend in the type column, a moiré in the field'),
-    E.iris({ x: L.block.x, y: L.block.y, w: L.block.w, h: L.block.h, vertical: false, gap: gp(1.5), sw: 0.7, id: 'GROUND_IRIS_TYPE_COLUMN',
-      stops: [{ at: 0, color: C.secondary }, { at: 0.3, color: C.highlight }, { at: 0.55, color: C.secondary }, { at: 0.8, color: C.highlight }, { at: 1, color: C.secondary }] }),
-    E.moire({ pts: violetPts, angle: -6, spread: 4, gap: gp(1.9), sw: 0.95, c1: C.primary, c2: C.pattern, id: 'GROUND_MOIRE_FIELD' }));
-  const bigColors = { 6: C.pattern, 7: C.primary, 8: C.pattern, 9: C.primary, 10: C.pattern };
-  ctx.add(3, comment('The spiral keeps growing: K6 to K10, engraved, running past the edge of the note'),
-    g({ id: 'SPIRAL_CONTINUES_BEYOND_NOTE' },
-      [...bigSq].reverse().map((q) => {
-        const vis = E.clipToRect(q.pts, 0, 0, W, H);
-        if (vis.length < 3) return '';
-        return g({ id: `K${q.k}_${f(q.side)}px` }, poly(vis, { fill: C.paper }),
-          E.ramp({ pts: vis, angle: q.ang, gap: gp(q.k % 2 ? 2.2 : 1.9), w0: 0.5, w1: 1.7, color: bigColors[q.k] }));
-      })));
-
-  /* ===== L04 engraving ===== */
-  const eng = [];
-  const m = L.medallion;
-  eng.push(comment('P01 Guilloché: the medallion. Seventy-two rotated ellipses, three families, two trochoids'));
-  eng.push(g({ id: 'P01_GUILLOCHE_MEDALLION' },
-    circle(m.cx, m.cy, m.r + 3, { fill: C.paper }),
-    E.rosetteDense({ cx: m.cx, cy: m.cy, R: m.r, c1: C.primary, c2: C.pattern, c3: C.highlight, density: ctx.density }),
-    circle(m.cx, m.cy, m.r + 3, { fill: 'none', stroke: C.ink, stroke_width: 1.1 }),
-    circle(m.cx, m.cy, m.r - 10, { fill: 'none', stroke: C.primary, stroke_width: 0.6 })));
-  eng.push(comment('P08 Lathe-work bands on the top and bottom rails'));
-  [['TOP', 52], ['BOTTOM', 676]].forEach(([nm, yc]) => {
-    const mk = (x0, x1, col) => E.lathe({ x0, x1, yc, amp: 9, lambda: 40, rows: 7, step: gp(3), swell: 4, color: col, sw: 0.4 });
-    eng.push(g({ id: `P08_LATHE_${nm}` }, mk(FIELD.x + 12, gx(5) - 4, C.primary), mk(gx(5) + 4, FIELD.x + FIELD.w - 12, C.highlight)));
-  });
-  const ringClip = ctx.clip('clip-rings', rect(gx(11) + 10, FIELD.y, FIELD.x + FIELD.w - gx(11) - 10, FIELD.h));
-  eng.push(comment('P02 Contour: polar rings at 75 px · √2^j around the origin'));
-  eng.push(g({ id: 'P02_POLAR_RINGS', fill: 'none', stroke: C.highlight, stroke_width: 0.7, clip_path: ringClip },
+  /* ===== L03 the field of squares: pale tints, every overlap its own ink ===== */
+  const ring = [];
+  ring.push(g({ id: 'P02_POLAR_RINGS', fill: 'none', stroke: C.primary, stroke_width: 0.5 },
     S.range(10).map((j) => circle(o[0], o[1], 75 * Math.pow(Math.SQRT2, j), { id: `ring_${j}` }))));
+  // Largest first. After each square, the half of it that nests in the next square, in the overlap ink.
+  // Smaller squares then sit on top, so the seed stays visible.
+  const stack = [];
+  [...sq].reverse().forEach((q) => {
+    const v = vis(q.pts);
+    if (v.length >= 3) stack.push(poly(v, { fill: col[q.k], id: `K${q.k}_${f(q.side)}px` }));
+    if (q.k <= 8) { const ov = vis(U.nestedHalf(q)); if (ov.length >= 3) stack.push(poly(ov, { fill: ctx.blend(col[q.k], col[q.k + 1]), id: `overlap_K${q.k}_K${q.k + 1}` })); }
+  });
+  ctx.add(3, comment('Ten squares share one corner. Each is a pale tint; the half that nests in the next square is a flat multiply ink'),
+    g({ id: 'SQUARES_AND_OVERLAPS_K0_K9' }, stack));
+
+  /* ===== L04 engraving: kept to a few exact fine-line passages ===== */
+  const eng = [];
+  eng.push(comment('P02 Contour: polar rings at 75 px · √2^j around the shared corner, clipped to the print area'));
+  const clipPrint = ctx.clip('clip-print', rect(IN, IN, W - IN * 2, H - IN * 2));
+  eng.push(g({ clip_path: clipPrint }, ring));
+  eng.push(comment('P08 Lathe-work rail along the foot of the note'));
+  eng.push(E.lathe({ x0: 60, x1: 880, yc: 688, amp: 8, lambda: 38, rows: 7, step: gp(3), swell: 3, color: C.primary, sw: 0.4, id: 'P08_LATHE_RAIL' }));
   ctx.add(4, eng);
 
-  /* ===== L05 primary symbol: line-engraved pleats ===== */
-  const tone = [C.accent, C.ink, C.highlight, C.pattern, C.ink, C.highlight];
-  const sym = [];
-  sym.push(comment('UNFOLD, engraved. Each pleat is paper shaded by weight-ramped lines; the overlap half is a ghost of ruled primary'));
-  sym.push(g({ id: 'UNFOLD_PLEATS' }, heroSq.map((s) => g({ id: `UNFOLD_PLEAT_${s.k}` },
-    poly([s.o, s.A, s.F], { fill: C.paper, id: `pleat_${s.k}_free` }),
-    E.ramp({ pts: [s.o, s.A, s.F], angle: s.ang + 90, gap: gp(s.k < 2 ? 1.4 : 2.1), w0: 0.15, w1: s.k === 1 || s.k === 4 ? 1.1 : 1.0, color: tone[s.k] }),
-    poly([s.o, s.A, s.F], { fill: 'none', stroke: C.ink, stroke_width: 1.1, stroke_linejoin: 'miter' }),
-    s.k ? g({ id: `pleat_${s.k}_overlap` }, poly([s.o, s.A, s.C], { fill: C.paper }),
-      path(PT.hatchPolyD([s.o, s.A, s.C], s.ang + 45, gp(2.0)), { fill: 'none', stroke: C.primary, stroke_width: 0.7 }),
-      path(PT.hatchPolyD([s.o, s.A, s.C], s.ang - 45, gp(2.0)), { fill: 'none', stroke: C.pattern, stroke_width: 0.35 }),
-      poly([s.o, s.A, s.C], { fill: 'none', stroke: C.ink, stroke_width: 1.1 })) : ''))));
-  const last = heroSq[heroSq.length - 1];
-  sym.push(g({ id: 'UNFOLD_K5_NESTED_HALF' }, poly([last.o, last.F, last.B], { fill: C.paper }),
-    E.ramp({ pts: [last.o, last.F, last.B], angle: last.ang + 180, gap: gp(2.1), w0: 0.15, w1: 0.9, color: C.highlight }),
-    poly([last.o, last.F, last.B], { fill: 'none', stroke: C.ink, stroke_width: 1.1 })));
+  /* ===== L05 primary symbol: the spiral through the far corners ===== */
   const spiral = U.spiralPoints({ ...SYM, from: -2, to: 5, steps: 14 });
-  sym.push(path(S.smoothD(spiral), { fill: 'none', stroke: C.accent, stroke_width: 2.2, id: 'UNFOLD_LOG_SPIRAL' }));
-  sym.push(path(S.smoothD(spiral), { fill: 'none', stroke: C.ink, stroke_width: 0.5, id: 'UNFOLD_LOG_SPIRAL_KEYLINE' }));
-  sym.push(g({ id: 'UNFOLD_FAR_CORNER_NODES' }, heroSq.map((s) => circle(s.F[0], s.F[1], 4, { fill: C.paper, stroke: C.ink, stroke_width: 1.2 }))));
-  sym.push(circle(o[0], o[1], 5, { fill: C.ink, id: 'UNFOLD_ORIGIN' }));
+  const sym = [];
+  sym.push(comment('UNFOLD: the logarithmic spiral through every far corner, and the corner itself'));
+  sym.push(path(S.smoothD(spiral), { fill: 'none', stroke: C.ink, stroke_width: 1.6, id: 'UNFOLD_LOG_SPIRAL' }));
+  sym.push(g({ id: 'UNFOLD_FAR_CORNER_NODES' }, heroSq.map((q) => circle(q.F[0], q.F[1], 4.2, { fill: C.paper, stroke: C.ink, stroke_width: 1.2 }))));
+  sym.push(circle(o[0], o[1], 5.5, { fill: C.ink, id: 'UNFOLD_ORIGIN' }));
   ctx.add(5, sym);
 
-  /* ===== L06 secondary: watermark window, corner rosettes, numeral tabs ===== */
-  const wm = [];
-  wm.push(R.corners(ctx, { paper: C.paper, c1: C.primary, c2: C.pattern, c3: C.highlight, ink: C.ink }));
-  const tabFill = (x, y, w, h, id) => g({ id }, rect(x, y, w, h, { fill: C.paper }),
-    path(PT.hatchRectD(x, y, w, h, 0, gp(1.5)), { fill: 'none', stroke: C.accent, stroke_width: 1.05 }),
-    path(PT.hatchRectD(x, y, w, h, 90, gp(1.5)), { fill: 'none', stroke: C.highlight, stroke_width: 0.4 }),
-    rect(x, y, w, h, { fill: 'none', stroke: C.ink, stroke_width: 0.9 }));
-  wm.push(comment('Numeral tabs: ruled orange on paper, bleeding off the note'),
-    tabFill(1380, 0, 220, 112, 'TAB_TOP_RIGHT'), tabFill(1380, 672, 220, 78, 'TAB_BOTTOM_RIGHT'),
-    E.cartouche({ x: 1408, y: 22, w: 164, h: 62, notch: 9, color: C.ink, sw: 1.1, id: 'CARTOUCHE_NUMERAL' }));
-  wm.push(comment('Watermark window: paper disc holding the outlined UNFOLD, centred on its own bounding box'));
-  const bb = U.bbox(heroSq);
-  const sc = (m.win * 1.55) / Math.max(bb.x1 - bb.x0, bb.y1 - bb.y0);
-  const bc = [(bb.x0 + bb.x1) / 2, (bb.y0 + bb.y1) / 2];
-  const wmPt = (p) => [m.cx + (p[0] - bc[0]) * sc, m.cy + (p[1] - bc[1]) * sc];
-  wm.push(g({ id: 'WATERMARK_WINDOW' },
-    circle(m.cx, m.cy, m.win, { fill: C.paper, stroke: C.ink, stroke_width: 1.2 }),
-    circle(m.cx, m.cy, m.win - 5, { fill: 'none', stroke: C.primary, stroke_width: 0.5 }),
-    g({ fill: 'none', stroke: C.primary, stroke_width: 0.9, stroke_linejoin: 'miter' },
-      heroSq.map((q) => poly([q.o, q.A, q.F].map(wmPt), {})), poly([last.o, last.F, last.B].map(wmPt), {})),
-    path(S.smoothD(U.spiralPoints({ ...SYM, from: -2, to: 5, steps: 10 }).map(wmPt)), { fill: 'none', stroke: C.accent, stroke_width: 1.4 }),
-    circle(...wmPt(o), 2, { fill: C.ink })));
-  const mini = U.squares({ o: [5, 15], u: 2.3, a0: -45, dir: 1, n: 5 });
-  const tile = ctx.pat('pat-unfold-tile', PT.patSymbol('pat-unfold-tile', g({}, mini.map((q, i) => poly([q.o, q.A, q.F], { fill: i % 2 ? C.highlight : C.secondary }))), 24));
-  wm.push(rect(gx(12) + 8, 692, 330, 18, { fill: tile, id: 'P06_SYMBOL_REPEAT_STRIP' }));
-  ctx.add(6, wm);
+  /* ===== L06 seal, registration, tactile dots ===== */
+  ctx.add(6,
+    CL.seal(ctx, L.seal.cx, L.seal.cy, L.seal.r, { c1: C.primary, c2: C.highlight, c3: C.pattern, ink: C.ink, paper: C.paper }),
+    CL.reg(L.reg.x, L.reg.y, L.reg.s, C.paper, C.accent),
+    CL.braille(1420, 540, 3, C.paper));
 
   /* ===== L07 typography ===== */
   const T = [];
-  const ty = ctx.clip('clip-numerals-on-field', rect(gx(5), 0, W, H));
   T.push(N.gridLogo(L.logo.x, L.logo.y, L.logo.h, C.ink, {}));
   T.push(N.impact('CREATIVITY', L.title.x, L.title.y, L.title.size, C.primary, { id: 'T03_TITLE', letter_spacing: '0.04em' }));
   T.push(N.inter('Imagine beyond the existing', L.phrase.x, L.phrase.y, L.phrase.size, C.ink, { weight: 700, id: 'T04_PHRASE' }));
-  T.push(R.issuer(L.block.x + 36, 252, { fill: C.ink, accent: C.primary, words: 'THE VALUE OF ONE THOUSAND GRID', size: 11 }));
-  T.push(R.signatures(L.block.x + 36, 318, L.block.w - 72, { color: C.ink, label: C.primary, seed: 1000 }));
-  T.push(N.micro('CURRENCY FOR THE CREATIVE WORLD', L.block.x + 36, 392, L.block.w - 72, 4.6, C.primary, { id: 'T05_MICROTEXT_2' }));
-  T.push(comment('T01 denomination: engraved numerals. Ink ruling on the type column, paper ruling once they cross onto the field'));
-  T.push(R.numerals(ctx, '1000', L.numerals.x, L.numerals.y, L.numerals.size, { lines: C.ink, outline: C.ink, id: 'T01_DENOMINATION' }));
-  T.push(g({ clip_path: ty, id: 'T01_DENOMINATION_OVERPRINT' }, R.numerals(ctx, '1000', L.numerals.x, L.numerals.y, L.numerals.size, { lines: C.paper, outline: C.paper })));
-  T.push(N.impact('1000', 1490, 66, 44, C.ink, { text_anchor: 'middle', id: 'T01_CORNER_NUMERAL_TR', letter_spacing: '0.03em' }));
-  T.push(N.serial('K 1000  4817 2260 B', 1490, 101, 8.5, C.ink, { text_anchor: 'middle', id: 'T05_SERIAL_SMALL' }));
-  T.push(N.serial('K 1000  4817 2260 B', 1490, 720, 13, C.ink, { text_anchor: 'middle', id: 'T05_SERIAL_PRIMARY' }));
-  T.push(S.text('K 1000  4817 2260 B', { transform: `translate(${FIELD.x + FIELD.w - 8} 150) rotate(90)`, font_family: N.INTER, font_size: 9, font_weight: 600, letter_spacing: '0.2em', fill: C.highlight, id: 'T05_SERIAL_VERTICAL' }));
-  T.push(N.micro('IMAGINE BEYOND THE EXISTING', gx(5) + 36, 98, 400, 4.6, C.highlight, { id: 'T05_MICROTEXT_1' }));
-  T.push(R.frameMicro('GRID CREATIVE RESERVE · 1000 GRID · IMAGINE BEYOND THE EXISTING ·', C.ink));
+  T.push(R.issuer(L.issuer.x, L.issuer.y, { fill: C.ink, accent: C.primary, words: 'THE VALUE OF ONE THOUSAND GRID', size: 10 }));
+  T.push(R.signatures(L.sig.x, L.sig.y, L.sig.w, { color: C.ink, label: C.primary, seed: 1000 }));
+  T.push(N.impact('1000', L.numerals.x, L.numerals.y, L.numerals.size, C.paper, { id: 'T01_DENOMINATION' }));
+  T.push(CL.words(L.words.x, L.words.y, 'ONE THOUSAND GRID', 'Creative Reserve · Series A 2026', { fill: C.paper, size: L.words.size }));
+  T.push(N.impact('1000', 1530, 80, 30, C.paper, { text_anchor: 'end', id: 'T01_CORNER_NUMERAL' }));
+  T.push(N.impact('1000', 70, 710, 22, C.primary, { id: 'T01_CORNER_NUMERAL_BL' }));
+  T.push(N.serial('K 1000  4817 2260 B', 1530, 106, 8.5, C.paper, { text_anchor: 'end', id: 'T05_SERIAL_SMALL' }));
+  T.push(N.serial('K 1000  4817 2260 B', 1530, 704, 14, C.paper, { text_anchor: 'end', id: 'T05_SERIAL_PRIMARY' }));
+  T.push(N.micro('IMAGINE BEYOND THE EXISTING · CURRENCY FOR THE CREATIVE WORLD', 40, 18, 1520, 3.8, C.primary, { id: 'T05_MICROPRINT_TOP' }));
+  T.push(N.micro('GRID CREATIVE RESERVE · 1000 GRID · UNFOLD · 1000 GRID', 40, 738, 1520, 3.8, C.primary, { id: 'T05_MICROPRINT_BOTTOM' }));
   ctx.add(7, T);
 
   /* ===== L08 security ===== */
   const sec = [];
-  sec.push(N.thread(L.thread.x, FIELD.y, FIELD.y + FIELD.h, L.thread.w, { a: C.paper, b: C.accent, ink: C.ink, label: 'GRID 1000 · CREATIVITY · GRID 1000 · CREATIVITY' }));
-  const fs = [];
-  for (let k = 0; k < 6; k++) fs.push({ at: k / 5.001, color: [C.accent, C.highlight, C.secondary, C.paper, C.highlight, C.accent][k] });
-  sec.push(comment('Foil stripe, drawn the way iris printing is: interleaved fine lines changing colour along the strip'),
-    g({ id: 'FOIL_STRIPE' }, E.iris({ x: L.foil.x, y: FIELD.y, w: L.foil.w, h: FIELD.h, vertical: false, gap: gp(1.3), sw: 0.9, stops: [...fs, ...fs.map((q) => ({ at: q.at, color: q.color }))].map((q, i, a) => ({ at: i / (a.length - 1), color: q.color })), id: 'foil_iris' }),
-      rect(L.foil.x, FIELD.y, L.foil.w, FIELD.h, { fill: 'none', stroke: C.ink, stroke_width: 0.8 })));
-  sec.push(N.tactile(5, 66, 692, C.ink, { bar: 4, h: 20, gap: 6 }));
-  sec.push(g({ id: 'REGISTRATION_MARKS' }, PT.regMark(gx(5), 118, 7, C.accent), PT.regMark(gx(5), 650, 7, C.accent)));
+  sec.push(N.thread(L.thread.x, IN, H - IN, L.thread.w, { a: C.paper, b: C.accent, ink: C.ink, label: 'GRID 1000 · CREATIVITY · GRID 1000 · CREATIVITY' }));
+  sec.push(N.tactile(5, 70, 640, C.ink, { bar: 4, h: 18, gap: 6 }));
   ctx.add(8, sec);
 }
 
@@ -257,39 +201,37 @@ const bp = {
     keywords: ['POSSIBILITY', 'EXPLORATION', 'EMERGENCE'],
   },
   elements: [
-    { t: 'UNFOLD pleat fan', d: 'Six squares share one corner; each is turned 45° and grown by √2.', layer: 'L05' },
+    { t: 'UNFOLD as layers', d: 'Ten squares share one corner; each is turned 45° and grown by √2, drawn in a pale tint.', layer: 'L03' },
+    { t: 'Overlaps are their own ink', d: 'The half of each square that nests in the next is a flat multiply of the two inks.', layer: 'L03' },
     { t: 'Logarithmic spiral', d: 'Every far corner lies on r = u√2·e^0.44φ: a curve from straight edges.', layer: 'L05' },
-    { t: 'The spiral outgrows the note', d: 'K6 to K10 keep growing and break the frame. The idea exceeds the page.', layer: 'L03' },
-    { t: 'Guilloché medallion', d: 'Rotated ellipses and trochoids ring a window holding the outlined mark.', layer: 'L04 · L06' },
-    { t: 'Type crossing colour', d: 'The numerals turn from ink to paper as they leave the type column.', layer: 'L07' },
+    { t: 'Roundel seal', d: 'Seventy-two rotated ellipses ring the GRID module: the guilloché, kept small.', layer: 'L06' },
+    { t: 'Value in words', d: 'Amount and issuer under the numerals, with registration square and tactile dots.', layer: 'L07 · L06' },
   ],
   callouts: [
-    { code: 'T02', label: 'GRID LOCKUP', pt: [110, 70], side: 'L' },
-    { code: 'T03', label: 'THEME TITLE', pt: [200, 180], side: 'L' },
-    { code: 'L06', label: 'WATERMARK', pt: [650, 238], side: 'L' },
-    { code: 'T01', label: 'DENOMINATION', pt: [260, 520], side: 'L' },
-    { code: 'L08', label: 'TACTILE CODE', pt: [90, 700], side: 'L' },
-    { code: 'L05', label: 'UNFOLD SYMBOL', pt: [1010, 250], side: 'R' },
-    { code: 'L03', label: 'SPIRAL BEYOND NOTE', pt: [1460, 220], side: 'R' },
-    { code: 'L08', label: 'SECURITY THREAD', pt: [1334, 470], side: 'R' },
-    { code: 'T05', label: 'SERIAL NUMBER', pt: [1480, 705], side: 'R' },
+    { code: 'T02', label: 'GRID LOCKUP', pt: [150, 70], side: 'L' },
+    { code: 'T03', label: 'THEME TITLE', pt: [330, 176], side: 'L' },
+    { code: 'L06', label: 'ROUNDEL SEAL', pt: [L.seal.cx, L.seal.cy], side: 'L' },
+    { code: 'T05', label: 'SIGNATURES', pt: [215, 585], side: 'L' },
+    { code: 'L08', label: 'TACTILE CODE', pt: [110, 649], side: 'L' },
+    { code: 'L03', label: 'SQUARES AND OVERLAPS', pt: [700, 330], side: 'R' },
+    { code: 'L08', label: 'SECURITY THREAD', pt: [923, 300], side: 'R' },
+    { code: 'T01', label: 'DENOMINATION', pt: [1180, 400], side: 'R' },
+    { code: 'T02', label: 'VALUE IN WORDS', pt: [1100, 560], side: 'R' },
+    { code: 'L06', label: 'REGISTRATION', pt: [1421, 67], side: 'R' },
   ],
   zones: [
     { code: 'T01', rect: [L.numerals.x, L.numerals.y - 0.79 * L.numerals.size, N.impactWidth('1000', L.numerals.size), 0.79 * L.numerals.size] },
     { code: 'T02', rect: [L.logo.x, L.logo.y, N.gridLogoWidth(L.logo.h), L.logo.h * 1.45] },
     { code: 'T03', rect: [L.title.x, L.title.y - 0.79 * L.title.size, N.impactWidth('CREATIVITY', L.title.size), 0.79 * L.title.size] },
-    { code: 'T04', rect: [L.phrase.x, L.phrase.y - 18, 306, 24] },
-    { code: 'L04', circle: [L.medallion.cx, L.medallion.cy, L.medallion.r] },
+    { code: 'T04', rect: [L.phrase.x, L.phrase.y - 14, 250, 20] },
     { code: 'L05', rect: [heroBox.x0, heroBox.y0, heroBox.x1 - heroBox.x0, heroBox.y1 - heroBox.y0] },
-    { code: 'L08', rect: [L.thread.x, FIELD.y, L.thread.w, FIELD.h] },
-    { code: 'T05', rect: [1380, 694, 160, 16] },
+    { code: 'L06', circle: [L.seal.cx, L.seal.cy, L.seal.r] },
+    { code: 'L08', rect: [L.thread.x, 24, L.thread.w, 702] },
+    { code: 'T05', rect: [1380, 690, 150, 16] },
   ],
   steps,
   facts: [['UNIT u', '75 ÷ √2 = 53.03 px'], ['TURN', '45° per square, clockwise'], ['GROWTH', '× √2 per step · × 2 per 90°'], ['ODD SQUARES', '1 · 2 · 4 · 8 · 16 modules']],
-  patterns: {
-    P01: 'Medallion, borders, rosettes', P02: 'Polar rings', P04: 'Ruled ground, pleat shading',
-    P06: 'Pleat tile strip', P08: 'Lathe-work rails',
-  },
+  patterns: { P01: 'Roundel seal', P02: 'Polar rings', P08: 'Lathe-work rail' },
   samples: {
     P06: (w, h, c) => g({ fill: 'none', stroke: c, stroke_width: 1 },
       [0, 1, 2].map((i) => g({ transform: `translate(${14 + i * 46} 14) scale(2.8)` },
