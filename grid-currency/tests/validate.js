@@ -27,6 +27,7 @@ function common(file, svg) {
   if (dup.length) fail(file, `duplicate ids: ${[...new Set(dup)].slice(0, 5).join(', ')}`);
   const fonts = [...new Set([...svg.matchAll(/font-family="([^"]+)"/g)].map((m) => m[1]))];
   fonts.forEach((fm) => { if (!/^(Impact,|'Inter Display',)/.test(fm)) fail(file, `unexpected font-family: ${fm}`); });
+  if (!svg.includes("font-family:'GRID Impact Fallback'")) fail(file, 'font fallback style missing');
   const refs = [...svg.matchAll(/(?:url\(#|href="#)([^)"]+)/g)].map((m) => m[1]);
   const idset = new Set(ids(svg));
   refs.forEach((r) => { if (!idset.has(r)) fail(file, `dangling reference #${r}`); });

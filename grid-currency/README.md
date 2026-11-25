@@ -16,9 +16,10 @@ A fictional five-note currency built as one design system. Each note states one 
 dist/GRID-<value>-<name>.svg             the banknote, 1600 × 750
 dist/GRID-<value>-<name>-blueprint.svg   the design blueprint, 2400 × 1600
 index.html                               viewer (open it in a browser)
+assets/                                  Anton font (SIL OFL) used only as a fallback for Impact
 ```
 
-Open `index.html` to browse all ten files, or open any SVG directly.
+Open `index.html` to browse all ten files. In the viewer, the blueprint opens full width, and the chips above it zoom into each of the nine sections at a readable size. Or open any SVG directly.
 
 ## What is in each banknote
 
@@ -50,7 +51,7 @@ node tests/render.js dist/GRID-1000-creativity.svg out.png 2
 
 ## Know before you use it
 
-- **Impact must be installed.** It ships with macOS and Windows. Without it the text falls back to a regular sans and the numerals and titles will be wider than designed. The SVGs deliberately keep live text.
+- **Impact is used when installed.** It ships with macOS and Windows. Where it is missing, browsers use an embedded Anton (SIL OFL, `assets/Anton-OFL.txt`) scaled to Impact's cap height, so layouts stay clean; Anton is narrower than Impact, so type has a little more air. The fallback is a `<style>` block of about 25 KB at the end of each file's `<defs>`. Figma and Illustrator ignore it and follow the normal font stack. The text stays live.
 - **Checked in Chromium only.** Parsing, layers, palette and rendering were verified in Chromium. Import into Figma and Illustrator was not tested. `<pattern>` fills (micro-grid, dots, tessellation, symbol-repeat strips) are the most likely place for those tools to differ; everything else is plain paths, groups and clip paths.
 - **Previews here use Anton** in place of Impact, stretched to estimated Impact widths, so exact text widths in previews are approximate. The width table in `lib/note.js` is an estimate for layout maths, not measured from Impact.
 - Large squares in the 1000 note are deliberately unclipped so they break the frame. Anything that embeds the note needs the note's viewport (the blueprints add a clip for this).

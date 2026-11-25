@@ -8,6 +8,7 @@
  */
 const S = require('./svg');
 const PT = require('./patterns');
+const { fontFallbackStyle } = require('./fonts');
 const { f, f1, el, g, rect, circle, path, line, text, comment, P } = S;
 
 const W = 1600, H = 750;
@@ -15,7 +16,7 @@ const GRID = { x0: 50, y0: 75, cell: 75, cols: 20, rows: 8 };
 const gx = (i) => GRID.x0 + GRID.cell * i;
 const gy = (j) => GRID.y0 + GRID.cell * j;
 const FIELD = { x: 26, y: 26, w: W - 52, h: H - 52 };
-const IMPACT = "Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif";
+const IMPACT = "Impact, 'GRID Impact Fallback', Haettenschweiler, 'Arial Narrow Bold', sans-serif";
 const INTER = "'Inter Display', Inter, 'Helvetica Neue', Arial, sans-serif";
 
 const LAYERS = [
@@ -140,7 +141,7 @@ function assemble(ctx, { title, desc, id }) {
   const svg = el('svg', { xmlns: 'http://www.w3.org/2000/svg', viewBox: `0 0 ${W} ${H}`, width: W, height: H, id, role: 'img', 'aria-label': title },
     el('title', {}, S.esc(title)),
     el('desc', {}, S.esc(desc)),
-    ctx.defs.length ? el('defs', { id: 'DEFS_PATTERNS_CLIPS' }, ctx.defs) : '',
+    el('defs', { id: 'DEFS_PATTERNS_CLIPS' }, ctx.defs, fontFallbackStyle()),
     layers);
   return S.pretty(`<?xml version="1.0" encoding="UTF-8"?>\n${svg}`);
 }

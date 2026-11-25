@@ -13,6 +13,7 @@ const S = require('./svg');
 const PT = require('./patterns');
 const N = require('./note');
 const B = require('./bpcolors');
+const { fontFallbackStyle } = require('./fonts');
 const { f, f1, g, rect, circle, path, line, poly, text, comment, el, P } = S;
 const { BG, CY, AM, VI, GR, PK, TX, GD } = B;
 const { IMPACT, INTER, GRID } = N;
@@ -90,34 +91,37 @@ const useNote = (x, y, s, extra = {}) => g({ transform: `translate(${f(x)} ${f(y
 function p01(def) {
   const [, w] = COL.A, ww = COL.B[0] + COL.B[1] - COL.A[0];
   const h = ROW[1][1] - BAR;
-  const sc = 0.768, nw = 1600 * sc, nh = 750 * sc;
-  const nx = (ww - nw) / 2, ny = 34;
+  const sc = 0.68, nw = 1600 * sc, nh = 750 * sc;
+  const nx = (ww - nw) / 2, ny = 50;
   const out = [];
   out.push(useNote(nx, ny, sc, { id: 'BP_FINAL_NOTE' }));
   out.push(rect(nx, ny, nw, nh, { fill: 'none', stroke: CY, stroke_width: 1 }));
   // dimension lines
   out.push(g({ id: 'BP_DIMENSIONS', stroke: CY, stroke_width: 1, fill: 'none' },
-    path(`M${nx} ${ny - 14}H${nx + nw}M${nx} ${ny - 20}V${ny - 8}M${nx + nw} ${ny - 20}V${ny - 8}`),
-    path(`M${nx - 16} ${ny}V${ny + nh}M${nx - 22} ${ny}H${nx - 10}M${nx - 22} ${ny + nh}H${nx - 10}`)));
-  out.push(bt('160 MM  ·  1600 UNITS', nx + nw / 2, ny - 19, { size: 10.5, weight: 700, ls: '0.18em', fill: CY, anchor: 'middle' }));
-  out.push(bt('75 MM  ·  750 UNITS', 0, 0, { size: 10.5, weight: 700, ls: '0.18em', fill: CY, anchor: 'middle', transform: `translate(${nx - 24} ${ny + nh / 2}) rotate(-90)` }));
-  // callouts
+    path(`M${nx} ${ny - 14}H${nx + nw}M${nx} ${ny - 20}V${ny - 8}M${nx + nw} ${ny - 20}V${ny - 8}`)));
+  out.push(bt('160 × 75 MM  ·  1600 × 750 UNITS', nx + nw / 2, ny - 22, { size: 11, weight: 700, ls: '0.18em', fill: CY, anchor: 'middle' }));
+  // callouts: numbered markers on the note, a tidy legend in each margin (no leader lines)
   const left = [], right = [];
   def.bp.callouts.forEach((c) => (c.side === 'L' ? left : right).push(c));
   let calloutN = 0;
   const place = (list, side) => {
     list.sort((a, b) => a.pt[1] - b.pt[1]);
-    let last = -1e9;
-    list.forEach((c) => { c.ly = Math.max(c.pt[1] * sc + ny, last + 44); last = c.ly; });
-    list.forEach((c) => {
+    const step = Math.min(58, (nh - 48) / Math.max(1, list.length));
+    const total = step * (list.length - 1);
+    list.forEach((c, i) => {
+      const n = ++calloutN, id = String(n).padStart(2, '0');
       const px = nx + c.pt[0] * sc, py = ny + c.pt[1] * sc;
-      const lx = side === 'L' ? nx - 62 : nx + nw + 14;
-      const ex = side === 'L' ? nx - 36 : nx + nw + 12;
-      out.push(g({ id: `BP_CALLOUT_${String(++calloutN).padStart(2, '0')}_${c.code}` },
-        path(`M${f(px)} ${f(py)}L${f(ex)} ${f(c.ly)}`, { stroke: PK, stroke_width: 1.1, fill: 'none' }),
-        circle(px, py, 3.6, { fill: PK }),
-        bt(c.code, lx + (side === 'L' ? 28 : 0), c.ly - 2, { size: 10.5, weight: 800, fill: PK, ls: '0.12em', anchor: side === 'L' ? 'end' : 'start' }),
-        bt(c.label, lx + (side === 'L' ? 28 : 0), c.ly + 11, { size: 9.5, weight: 600, ls: '0.1em', anchor: side === 'L' ? 'end' : 'start', op: 0.85 })));
+      const ly = ny + (nh - total) / 2 + i * step;
+      const cx = side === 'L' ? nx - 42 : nx + nw + 30;
+      const tx = side === 'L' ? cx - 18 : cx + 18;
+      const anchor = side === 'L' ? 'end' : 'start';
+      out.push(g({ id: `BP_CALLOUT_${id}_${c.code}` },
+        circle(px, py, 9.5, { fill: BG, stroke: PK, stroke_width: 1.6 }),
+        bt(String(n), px, py + 4, { size: 11, weight: 800, fill: PK, anchor: 'middle' }),
+        circle(cx, ly, 10, { fill: 'none', stroke: PK, stroke_width: 1.5 }),
+        bt(String(n), cx, ly + 4, { size: 11, weight: 800, fill: PK, anchor: 'middle' }),
+        bt(c.label, tx, ly - 1, { size: 11, weight: 700, ls: '0.08em', anchor }),
+        bt(c.code, tx, ly + 14, { size: 10, weight: 700, fill: CY, ls: '0.12em', anchor })));
     });
   };
   place(left, 'L'); place(right, 'R');
@@ -413,7 +417,8 @@ function buildBlueprint(def, ctx, { frameNo, notesMeta, coverage, noteSvgBytes }
     N.LAYERS.map(([id], i) => g({ id }, ctx.L[i])),
     el('clipPath', { id: 'bp-clip-note' }, rect(0, 0, 1600, 750)),
     el('clipPath', { id: 'bp-clip-step' }, rect(0, 0, 144, 150)),
-    g({ id: 'BP_NOTE_ASSEMBLED', clip_path: 'url(#bp-clip-note)' }, N.LAYERS.map(([id]) => el('use', { 'xlink:href': `#${id}` }))));
+    g({ id: 'BP_NOTE_ASSEMBLED', clip_path: 'url(#bp-clip-note)' }, N.LAYERS.map(([id]) => el('use', { 'xlink:href': `#${id}` }))),
+    fontFallbackStyle());
   const body = [
     rect(0, 0, W, H, { fill: BG, id: 'BP_BACKGROUND' }),
     gridBackdrop(),
@@ -429,4 +434,17 @@ function buildBlueprint(def, ctx, { frameNo, notesMeta, coverage, noteSvgBytes }
   return S.pretty(`<?xml version="1.0" encoding="UTF-8"?>\n${svg}`);
 }
 
-module.exports = { buildBlueprint, bt, para, PATS, ROLES, W, H };
+/* Panel rectangles on the 2400 x 1600 sheet, for the viewer's zoom chips. */
+const PANELS = [
+  { n: 0, label: 'Whole sheet', x: 0, y: 0, w: 2400, h: 1600 },
+  { n: 1, label: 'Banknote', x: COL.A[0], y: ROW[1][0], w: COL.B[0] + COL.B[1] - COL.A[0], h: ROW[1][1] },
+  { n: 2, label: 'Theme', x: COL.C[0], y: ROW[1][0], w: COL.C[1], h: 320 },
+  { n: 3, label: 'Key elements', x: COL.C[0], y: ROW[1][0] + 344, w: COL.C[1], h: 316 },
+  { n: 4, label: 'Wireframe', x: COL.A[0], y: ROW[2][0], w: COL.A[1], h: ROW[2][1] },
+  { n: 5, label: 'Symbol', x: COL.B[0], y: ROW[2][0], w: COL.B[1], h: ROW[2][1] },
+  { n: 6, label: 'Colour', x: COL.C[0], y: ROW[2][0], w: COL.C[1], h: ROW[2][1] },
+  { n: 7, label: 'Patterns', x: COL.A[0], y: ROW[3][0], w: COL.A[1], h: ROW[3][1] },
+  { n: 8, label: 'Layers', x: COL.B[0], y: ROW[3][0], w: COL.B[1], h: ROW[3][1] },
+  { n: 9, label: 'Specs', x: COL.C[0], y: ROW[3][0], w: COL.C[1], h: ROW[3][1] },
+];
+module.exports = { buildBlueprint, bt, para, PATS, ROLES, PANELS, W, H };

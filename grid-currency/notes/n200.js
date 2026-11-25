@@ -168,8 +168,8 @@ const bp = {
     { t: 'Vertical numerals', d: 'The denomination stands in its own column, read from the side, like a spine.', layer: 'L07' },
   ],
   callouts: [
-    { code: 'T01', label: 'CORNER NUMERAL', pt: [80, 50], side: 'L' },
-    { code: 'T04', label: 'SUPPORTING PHRASE', pt: [200, 52], side: 'L' },
+    { code: 'T01', label: 'CORNER NUMERAL', pt: [140, 44], side: 'L' },
+    { code: 'T04', label: 'SUPPORTING PHRASE', pt: [380, 54], side: 'L' },
     { code: 'L06', label: 'WATERMARK WINDOW', pt: [256, 375], side: 'L' },
     { code: 'L08', label: 'TACTILE CODE', pt: [320, 686], side: 'L' },
         { code: 'L05', label: 'LEFT PENCIL', pt: [330, 560], side: 'L' },
