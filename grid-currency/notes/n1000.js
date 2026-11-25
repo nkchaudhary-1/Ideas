@@ -8,6 +8,8 @@
 const S = require('../lib/svg');
 const PT = require('../lib/patterns');
 const N = require('../lib/note');
+const E = require('../lib/engrave');
+const R = require('../lib/realism');
 const U = require('../symbols/unfold');
 const { f, f1, g, rect, circle, path, line, poly, comment, P } = S;
 const B = require('../lib/bpcolors');
@@ -29,13 +31,14 @@ const big = () => U.squares({ ...SYM, n: 5, from: 6 });
 
 /* layout constants (also used for the blueprint wireframe) */
 const L = {
-  block: { x: FIELD.x, y: FIELD.y, w: gx(5) - FIELD.x, h: FIELD.h },          // lavender type column
+  block: { x: FIELD.x, y: FIELD.y, w: gx(5) - FIELD.x, h: FIELD.h },          // type column
   medallion: { cx: 650, cy: 238, r: 138, win: 72 },
-  numerals: { x: 62, y: 640, size: 330 },
-  title: { x: 62, y: 212, size: 66 },
-  phrase: { x: 62, y: 252, size: 21 },
+  numerals: { x: 62, y: 640, size: 280 },
+  title: { x: 62, y: 176, size: 58 },
+  phrase: { x: 62, y: 208, size: 20 },
   logo: { x: 62, y: 46, h: 40 },
   thread: { x: gx(17) + 6, w: 18 },
+  foil: { x: gx(17) - 28, w: 24 },
 };
 
 function build(ctx) {
@@ -43,147 +46,134 @@ function build(ctx) {
   const o = SYM.o;
   const bigSq = big();
   const heroSq = hero();
+  const gp = (v) => ctx.gap(v);
   const fieldClip = ctx.clip('clip-field', rect(FIELD.x, FIELD.y, FIELD.w, FIELD.h));
   const blockClip = ctx.clip('clip-block-secondary', rect(L.block.x, L.block.y, L.block.w, L.block.h));
   const violetClip = ctx.clip('clip-block-primary', rect(gx(5), FIELD.y, FIELD.x + FIELD.w - gx(5), FIELD.h));
+  const NOTE = [0, 0, W, H];
+  const violetPts = E.rectPts(gx(5), FIELD.y, FIELD.x + FIELD.w - gx(5), FIELD.h);
 
-  /* ===== L01 ===== */
-  N.base(ctx, { paper: C.paper, hairline: C.secondary });
+  /* ===== L01 paper ===== */
+  R.paper(ctx, { paper: C.paper, fibres: [C.highlight, C.secondary, C.primary, C.accent], seed: 1000 });
 
-  /* ===== L02 ===== */
-  N.frame(ctx, { ink: C.ink, line: C.pattern, accent: C.primary, corner: C.primary });
+  /* ===== L02 border ===== */
+  R.border(ctx, { c1: C.primary, c2: C.highlight, ink: C.ink });
 
-  /* ===== L03 geometric construction ===== */
+  /* ===== L03 ground: tone is made of lines ===== */
+  ctx.add(3, comment('Ground tints. Fine ruled fields on paper: an iris blend in the type column, a moiré in the field'),
+    E.iris({ x: L.block.x, y: L.block.y, w: L.block.w, h: L.block.h, vertical: false, gap: gp(1.5), sw: 0.7, id: 'GROUND_IRIS_TYPE_COLUMN',
+      stops: [{ at: 0, color: C.secondary }, { at: 0.3, color: C.highlight }, { at: 0.55, color: C.secondary }, { at: 0.8, color: C.highlight }, { at: 1, color: C.secondary }] }),
+    E.moire({ pts: violetPts, angle: -6, spread: 4, gap: gp(1.9), sw: 0.95, c1: C.primary, c2: C.pattern, id: 'GROUND_MOIRE_FIELD' }));
   const bigColors = { 6: C.pattern, 7: C.primary, 8: C.pattern, 9: C.primary, 10: C.pattern };
-  ctx.add(3, comment('Colour blocks'),
-    rect(L.block.x, L.block.y, L.block.w, L.block.h, { fill: C.secondary, id: 'BLOCK_SECONDARY_TYPE_COLUMN' }),
-    rect(gx(5), FIELD.y, FIELD.x + FIELD.w - gx(5), FIELD.h, { fill: C.primary, id: 'BLOCK_PRIMARY_FIELD' }));
-  ctx.add(3, comment('The spiral keeps growing: K6 to K10 run past the edge of the note (unclipped, they break the frame)'),
+  ctx.add(3, comment('The spiral keeps growing: K6 to K10, engraved, running past the edge of the note'),
     g({ id: 'SPIRAL_CONTINUES_BEYOND_NOTE' },
-      [...bigSq].reverse().map((s) => poly(s.pts, { fill: bigColors[s.k], id: `K${s.k}_${f(s.side)}px` }))));
+      [...bigSq].reverse().map((q) => {
+        const vis = E.clipToRect(q.pts, 0, 0, W, H);
+        if (vis.length < 3) return '';
+        return g({ id: `K${q.k}_${f(q.side)}px` }, poly(vis, { fill: C.paper }),
+          E.ramp({ pts: vis, angle: q.ang, gap: gp(q.k % 2 ? 2.2 : 1.9), w0: 0.5, w1: 1.7, color: bigColors[q.k] }));
+      })));
 
   /* ===== L04 engraving ===== */
   const eng = [];
-  // contour: concentric insets inside every big square, each turned with its square
-  eng.push(comment('P02 Contour — inset outlines follow each large square'));
-  eng.push(g({ id: 'P02_CONTOUR_BIG_SQUARES', fill: 'none', stroke: C.highlight, stroke_width: 0.7 },
-    bigSq.map((s) => path(PT.insetPolyD(s.pts, 14 + (s.k % 2) * 4, 18), { clip_path: fieldClip, id: `contour_K${s.k}` }))));
-  // polar rings around the origin, radius = 75 px · √2^j  (the same growth rule as the squares)
-  const ringClip = ctx.clip('clip-rings', rect(gx(11) + 10, FIELD.y, FIELD.x + FIELD.w - gx(11) - 10, FIELD.h));
-  eng.push(comment('P02 Contour — polar rings at 75 px · √2^j around the origin'));
-  eng.push(g({ id: 'P02_POLAR_RINGS', fill: 'none', stroke: C.highlight, stroke_width: 0.9, clip_path: ringClip },
-    S.range(10).map((j) => circle(o[0], o[1], 75 * Math.pow(Math.SQRT2, j), { id: `ring_${j}` }))));
-  // hatching in K7 and K9 along their own edge direction
-  eng.push(comment('P04 Hatching — aligned with the edge direction of each square'));
-  eng.push(g({ id: 'P04_HATCH_BIG_SQUARES', fill: 'none', stroke: C.pattern, stroke_width: 0.6 },
-    bigSq.filter((s) => s.k % 2).map((s) => path(PT.hatchPolyD(s.pts, s.ang, 6), { clip_path: fieldClip, id: `hatch_K${s.k}` }))));
-
-  // guilloché medallion in the middle band
   const m = L.medallion;
-  const medClip = ctx.clip('clip-medallion', circle(m.cx, m.cy, m.r));
-  eng.push(comment('P01 Guilloché — medallion: rotated-ellipse rosettes and hypotrochoids'));
+  eng.push(comment('P01 Guilloché: the medallion. Seventy-two rotated ellipses, three families, two trochoids'));
   eng.push(g({ id: 'P01_GUILLOCHE_MEDALLION' },
-    circle(m.cx, m.cy, m.r, { fill: C.secondary, id: 'medallion_disc' }),
-    g({ clip_path: medClip },
-      PT.rosette({ cx: m.cx, cy: m.cy, rx: m.r * 0.98, ry: m.r * 0.42, n: 48, span: 180, color: C.primary, sw: 0.7 }),
-      PT.rosette({ cx: m.cx, cy: m.cy, rx: m.r * 0.72, ry: m.r * 0.3, n: 36, span: 180, start: 2.5, color: C.pattern, sw: 0.6 }),
-      path(PT.trochoidD({ cx: m.cx, cy: m.cy, R: 96, r: 40, d: 62, steps: 520 }), { fill: 'none', stroke: C.primary, stroke_width: 0.9 }),
-      path(PT.trochoidD({ cx: m.cx, cy: m.cy, R: 96, r: 40, d: 40, steps: 520 }), { fill: 'none', stroke: C.pattern, stroke_width: 0.7 })),
-    circle(m.cx, m.cy, m.r, { fill: 'none', stroke: C.ink, stroke_width: 1.5 }),
-    circle(m.cx, m.cy, m.r - 8, { fill: 'none', stroke: C.primary, stroke_width: 0.8 })));
-
-  // braid bands top and bottom rail (two colours clipped to the two blocks)
-  const braidTop = { x0: FIELD.x + 12, x1: FIELD.x + FIELD.w - 12, yc: 52, amp: 9, lambda: 56, k: 5 };
-  const braidBot = { ...braidTop, yc: 676, lambda: 48, k: 4, shift: 1 };
-  eng.push(comment('P01 Guilloché — braided rail bands, top and bottom'));
-  [['TOP', braidTop], ['BOTTOM', braidBot]].forEach(([nm, b]) => {
-    const d = PT.braidD(b);
-    eng.push(g({ id: `P01_BRAID_${nm}`, fill: 'none', stroke_width: 0.7 },
-      path(d, { stroke: C.primary, clip_path: blockClip }),
-      path(d, { stroke: C.highlight, clip_path: violetClip })));
+    circle(m.cx, m.cy, m.r + 3, { fill: C.paper }),
+    E.rosetteDense({ cx: m.cx, cy: m.cy, R: m.r, c1: C.primary, c2: C.pattern, c3: C.highlight, density: ctx.density }),
+    circle(m.cx, m.cy, m.r + 3, { fill: 'none', stroke: C.ink, stroke_width: 1.1 }),
+    circle(m.cx, m.cy, m.r - 10, { fill: 'none', stroke: C.primary, stroke_width: 0.6 })));
+  eng.push(comment('P08 Lathe-work bands on the top and bottom rails'));
+  [['TOP', 52], ['BOTTOM', 676]].forEach(([nm, yc]) => {
+    const mk = (x0, x1, col) => E.lathe({ x0, x1, yc, amp: 9, lambda: 40, rows: 7, step: gp(3), swell: 4, color: col, sw: 0.4 });
+    eng.push(g({ id: `P08_LATHE_${nm}` }, mk(FIELD.x + 12, gx(5) - 4, C.primary), mk(gx(5) + 4, FIELD.x + FIELD.w - 12, C.highlight)));
   });
-
-  // micro-grid + dots in the type column between phrase and numerals
-  const mgPat = ctx.pat('pat-microgrid-secondary', PT.patMicroGrid('pat-microgrid-secondary', { size: 8, color: C.highlight, sw: 0.5, dot: 1 }));
-  const dotPat = ctx.pat('pat-dots-primary', PT.patDots('pat-dots-primary', { gap: 7, r: 1.1, color: C.highlight, stagger: true }));
-  eng.push(comment('P03 Micro-grid and P05 Dot system'));
-  eng.push(rect(L.block.x + 36, 312, L.block.w - 72, 34, { fill: mgPat, id: 'P03_MICROGRID_ZONE' }));
-  eng.push(rect(gx(5) + 36, 70, 400, 20, { fill: dotPat, id: 'P05_DOT_ZONE' }));
+  const ringClip = ctx.clip('clip-rings', rect(gx(11) + 10, FIELD.y, FIELD.x + FIELD.w - gx(11) - 10, FIELD.h));
+  eng.push(comment('P02 Contour: polar rings at 75 px · √2^j around the origin'));
+  eng.push(g({ id: 'P02_POLAR_RINGS', fill: 'none', stroke: C.highlight, stroke_width: 0.7, clip_path: ringClip },
+    S.range(10).map((j) => circle(o[0], o[1], 75 * Math.pow(Math.SQRT2, j), { id: `ring_${j}` }))));
   ctx.add(4, eng);
 
-  /* ===== L05 primary symbol ===== */
-  // UNFOLD: six pleats T0..T5 (isosceles right triangles O-A-F) chained corner to corner, then the last
-  // square's nested half. The overlap half of every pleat (O-A-C) is left as negative space, hatched.
-  const heroColors = [C.accent, C.paper, C.highlight, C.secondary, C.paper, C.highlight];
+  /* ===== L05 primary symbol: line-engraved pleats ===== */
+  const tone = [C.accent, C.ink, C.highlight, C.pattern, C.ink, C.highlight];
   const sym = [];
-  sym.push(comment('UNFOLD pleats. Overlap halves are negative space with hatching: the ghost of the previous square'));
-  const pleats = heroSq.map((s) => g({ id: `UNFOLD_PLEAT_${s.k}` },
-    poly([s.o, s.A, s.F], { fill: heroColors[s.k], stroke: C.ink, stroke_width: 1.3, stroke_linejoin: 'miter', id: `pleat_${s.k}_free` }),
-    s.k ? poly([s.o, s.A, s.C], { fill: C.primary, stroke: C.ink, stroke_width: 1.3, id: `pleat_${s.k}_overlap` }) : '',
-    s.k ? path(PT.hatchPolyD([s.o, s.A, s.C], s.ang + 45, 4.5), { fill: 'none', stroke: C.pattern, stroke_width: 0.6 }) : '',
-    s.k % 2 === 0 && s.k ? path(PT.hatchPolyD([s.A, s.F, s.C], s.ang + 90, 4), { fill: 'none', stroke: C.pattern, stroke_width: 0.45 }) : ''));
+  sym.push(comment('UNFOLD, engraved. Each pleat is paper shaded by weight-ramped lines; the overlap half is a ghost of ruled primary'));
+  sym.push(g({ id: 'UNFOLD_PLEATS' }, heroSq.map((s) => g({ id: `UNFOLD_PLEAT_${s.k}` },
+    poly([s.o, s.A, s.F], { fill: C.paper, id: `pleat_${s.k}_free` }),
+    E.ramp({ pts: [s.o, s.A, s.F], angle: s.ang + 90, gap: gp(s.k < 2 ? 1.4 : 2.1), w0: 0.15, w1: s.k === 1 || s.k === 4 ? 1.1 : 1.0, color: tone[s.k] }),
+    poly([s.o, s.A, s.F], { fill: 'none', stroke: C.ink, stroke_width: 1.1, stroke_linejoin: 'miter' }),
+    s.k ? g({ id: `pleat_${s.k}_overlap` }, poly([s.o, s.A, s.C], { fill: C.paper }),
+      path(PT.hatchPolyD([s.o, s.A, s.C], s.ang + 45, gp(2.0)), { fill: 'none', stroke: C.primary, stroke_width: 0.7 }),
+      path(PT.hatchPolyD([s.o, s.A, s.C], s.ang - 45, gp(2.0)), { fill: 'none', stroke: C.pattern, stroke_width: 0.35 }),
+      poly([s.o, s.A, s.C], { fill: 'none', stroke: C.ink, stroke_width: 1.1 })) : ''))));
   const last = heroSq[heroSq.length - 1];
-  sym.push(g({ id: 'UNFOLD_PLEATS' }, pleats,
-    poly([last.o, last.F, last.B], { fill: C.paper, stroke: C.ink, stroke_width: 1.3, id: 'UNFOLD_K5_NESTED_HALF' })));
+  sym.push(g({ id: 'UNFOLD_K5_NESTED_HALF' }, poly([last.o, last.F, last.B], { fill: C.paper }),
+    E.ramp({ pts: [last.o, last.F, last.B], angle: last.ang + 180, gap: gp(2.1), w0: 0.15, w1: 0.9, color: C.highlight }),
+    poly([last.o, last.F, last.B], { fill: 'none', stroke: C.ink, stroke_width: 1.1 })));
   const spiral = U.spiralPoints({ ...SYM, from: -2, to: 5, steps: 14 });
-  sym.push(path(S.smoothD(spiral), { fill: 'none', stroke: C.accent, stroke_width: 2.6, id: 'UNFOLD_LOG_SPIRAL' }));
-  sym.push(g({ id: 'UNFOLD_FAR_CORNER_NODES' }, heroSq.map((s) => circle(s.F[0], s.F[1], 4.5, { fill: C.ink, stroke: C.accent, stroke_width: 1.6 }))));
-  sym.push(circle(o[0], o[1], 5.5, { fill: C.ink, id: 'UNFOLD_ORIGIN' }));
+  sym.push(path(S.smoothD(spiral), { fill: 'none', stroke: C.accent, stroke_width: 2.2, id: 'UNFOLD_LOG_SPIRAL' }));
+  sym.push(path(S.smoothD(spiral), { fill: 'none', stroke: C.ink, stroke_width: 0.5, id: 'UNFOLD_LOG_SPIRAL_KEYLINE' }));
+  sym.push(g({ id: 'UNFOLD_FAR_CORNER_NODES' }, heroSq.map((s) => circle(s.F[0], s.F[1], 4, { fill: C.paper, stroke: C.ink, stroke_width: 1.2 }))));
+  sym.push(circle(o[0], o[1], 5, { fill: C.ink, id: 'UNFOLD_ORIGIN' }));
   ctx.add(5, sym);
 
-  /* ===== L06 secondary symbol + watermark ===== */
+  /* ===== L06 secondary: watermark window, corner rosettes, numeral tabs ===== */
   const wm = [];
-  wm.push(comment('Accent tabs: the denomination and serial sit on orange, bleeding off the note'),
-    rect(1380, 0, 220, 112, { fill: C.accent, id: 'ACCENT_TAB_TOP' }),
-    rect(1380, 672, 220, 78, { fill: C.accent, id: 'ACCENT_TAB_BOTTOM' }));
-  wm.push(comment('Watermark window: paper disc holding an outlined UNFOLD, centred on its own bounding box'));
+  wm.push(R.corners(ctx, { paper: C.paper, c1: C.primary, c2: C.pattern, c3: C.highlight, ink: C.ink }));
+  const tabFill = (x, y, w, h, id) => g({ id }, rect(x, y, w, h, { fill: C.paper }),
+    path(PT.hatchRectD(x, y, w, h, 0, gp(1.5)), { fill: 'none', stroke: C.accent, stroke_width: 1.05 }),
+    path(PT.hatchRectD(x, y, w, h, 90, gp(1.5)), { fill: 'none', stroke: C.highlight, stroke_width: 0.4 }),
+    rect(x, y, w, h, { fill: 'none', stroke: C.ink, stroke_width: 0.9 }));
+  wm.push(comment('Numeral tabs: ruled orange on paper, bleeding off the note'),
+    tabFill(1380, 0, 220, 112, 'TAB_TOP_RIGHT'), tabFill(1380, 672, 220, 78, 'TAB_BOTTOM_RIGHT'),
+    E.cartouche({ x: 1408, y: 22, w: 164, h: 62, notch: 9, color: C.ink, sw: 1.1, id: 'CARTOUCHE_NUMERAL' }));
+  wm.push(comment('Watermark window: paper disc holding the outlined UNFOLD, centred on its own bounding box'));
   const bb = U.bbox(heroSq);
   const sc = (m.win * 1.55) / Math.max(bb.x1 - bb.x0, bb.y1 - bb.y0);
   const bc = [(bb.x0 + bb.x1) / 2, (bb.y0 + bb.y1) / 2];
   const wmPt = (p) => [m.cx + (p[0] - bc[0]) * sc, m.cy + (p[1] - bc[1]) * sc];
   wm.push(g({ id: 'WATERMARK_WINDOW' },
     circle(m.cx, m.cy, m.win, { fill: C.paper, stroke: C.ink, stroke_width: 1.2 }),
-    g({ fill: 'none', stroke: C.primary, stroke_width: 1, stroke_linejoin: 'miter' },
-      heroSq.map((s) => poly([s.o, s.A, s.F].map(wmPt), {})),
-      poly([last.o, last.F, last.B].map(wmPt), {})),
+    circle(m.cx, m.cy, m.win - 5, { fill: 'none', stroke: C.primary, stroke_width: 0.5 }),
+    g({ fill: 'none', stroke: C.primary, stroke_width: 0.9, stroke_linejoin: 'miter' },
+      heroSq.map((q) => poly([q.o, q.A, q.F].map(wmPt), {})), poly([last.o, last.F, last.B].map(wmPt), {})),
     path(S.smoothD(U.spiralPoints({ ...SYM, from: -2, to: 5, steps: 10 }).map(wmPt)), { fill: 'none', stroke: C.accent, stroke_width: 1.4 }),
     circle(...wmPt(o), 2, { fill: C.ink })));
-  // P06 symbol repetition: a <pattern> of miniature pleat fans fills a strip on the bottom rail
   const mini = U.squares({ o: [5, 15], u: 2.3, a0: -45, dir: 1, n: 5 });
-  const tile = ctx.pat('pat-unfold-tile', PT.patSymbol('pat-unfold-tile',
-    g({}, mini.map((q, i) => poly([q.o, q.A, q.F], { fill: i % 2 ? C.highlight : C.secondary }))), 24));
-  wm.push(rect(gx(12) + 8, 692, 400, 24, { fill: tile, id: 'P06_SYMBOL_REPEAT_STRIP' }));
+  const tile = ctx.pat('pat-unfold-tile', PT.patSymbol('pat-unfold-tile', g({}, mini.map((q, i) => poly([q.o, q.A, q.F], { fill: i % 2 ? C.highlight : C.secondary }))), 24));
+  wm.push(rect(gx(12) + 8, 692, 330, 18, { fill: tile, id: 'P06_SYMBOL_REPEAT_STRIP' }));
   ctx.add(6, wm);
 
   /* ===== L07 typography ===== */
   const T = [];
-  const ty = ctx.clip('clip-numerals-on-violet', rect(gx(5), 0, W, H));
-  T.push(comment('T02 GRID lockup'));
+  const ty = ctx.clip('clip-numerals-on-field', rect(gx(5), 0, W, H));
   T.push(N.gridLogo(L.logo.x, L.logo.y, L.logo.h, C.ink, {}));
-  T.push(comment('T03 title and T04 phrase'));
-  T.push(N.impact('CREATIVITY', L.title.x, L.title.y, L.title.size, C.primary, { id: 'T03_TITLE' }));
+  T.push(N.impact('CREATIVITY', L.title.x, L.title.y, L.title.size, C.primary, { id: 'T03_TITLE', letter_spacing: '0.04em' }));
   T.push(N.inter('Imagine beyond the existing', L.phrase.x, L.phrase.y, L.phrase.size, C.ink, { weight: 700, id: 'T04_PHRASE' }));
-  T.push(comment('T01 denomination — ink on the type column, paper once it crosses onto the field'));
-  T.push(N.impact('1000', L.numerals.x, L.numerals.y, L.numerals.size, C.ink, { id: 'T01_DENOMINATION' }));
-  T.push(g({ clip_path: ty, id: 'T01_DENOMINATION_OVERPRINT' }, N.impact('1000', L.numerals.x, L.numerals.y, L.numerals.size, C.paper)));
-  T.push(comment('Corner numerals and serials'));
-  T.push(N.impact('1000', FIELD.x + FIELD.w - 34, 84, 44, C.ink, { text_anchor: 'end', id: 'T01_CORNER_NUMERAL_TR' }));
-  T.push(N.serial('K 1000  4817 2260 B', FIELD.x + FIELD.w - 34, 716, 11, C.ink, { text_anchor: 'end', id: 'T05_SERIAL_PRIMARY' }));
-  T.push(S.text('K 1000  4817 2260 B', { transform: `translate(${FIELD.x + FIELD.w - 6} 120) rotate(90)`, font_family: N.INTER, font_size: 10, font_weight: 600, letter_spacing: '0.2em', fill: C.highlight, id: 'T05_SERIAL_VERTICAL' }));
-  T.push(N.micro('IMAGINE BEYOND THE EXISTING', gx(5) + 36, 98, 400, 5.2, C.highlight, { id: 'T05_MICROTEXT_1' }));
-  T.push(g({ id: 'T05_INFO_ROW' },
-    [['VALUE', '01 / 05'], ['PRINCIPLE', 'CREATIVITY'], ['SERIES', 'A 2026'], ['SIZE', '160×75 MM']].map(([k, v], i) => g({},
-      N.inter(k, L.block.x + 36 + i * 88, 284 + 0, 8, C.primary, { weight: 700, ls: '0.18em' }),
-      N.inter(v, L.block.x + 36 + i * 88, 300, 11, C.ink, { weight: 700, ls: '0.06em' })))));
-  T.push(N.micro('CURRENCY FOR THE CREATIVE WORLD', L.block.x + 36, 350, L.block.w - 72, 5.2, C.primary, { id: 'T05_MICROTEXT_2' }));
+  T.push(R.issuer(L.block.x + 36, 252, { fill: C.ink, accent: C.primary, words: 'THE VALUE OF ONE THOUSAND GRID', size: 11 }));
+  T.push(R.signatures(L.block.x + 36, 318, L.block.w - 72, { color: C.ink, label: C.primary, seed: 1000 }));
+  T.push(N.micro('CURRENCY FOR THE CREATIVE WORLD', L.block.x + 36, 392, L.block.w - 72, 4.6, C.primary, { id: 'T05_MICROTEXT_2' }));
+  T.push(comment('T01 denomination: engraved numerals. Ink ruling on the type column, paper ruling once they cross onto the field'));
+  T.push(R.numerals(ctx, '1000', L.numerals.x, L.numerals.y, L.numerals.size, { lines: C.ink, outline: C.ink, id: 'T01_DENOMINATION' }));
+  T.push(g({ clip_path: ty, id: 'T01_DENOMINATION_OVERPRINT' }, R.numerals(ctx, '1000', L.numerals.x, L.numerals.y, L.numerals.size, { lines: C.paper, outline: C.paper })));
+  T.push(N.impact('1000', 1490, 66, 44, C.ink, { text_anchor: 'middle', id: 'T01_CORNER_NUMERAL_TR', letter_spacing: '0.03em' }));
+  T.push(N.serial('K 1000  4817 2260 B', 1490, 101, 8.5, C.ink, { text_anchor: 'middle', id: 'T05_SERIAL_SMALL' }));
+  T.push(N.serial('K 1000  4817 2260 B', 1490, 720, 13, C.ink, { text_anchor: 'middle', id: 'T05_SERIAL_PRIMARY' }));
+  T.push(S.text('K 1000  4817 2260 B', { transform: `translate(${FIELD.x + FIELD.w - 8} 150) rotate(90)`, font_family: N.INTER, font_size: 9, font_weight: 600, letter_spacing: '0.2em', fill: C.highlight, id: 'T05_SERIAL_VERTICAL' }));
+  T.push(N.micro('IMAGINE BEYOND THE EXISTING', gx(5) + 36, 98, 400, 4.6, C.highlight, { id: 'T05_MICROTEXT_1' }));
+  T.push(R.frameMicro('GRID CREATIVE RESERVE · 1000 GRID · IMAGINE BEYOND THE EXISTING ·', C.ink));
   ctx.add(7, T);
 
-  /* ===== L08 security & accents ===== */
+  /* ===== L08 security ===== */
   const sec = [];
   sec.push(N.thread(L.thread.x, FIELD.y, FIELD.y + FIELD.h, L.thread.w, { a: C.paper, b: C.accent, ink: C.ink, label: 'GRID 1000 · CREATIVITY · GRID 1000 · CREATIVITY' }));
-  sec.push(N.tactile(5, 66, 690, C.ink, { bar: 4, h: 20, gap: 6 }));
+  const fs = [];
+  for (let k = 0; k < 6; k++) fs.push({ at: k / 5.001, color: [C.accent, C.highlight, C.secondary, C.paper, C.highlight, C.accent][k] });
+  sec.push(comment('Foil stripe, drawn the way iris printing is: interleaved fine lines changing colour along the strip'),
+    g({ id: 'FOIL_STRIPE' }, E.iris({ x: L.foil.x, y: FIELD.y, w: L.foil.w, h: FIELD.h, vertical: false, gap: gp(1.3), sw: 0.9, stops: [...fs, ...fs.map((q) => ({ at: q.at, color: q.color }))].map((q, i, a) => ({ at: i / (a.length - 1), color: q.color })), id: 'foil_iris' }),
+      rect(L.foil.x, FIELD.y, L.foil.w, FIELD.h, { fill: 'none', stroke: C.ink, stroke_width: 0.8 })));
+  sec.push(N.tactile(5, 66, 692, C.ink, { bar: 4, h: 20, gap: 6 }));
   sec.push(g({ id: 'REGISTRATION_MARKS' }, PT.regMark(gx(5), 118, 7, C.accent), PT.regMark(gx(5), 650, 7, C.accent)));
-  sec.push(path(PT.crossGridD({ x: gx(11) + 8, y: gy(7) - 8, cols: 12, rows: 2, dx: 12, dy: 12, arm: 2 }), { fill: 'none', stroke: C.highlight, stroke_width: 0.7, id: 'MICRO_CROSSES' }));
   ctx.add(8, sec);
 }
 
@@ -297,8 +287,8 @@ const bp = {
   steps,
   facts: [['UNIT u', '75 ÷ √2 = 53.03 px'], ['TURN', '45° per square, clockwise'], ['GROWTH', '× √2 per step · × 2 per 90°'], ['ODD SQUARES', '1 · 2 · 4 · 8 · 16 modules']],
   patterns: {
-    P01: 'Medallion, braided rails', P02: 'Polar rings, insets', P03: 'Type column strip', P04: 'Square hatching, pleats',
-    P05: 'Top band', P06: 'Pleat tile strip',
+    P01: 'Medallion, borders, rosettes', P02: 'Polar rings', P04: 'Ruled ground, pleat shading',
+    P06: 'Pleat tile strip', P08: 'Lathe-work rails',
   },
   samples: {
     P06: (w, h, c) => g({ fill: 'none', stroke: c, stroke_width: 1 },

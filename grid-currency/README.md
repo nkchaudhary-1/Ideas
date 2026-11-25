@@ -27,14 +27,15 @@ Open `index.html` to browse all ten files. In the viewer, the blueprint opens fu
 - **Grid:** 20 × 8 modules of 75 px. 50 px side margins, 75 px rails, a 26 px frame band.
 - **Eight named layers**, always in this order, as top-level groups:
   `L01_BASE_PAPER` · `L02_BORDER_FRAME` · `L03_GEOMETRIC_CONSTRUCTION` · `L04_ENGRAVING_GUILLOCHE` · `L05_PRIMARY_SYMBOL` · `L06_SECONDARY_SYMBOL_WATERMARK` · `L07_TYPOGRAPHY` · `L08_SECURITY_ACCENTS`
-- **Seven colour roles** per note, flat fills only: C01 primary, C02 secondary, C03 accent, C04 pattern, C05 paper, C06 ink, C07 highlight. The validator fails any note that uses a colour outside its own palette, leaves a role unused, or uses a gradient, filter, mask, opacity or raster.
+- **Printed, not illustrated.** Tone is made of line weight and line density, never gradients, opacity or filters: ruled moiré grounds, iris-blended colour (colours interleaved line by line), weight-ramped engraving on the forms, outlined numerals filled with fine ruling. Every note also carries what a real note carries: an ornate lathe-work border with corner rosettes, issuer and legal text, two signatures, serial numbers that grow in size, microprint in the frame, paper fibres, a watermark window, a foil stripe and a security thread.
+- **Seven colour roles** per note, flat inks only: C01 primary, C02 secondary, C03 accent, C04 pattern, C05 paper, C06 ink, C07 highlight. The validator fails any note that uses a colour outside its own palette, leaves a role unused, or uses a gradient, filter, mask, opacity or raster.
 - **Type:** Impact for numerals and titles, Inter Display for everything else. Live `<text>`, no outlines.
-- **Patterns** P01 guilloché · P02 contour · P03 micro-grid · P04 hatching · P05 dots · P06 symbol repeat · P07 tessellation · P08 waves. Each note uses its own combination. Micro-textures are reusable `<pattern>` definitions; guilloché, hatching, contour and waves are explicit path geometry.
+- **Patterns** P01 guilloché · P02 contour · P03 micro-grid · P04 hatching · P05 dots · P06 symbol repeat · P07 tessellation · P08 waves. Each note uses its own combination. Micro-textures and numeral ruling are reusable `<pattern>` definitions; guilloché, ruling, hatching, contour and waves are explicit path geometry.
 - **Security-inspired details:** thread with microtext, tactile bars (5 for 1000 down to 1 for 50), registration marks, microtext lines, repeated symbol strips.
 
 ## What is in each blueprint
 
-Header and frame index, then nine panels: **01** final note · **02** theme · **03** key visual elements · **04** wireframe (grid, margins, zones) · **05** symbol construction, step by step · **06** palette with HEX, roles, true colour-separation plates and measured surface coverage · **07** pattern system (P01–P08, in-use highlighted) · **08** exploded layer stack · **09** specifications and type hierarchy. Technical colours are shared by all five frames; the banknotes keep their own palettes.
+Header and frame index, then nine panels: **01** final note · **02** theme · **03** key visual elements · **04** wireframe (grid, margins, zones) · **05** symbol construction, step by step · **06** palette with HEX, roles, true colour-separation plates and measured ink coverage per plate · **07** pattern system (P01–P08, in-use highlighted) · **08** exploded layer stack · **09** specifications and type hierarchy. Technical colours are shared by all five frames; the banknotes keep their own palettes.
 
 ## Build
 
@@ -47,7 +48,7 @@ node tests/validate.js # structure, palette, fonts, ids, XML parse
 node tests/render.js dist/GRID-1000-creativity.svg out.png 2
 ```
 
-`lib/` holds the SVG toolkit, pattern generators, shared banknote architecture and the blueprint builder. `symbols/` holds the geometry of each symbol, used by both the note and its blueprint. `notes/` holds the composition of each note. Every symbol constant (grid vertex, unit, radii) lives in one place, so the blueprint always shows what the note really does.
+`lib/` holds the SVG toolkit, pattern generators, the engraving toolkit (`engrave.js`), the shared real-note kit (`realism.js`), banknote architecture and the blueprint builder. `symbols/` holds the geometry of each symbol, used by both the note and its blueprint. `notes/` holds the composition of each note. Every symbol constant (grid vertex, unit, radii) lives in one place, so the blueprint always shows what the note really does.
 
 ## Know before you use it
 

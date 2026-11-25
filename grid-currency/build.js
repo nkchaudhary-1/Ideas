@@ -6,7 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const N = require('./lib/note');
-const { buildBlueprint } = require('./lib/blueprint');
+const { buildBlueprint, plateSvg } = require('./lib/blueprint');
 const { gallery } = require('./lib/gallery');
 
 const NOTES = ['1000', '500', '200', '100', '50'];
@@ -18,8 +18,8 @@ function loadNote(id) {
   try { return require(`./notes/n${id}`); } catch (e) { if (e.code === 'MODULE_NOT_FOUND' && e.message.includes(`n${id}`)) return null; throw e; }
 }
 
-function buildNote(def) {
-  const ctx = new N.Ctx(def);
+function buildNote(def, opts = {}) {
+  const ctx = new N.Ctx(def, opts);
   def.build(ctx);
   const svg = N.assemble(ctx, {
     id: `GRID_${def.id}_${def.name.toUpperCase()}`,
@@ -40,8 +40,13 @@ function buildNote(def) {
     fs.writeFileSync(notePath, svg);
     console.log(`${name}.svg  ${(svg.length / 1024).toFixed(0)} KB`);
     let coverage = null;
-    try { coverage = await require('./tests/coverage').coverage(notePath, def.palette); } catch (e) { console.warn('coverage skipped:', e.message); }
-    const bpSvg = buildBlueprint(def, ctx, { frameNo: `0${NOTES.indexOf(def.id) + 1}`, notesMeta: meta, coverage, noteSvgBytes: svg.length });
+    try {
+      const roles = Object.keys(def.palette), plates = {};
+      roles.forEach((r) => { plates[r] = plateSvg(def, ctx, r); });
+      coverage = await require('./tests/coverage').coverage(plates);
+    } catch (e) { console.warn('coverage skipped:', e.message); }
+    const lite = buildNote(def, { density: 0.25 });
+    const bpSvg = buildBlueprint(def, ctx, { frameNo: `0${NOTES.indexOf(def.id) + 1}`, notesMeta: meta, coverage, noteSvgBytes: svg.length, plateCtx: lite.ctx });
     fs.writeFileSync(path.join(dist, `${name}-blueprint.svg`), bpSvg);
     console.log(`${name}-blueprint.svg  ${(bpSvg.length / 1024).toFixed(0)} KB`);
   }

@@ -8,6 +8,8 @@ const S = require('../lib/svg');
 const PT = require('../lib/patterns');
 const N = require('../lib/note');
 const T = require('../symbols/tangent');
+const E = require('../lib/engrave');
+const R = require('../lib/realism');
 const B = require('../lib/bpcolors');
 const { f, f1, g, rect, circle, path, line, poly, comment, P } = S;
 const { gx, gy, FIELD, W, H } = N;
@@ -33,58 +35,62 @@ const L = {
 function build(ctx) {
   const C = ctx.C;
   const [px, py] = SYM.P;
+  const gp = (v) => ctx.gap(v);
   const fieldClip = ctx.clip('clip-field', rect(FIELD.x, FIELD.y, FIELD.w, FIELD.h));
   const Lf = left(), Rt = right();
 
-  N.base(ctx, { paper: C.paper, hairline: C.secondary });
-  N.frame(ctx, { ink: C.ink, line: C.pattern, accent: C.accent, corner: C.accent });
+  R.paper(ctx, { paper: C.paper, fibres: [C.highlight, C.secondary, C.primary, C.accent], seed: 200 });
+  R.border(ctx, { c1: C.accent, c2: C.primary, ink: C.ink });
 
-  /* ===== L03 ===== */
-  ctx.add(3, comment('Colour fields: one coral field, a magenta column that bleeds off the right edge'),
-    rect(FIELD.x, FIELD.y, FIELD.w, FIELD.h, { fill: C.primary, id: 'FIELD_PRIMARY' }),
-    rect(L.column.x, 0, W - L.column.x, H, { fill: C.accent, id: 'COLUMN_ACCENT_TITLE' }),
-    g({ id: 'DISCS_K1' }, circle(Lf[0].cx, Lf[0].cy, Lf[0].r, { fill: C.secondary, id: 'disc_left_k1' }), circle(Rt[0].cx, Rt[0].cy, Rt[0].r, { fill: C.paper, id: 'disc_right_k1' })));
+  /* ===== L03 ground ===== */
+  const ruled = (x, y, w, h, color, gap, sw, angle = 0) => path(PT.hatchRectD(x, y, w, h, angle, gp(gap)), { fill: 'none', stroke: color, stroke_width: sw });
+  ctx.add(3, comment('Ground: ruled coral with a rose moiré; peach disc; paper disc; ruled magenta column bleeding off the right edge'),
+    E.moire({ pts: E.rectPts(FIELD.x, FIELD.y, FIELD.w, FIELD.h), angle: -4, spread: 3, gap: gp(1.6), sw: 1.2, c1: C.primary, c2: C.pattern, id: 'GROUND_MOIRE_FIELD' }),
+    g({ id: 'DISCS_K1' },
+      circle(Lf[0].cx, Lf[0].cy, Lf[0].r, { fill: C.paper, id: 'disc_left_k1' }),
+      path(PT.hatchCircleD(Lf[0].cx, Lf[0].cy, Lf[0].r, 0, gp(1.4)), { fill: 'none', stroke: C.secondary, stroke_width: 1.0, id: 'disc_left_ruling' }),
+      circle(Rt[0].cx, Rt[0].cy, Rt[0].r, { fill: C.paper, id: 'disc_right_k1' }),
+      path(PT.hatchCircleD(Rt[0].cx, Rt[0].cy, Rt[0].r, 0, gp(2.6)), { fill: 'none', stroke: C.highlight, stroke_width: 0.35, id: 'disc_right_ruling' })),
+    g({ id: 'COLUMN_ACCENT_TITLE' }, rect(L.column.x, 0, W - L.column.x, H, { fill: C.paper }),
+      ruled(L.column.x, 0, W - L.column.x, H, C.accent, 1.3, 1.0), ruled(L.column.x, 0, W - L.column.x, H, C.highlight, 3.2, 0.3, 90),
+      rect(L.column.x, 0, W - L.column.x, H, { fill: 'none', stroke: C.ink, stroke_width: 0.9 })));
 
   /* ===== L04 ===== */
   const eng = [];
-  // orthogonal pencils: the other half of the inverted grid, hairlines over everything
-  eng.push(comment('P02 Contour — the orthogonal pencils (centres on the vertical axis), crossing the mark at 90°'));
-  eng.push(g({ id: 'P02_ORTHOGONAL_PENCILS', fill: 'none', stroke: C.pattern, stroke_width: 0.8, clip_path: fieldClip },
+  eng.push(comment('P02 Contour: the orthogonal pencils (centres on the vertical axis), crossing the mark at 90°'));
+  eng.push(g({ id: 'P02_ORTHOGONAL_PENCILS', fill: 'none', stroke: C.pattern, stroke_width: 0.7, clip_path: fieldClip },
     [-1, 1].flatMap((sy) => T.pencil({ ...SYM, side: sy, axis: 'y' }).map((c) => circle(c.cx, c.cy, c.r, { id: `orth_${sy > 0 ? 'down' : 'up'}_${c.k}` })))));
-  // guilloché rails
-  const braid = (yc, shift, x0) => PT.braidD({ x0, x1: L.thread.x - 12, yc, amp: 8, lambda: 44, k: 4, shift });
-  eng.push(comment('P01 Guilloché braids on the rails'));
-  eng.push(path(braid(52, 0, 400), { fill: 'none', stroke: C.pattern, stroke_width: 0.7, id: 'P01_BRAID_TOP' }));
-  eng.push(path(braid(698, 1.2, 520), { fill: 'none', stroke: C.pattern, stroke_width: 0.7, id: 'P01_BRAID_BOTTOM' }));
-  // fine eccentric rings inside both discs: harmonic contour (k up to 24)
+  eng.push(comment('P01 Guilloché: lathe-work on the rails'));
+  eng.push(E.lathe({ x0: 400, x1: L.thread.x - 12, yc: 52, amp: 8, lambda: 44, rows: 7, step: gp(3), swell: 3, color: C.pattern, sw: 0.4, id: 'P01_LATHE_TOP' }));
+  eng.push(E.lathe({ x0: 520, x1: L.thread.x - 12, yc: 698, amp: 8, lambda: 44, rows: 7, step: gp(3), swell: 3, color: C.pattern, sw: 0.4, id: 'P01_LATHE_BOTTOM' }));
   const fine = [];
   for (let k = 7; k <= 24; k++) { const c = SYM.C0 / k; fine.push(circle(px - c, py, c), circle(px + c, py, c)); }
-  eng.push(comment('P02 Contour — the harmonic series continues: r = C0/k for k = 7 … 24 (hairlines near the contact point)'));
   eng.push(g({ id: 'P02_HARMONIC_RINGS', fill: 'none', stroke: C.ink, stroke_width: 0.5 }, fine));
-  // a line through P is its own inverse: the fan of rays from P is the third family of the inverted grid
   const fanD = (a0, a1) => {
     let d = '';
-    for (let a = a0; a <= a1; a += 2.5) {
+    for (let a = a0; a <= a1; a += 2.5 / ctx.density) {
       const th = a * Math.PI / 180, Lr = 2 * SYM.C0 * Math.abs(Math.cos(th));
       d += `M${f1(px)} ${f1(py)}L${f1(px + Lr * Math.cos(th))} ${f1(py + Lr * Math.sin(th))}`;
     }
     return d;
   };
-  eng.push(comment('P04 Hatching — rays from P: lines through P invert to themselves, so the crescents are hatched toward the contact point'));
-  eng.push(g({ id: 'P04_FAN_FROM_CONTACT_POINT', fill: 'none', stroke_width: 0.55 },
-    path(fanD(92, 268), { stroke: C.accent, id: 'fan_left' }),
-    path(fanD(-88, 88), { stroke: C.pattern, id: 'fan_right' })));
+  eng.push(comment('P04 Hatching: rays from P (lines through P invert to themselves)'));
+  eng.push(g({ id: 'P04_FAN_FROM_CONTACT_POINT', fill: 'none', stroke_width: 0.55 }, path(fanD(92, 268), { stroke: C.accent, id: 'fan_left' }), path(fanD(-88, 88), { stroke: C.pattern, id: 'fan_right' })));
   ctx.add(4, eng);
 
   /* ===== L05 primary symbol ===== */
   const sym = [];
-  const lcol = [C.secondary, C.primary, C.secondary, C.highlight, C.secondary, C.accent];
-  const rcol = [C.paper, C.secondary, C.paper, C.primary, C.paper, C.accent];
-  sym.push(comment('COMMON GROUND: two pencils of circles, all tangent at P. Largest first.'));
+  const lcol = [null, C.primary, C.secondary, C.highlight, C.secondary, C.accent];
+  const rcol = [null, C.secondary, null, C.primary, null, C.accent];
+  const ang = [0, 90, 45, 135, 0, 90];
+  sym.push(comment('COMMON GROUND: two pencils of circles, all tangent at P. Each circle is paper under ruled ink, largest first'));
   [['LEFT', Lf, lcol], ['RIGHT', Rt, rcol]].forEach(([nm, fam, cols]) => {
-    sym.push(g({ id: `COMMON_GROUND_${nm}_PENCIL` }, fam.map((c) => circle(c.cx, c.cy, c.r, { fill: c.k === 1 ? 'none' : cols[c.k - 1], stroke: C.ink, stroke_width: 1.3, id: `${nm.toLowerCase()}_k${c.k}_r${f(c.r)}` }))));
+    sym.push(g({ id: `COMMON_GROUND_${nm}_PENCIL` }, fam.map((c) => c.k === 1
+      ? circle(c.cx, c.cy, c.r, { fill: 'none', stroke: C.ink, stroke_width: 1.3, id: `${nm.toLowerCase()}_k1_r${f(c.r)}` })
+      : g({ id: `${nm.toLowerCase()}_k${c.k}_r${f(c.r)}` }, circle(c.cx, c.cy, c.r, { fill: C.paper }),
+        cols[c.k - 1] ? path(PT.hatchCircleD(c.cx, c.cy, c.r, ang[c.k - 1], gp(c.k === 6 ? 1.1 : 1.5)), { fill: 'none', stroke: cols[c.k - 1], stroke_width: c.k === 6 ? 1.1 : 0.95 }) : '',
+        circle(c.cx, c.cy, c.r, { fill: 'none', stroke: C.ink, stroke_width: 1.2 })))));
   });
-  // intersection nodes of the two pencils (images of grid vertices)
   const nd = T.nodes({ P: SYM.P, C0: SYM.C0, kMax: 4 }).filter((n) => Math.hypot(n.x - px, n.y - py) > 3);
   sym.push(g({ id: 'COMMON_GROUND_NODES' }, nd.map((n) => circle(n.x, n.y, 2.6, { fill: C.ink }))));
   sym.push(circle(px, py, 6.5, { fill: C.ink, stroke: C.paper, stroke_width: 2, id: 'COMMON_GROUND_CONTACT_POINT' }));
@@ -92,17 +98,18 @@ function build(ctx) {
 
   /* ===== L06 ===== */
   const wm = [];
-  wm.push(comment('Medallion at the contact point: forty-eight circles through P, a rosette of perspectives'));
+  wm.push(R.corners(ctx, { paper: C.paper, c1: C.accent, c2: C.primary, c3: C.pattern, ink: C.ink }));
   const rs = 62;
-  wm.push(g({ id: 'MEDALLION_ROSETTE_AT_P', fill: 'none', stroke: C.ink, stroke_width: 0.5 },
-    S.range(48).map((i) => { const a = (i * 7.5) * Math.PI / 180; return circle(px + rs * Math.cos(a), py + rs * Math.sin(a), rs); })));
+  wm.push(comment('Medallion at the contact point: forty-eight circles through P'));
+  wm.push(g({ id: 'MEDALLION_ROSETTE_AT_P', fill: 'none', stroke: C.ink, stroke_width: 0.45 },
+    S.range(ctx.n(48)).map((i, _, a) => { const t = (i * 360 / a.length) * Math.PI / 180; return circle(px + rs * Math.cos(t), py + rs * Math.sin(t), rs); })));
   wm.push(comment('Watermark window in the left disc: the outlined mark'));
   const w = L.window, sc = 0.13;
-  const wp = (x, y) => [w.cx + (x - px) * sc * 1 + 0, w.cy + (y - py) * sc];
   wm.push(g({ id: 'WATERMARK_WINDOW' },
     circle(w.cx, w.cy, w.r, { fill: C.paper, stroke: C.ink, stroke_width: 1.2 }),
-    g({ fill: 'none', stroke: C.primary, stroke_width: 1 },
-      [...Lf, ...Rt].map((c) => circle(w.cx + (c.cx - px) * sc + 0, w.cy + (c.cy - py) * sc, c.r * sc)))));
+    circle(w.cx, w.cy, w.r - 5, { fill: 'none', stroke: C.accent, stroke_width: 0.5 }),
+    g({ fill: 'none', stroke: C.primary, stroke_width: 1 }, [...Lf, ...Rt].map((c) => circle(w.cx + (c.cx - px) * sc, w.cy + (c.cy - py) * sc, c.r * sc)))));
+  wm.push(g({ id: 'TITLE_PANEL' }, rect(1518, 446, 48, 252, { fill: C.paper, stroke: C.ink, stroke_width: 1 }), rect(1521, 449, 42, 246, { fill: 'none', stroke: C.ink, stroke_width: 0.4 })));
   ctx.add(6, wm);
 
   /* ===== L07 ===== */
@@ -110,21 +117,24 @@ function build(ctx) {
   Tt.push(N.gridLogo(L.logo.x, L.logo.y, L.logo.h, C.ink, {}));
   Tt.push(N.impact('200', L.corner.x, L.corner.y, L.corner.size, C.ink, { id: 'T01_CORNER_NUMERAL' }));
   Tt.push(N.inter('Design for people', L.phrase.x, L.phrase.y, L.phrase.size, C.ink, { weight: 700, id: 'T04_PHRASE' }));
-  Tt.push(N.impact('200', 0, 0, L.numerals.size, C.ink, { transform: `translate(${L.numerals.x} ${L.numerals.y}) rotate(-90)`, id: 'T01_DENOMINATION' }));
-  Tt.push(N.impact('EMPATHY', 0, 0, L.title.size, C.paper, { transform: `translate(${L.title.x} ${L.title.y}) rotate(-90)`, letter_spacing: '0.04em', id: 'T03_TITLE' }));
-  Tt.push(N.serial('E 200  6041 8872 F', 62, 712, 11, C.ink, { id: 'T05_SERIAL_PRIMARY' }));
-  Tt.push(S.text('E 200  6041 8872 F', { transform: `translate(${FIELD.x + FIELD.w - 8} 330) rotate(90)`, font_family: N.INTER, font_size: 10, font_weight: 600, letter_spacing: '0.2em', fill: C.paper, id: 'T05_SERIAL_VERTICAL' }));
-  Tt.push(N.micro('DESIGN FOR PEOPLE', px - 70, 112 - 0, 140, 5, C.pattern, { id: 'T05_MICROTEXT_1', y: 98 }));
-  Tt.push(g({ id: 'T05_INFO_ROW' }, [['VALUE', '03 / 05'], ['PRINCIPLE', 'EMPATHY'], ['SERIES', 'A 2026']].map(([k, v], i) =>
-    g({}, N.inter(k, L.logo.x + i * 90, 132, 8, C.pattern, { weight: 700, ls: '0.18em' }), N.inter(v, L.logo.x + i * 90, 146, 11, C.ink, { weight: 700, ls: '0.06em' })))));
+  Tt.push(R.numerals(ctx, '200', 0, 0, L.numerals.size, { lines: C.ink, outline: C.ink, gap: 2.4, under: C.paper, transform: `translate(${L.numerals.x} ${L.numerals.y}) rotate(-90)`, id: 'T01_DENOMINATION' }));
+  Tt.push(N.impact('EMPATHY', 0, 0, 40, C.ink, { transform: `translate(1558 690) rotate(-90)`, letter_spacing: '0.05em', id: 'T03_TITLE' }));
+  Tt.push(R.issuer(62, 96, { fill: C.ink, accent: C.accent, words: 'THE VALUE OF TWO HUNDRED GRID', size: 9 }));
+  Tt.push(R.signatures(62, 628, 250, { color: C.ink, label: C.pattern, seed: 200 }));
+  Tt.push(N.serial('E 200  6041 8872 F', 62, 714, 12, C.ink, { id: 'T05_SERIAL_PRIMARY' }));
+  Tt.push(S.text('E 200  6041 8872 F', { transform: `translate(${FIELD.x + FIELD.w - 8} 330) rotate(90)`, font_family: N.INTER, font_size: 9, font_weight: 600, letter_spacing: '0.2em', fill: C.ink, id: 'T05_SERIAL_VERTICAL' }));
+  Tt.push(N.micro('DESIGN FOR PEOPLE', px - 70, 98, 140, 4.6, C.pattern, { id: 'T05_MICROTEXT_1' }));
+  Tt.push(R.frameMicro('GRID CREATIVE RESERVE · 200 GRID · DESIGN FOR PEOPLE ·', C.ink));
   ctx.add(7, Tt);
 
   /* ===== L08 ===== */
   const sec = [];
   sec.push(N.thread(L.thread.x, FIELD.y, FIELD.y + FIELD.h, L.thread.w, { a: C.paper, b: C.accent, ink: C.ink, label: 'GRID 200 · EMPATHY · GRID 200 · EMPATHY' }));
-  sec.push(N.tactile(3, 300, 676, C.ink, { bar: 4, h: 20, gap: 6 }));
+  const fs = [C.accent, C.highlight, C.secondary, C.paper, C.highlight, C.accent].map((color, k, a) => ({ at: k / (a.length - 1), color }));
+  sec.push(g({ id: 'FOIL_STRIPE' }, E.iris({ x: 58, y: 140, w: 22, h: 440, vertical: false, gap: gp(1.3), sw: 0.9, stops: [...fs, ...fs].map((q, i, a) => ({ at: i / (a.length - 1), color: q.color })), id: 'foil_iris' }),
+    rect(58, 140, 22, 440, { fill: 'none', stroke: C.ink, stroke_width: 0.8 })));
+  sec.push(N.tactile(3, 360, 676, C.ink, { bar: 4, h: 20, gap: 6 }));
   sec.push(g({ id: 'REGISTRATION_MARKS' }, PT.regMark(gx(2), 100, 7, C.ink), PT.regMark(gx(14), 650, 7, C.ink)));
-  sec.push(path(PT.crossGridD({ x: 380, y: 706, cols: 18, rows: 1, dx: 14, dy: 12, arm: 2 }), { fill: 'none', stroke: C.ink, stroke_width: 0.8, id: 'MICRO_CROSSES' }));
   ctx.add(8, sec);
 }
 

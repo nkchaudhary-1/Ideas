@@ -49,7 +49,7 @@ function note(file, svg, def) {
   const starts = want.map((id) => svg.indexOf(`<g id="${id}">`));
   for (let i = 0; i < 6; i++) if (/<text\b/.test(svg.slice(starts[i], starts[i + 1]))) fail(file, `<text> inside ${want[i]}`);
   const kb = Buffer.byteLength(svg) / 1024;
-  if (kb > 500) fail(file, `${kb.toFixed(0)} KB is larger than 500 KB`);
+  if (kb > 800) fail(file, `${kb.toFixed(0)} KB is larger than 800 KB`);
   ['T01_DENOMINATION', 'T03_TITLE', 'T04_PHRASE', 'T05_SERIAL_PRIMARY', 'GRID_LOGO', 'SECURITY_THREAD', 'TACTILE_CODE', 'FRAME_KEYLINE_OUTER'].forEach((k) => {
     if (!svg.includes(`id="${k}"`)) fail(file, `required element ${k} missing`);
   });
@@ -66,7 +66,7 @@ function blueprint(file, svg, def) {
   hexes(svg).filter((h) => !pal.has(h)).forEach((h) => fail(file, `colour ${h} not in technical or note palette`));
   Object.values(B).forEach((c) => { if (!svg.toLowerCase().includes(c.toLowerCase())) fail(file, `technical colour ${c} unused`); });
   const kb = Buffer.byteLength(svg) / 1024;
-  if (kb > 3000) fail(file, `${kb.toFixed(0)} KB is larger than 3 MB`);
+  if (kb > 4000) fail(file, `${kb.toFixed(0)} KB is larger than 4 MB`);
 }
 
 (async () => {

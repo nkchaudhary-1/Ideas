@@ -240,7 +240,7 @@ function p06(def, ex) {
       bt(code, x, 90, { size: 10.5, weight: 800, fill: CY, ls: '0.12em' }),
       bt(name, x, 104, { size: 10, weight: 700, ls: '0.1em' }),
       bt(C[k], x, 120, { size: 12.5, weight: 600, ls: '0.04em', fill: GR }),
-      bt(ex.coverage ? `${(ex.coverage[k] * 100).toFixed(1)}% of surface` : '', x, 136, { size: 9.5, weight: 700, fill: AM })));
+      bt(ex.coverage ? `${(ex.coverage[k] * 100).toFixed(1)}% ink` : '', x, 136, { size: 9.5, weight: 700, fill: AM })));
   });
   // plates
   o.push(bt('FLAT-COLOUR SEPARATION  ·  ONE PLATE PER ROLE', x0, 162, { size: 9.5, weight: 800, ls: '0.16em', fill: PK }));
@@ -253,10 +253,11 @@ function p06(def, ex) {
   });
   // coverage bar
   const by = 250, bw = 7 * sw + 6 * gp;
-  o.push(bt('SURFACE COVERAGE', x0, by - 8, { size: 9.5, weight: 800, ls: '0.16em', fill: PK }));
+  o.push(bt('INK COVERAGE PER PLATE', x0, by - 8, { size: 9.5, weight: 800, ls: '0.16em', fill: PK }));
   let cx = x0;
+  const covTotal = ex.coverage ? Object.values(ex.coverage).reduce((a, b) => a + b, 0) : 1;
   ROLES.forEach(([k]) => {
-    const pct = ex.coverage ? ex.coverage[k] : 1 / 7, w = bw * pct;
+    const pct = ex.coverage ? ex.coverage[k] / covTotal : 1 / 7, w = bw * pct;
     o.push(rect(cx, by, w, 16, { fill: C[k], stroke: BG, stroke_width: 0.6 }));
     cx += w;
   });
@@ -389,25 +390,38 @@ function p09(def, ex) {
 }
 
 /* ---------------- plates: palette substitution on the note markup ---------------- */
-function plate(def, role, markup) {
+function plate(def, role, markup, keepWidths = false) {
   const C = def.palette;
   let out = markup.replace(/<rect[^>]*id="PAPER"[^>]*\/>/, '');
   Object.entries(C).forEach(([k, hex]) => {
     if (k === role) return;
     out = out.split(`fill="${hex}"`).join('fill="none"').split(`stroke="${hex}"`).join('stroke="none"');
+    out = out.split(`fill="url(#pat-engrave-`).join(`fill="url(#pat-engrave-`);
   });
+  // drop shapes that no longer paint anything: a plate only keeps its own ink
+  out = out.replace(/<(?:path|rect|circle|ellipse|polygon|polyline|line)\b(?![^>]*\bstroke="(?!none))[^>]*\bfill="none"[^>]*\/>/g, '')
+    .replace(/<(?:path|rect|circle|ellipse|polygon|polyline|line)\b(?=[^>]*\bstroke="none")(?=[^>]*\bfill="none")[^>]*\/>/g, '');
+  if (!keepWidths) out = out.replace(/stroke-width="([\d.]+)"/g, (m, w) => `stroke-width="${Math.max(parseFloat(w), 3.2)}"`);
   return S.suffixIds(out, `-pl-${role}`);
+}
+/* A standalone 1600 x 750 SVG of one ink, for measuring coverage */
+function plateSvg(def, ctx, role) {
+  const layers = N.LAYERS.map(([id], i) => g({ id }, ctx.L[i])).join('\n');
+  const body = plate(def, role, `<defs>${ctx.defs.join('\n')}</defs>${layers}`, true);
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 750" width="1600" height="750">${body}</svg>`;
 }
 
 /* ---------------- assemble ---------------- */
-function buildBlueprint(def, ctx, { frameNo, notesMeta, coverage, noteSvgBytes }) {
+function buildBlueprint(def, ctx, { frameNo, notesMeta, coverage, noteSvgBytes, plateCtx }) {
   def.bp.frameNo = frameNo;
   const layersMarkup = N.LAYERS.map(([id], i) => g({ id }, ctx.L[i])).join('\n');
   const defsMarkup = ctx.defs.join('\n');
   const layerCounts = ctx.L.map((l) => (l.join('').match(/<(path|rect|circle|ellipse|line|polygon|polyline|text)\b/g) || []).length);
+  const pc = plateCtx || ctx;
+  const plateLayers = N.LAYERS.map(([id], i) => g({ id }, pc.L[i])).join('\n');
   const plates = {};
   ROLES.forEach(([k]) => {
-    plates[k] = plate(def, k, `<defs>${defsMarkup}</defs>${layersMarkup}`);
+    plates[k] = plate(def, k, `<defs>${pc.defs.join('\n')}</defs>${plateLayers}`);
   });
   const ex = { coverage, plates, layerCounts, sizeKb: Math.round(noteSvgBytes / 1024) };
   const defs = el('defs', { id: 'BP_DEFS' },
@@ -447,4 +461,4 @@ const PANELS = [
   { n: 8, label: 'Layers', x: COL.B[0], y: ROW[3][0], w: COL.B[1], h: ROW[3][1] },
   { n: 9, label: 'Specs', x: COL.C[0], y: ROW[3][0], w: COL.C[1], h: ROW[3][1] },
 ];
-module.exports = { buildBlueprint, bt, para, PATS, ROLES, PANELS, W, H };
+module.exports = { plateSvg, buildBlueprint, bt, para, PATS, ROLES, PANELS, W, H };

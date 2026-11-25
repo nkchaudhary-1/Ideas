@@ -38,7 +38,10 @@ class Ctx {
     this.ids = new Set();
     this.L = LAYERS.map(() => []);
     this.opts = opts;
+    this.density = opts.density || 1;   // 1 for the real note, lower for the lightweight blueprint plates
   }
+  gap(g) { return g / this.density; }
+  n(k) { return Math.max(4, Math.round(k * this.density)); }
   add(n, ...kids) { this.L[n - 1].push(...kids.flat(Infinity).filter(Boolean)); }
   def_(id, markup) { if (!this.ids.has(id)) { this.ids.add(id); this.defs.push(markup); } return `url(#${id})`; }
   clip(id, shape) { return this.def_(id, el('clipPath', { id }, shape)); }
@@ -95,7 +98,10 @@ function thread(x, y0, y1, w, { a, b, ink, label }) {
   const cells = [];
   const seg = w * 2.2;
   for (let y = y0, i = 0; y < y1; y += seg, i++) {
-    cells.push(rect(x, y, w, Math.min(seg, y1 - y), { fill: i % 2 ? a : b }));
+    const h = Math.min(seg, y1 - y);
+    cells.push(i % 2
+      ? rect(x, y, w, h, { fill: a })
+      : g({}, rect(x, y, w, h, { fill: a }), path(PT.hatchRectD(x, y, w, h, 0, 1.3), { fill: 'none', stroke: b, stroke_width: 1 })));
   }
   return g({ id: 'SECURITY_THREAD' }, cells,
     rect(x, y0, w, y1 - y0, { fill: 'none', stroke: ink, stroke_width: 1 }),

@@ -9,6 +9,8 @@ const S = require('../lib/svg');
 const PT = require('../lib/patterns');
 const N = require('../lib/note');
 const RP = require('../symbols/ripple');
+const EN = require('../lib/engrave');
+const R = require('../lib/realism');
 const B = require('../lib/bpcolors');
 const { f, f1, g, rect, circle, path, line, poly, comment, P } = S;
 const { gx, gy, FIELD, W, H } = N;
@@ -29,47 +31,45 @@ const L = {
   win: { x: 62, y: 190, s: 300 },
   halo: { r: 250 }, disc: { r: 140 },
   thread: { x: 872, w: 18 },
-  card: { x: 62, y: 500, w: 300, h: 128 },
+  card: { x: 62, y: 500, w: 300, h: 156 },
 };
 const markCenter = [L.win.x + L.win.s / 2, L.win.y + L.win.s / 2];
 const markDots = () => RP.dots({ E: markCenter, x0: markCenter[0] - 120, y0: markCenter[1] - 120, x1: markCenter[0] + 120, y1: markCenter[1] + 120, d: 30, r0: 2, R: 12.5, lambda: 90, tau: 260 });
 
 function build(ctx) {
   const C = ctx.C;
+  const gp = (v) => ctx.gap(v);
   const fieldTop = L.head.y + L.head.h;
-  N.base(ctx, { paper: C.paper, hairline: C.secondary });
-  N.frame(ctx, { ink: C.ink, line: C.pattern, accent: C.ink, corner: C.ink });
   const fieldClip = ctx.clip('clip-field', rect(FIELD.x, FIELD.y, FIELD.w, FIELD.h));
 
-  /* ===== L03 ===== */
+  R.paper(ctx, { paper: C.paper, fibres: [C.highlight, C.secondary, C.pattern, C.accent], seed: 50 });
+  R.border(ctx, { c1: C.pattern, c2: C.accent, ink: C.ink });
+
+  /* ===== L03 ground ===== */
   const area = `${S.rectD(FIELD.x, fieldTop, FIELD.w, FIELD.y + FIELD.h - fieldTop)}${S.rectD(L.win.x, L.win.y, L.win.s, L.win.s)}${S.rectD(L.card.x, L.card.y, L.card.w, L.card.h)}`;
   const dotClip = ctx.clip('clip-dots', path(area, { clip_rule: 'evenodd' }));
   const haloClip = ctx.clip('clip-halo', rect(FIELD.x, fieldTop, FIELD.w, FIELD.y + FIELD.h - fieldTop));
-  ctx.add(3, comment('Field, masthead, halo, impact disc, specimen window, accent tab'),
-    rect(FIELD.x, FIELD.y, FIELD.w, FIELD.h, { fill: C.primary, id: 'FIELD_PRIMARY' }),
-    circle(E[0], E[1], L.halo.r, { fill: C.secondary, clip_path: haloClip, id: 'HALO_SECONDARY' }),
-    circle(E[0], E[1], L.disc.r, { fill: C.accent, id: 'IMPACT_DISC_ACCENT' }),
-    rect(L.head.x, L.head.y, L.head.w, L.head.h, { fill: C.ink, id: 'MASTHEAD_INK' }),
+  const ruled = (x, y, w, h, color, gap, sw, angle = 0) => path(PT.hatchRectD(x, y, w, h, angle, gp(gap)), { fill: 'none', stroke: color, stroke_width: sw });
+  ctx.add(3, comment('Ground: ruled yellow moiré; lime halo and orange disc ruled on paper; ruled ink masthead'),
+    EN.moire({ pts: EN.rectPts(FIELD.x, fieldTop, FIELD.w, FIELD.y + FIELD.h - fieldTop), angle: 5, spread: 3, gap: gp(1.6), sw: 1.25, c1: C.primary, c2: C.highlight, id: 'GROUND_MOIRE_FIELD' }),
+    g({ id: 'HALO_SECONDARY', clip_path: haloClip }, circle(E[0], E[1], L.halo.r, { fill: C.paper }), path(PT.hatchCircleD(E[0], E[1], L.halo.r, 0, gp(1.4)), { fill: 'none', stroke: C.secondary, stroke_width: 1.1 })),
+    g({ id: 'IMPACT_DISC_ACCENT' }, circle(E[0], E[1], L.disc.r, { fill: C.paper }), path(PT.hatchCircleD(E[0], E[1], L.disc.r, 0, gp(1.3)), { fill: 'none', stroke: C.accent, stroke_width: 1.1 }), circle(E[0], E[1], L.disc.r, { fill: 'none', stroke: C.ink, stroke_width: 0.8 })),
+    g({ id: 'MASTHEAD_INK' }, rect(L.head.x, L.head.y, L.head.w, L.head.h, { fill: C.paper }), ruled(L.head.x, L.head.y, L.head.w, L.head.h, C.ink, 1.25, 1.05), ruled(L.head.x, L.head.y, L.head.w, L.head.h, C.pattern, 3.2, 0.3, 90), rect(L.head.x, L.head.y, L.head.w, L.head.h, { fill: 'none', stroke: C.ink, stroke_width: 1 })),
     rect(L.win.x, L.win.y, L.win.s, L.win.s, { fill: C.paper, stroke: C.ink, stroke_width: 1.5, id: 'SPECIMEN_WINDOW_PAPER' }),
-    rect(L.card.x, L.card.y, L.card.w, L.card.h, { fill: C.paper, stroke: C.ink, stroke_width: 1.5, id: 'CAPTION_CARD_PAPER' }),
-    rect(L.tab.x, 0, L.tab.w, L.tab.h, { fill: C.accent, id: 'ACCENT_TAB_TOP_RIGHT' }));
+    rect(L.card.x, L.card.y, L.card.w, L.card.h, { fill: C.paper, stroke: C.ink, stroke_width: 1.5, id: 'CAPTION_CARD_PAPER' }));
 
   /* ===== L04 ===== */
   const eng = [];
-  const A = RP.dots({ E, x0: FIELD.x, y0: fieldTop, x1: FIELD.x + FIELD.w, y1: FIELD.y + FIELD.h, ...WAVE, off: [8, 14] });
-  const Bd = RP.dots({ E, x0: FIELD.x, y0: fieldTop, x1: FIELD.x + FIELD.w, y1: FIELD.y + FIELD.h, ...WAVE, R: 5, r0: 1.4, off: [23, 29], shift: 3 });
+  const A = RP.dots({ E, x0: FIELD.x, y0: fieldTop, x1: FIELD.x + FIELD.w, y1: FIELD.y + FIELD.h, ...WAVE, d: ctx.gap(WAVE.d), off: [8, 14] });
+  const Bd = RP.dots({ E, x0: FIELD.x, y0: fieldTop, x1: FIELD.x + FIELD.w, y1: FIELD.y + FIELD.h, ...WAVE, d: ctx.gap(WAVE.d), R: 5, r0: 1.4, off: [23, 29], shift: 3 });
   eng.push(comment('P05 Dot system A: the lattice, resized and pushed by the wave'));
   eng.push(path(RP.dotsD(A), { fill: C.pattern, clip_path: dotClip, id: 'P05_LATTICE_A' }));
   eng.push(comment('P05 Dot system B: a half-cell offset lattice, same wave, smaller'));
   eng.push(path(RP.dotsD(Bd), { fill: C.ink, clip_path: dotClip, id: 'P05_LATTICE_B' }));
-  // contour rings at the crests, D = n·λ
   eng.push(comment('P02 Contour: rings at every crest, D = n · 120'));
-  eng.push(g({ id: 'P02_CREST_RINGS', fill: 'none', stroke: C.ink, stroke_width: 0.8, clip_path: dotClip },
-    S.range(12, 1).map((n) => circle(E[0], E[1], n * WAVE.lambda, { id: `crest_${n}` }))));
-  // window micro-grid
+  eng.push(g({ id: 'P02_CREST_RINGS', fill: 'none', stroke: C.ink, stroke_width: 0.8, clip_path: dotClip }, S.range(12, 1).map((n) => circle(E[0], E[1], n * WAVE.lambda, { id: `crest_${n}` }))));
   eng.push(rect(L.win.x + 8, L.win.y + 8, L.win.s - 16, L.win.s - 16, { fill: ctx.pat('pat-microgrid-15', PT.patMicroGrid('pat-microgrid-15', { size: 15, color: C.highlight, sw: 0.6, dot: 0 })), id: 'P03_WINDOW_MICROGRID' }));
-  // waves on the bottom rail: amplitude and frequency grow toward the impact
-  const wv = PT.waveFieldD({ x0: 420, x1: 1150, y0: 692, y1: 712, lines: 4, step: 2.5, ampFn: (u) => 1 + 7 * u * u, freqFn: (u) => 0.05 + 0.2 * u * u, phaseFn: (t) => t * 2 });
+  const wv = PT.waveFieldD({ x0: 420, x1: 1150, y0: 692, y1: 712, lines: 4, step: gp(2.5), ampFn: (u) => 1 + 7 * u * u, freqFn: (u) => 0.05 + 0.2 * u * u, phaseFn: (t) => t * 2 });
   eng.push(comment('P08 Wave system: the rail speeds up and swells toward the impact'));
   eng.push(path(wv, { fill: 'none', stroke: C.pattern, stroke_width: 0.9, id: 'P08_WAVES_RAIL' }));
   ctx.add(4, eng);
@@ -78,44 +78,52 @@ function build(ctx) {
   const m = markDots();
   const sym = [];
   sym.push(comment('RIPPLE specimen: 11 × 11 lattice, λ = 3 cells'));
-  sym.push(g({ id: 'RIPPLE_SPECIMEN' },
-    m.filter((p) => p.dist > 1).map((p) => circle(p.x, p.y, p.r, { fill: C.ink })),
-    circle(markCenter[0], markCenter[1], m[60].r, { fill: C.accent, stroke: C.ink, stroke_width: 1.5, id: 'RIPPLE_IMPACT_POINT' })));
+  sym.push(g({ id: 'RIPPLE_SPECIMEN' }, m.filter((p) => p.dist > 1).map((p) => circle(p.x, p.y, p.r, { fill: C.ink })),
+    g({ id: 'RIPPLE_IMPACT_POINT' }, circle(markCenter[0], markCenter[1], m[60].r, { fill: C.paper }), path(PT.hatchCircleD(markCenter[0], markCenter[1], m[60].r, 0, 1.2), { fill: 'none', stroke: C.accent, stroke_width: 1 }), circle(markCenter[0], markCenter[1], m[60].r, { fill: 'none', stroke: C.ink, stroke_width: 1.5 }))));
   ctx.add(5, sym);
 
   /* ===== L06 ===== */
   const wm = [];
+  wm.push(R.corners(ctx, { paper: C.paper, c1: C.pattern, c2: C.accent, c3: C.primary, ink: C.ink }));
   wm.push(comment('Watermark rings around the specimen, at the crests (λ = 90)'));
   const winClip = ctx.clip('clip-window', rect(L.win.x, L.win.y, L.win.s, L.win.s));
-  wm.push(g({ id: 'WATERMARK_CREST_RINGS', fill: 'none', stroke: C.primary, stroke_width: 1, clip_path: winClip },
-    [1, 2, 3].map((n) => circle(markCenter[0], markCenter[1], n * 90))));
+  wm.push(g({ id: 'WATERMARK_CREST_RINGS', fill: 'none', stroke: C.primary, stroke_width: 1, clip_path: winClip }, [1, 2, 3].map((n) => circle(markCenter[0], markCenter[1], n * 90))));
   const tile = ctx.pat('pat-ripple-tile', PT.patSymbol('pat-ripple-tile', g({ fill: C.pattern }, circle(5, 5, 1.6), circle(15, 5, 2.6), circle(25, 5, 1.6), circle(5, 15, 2.6), circle(15, 15, 4.6, { fill: C.accent }), circle(25, 15, 2.6), circle(5, 25, 1.6), circle(15, 25, 2.6), circle(25, 25, 1.6)), 30));
   wm.push(rect(gx(15) - 20, 686, 360, 30, { fill: tile, id: 'P06_SYMBOL_REPEAT_STRIP' }));
+  wm.push(g({ id: 'NUMERAL_TAB_TOP_RIGHT' }, rect(L.tab.x, 0, L.tab.w, L.tab.h, { fill: C.paper }), ruled(L.tab.x, 0, L.tab.w, L.tab.h, C.accent, 1.4, 1.05), rect(L.tab.x, 0, L.tab.w, L.tab.h, { fill: 'none', stroke: C.ink, stroke_width: 0.9 }),
+    rect(1410, 30, 150, 76, { fill: C.paper }), EN.cartouche({ x: 1410, y: 30, w: 150, h: 76, notch: 9, color: C.ink, sw: 1.1, id: 'cartouche_numeral' })));
+  wm.push(g({ id: 'SERIAL_CHIP' }, rect(1352, 696, 196, 26, { fill: C.paper, stroke: C.ink, stroke_width: 0.9 })));
   ctx.add(6, wm);
 
   /* ===== L07 ===== */
   const T = [];
   T.push(N.gridLogo(L.logo.x, L.logo.y, L.logo.h, C.paper, {}));
-  T.push(N.impact('IMPACT', L.title.x, L.title.y, L.title.size, C.primary, { id: 'T03_TITLE' }));
+  T.push(N.impact('IMPACT', L.title.x, L.title.y, L.title.size, C.paper, { id: 'T03_TITLE', letter_spacing: '0.04em' }));
   T.push(N.inter('Create meaningful change', L.phrase.x, L.phrase.y, L.phrase.size, C.paper, { weight: 700, id: 'T04_PHRASE' }));
-  T.push(N.inter('VALUE 05 / 05  ·  PRINCIPLE IMPACT  ·  SERIES A 2026', L.phrase.x, 118, 9, C.primary, { weight: 700, ls: '0.18em' }));
-  T.push(N.impact('50', NUM.x, NUM.y, NUM.size, C.ink, { text_anchor: 'end', id: 'T01_DENOMINATION' }));
-  T.push(N.impact('50', 1548, 98, 66, C.ink, { text_anchor: 'end', id: 'T01_CORNER_NUMERAL' }));
-  T.push(N.serial('M 50  0731 4408 K', 1090, 76, 11, C.paper, { id: 'T05_SERIAL_PRIMARY' }));
+  T.push(N.inter('VALUE 05 / 05  ·  PRINCIPLE IMPACT  ·  SERIES A 2026', L.phrase.x, 118, 9, C.paper, { weight: 700, ls: '0.18em' }));
+  T.push(R.issuer(1040, 56, { fill: C.paper, accent: C.paper, words: 'THE VALUE OF FIFTY GRID', size: 9 }));
+  T.push(R.numerals(ctx, '50', NUM.x, NUM.y, NUM.size, { lines: C.ink, outline: C.ink, gap: 3, sw: 1.5, osw: 2, anchor: 'end', under: C.paper, id: 'T01_DENOMINATION' }));
+  T.push(N.impact('50', 1485, 80, 56, C.ink, { text_anchor: 'middle', id: 'T01_CORNER_NUMERAL', letter_spacing: '0.03em' }));
+  T.push(N.serial('M 50  0731 4408 K', 1485, 100, 7.5, C.ink, { text_anchor: 'middle', id: 'T05_SERIAL_SMALL' }));
+  T.push(N.serial('M 50  0731 4408 K', 1450, 714, 12, C.ink, { text_anchor: 'middle', id: 'T05_SERIAL_PRIMARY' }));
   T.push(S.text('M 50  0731 4408 K', { transform: `translate(${FIELD.x + 12} 460) rotate(-90)`, font_family: N.INTER, font_size: 10, font_weight: 600, letter_spacing: '0.2em', fill: C.ink, id: 'T05_SERIAL_VERTICAL' }));
-  T.push(N.inter('RIPPLE  ·  11 × 11  ·  λ = 3 CELLS', L.card.x + 16, L.card.y + 28, 10, C.ink, { weight: 700, ls: '0.14em', id: 'T05_SPECIMEN_LABEL' }));
-  T.push(N.inter('r = r0 + R · e^(−D/τ) · ½(1 + cos 2πD/λ)', L.card.x + 16, L.card.y + 48, 10.5, C.pattern, { weight: 600, id: 'T05_FORMULA' }));
-  T.push(N.micro('CREATE MEANINGFUL CHANGE', 470, 160, 360, 5.2, C.pattern, { id: 'T05_MICROTEXT_1' }));
-  T.push(N.inter('The zero is the stone.', L.card.x + 16, L.card.y + 84, 14, C.ink, { weight: 700, id: 'T05_STATEMENT_1' }));
-  T.push(N.inter('The lattice is everything it reaches.', L.card.x + 16, L.card.y + 104, 12.5, C.ink, { weight: 600, id: 'T05_STATEMENT_2' }));
+  T.push(N.inter('RIPPLE  ·  11 × 11  ·  λ = 3 CELLS', L.card.x + 16, L.card.y + 24, 9.5, C.ink, { weight: 700, ls: '0.14em', id: 'T05_SPECIMEN_LABEL' }));
+  T.push(N.inter('r = r0 + R · e^(−D/τ) · ½(1 + cos 2πD/λ)', L.card.x + 16, L.card.y + 42, 10, C.pattern, { weight: 600, id: 'T05_FORMULA' }));
+  T.push(N.inter('The zero is the stone.', L.card.x + 16, L.card.y + 70, 13, C.ink, { weight: 700, id: 'T05_STATEMENT_1' }));
+  T.push(N.inter('The lattice is everything it reaches.', L.card.x + 16, L.card.y + 88, 11.5, C.ink, { weight: 600, id: 'T05_STATEMENT_2' }));
+  T.push(R.signatures(L.card.x + 16, L.card.y + 100, L.card.w - 32, { color: C.ink, label: C.pattern, seed: 50, h: 20 }));
+  T.push(N.micro('CREATE MEANINGFUL CHANGE', 470, 160, 360, 4.6, C.pattern, { id: 'T05_MICROTEXT_1' }));
+  T.push(R.frameMicro('GRID CREATIVE RESERVE · 50 GRID · CREATE MEANINGFUL CHANGE ·', C.ink));
   ctx.add(7, T);
 
   /* ===== L08 ===== */
   const sec = [];
   sec.push(N.thread(L.thread.x, L.head.y + L.head.h, FIELD.y + FIELD.h, L.thread.w, { a: C.paper, b: C.accent, ink: C.ink, label: 'GRID 50 · IMPACT · GRID 50 · IMPACT' }));
+  const fs = [C.accent, C.highlight, C.secondary, C.paper, C.highlight, C.accent].map((color, k, a) => ({ at: k / (a.length - 1), color }));
+  sec.push(g({ id: 'FOIL_STRIPE' }, EN.iris({ x: L.thread.x - 28, y: fieldTop, w: 24, h: FIELD.y + FIELD.h - fieldTop, vertical: false, gap: gp(1.3), sw: 0.9, stops: [...fs, ...fs].map((q, i, a) => ({ at: i / (a.length - 1), color: q.color })), id: 'foil_iris' }),
+    rect(L.thread.x - 28, fieldTop, 24, FIELD.y + FIELD.h - fieldTop, { fill: 'none', stroke: C.ink, stroke_width: 0.8 })));
   sec.push(N.tactile(1, 62, 686, C.ink, { bar: 4, h: 20, gap: 6 }));
   sec.push(g({ id: 'REGISTRATION_MARKS' }, PT.regMark(gx(5) + 20, 175, 7, C.ink), PT.regMark(gx(12), 650, 7, C.ink)));
-  sec.push(path(PT.crossGridD({ x: 120, y: 700, cols: 18, rows: 1, dx: 12, dy: 12, arm: 2 }), { fill: 'none', stroke: C.ink, stroke_width: 0.8, id: 'MICRO_CROSSES' }));
   ctx.add(8, sec);
 }
 
