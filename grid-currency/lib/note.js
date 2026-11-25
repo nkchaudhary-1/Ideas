@@ -16,8 +16,8 @@ const GRID = { x0: 50, y0: 75, cell: 75, cols: 20, rows: 8 };
 const gx = (i) => GRID.x0 + GRID.cell * i;
 const gy = (j) => GRID.y0 + GRID.cell * j;
 const FIELD = { x: 26, y: 26, w: W - 52, h: H - 52 };
-const IMPACT = "Impact, 'GRID Impact Fallback', Haettenschweiler, 'Arial Narrow Bold', sans-serif";
-const INTER = "'Inter Display', Inter, 'Helvetica Neue', Arial, sans-serif";
+const IMPACT = 'Impact';
+const INTER = 'Inter Display';
 
 const LAYERS = [
   ['L01_BASE_PAPER', 'Base paper colour and foundation: paper field, modular grid hairlines'],

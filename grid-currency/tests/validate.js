@@ -26,7 +26,9 @@ function common(file, svg) {
   const dup = ids(svg).filter((v, i, a) => a.indexOf(v) !== i);
   if (dup.length) fail(file, `duplicate ids: ${[...new Set(dup)].slice(0, 5).join(', ')}`);
   const fonts = [...new Set([...svg.matchAll(/font-family="([^"]+)"/g)].map((m) => m[1]))];
-  fonts.forEach((fm) => { if (!/^(Impact,|'Inter Display',)/.test(fm)) fail(file, `unexpected font-family: ${fm}`); });
+  fonts.forEach((fm) => { if (fm !== 'Impact' && fm !== 'Inter Display') fail(file, `font-family must be exactly "Impact" or "Inter Display", found: ${fm}`); });
+  if (/letter-spacing="[^"]*em"/.test(svg)) fail(file, 'letter-spacing in em: use px for Figma and Illustrator');
+  if (!svg.includes('text[font-family="Impact"]{') || !svg.includes('text[font-family="Inter Display"]{')) fail(file, 'font stack CSS rules missing');
   if (!svg.includes("font-family:'GRID Impact Fallback'")) fail(file, 'font fallback style missing');
   const refs = [...svg.matchAll(/(?:url\(#|href="#)([^)"]+)/g)].map((m) => m[1]);
   const idset = new Set(ids(svg));
@@ -52,7 +54,7 @@ function note(file, svg, def) {
     if (!svg.includes(`id="${k}"`)) fail(file, `required element ${k} missing`);
   });
   if (!svg.includes('font-family="Impact')) fail(file, 'no Impact text');
-  if (!svg.includes("font-family=\"'Inter Display'")) fail(file, 'no Inter Display text');
+  if (!svg.includes('font-family="Inter Display"')) fail(file, 'no Inter Display text');
 }
 
 function blueprint(file, svg, def) {

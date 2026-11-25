@@ -43,7 +43,15 @@ const poly = (pts, a) => el('polygon', { points: pts.map((p) => `${f(p[0])},${f(
 const polyline = (pts, a) => el('polyline', { points: pts.map((p) => `${f(p[0])},${f(p[1])}`).join(' '), ...a });
 const comment = (s) => `<!-- ${s} -->`;
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const text = (str, a) => `<text${attr(a)}>${esc(str)}</text>`;
+/* letter-spacing is written in px: Figma and Illustrator read px reliably, em not always */
+const text = (str, a) => {
+  const o = { ...a };
+  if (typeof o.letter_spacing === 'string' && o.letter_spacing.endsWith('em')) {
+    const px = parseFloat(o.letter_spacing) * (parseFloat(o.font_size) || 16);
+    o.letter_spacing = Math.round(px * 100) / 100;
+  }
+  return `<text${attr(o)}>${esc(str)}</text>`;
+};
 
 /* ---------- path builder ---------- */
 class P {

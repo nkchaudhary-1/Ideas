@@ -1,6 +1,7 @@
 'use strict';
 /* index.html: a viewer for the five notes and their blueprints. Generated from the note definitions. */
 const { PANELS } = require('./blueprint');
+const { anton64 } = require('./fonts');
 
 const RULES = {
   1000: 'Every square turns 45° and grows by √2 from one shared corner.',
@@ -24,6 +25,7 @@ function gallery(defs) {
 <meta name="color-scheme" content="light dark">
 <title>GRID: currency for the creative world</title>
 <style>
+@font-face{font-family:'GRID Impact Fallback';src:url(data:font/woff2;base64,${anton64()}) format('woff2');size-adjust:92%}
 :root{--bg:#F5F3EF;--surface:#FFFFFF;--stage:#E8E4EE;--ink:#17141F;--muted:#5A5566;--line:#DDD8E4;--accent:#6C46C1;--on-accent:#FFFFFF;--focus:#6C46C1}
 @media (prefers-color-scheme:dark){:root{--bg:#100E15;--surface:#1A1722;--stage:#0B0A10;--ink:#F3F0F9;--muted:#A8A2B6;--line:#2B2736;--accent:#BCA8FF;--on-accent:#17141F;--focus:#BCA8FF}}
 *{box-sizing:border-box}
