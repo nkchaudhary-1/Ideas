@@ -1,0 +1,213 @@
+/*
+ * The stage is a size container, and everything inside it is measured in --u:
+ * one unit is 1/1080th of the short side, so the layout is identical at any size.
+ * 16:9 is 1920 x 1080 units, 9:16 is 1080 x 1920, 1:1 is 1080 x 1080.
+ */
+.app {
+  --ar: 1.7778;
+  --stage-w: min(var(--stage-max-w), calc(var(--stage-max-h) * var(--ar)));
+}
+.app[data-aspect='9:16'] { --ar: 0.5625; }
+.app[data-aspect='1:1'] { --ar: 1; }
+
+.stage {
+  --u: calc(1cqmin / 10.8);
+  position: relative;
+  flex: none;
+  width: var(--stage-w);
+  aspect-ratio: var(--ar);
+  container-type: size;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--stage-radius, var(--r-big));
+  background: #05070a;
+  color: var(--ink);
+  font-family: var(--font);
+  font-feature-settings: 'ss03', 'cv11';
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.stage[data-ready] {
+  opacity: 1;
+}
+
+/*
+ * Safe area. The content column is the same 936 units wide in every aspect (1080 less a 72 margin each
+ * side), so a centred 1:1 crop of a 16:9 render keeps all of it with its margins.
+ * In 9:16 the top and bottom leave room for the app chrome that sits over vertical video.
+ */
+.stage {
+  --safe-x: max(calc(var(--u) * 72), calc((100cqw - var(--u) * 936) / 2));
+  --safe-top: calc(var(--u) * 96);
+  --safe-bottom: calc(var(--u) * 96);
+  --fs-caption: calc(var(--u) * 112);
+  --fs-hero: calc(var(--u) * 188);
+  --fs-metric: calc(var(--u) * 120);
+}
+.stage[data-aspect='9:16'] {
+  --safe-top: calc(var(--u) * 200);
+  --safe-bottom: calc(var(--u) * 280);
+  --fs-caption: calc(var(--u) * 104);
+}
+.stage[data-aspect='1:1'] {
+  --safe-top: calc(var(--u) * 72);
+  --safe-bottom: calc(var(--u) * 72);
+  --fs-caption: calc(var(--u) * 96);
+  --fs-hero: calc(var(--u) * 172);
+  --fs-metric: calc(var(--u) * 96);
+}
+
+/* Layers, back to front. */
+.world,
+.shade,
+.bloom,
+.vignette,
+.grain,
+.flash,
+.frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.world {
+  opacity: 0;
+  will-change: opacity;
+}
+.world--cool {
+  background: var(--cool-bg);
+  opacity: 1;
+}
+.world--warm { background: var(--warm-bg); }
+.world--neutral { background: var(--neutral-bg); }
+
+/* Cool: a faint precision grid. Warm: soft light leaks. Both drift slowly on the compositor. */
+.world::before,
+.world::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+.world--cool::before {
+  inset: 0;
+  background-image:
+    linear-gradient(rgb(110 160 255 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(110 160 255 / 0.07) 1px, transparent 1px);
+  background-size: calc(var(--u) * 72) calc(var(--u) * 72);
+  background-position: center;
+  mask-image: radial-gradient(closest-side, #000 20%, transparent 100%);
+}
+.world--cool::after {
+  left: 50%;
+  top: 40%;
+  width: 90%;
+  aspect-ratio: 1;
+  margin: -45% 0 0 -45%;
+  background: radial-gradient(closest-side, rgb(110 160 255 / 0.16), transparent);
+  animation: drift-a 26s ease-in-out infinite alternate;
+}
+.world--warm::before {
+  left: 5%;
+  top: -20%;
+  width: 70%;
+  aspect-ratio: 1;
+  background: radial-gradient(closest-side, rgb(255 180 106 / 0.2), transparent);
+  animation: drift-a 22s ease-in-out infinite alternate;
+}
+.world--warm::after {
+  right: -5%;
+  bottom: -25%;
+  width: 60%;
+  aspect-ratio: 1;
+  background: radial-gradient(closest-side, rgb(255 140 70 / 0.16), transparent);
+  animation: drift-b 30s ease-in-out infinite alternate;
+}
+.world--neutral::before {
+  left: -10%;
+  top: 10%;
+  width: 60%;
+  aspect-ratio: 1;
+  background: radial-gradient(closest-side, rgb(110 160 255 / 0.1), transparent);
+  animation: drift-a 24s ease-in-out infinite alternate;
+}
+.world--neutral::after {
+  right: -10%;
+  bottom: 0;
+  width: 60%;
+  aspect-ratio: 1;
+  background: radial-gradient(closest-side, rgb(255 180 106 / 0.1), transparent);
+  animation: drift-b 28s ease-in-out infinite alternate;
+}
+
+@keyframes drift-a {
+  from { transform: translate3d(-4%, -3%, 0) scale(1); }
+  to { transform: translate3d(5%, 4%, 0) scale(1.18); }
+}
+@keyframes drift-b {
+  from { transform: translate3d(4%, 3%, 0) scale(1.1); }
+  to { transform: translate3d(-5%, -4%, 0) scale(0.95); }
+}
+
+.shade {
+  background: #000;
+  opacity: 0;
+  will-change: opacity;
+}
+
+/* Heat bloom: laid over the cut when the temperature flips, then settles. */
+.bloom {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.bloom--warm { background: radial-gradient(closest-side at 50% 50%, rgb(255 180 106 / 0.7), rgb(255 140 70 / 0.2) 60%, transparent); }
+.bloom--cool { background: radial-gradient(closest-side at 50% 50%, rgb(110 160 255 / 0.6), rgb(110 160 255 / 0.15) 60%, transparent); }
+
+.frame {
+  z-index: 2;
+}
+
+.vignette {
+  background: radial-gradient(120% 100% at 50% 45%, transparent 52%, rgb(0 0 0 / 0.5) 100%);
+}
+
+/* Film grain: an SVG turbulence tile, stepped about 12 times a second on the compositor. */
+.grain {
+  inset: -50%;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1.7 0 0 0 -.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
+  animation: grain 0.6s steps(1) infinite;
+  will-change: transform;
+}
+@keyframes grain {
+  0% { transform: translate3d(0, 0, 0); }
+  16% { transform: translate3d(-6%, -10%, 0); }
+  33% { transform: translate3d(8%, 4%, 0); }
+  50% { transform: translate3d(-4%, 12%, 0); }
+  66% { transform: translate3d(10%, -6%, 0); }
+  83% { transform: translate3d(-9%, 6%, 0); }
+}
+
+.flash {
+  background: #fff;
+  opacity: 0;
+  will-change: opacity;
+}
+
+.vignette { z-index: 3; }
+.grain { z-index: 4; }
+.flash { z-index: 5; }
+.bloom { z-index: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stage[data-motion='auto'] .world::before,
+  .stage[data-motion='auto'] .world::after,
+  .stage[data-motion='auto'] .grain {
+    animation: none;
+  }
+}
+.stage[data-motion='reduced'] .world::before,
+.stage[data-motion='reduced'] .world::after,
+.stage[data-motion='reduced'] .grain {
+  animation: none;
+}

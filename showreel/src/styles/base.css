@@ -1,0 +1,46 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  font-family: var(--font);
+  background: var(--page-bg);
+  color: var(--bar-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: geometricPrecision;
+}
+
+/* In pip mode the page is transparent, so the rounded stage sits cleanly on whatever embeds it. */
+html:has(.app[data-mode='pip']),
+html:has(.app[data-mode='pip']) body {
+  background: transparent;
+}
+
+.app {
+  position: relative;
+  display: flex;
+  min-height: 100dvh;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Pip: the stage fills the window, centred, never cropped. */
+.app[data-mode='pip'] {
+  --stage-max-w: 100vw;
+  --stage-max-h: 100dvh;
+}
+
+/* Full: the stage leaves room for the transport bar beneath it. */
+.app[data-mode='full'] {
+  --stage-max-w: calc(100vw - 32px);
+  --stage-max-h: calc(100dvh - 160px);
+  flex-direction: column;
+  gap: 16px;
+  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+}

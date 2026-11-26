@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a111b" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="description" content="A kinetic-type showreel for Neelesh, product designer." />
+    <title>Neelesh showreel</title>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!--
+      Optional audio slots. Leave them empty to ship silent. Point `audio.vo` and
+      `audio.music` in src/reel.config.ts at your own files (see README); the player
+      fills these elements in and keeps them in step with the timeline in `full` mode.
+      Nothing is loaded in `pip` mode.
+    -->
+    <audio id="audio-vo" preload="none"></audio>
+    <audio id="audio-music" preload="none" loop></audio>
+
+    <noscript>This showreel needs JavaScript. In short: Neelesh is a senior product designer, seven years in, and still loves it.</noscript>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,70 @@
+/* Inter, bundled (no network, no CDN). Latin only: the copy is English. */
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: block;
+  font-weight: 100 900;
+  src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2-variations');
+}
+
+:root {
+  color-scheme: dark light;
+
+  /* Worlds. The grade carries the colour; type stays monochrome. */
+  --cool-bg: radial-gradient(#15202f, #0a111b);
+  --cool-accent: #6ea0ff;
+  --warm-bg: radial-gradient(#2f2010, #1c1307);
+  --warm-accent: #ffb46a;
+  --neutral-bg: radial-gradient(#1c1d20, #0a0a0b);
+  --neutral-accent: #f4f5f7;
+
+  /* Ink */
+  --ink: #f4f5f7;
+  --ink-dim: rgb(244 245 247 / 0.56);
+  --ink-faint: rgb(244 245 247 / 0.16);
+  --ink-black: #0b0d10;
+
+  /* Type */
+  --font: 'Inter Variable', Inter, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --track-display: -0.04em;
+
+  /* Corner radii: one concentric system. Capsules (9999px) are the only thing rounder than 32px. */
+  --r-big: 32px;
+  --r-card: 24px;
+  --r-floor: 8px;
+  --r-capsule: 9999px;
+
+  /* Control sizes grow on touch. */
+  --control: 36px;
+  --bar: 52px;
+  --bar-inset: 8px;
+  --gap: 8px;
+
+  /* Page shell (full mode). The stage itself is always dark. */
+  --page-bg: #07090d;
+  --bar-bg: #12161d;
+  --bar-ink: #eef0f4;
+  --bar-ink-dim: rgb(238 240 244 / 0.6);
+  --bar-line: rgb(238 240 244 / 0.12);
+  --bar-hover: rgb(238 240 244 / 0.1);
+  --bar-focus: #6ea0ff;
+}
+
+@media (pointer: coarse) {
+  :root {
+    --control: 44px;
+    --bar: 60px;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --page-bg: #e8eaee;
+    --bar-bg: #ffffff;
+    --bar-ink: #14181f;
+    --bar-ink-dim: rgb(20 24 31 / 0.62);
+    --bar-line: rgb(20 24 31 / 0.14);
+    --bar-hover: rgb(20 24 31 / 0.08);
+    --bar-focus: #2f62d8;
+  }
+}

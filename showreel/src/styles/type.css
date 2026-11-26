@@ -1,0 +1,70 @@
+/* One beat = one section. The timeline shows and hides it; everything inside is laid out here. */
+.beat {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--safe-top) var(--safe-x) var(--safe-bottom);
+  visibility: hidden;
+  contain: layout paint;
+  --accent: var(--cool-accent);
+}
+.beat[data-world='warm'] { --accent: var(--warm-accent); }
+.beat[data-world='neutral'] { --accent: var(--neutral-accent); }
+.beat[data-world='blend'] { --accent: var(--ink); }
+
+/* The camera: a slow push that the beat's timeline drives. */
+.cam {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 48);
+  text-align: center;
+  will-change: transform;
+}
+
+/* Split text. A line is a mask; words rise through it. */
+.caption {
+  margin: 0;
+  max-width: 100%;
+  font-size: var(--fs-caption);
+  font-weight: 650;
+  line-height: 1.04;
+  letter-spacing: var(--track-display);
+  color: var(--ink);
+  text-wrap: balance;
+}
+.l {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 0.14em 0.08em;
+  margin: -0.14em -0.08em;
+}
+.l--open {
+  overflow: visible;
+}
+.li {
+  /* A whole line, so it can be moved with a transform (inline boxes ignore them). */
+  display: inline-block;
+  will-change: transform;
+}
+.w {
+  display: inline-block;
+  will-change: transform;
+}
+.c {
+  display: inline-block;
+  will-change: transform;
+}
+.dim {
+  color: var(--ink-dim);
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum', 'ss03', 'cv11';
+}

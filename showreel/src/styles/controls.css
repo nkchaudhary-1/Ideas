@@ -1,0 +1,222 @@
+/* ---------- Player bar (full mode only) ---------- */
+.bar {
+  display: flex;
+  width: max(var(--stage-w), min(100%, 520px));
+  min-height: var(--bar);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--gap);
+  padding: var(--bar-inset);
+  border: 1px solid var(--bar-line);
+  border-radius: var(--r-card);
+  background: var(--bar-bg);
+  color: var(--bar-ink);
+}
+@media (min-width: 640px) {
+  .bar {
+    flex-wrap: nowrap;
+    border-radius: var(--r-capsule);
+  }
+}
+
+.btn,
+.pill {
+  display: inline-grid;
+  height: var(--control);
+  flex: none;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.btn {
+  width: var(--control);
+  border-radius: var(--r-capsule);
+}
+.pill {
+  padding: 0 16px;
+  border-radius: var(--r-capsule);
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: inset 0 0 0 1px var(--bar-line);
+}
+.pill[aria-pressed='true'] {
+  background: var(--bar-ink);
+  color: var(--bar-bg);
+  box-shadow: none;
+}
+.btn:hover,
+.pill:hover {
+  background: var(--bar-hover);
+}
+.pill[aria-pressed='true']:hover {
+  background: var(--bar-ink);
+}
+.btn:focus-visible,
+.pill:focus-visible,
+.scrub:focus-visible {
+  outline: 2px solid var(--bar-focus);
+  outline-offset: 2px;
+}
+
+.readout {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 16px;
+}
+.time {
+  color: var(--bar-ink);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.beat-name {
+  overflow: hidden;
+  color: var(--bar-ink-dim);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The timeline: one segment per beat, coloured by world, with a gap where each beat starts. */
+.scrub {
+  position: relative;
+  flex: 1 1 160px;
+  height: var(--control);
+  min-width: 120px;
+  cursor: pointer;
+  touch-action: none;
+  border-radius: var(--r-capsule);
+  /* The playhead's wrapper is as wide as the track and slides along it; clip what it would add to the page's scroll width. */
+  overflow: clip;
+  overflow-clip-margin: 4px;
+}
+@media (max-width: 639px) {
+  .scrub {
+    flex-basis: 100%;
+    order: 9;
+  }
+  /* On a phone the readout takes the slack and truncates, so the subtitle toggle stays on the first row. */
+  .readout {
+    flex: 1 1 0;
+  }
+}
+.track {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  gap: 2px;
+  overflow: hidden;
+  border-radius: var(--r-capsule);
+}
+.track--dim { opacity: 0.38; }
+.track--lit { clip-path: inset(0 100% 0 0); }
+.seg {
+  display: block;
+  flex: var(--w) 1 0;
+  background: var(--seg);
+}
+.seg[data-world='cool'] { --seg: #6ea0ff; }
+.seg[data-world='warm'] { --seg: #ffb46a; }
+.seg[data-world='neutral'] { --seg: #9aa1ab; }
+.seg[data-world='blend'] { --seg: linear-gradient(90deg, #6ea0ff, #ffb46a); }
+.head {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  pointer-events: none;
+  will-change: transform;
+}
+.head i {
+  position: absolute;
+  top: 0;
+  left: -2px;
+  display: block;
+  width: 4px;
+  height: 100%;
+  border-radius: var(--r-capsule);
+  background: var(--bar-ink);
+  box-shadow: 0 0 0 2px var(--bar-bg);
+}
+
+/* ---------- Voiceover subtitles ---------- */
+.subs {
+  position: absolute;
+  z-index: 6;
+  bottom: calc(var(--u) * 40);
+  left: 50%;
+  display: none;
+  max-width: calc(100% - var(--u) * 144);
+  padding: calc(var(--u) * 12) calc(var(--u) * 28);
+  border-radius: calc(var(--u) * 24);
+  background: rgb(0 0 0 / 0.66);
+  color: #fff;
+  font-size: calc(var(--u) * 32);
+  font-weight: 500;
+  line-height: 1.3;
+  text-align: center;
+  text-wrap: balance;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+.subs[data-on]:not([data-empty]) {
+  display: block;
+}
+.stage[data-aspect='9:16'] .subs {
+  bottom: calc(var(--safe-bottom) * 0.4);
+}
+
+/* ---------- ?debug ---------- */
+.guides {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.guide {
+  grid-area: 1 / 1;
+  height: 100%;
+  border: 2px dashed rgb(255 255 255 / 0.5);
+}
+.guide span {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 2px 8px;
+  border-radius: var(--r-capsule);
+  background: rgb(0 0 0 / 0.6);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+.debug {
+  position: fixed;
+  z-index: 20;
+  top: max(12px, env(safe-area-inset-top));
+  left: max(12px, env(safe-area-inset-left));
+  display: grid;
+  gap: 4px;
+  padding: 12px 16px;
+  border-radius: var(--r-card);
+  background: rgb(0 0 0 / 0.72);
+  color: #fff;
+  font-size: 12px;
+  line-height: 16px;
+  pointer-events: none;
+}
+.dbg-beat {
+  font-size: 14px;
+  font-weight: 650;
+}
+.dbg-clock,
+.dbg-grade,
+.dbg-fps {
+  color: rgb(255 255 255 / 0.72);
+}

@@ -1,0 +1,24 @@
+{
+  "name": "showreel",
+  "private": true,
+  "version": "1.0.0",
+  "description": "This isn't my job, it's my thing: a kinetic-type portfolio showreel (Vite, vanilla TypeScript, GSAP).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test:unit": "vitest run",
+    "test:e2e": "node tests/e2e/reel.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "gsap": "^3.15.1"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.4.0",
+    "vitest": "^5.1.2"
+  }
+}
