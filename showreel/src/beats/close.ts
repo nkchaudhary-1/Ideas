@@ -53,7 +53,8 @@ export function buildClose({ beat, cam, tl, m, motion, tick, snap, at, reduced }
   if (reduced) tl.to(stage, { opacity: 0, duration: 0.6 }, handover);
   else tl.to(stage, { yPercent: -14, opacity: 0, duration: 0.7, ease: 'power3.in' }, handover);
 
-  warm.reveal(payoffSplit.lines[0]!, handover + 0.6, { dur: 1.2, rotate: 0 });
-  warm.reveal(payoffSplit.lines[1]!, handover + 1.7, { dur: 1.4, rotate: 0 });
-  warm.wipe(rule, handover + 3, { dur: 1.2, origin: '50% 50%' });
+  // Each line gets room to be said before the next arrives: the pace keeps ramping down.
+  warm.reveal(payoffSplit.lines[0]!, handover + 0.5, { dur: 1.2, rotate: 0 });
+  warm.reveal(payoffSplit.lines[1]!, handover + 2.4, { dur: 1.4, rotate: 0 });
+  warm.wipe(rule, handover + 3.7, { dur: 1.2, origin: '50% 50%' });
 }

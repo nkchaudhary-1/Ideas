@@ -21,7 +21,7 @@ export function buildCuriosity({ beat, cam, tl, m, tick, snap, at, reduced }: Be
 
   m.reveal(split.words, tick(1), { stagger: 0.1 });
 
-  const times = tiles.map((_, i) => snap(at(0.44 + 0.16 * i)));
+  const times = tiles.map((_, i) => snap(at(0.48 + 0.15 * i)));
   tiles.forEach((tile, i) => {
     const t = times[i]!;
     m.pop(tile.el, t, { from: 0.7 });

@@ -8,8 +8,11 @@ No samples, no model, no network.
 
 The bed follows the reel. Section boundaries are read from src/reel.config.ts, so retiming a beat
 moves the music with it. The cues inside each section (the award bell, the tile chimes, the ticks
-that slow down with the years counter) mirror the choreography in src/beats/*.ts, using the same
-fractions of each beat. If you change a fraction there, change it in CUES below.
+that slow down with the years counter) are in reel_timing.py, where they mirror the choreography in
+src/beats/*.ts.
+
+If public/audio/vo.mp3 exists the whole bed ducks under the real speech (render the voiceover first, with
+make_voice.py), so the voice stays well above it.
 
 Everything sits on the config's tempo grid. The last 0.8 s eases to near-silence and the reverb tail
 is folded back onto the start, so the file loops without a seam.
@@ -17,71 +20,20 @@ is folded back onto the start, so the file loops without a seam.
 from __future__ import annotations
 
 import argparse
-import re
 import subprocess
 import sys
 import wave
 from pathlib import Path
 
 import numpy as np
-from scipy import signal
+from scipy import ndimage, signal
 
-ROOT = Path(__file__).resolve().parents[2]
+from reel_timing import B, BEAT, CUES, DUR, REEL, ROOT, TICK, snap
+
 SR = 44100
 rng = np.random.default_rng(7)  # fixed seed: the same bed every run
-
-
-# --------------------------------------------------------------------------- reel timing
-
-def clock(text: str) -> float:
-    m, s = text.split(":")
-    return int(m) * 60 + float(s)
-
-
-def read_reel() -> dict:
-    src = (ROOT / "src/reel.config.ts").read_text()
-    starts = [clock(t) for t in re.findall(r"\bin:\s*'(\d+:\d+(?:\.\d+)?)'", src)]
-    ids = re.findall(r"\bid:\s*'([a-z]+)'", src)
-    duration = clock(re.search(r"duration:\s*'(\d+:\d+(?:\.\d+)?)'", src).group(1))
-    bpm = float(re.search(r"bpm:\s*(\d+)", src).group(1))
-    every = float(re.search(r"flashEvery:\s*([\d.]+)", src).group(1))
-    loop_blend = float(re.search(r"loopBlend:\s*([\d.]+)", src).group(1))
-    ends = starts[1:] + [duration]
-    beats = {i: (s, e) for i, s, e in zip(ids, starts, ends)}
-    return dict(beats=beats, duration=duration, bpm=bpm, flash_every=every, loop_blend=loop_blend)
-
-
-REEL = read_reel()
-BEAT = 60 / REEL["bpm"]
-TICK = BEAT / 4  # a sixteenth note, the same grid the choreography snaps to
-DUR = REEL["duration"]
-B = REEL["beats"]
-
-
-def snap(seconds: float) -> float:
-    return round(seconds / TICK) * TICK
-
-
-def local(beat: str, fraction: float) -> float:
-    """Absolute time of `fraction` of the way through a beat, snapped like the visuals are."""
-    start, end = B[beat]
-    return start + snap(fraction * (end - start))
-
-
-# --------------------------------------------------------------------------- the cues that mirror the visuals
-
-CUES = {
-    "award": local("numbers", 0.62),
-    "tiles": [local("curiosity", 0.44 + 0.16 * i) for i in range(3)],
-    "phases": [local("builder", 0.32), local("builder", 0.68)],
-    "fill": local("craft", 0.18),
-    "shrink": local("craft", 0.40),
-    "caption2": local("craft", 0.52),
-    "years_from": B["close"][0] + 2 * TICK,
-    "years_roll": 3.4,
-    "payoff": local("close", 0.50),
-    "rings": [B["endcard"][0] + 2 * TICK, local("endcard", 0.45)],
-}
+VOICE = ROOT / "public/audio/vo.mp3"
+DUCK_DB = 8.0  # how far the bed drops while someone is speaking
 
 
 # --------------------------------------------------------------------------- tiny synth kit
@@ -343,8 +295,8 @@ def close() -> None:
     cool_groove("close", 0.7)
     # The groove thins as the pace drops: take the kicks and hats out from the middle of the beat on.
     place("pad", pad([midi(53), midi(60), midi(64), midi(72)], end - CUES["payoff"] + 1, bright=3400, attack=1.6, release=1.4), CUES["payoff"] - 0.4, 0.9)
-    place("pluck", bell(midi(84), 2.6), CUES["payoff"] + 0.6, 0.26)
-    place("pluck", bell(midi(79), 2.6), CUES["payoff"] + 1.7, 0.24, pan=0.3)
+    place("pluck", bell(midi(84), 2.6), CUES["payoff_lines"][0] + 0.1, 0.26)
+    place("pluck", bell(midi(79), 2.6), CUES["payoff_lines"][1] + 0.1, 0.24, pan=0.3)
 
 
 def endcard() -> None:
@@ -366,6 +318,24 @@ def endcard() -> None:
 
 
 # --------------------------------------------------------------------------- reverb, mix, master
+
+def duck_curve(n: int) -> np.ndarray:
+    """
+    Gain for the whole bed that dips while the voiceover speaks and opens up again in the gaps. It is read
+    from the rendered voiceover, so it follows the real words. With no voiceover it does nothing.
+    """
+    curve = np.ones(n, np.float32)
+    if not VOICE.exists():
+        return curve
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", str(VOICE), "-f", "f32le", "-ac", "1", "-ar", str(SR), "-"], capture_output=True, check=True).stdout
+    voice = np.frombuffer(raw, np.float32)
+    speaking = (ndimage.uniform_filter1d(np.abs(voice), int(0.05 * SR)) > 0.004).astype(np.float32)
+    held = ndimage.maximum_filter1d(speaking, int(0.35 * SR))  # stay down through the gaps between words
+    eased = ndimage.uniform_filter1d(ndimage.uniform_filter1d(held, int(0.25 * SR)), int(0.25 * SR))  # then ease in and out
+    m = min(n, len(eased))
+    curve[:m] = 10 ** (-DUCK_DB * eased[:m] / 20)
+    return curve
+
 
 def reverb(x: np.ndarray, seconds: float = 2.6, wet: float = 0.3) -> np.ndarray:
     n = int(seconds * SR)
@@ -399,6 +369,8 @@ def main() -> None:
     for name, stem in STEMS.items():
         dry = stem * levels[name]
         mix += reverb(dry, 3.0, sends[name]) if sends[name] else dry
+
+    mix *= duck_curve(len(mix))[:, None]
 
     # Loop seam: ease out, then fold the reverb tail that spilled past the end back onto the start.
     end = int(DUR * SR)

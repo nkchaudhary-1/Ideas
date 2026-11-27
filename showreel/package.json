@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "test:unit": "vitest run",
     "test:e2e": "node tests/e2e/reel.mjs",
-    "audio:music": "python3 tools/audio/make_music.py"
+    "audio:music": "python3 tools/audio/make_music.py",
+    "audio:voice": "python3 tools/audio/make_voice.py"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",

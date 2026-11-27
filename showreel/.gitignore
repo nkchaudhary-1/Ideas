@@ -3,3 +3,5 @@ dist
 tests/e2e/out
 *.tsbuildinfo
 .DS_Store
+tools/audio/.cache
+__pycache__

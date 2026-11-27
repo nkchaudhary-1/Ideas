@@ -168,34 +168,53 @@ dark ground, so they are not luminance flashes.
 
 ## Voiceover and music
 
-**Music** is included: `public/audio/music.mp3`, an original bed made by [`tools/audio/make_music.py`](tools/audio/make_music.py).
-It is synthesised from scratch (no samples, no model, no network), so there is no licensing question. It follows the reel:
+Both are included, both are made by scripts in [`tools/audio/`](tools/audio/) from the config, and both are cued to the
+visuals. Re-run them after a retime or a reword. In `pip` mode nothing is loaded; the audio belongs to `full` mode.
 
-- Section boundaries are read from `src/reel.config.ts`, so retiming a beat moves the music with it. Re-run it after a retime:
-  `pip install numpy scipy`, then `npm run audio:music` (needs `ffmpeg`).
-- Cool beats are a precise, cold-sounding Am7 / Fmaj7 / Cmaj7 / G7 groove; warm beats open into a pad in F with no kick until
-  the builder, which is four on the floor.
-- Cues land on the visuals: an impact on every cut, a riser under the hook's question, a reverse riser into the 0:22 flip, a
-  bell on the award chip, a chime on each of the three tiles, a lift into each builder phase, ticks that slow down with the years
-  counter, and a swell under the payoff.
-- The last 0.8 s eases to near-silence and the reverb tail is folded back onto the start, so it loops without a seam.
-- Peak -1 dBFS, no clipping. With `musicGain: 0.35` it sits about 9 dB below its own level, which leaves room for a voice.
-
-**Voiceover** is not included yet. Drop your file in `public/audio/` and name it in the config (a recording of your own voice
-will always sound more like you than a synthetic one):
-
-```ts
-audio: { vo: 'audio/vo.mp3', music: 'audio/music.mp3', musicGain: 0.35 },
+```bash
+pip install numpy scipy kokoro-onnx     # plus ffmpeg on the PATH
+npm run audio:voice                      # public/audio/vo.mp3
+npm run audio:music                      # public/audio/music.mp3 (run it second: it ducks under the voice)
+python3 tools/audio/make_voice.py --verify   # also transcribes the result and checks every cue (needs faster-whisper)
 ```
 
-- Both are `<audio>` slots in `index.html`. They are only loaded in `full` mode, never in `pip`.
-- A sound button appears whenever a file is configured. In `full` mode the music plays with the timeline.
-- The timeline is the clock. Audio follows it, is corrected only when it drifts by more than 0.3 s, and is never corrected
-  more than once every 0.6 s, so it can't fight its own seeks. Scrubbing moves it too.
-- The music bed loops. A file that fails to load is skipped quietly.
-- **Audio-reactive captions.** With a voiceover playing, the camera of each beat swells by up to 3.5% with its loudness.
-- The subtitle track is estimated: each beat's voiceover is split into sentences and spread across the beat by length.
-  It is for review, not a forced alignment. Serve audio from a host that supports HTTP range requests, or seeking won't work.
+**Voiceover.** Rendered locally with [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M), an open text-to-speech model
+(Apache-2.0: free to use and ship, no attribution needed, no account, no credits). The first run downloads the model (326 MB)
+into `tools/audio/.cache/`, which is not committed.
+
+- `LINES` in [`make_voice.py`](tools/audio/make_voice.py) is the voiceover script: 22 lines, each with the time it starts
+  (a beat plus an offset, or one of the visual cues in `reel_timing.py`). A line that would run into the next one is sped up
+  a little until it fits, and the run stops with a message if it can't.
+- The key words land on their visuals: "Game" on the award chip, "sign", "sunset" and "some" on the three tiles, the name
+  on its slam, all within 0.15 s. `--verify` prints each one.
+- The voice is `af_heart`, the model's highest-rated. `--voice bm_george`, `am_michael`, `bf_emma` and others change it. It
+  is a synthetic voice, and a recording of your own will always sound more like you: save it as `public/audio/vo.mp3`,
+  75 s long with each line placed where its beat needs it, then re-run the music so it ducks under the real speech.
+- **Check your name.** It is said "NEE-lesh". If you say it "NEE-laysh", add `phonemes="nˈiːleɪʃ"` to that line.
+- Nothing is sent anywhere: the model runs on your machine. The only network use is the one-off download of the model and voice.
+
+**Music.** An original bed from [`make_music.py`](tools/audio/make_music.py), synthesised from scratch (no samples, no model,
+no network), so there is no licensing question.
+
+- Section boundaries come from `src/reel.config.ts`. Cool beats are a precise, cold-sounding Am7 / Fmaj7 / Cmaj7 / G7 groove;
+  warm beats open into a pad in F with no kick until the builder, which is four on the floor.
+- Cues land on the visuals: an impact on every cut, a riser under the hook's question, a reverse riser into the 0:22 flip, a
+  bell on the award chip, a chime on each tile, a lift into each builder phase, ticks that slow down with the years counter,
+  and a swell under the payoff.
+- **It ducks under the voice.** The bed dips 8 dB while the voiceover speaks and opens up in the gaps, read from the rendered
+  `vo.mp3`. With `musicGain: 0.35` the voice sits about 14 dB above the music.
+- The last 0.8 s eases to near-silence and the reverb tail is folded back onto the start, so it loops without a seam.
+
+**In the player.**
+
+- Both are `<audio>` slots in `index.html`, named in `audio` in the config. A sound button appears whenever a file is configured.
+- The timeline is the clock. Audio follows it, is corrected only when it drifts by more than 0.3 s, and is never corrected more
+  than once every 0.6 s, so it can't fight its own seeks. Scrubbing moves it too. The music loops; a file that fails to load is
+  skipped quietly.
+- **Audio-reactive captions.** While the voiceover plays, the camera of each beat swells by up to 3.5% with its loudness.
+- The subtitle track is estimated: each beat's voiceover is split into sentences and spread across the beat by length. It is
+  for review, not a forced alignment, so it will drift from the real voice by a fraction of a second. Serve audio from a host
+  that supports HTTP range requests, or seeking won't work.
 
 ## Exporting
 
@@ -268,7 +287,15 @@ a shader would add weight and a GPU-only code path to something that has to run 
 `debug` overlay and the audio-reactive captions are built.
 
 **Not verified.** Sixty frames a second can't be certified in CI: headless Chromium renders in software. What is checked
-instead is the thing that causes dropped frames, namely layout and non-compositor properties during playback. The music bed was
-checked by measurement (levels, clipping, the loop seam, and a spectrogram showing the risers and cues land on the cuts), not by
-ear, so judge the taste yourself. Audio sync was verified with a generated tone and with the music file, not with a voiceover. The player has not been run on iOS Safari; only Chromium touch
+instead is the thing that causes dropped frames, namely layout and non-compositor properties during playback. The audio was
+checked by measurement, not by ear: the voice is transcribed back word for word and its key words are timed against the
+visuals, and the music's levels, clipping, loop seam and cues are measured. Whether either *sounds* good is for you to judge.
+The player has not been run on iOS Safari; only Chromium touch
 emulation was available.
+
+## Credits and licences
+
+- Type: [Inter](https://rsms.me/inter/), SIL Open Font License 1.1, bundled through `@fontsource-variable/inter`.
+- Motion: [GSAP](https://gsap.com/) core. The text splitter is this project's own.
+- Voice: [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) by hexgrad, Apache-2.0.
+- Music: original, made by `tools/audio/make_music.py`.
