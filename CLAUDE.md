@@ -116,3 +116,61 @@ The app opens on a projects page, never straight into the editor: **Create**, **
 delete). A reload lands there again. The editor is somewhere you go to and can leave ("All projects" in the menu, the back arrow on a phone).
 Keyboard shortcuts and paste do nothing while the front page is showing. Project cards describe a project the same way everywhere
 ("Carousel · 4:5 · 5 slides", "Panorama · 4:5 · 3 slides", "Photo & video edit · 6 items").
+
+# Security defaults (every project in this repo, current and future)
+
+Standing rules from the owner. They sit beside the design rules above and replace nothing in them. Apply them whenever you build or
+change anything that runs online, handles user data, or uses credentials: apps, websites, APIs, scripts, automations, new or existing.
+They apply when asked to work on a project. They are not a background scan of other projects.
+
+## How to apply them
+
+- **Inspect first.** Work out the stack and what the project is (static site, backend, API, mobile, desktop, script) and apply only what is
+  relevant. Don't add login to a public static site. Don't run broad automatic cleanups or refactors on a working app.
+- **Small, reviewable changes, each explained.** If a change could break something, ask first.
+- In this repo: `collage-editor` is a browser-only Next.js editor (no backend, no accounts, no env vars) and `jarvis-wallpaper` is an Electron
+  desktop app. Most server-side checks below don't apply to them yet. They start to apply the moment either gains a backend, accounts,
+  uploads to a server, or third-party keys. (A snapshot, so re-check the stack before relying on it.)
+
+## Checks, where relevant
+
+1. **Secrets.** Never hard-code API keys, tokens, passwords or database URLs. Use environment variables or a secrets manager. Keep `.env` out
+   of Git, provide `.env.example` with fake values, and keep server secrets out of browser code.
+2. **A secret found in code or Git history:** tell the owner to revoke and rotate it. Deleting the file is not enough. In every reply,
+   redact it (first 4 characters only, or just the file and line).
+3. **Access.** Server-side authentication and ownership checks on every non-public endpoint. Never trust IDs or roles sent by the client.
+   Protect admin routes. Least privilege for keys, database roles and cloud permissions.
+4. **Passwords and sessions.** Never store plain passwords: argon2id, bcrypt or scrypt, through a maintained auth library or provider, not a
+   home-made one. Secure, HttpOnly, SameSite cookies, session expiry, and CSRF protection where needed.
+5. **Input and output.** Validate on the server, use parameterised queries, escape output against XSS, and limit upload type and size.
+6. **Rate limits** on login, signup, password reset, public forms and costly or paid API calls.
+7. **Web hardening.** HTTPS; security headers (CSP, HSTS, X-Content-Type-Options, frame protection, Referrer-Policy); CORS limited to named
+   origins; debug off in production; no stack traces shown to users.
+8. **Dependencies.** Maintained packages, pinned versions, the ecosystem's audit tool (`npm audit` here), and tell the owner before adding
+   any package they did not expect.
+9. **Data.** Collect only what is needed. Never log personal data or secrets.
+
+## Approval boundaries
+
+Ask first before: deleting data or files, force-pushing, rewriting Git history, changing production or cloud settings, rotating live keys,
+or testing against a live production site or real user data. Test locally or in staging unless the owner approves otherwise.
+
+## Honesty
+
+- Never call a project "secure", "safe" or "hack-proof". Say what was checked, what changed, what could not be checked, and what needs a human.
+- Separate what was verified by running or reading code from what is assumed.
+- Payments, health data, children's data and other people's personal data need a professional review.
+
+## When finished
+
+Run the available tests, linter and dependency audit and report the real results. If one can't be run, say so. Then give a short
+**Security status**:
+
+- **Fixed:** what changed.
+- **Still open:** known gaps and anything not checked.
+- **Needs my action:** what only the owner can do (rotate keys, approve a change, get a review).
+
+## "Security audit"
+
+When the owner says "security audit": review the project against the checks above, rank findings **High**, **Medium** or **Low** with file
+and line, and propose fixes. Do not apply them until the owner agrees.
