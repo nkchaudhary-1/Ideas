@@ -28,8 +28,9 @@ export const reel: ReelConfig = {
   loopBlend: 0.8,
   flash: { opacity: 0.85, duration: 0.06 },
 
-  // Leave both empty to ship silent. Put your files in public/audio/ and use paths like 'audio/vo.mp3'.
-  audio: { vo: '', music: '', musicGain: 0.35 },
+  // `music` is an original bed made by tools/audio/make_music.py, cued to these beats. `vo` is empty until
+  // a voiceover exists: put the file in public/audio/ and use a path like 'audio/vo.mp3'. Empty = silent.
+  audio: { vo: '', music: 'audio/music.mp3', musicGain: 0.35 },
 
   beats: [
     {

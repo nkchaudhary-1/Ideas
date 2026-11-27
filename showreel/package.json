@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test:unit": "vitest run",
-    "test:e2e": "node tests/e2e/reel.mjs"
+    "test:e2e": "node tests/e2e/reel.mjs",
+    "audio:music": "python3 tools/audio/make_music.py"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",

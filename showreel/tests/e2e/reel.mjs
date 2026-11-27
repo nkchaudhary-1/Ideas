@@ -349,7 +349,8 @@ await check('full mode: no console problems, transport and a beat-marked timelin
   assert(info.repeat === 0 && info.paused, 'full mode should start paused and not loop');
   assert(info.segments === reel.beats.length, `expected ${reel.beats.length} beat segments, got ${info.segments}`);
   assert(info.named, 'every control needs an accessible name');
-  assert(info.sound === 0, 'the sound button should only appear when audio is configured');
+  const hasAudio = Boolean(reel.audio.vo || reel.audio.music);
+  assert(info.sound === (hasAudio ? 1 : 0), `the sound button should appear exactly when audio is configured (audio: ${hasAudio}, buttons: ${info.sound})`);
   assert(info.worlds.includes('cool') && info.worlds.includes('warm') && info.worlds.includes('blend') && info.worlds.includes('neutral'), `world spine: ${info.worlds}`);
 });
 
